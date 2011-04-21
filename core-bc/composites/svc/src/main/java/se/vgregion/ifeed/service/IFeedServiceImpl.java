@@ -3,44 +3,46 @@ package se.vgregion.ifeed.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.vgregion.ifeed.service.store.FeedStore;
-import se.vgregion.ifeed.types.IFeed;
+import org.springframework.transaction.annotation.Transactional;
 
+import se.vgregion.dao.domain.patterns.repository.Repository;
+import se.vgregion.ifeed.types.IFeed;
 
 public class IFeedServiceImpl implements IFeedService {
 
-	private FeedStore store;
-	
-	@Override
-	public List<IFeed> getIFeeds() {
-		return new ArrayList<IFeed>(store.getIFeeds());
-	}
+    private Repository<IFeed, Long> iFeedRepo;
 
-	@Override
-	public IFeed getIFeed(Long id) {
-		return store.getIFeed(id);
-	}
+    public IFeedServiceImpl(Repository<IFeed, Long> iFeedRepo) {
+        this.iFeedRepo = iFeedRepo;
+    }
 
-	@Override
-	public void addIFeed(IFeed iFeed) {
-		store.addIFeed(iFeed);
-	}
+    @Override
+    public List<IFeed> getIFeeds() {
+        return new ArrayList<IFeed>(iFeedRepo.findAll());
+    }
 
-	@Override
-	public void removeIFeed(Long id) {
-		store.removeIFeed(id);
-	}
-	
-	@Override
-	public void updateIFeed(IFeed iFeed) {
-		store.replaceIFeed(iFeed);
-	}
+    @Override
+    public IFeed getIFeed(Long id) {
+        return iFeedRepo.find(id);
+    }
 
-	public void setStore(FeedStore store) {
-		this.store = store;
-	}
+    @Override
+    @Transactional
+    public void addIFeed(IFeed iFeed) {
+        iFeedRepo.store(iFeed);
+    }
 
-	public FeedStore getStore() {
-		return store;
-	}
+    @Override
+    @Transactional
+    public void removeIFeed(Long id) {
+        iFeedRepo.remove(id);
+
+    }
+
+    @Override
+    @Transactional
+    public void updateIFeed(IFeed iFeed) {
+        iFeedRepo.merge(iFeed);
+    }
+
 }

@@ -15,11 +15,6 @@
 	<context:property-placeholder location="classpath:datasource.properties"
 		ignore-resource-not-found="true" ignore-unresolvable="true" />
 
-	<bean id="iFeedRepo"
-		class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
-		<constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.IFeed" />
-	</bean>
-
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
@@ -77,13 +72,6 @@
 		</property>
 	</bean>
 
-
-	<!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
-	<!--<property name="driverClassName" value="${database.driver}" /> -->
-	<!--<property name="url" value="${database.url}" /> -->
-	<!--<property name="username" value="${database.user}" /> -->
-	<!--<property name="password" value="${database.password}" /> -->
-	<!--</bean> -->
 </beans>
 
 

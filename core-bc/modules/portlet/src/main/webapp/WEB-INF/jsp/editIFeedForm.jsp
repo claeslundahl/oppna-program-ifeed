@@ -11,10 +11,6 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<c:set var="toolbarItem" value="" />
-
-<%@include file="toolbar.jspf"%>
-
 <portlet:actionURL name="editIFeedURL" var="editIFeedURL">
   <portlet:param name="action" value="editIFeed" />
   <portlet:param name="feedId" value="${iFeed.id}" />
@@ -34,9 +30,9 @@
     <aui:fieldset>
       <ul>
         <c:forEach items="${ifeed.filters}" var="filter" varStatus="filtersRow">
-            <li>
-              <liferay-ui:message key="${filter.filter.keyString}" /> är ${filter.filterQuery}
-              <a href=""><img src="${themeDisplay.pathThemeImages}/common/delete.png" />Ta bort</a>
+          <li>
+            <liferay-ui:message key="${filter.filter.keyString}" /> är ${filter.filterQuery}
+            <aui:a href=""><img src="${themeDisplay.pathThemeImages}/common/delete.png" />Ta bort</aui:a>
           </li>
         </c:forEach>
       </ul>
@@ -49,19 +45,18 @@
     <c:forEach items="${filterTypes}" var="filterType" varStatus="filterRow">
       <liferay-ui:panel collapsible="true" defaultState="open" extended="true"
         id="feedConfigurationBlock-${filterRow.index}" persistState="false" title="${filterType.keyString}">
-        <aui:form action="<%= editIFeedURL %>" method="post" name="editFeedConfigurationFm-${filterRow.index}"
-          cssClass="edit-feed-configuration-fm">
+        <aui:form action="<%= addFilter %>" method="post" cssClass="edit-feed-configuration-fm">
           <aui:fieldset>
             <aui:field-wrapper inlineField="true" inlineLabel="false">
-              <aui:select name="filter-select-${filterRow.index}" label="">
+              <aui:select name="filter" label="">
                 <c:forEach items="${filterType.filters}" var="filter">
                   <aui:option label="${filter.keyString}" value="${filter}" />
                 </c:forEach>
               </aui:select>
+              <aui:input name="filterValue" label=""/>
             </aui:field-wrapper>
             <aui:field-wrapper inlineField="true" inlineLabel="false">
-              <a href="${addFilter}"><img src="${themeDisplay.pathThemeImages}/common/add.png" /><liferay-ui:message
-                key="select" /></a>
+                <aui:button type="submit" value="add" />
             </aui:field-wrapper>
           </aui:fieldset>
         </aui:form>

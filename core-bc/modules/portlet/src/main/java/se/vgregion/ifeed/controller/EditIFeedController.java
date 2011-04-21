@@ -23,9 +23,9 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
+import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.types.FilterType;
-import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -59,8 +59,15 @@ public class EditIFeedController {
     }
 
     @ActionMapping(params = "action=addFilter")
+    public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean, ActionResponse response) {
+        iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
+        response.setRenderParameter("feedId", iFeed.getId().toString());
+        response.setRenderParameter("action", "showEditIFeedForm");
+    }
+
+    @ActionMapping(params = "action=removeFilter")
     public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, ActionResponse response) {
-        iFeed.addFilter(new IFeedFilter(Filter.CREATED_FOR_PROJECT, "it-rådet"));
+        //        iFeed.removeFilter(filter);
         response.setRenderParameter("feedId", iFeed.getId().toString());
         response.setRenderParameter("action", "showEditIFeedForm");
     }

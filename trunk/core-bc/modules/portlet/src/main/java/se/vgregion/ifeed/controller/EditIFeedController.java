@@ -9,6 +9,7 @@ import javax.portlet.ActionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
@@ -29,7 +30,7 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 @Controller(value = "editIFeedController")
 @RequestMapping(value = "VIEW")
-@SessionAttributes(value = "ifeed")
+@SessionAttributes(value = {"ifeed", "feedId"})
 public class EditIFeedController {
     @Autowired
     @Qualifier("iFeedService")
@@ -57,15 +58,17 @@ public class EditIFeedController {
     }
 
     @ActionMapping(params = "action=addFilter")
-    public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean, ActionResponse response) {
+    public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean,
+            ActionResponse response) {
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
         response.setRenderParameter("feedId", iFeed.getId().toString());
         response.setRenderParameter("action", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=removeFilter")
-    public void removeFilter(@ModelAttribute("ifeed") IFeed iFeed, ActionResponse response) {
-        //        iFeed.removeFilter(filter);
+    public void removeFilter(ActionResponse response, @ModelAttribute("ifeed") IFeed iFeed,
+            @RequestParam("filter") FilterType.Filter filter, @RequestParam("filterQuery") String filterQuery) {
+        iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
         response.setRenderParameter("feedId", iFeed.getId().toString());
         response.setRenderParameter("action", "showEditIFeedForm");
     }
@@ -75,14 +78,20 @@ public class EditIFeedController {
         iFeedService.updateIFeed(iFeed);
     }
 
+    @ActionMapping(params = "action=cancel")
+    public void cancel(ActionResponse response, SessionStatus sessionStatus) {
+        sessionStatus.setComplete();
+        response.setRenderParameter("action", "showIFeeds");
+    }
+
     @InitBinder("ifeed")
     public void initBinder(WebDataBinder binder) {
-        //
+        //TODO Add validators
     }
 
     @ModelAttribute("ifeed")
-    public IFeed getIFeed(@RequestParam Long feedId) {
-        System.out.println("EditIFeedController.getIFeed(" + feedId + ")");
+    public IFeed getIFeed(@RequestParam(required=false) Long feedId, Model model) {
+        model.addAttribute("feedId", feedId);
         return iFeedService.getIFeed(feedId);
     }
 
@@ -91,7 +100,7 @@ public class EditIFeedController {
         return Collections.unmodifiableList(Arrays.asList(FilterType.values()));
     }
 
-    //    @ExceptionHandler({ Exception.class })
+    // @ExceptionHandler({ Exception.class })
     public String handleException() {
         return "errorPage";
     }

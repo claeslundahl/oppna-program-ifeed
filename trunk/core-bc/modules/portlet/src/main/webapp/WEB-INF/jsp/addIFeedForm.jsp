@@ -64,6 +64,6 @@
 		<portlet:renderURL var="viewIFeedsURL">
 			<portlet:param name="action" value="showIFeeds" />
 		</portlet:renderURL>
-		<aui:button onClick="<%= viewIFeedsURL.toString() %>" type="cancel" />
+		<aui:button onClick="${viewIFeedsURL}" type="cancel" />
 	</aui:button-row>
 </aui:form>

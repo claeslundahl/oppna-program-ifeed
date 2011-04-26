@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.portlet.ActionResponse;
-import javax.portlet.RenderResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +38,7 @@ public class EditIFeedController {
     private Validator iFeedValidator;
 
     @RenderMapping(params = "action=showEditIFeedForm")
-    public String showEditIFeedForm(RenderResponse response, SessionStatus sessionStatus) {
+    public String showEditIFeedForm(@ModelAttribute("iFeed") IFeed iFeed) {
         return "editIFeedForm";
     }
 
@@ -66,7 +64,7 @@ public class EditIFeedController {
     }
 
     @ActionMapping(params = "action=removeFilter")
-    public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, ActionResponse response) {
+    public void removeFilter(@ModelAttribute("ifeed") IFeed iFeed, ActionResponse response) {
         //        iFeed.removeFilter(filter);
         response.setRenderParameter("feedId", iFeed.getId().toString());
         response.setRenderParameter("action", "showEditIFeedForm");
@@ -84,6 +82,7 @@ public class EditIFeedController {
 
     @ModelAttribute("ifeed")
     public IFeed getIFeed(@RequestParam Long feedId) {
+        System.out.println("EditIFeedController.getIFeed(" + feedId + ")");
         return iFeedService.getIFeed(feedId);
     }
 
@@ -92,7 +91,7 @@ public class EditIFeedController {
         return Collections.unmodifiableList(Arrays.asList(FilterType.values()));
     }
 
-    @ExceptionHandler({ Exception.class })
+    //    @ExceptionHandler({ Exception.class })
     public String handleException() {
         return "errorPage";
     }

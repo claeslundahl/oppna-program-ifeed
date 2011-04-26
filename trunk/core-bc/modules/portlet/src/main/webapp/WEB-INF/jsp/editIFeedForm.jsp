@@ -30,9 +30,13 @@
     <aui:fieldset>
       <ul>
         <c:forEach items="${ifeed.filters}" var="filter" varStatus="filtersRow">
+            <portlet:actionURL name="removeFilter" var="removeFilter">
+              <portlet:param name="action" value="removeFilter" />
+              <portlet:param name="feedId" value="${iFeed.id}" />
+            </portlet:actionURL>
           <li>
             <liferay-ui:message key="${filter.filter.keyString}" /> är ${filter.filterQuery}
-            <aui:a href=""><img src="${themeDisplay.pathThemeImages}/common/delete.png" />Ta bort</aui:a>
+            <aui:a href="${removeFilter}"><img src="${themeDisplay.pathThemeImages}/common/delete.png" />Ta bort</aui:a>
           </li>
         </c:forEach>
       </ul>

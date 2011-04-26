@@ -2,8 +2,9 @@ package se.vgregion.ifeed.types;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -16,12 +17,17 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 @Entity
 @Table(name = "vgr_ifeed")
 public class IFeed extends AbstractEntity<Long> implements Serializable {
     private static final long serialVersionUID = -2277251806545192506L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
 
     @Id
     @GeneratedValue
@@ -31,21 +37,25 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
 
     @ElementCollection
     @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
-    private List<IFeedFilter> filters;
+    private Set<IFeedFilter> filters;
 
     private String name;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    private Date timestamp = new Date();
     private String description;
     private Long userId;
 
     public Collection<IFeedFilter> getFilters() {
-        return filters;
+        return Collections.unmodifiableCollection(filters);
     }
 
-    public void addFilter(IFeedFilter filter) {
-        filters.add(filter);
+    public boolean addFilter(IFeedFilter filter) {
+        return filters.add(filter);
+    }
+
+    public void removeFilter(IFeedFilter filter) {
+        filters.remove(filter);
     }
 
     public String getName() {
@@ -54,15 +64,22 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-
     }
 
     public Date getTimestamp() {
-        return timestamp;
+        return new Date(timestamp.getTime());
     }
 
     public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+        if(timestamp == null) {
+            setTimestamp();
+        } else {
+            this.timestamp = new Date(timestamp.getTime());
+        }
+    }
+
+    public void setTimestamp() {
+        this.timestamp = new Date();
     }
 
     public String getDescription() {

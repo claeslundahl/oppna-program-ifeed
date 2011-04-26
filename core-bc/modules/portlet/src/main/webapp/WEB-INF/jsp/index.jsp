@@ -53,14 +53,12 @@
 					<portlet:param name="action" value="showEditIFeedForm" />
 					<portlet:param name="feedId" value="${iFeed.id}" />
 				</portlet:renderURL>
-				<liferay-ui:icon image="edit"
-					url="<%= editIFeedURL.toString() %>" />
+				<liferay-ui:icon image="edit" url="${editIFeedURL}" />
 				<portlet:actionURL name="removeIFeed" var="removeIFeedURL">
 					<portlet:param name="action" value="removeIFeed" />
 					<portlet:param name="feedId" value="${iFeed.id}" />
 				</portlet:actionURL>
-				<liferay-ui:icon image="delete"
-					url="<%=removeIFeedURL.toString() %>" />
+				<liferay-ui:icon image="delete"	url="${removeIFeedURL}" />
 			</liferay-ui:icon-menu>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>

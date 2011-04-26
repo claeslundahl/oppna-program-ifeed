@@ -5,15 +5,13 @@ import se.vgregion.ifeed.types.FilterType.Filter;
 public class FilterFormBean {
     private Filter filter;
     private String filterValue;
-    private String removeLink;
 
     public FilterFormBean() {
     }
 
-    public FilterFormBean(Filter filter, String filterValue, String removeLink) {
+    public FilterFormBean(Filter filter, String filterValue) {
         this.filter = filter;
         this.filterValue = filterValue;
-        this.removeLink = removeLink;
     }
 
     public Filter getFilter() {
@@ -31,13 +29,4 @@ public class FilterFormBean {
     public void setFilterValue(String filterValue) {
         this.filterValue = filterValue;
     }
-
-    public String getRemoveLink() {
-        return removeLink;
-    }
-
-    public void setRemoveLink(String removeLink) {
-        this.removeLink = removeLink;
-    }
-
 }

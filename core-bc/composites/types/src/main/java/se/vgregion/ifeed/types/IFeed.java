@@ -47,6 +47,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
     private Long userId;
 
     public Collection<IFeedFilter> getFilters() {
+        if(filters == null) {
+            return Collections.emptySet();
+        }
         return Collections.unmodifiableCollection(filters);
     }
 

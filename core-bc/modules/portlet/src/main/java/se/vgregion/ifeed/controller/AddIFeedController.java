@@ -5,7 +5,6 @@ import javax.portlet.RenderResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -24,11 +23,11 @@ import se.vgregion.ifeed.types.IFeed;
 @RequestMapping(value = "VIEW")
 @SessionAttributes(types = IFeed.class)
 public class AddIFeedController {
-    @Autowired
-    @Qualifier("iFeedService")
     private IFeedService iFeedService;
 
-    public void setBookService(IFeedService iFeedService) {
+    @Autowired
+    public AddIFeedController(IFeedService iFeedService) {
+        super();
         this.iFeedService = iFeedService;
     }
 
@@ -39,14 +38,12 @@ public class AddIFeedController {
 
     @RenderMapping(params = "action=showAddIFeedForm")
     public String showAddIFeedForm(RenderResponse response) {
-
         return "addIFeedForm";
     }
 
     @InitBinder("ifeed")
     public void initBinder(WebDataBinder binder) {
-        // binder.registerCustomEditor(Long.class, new
-        // LongNumberPropertyEditor());
+        //TODO Add validators
     }
 
     // @ExceptionHandler({ Exception.class })

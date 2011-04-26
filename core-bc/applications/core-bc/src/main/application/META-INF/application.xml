@@ -19,7 +19,7 @@
   </module>
   <module>
     <web>
-      <web-uri>iFeed-core-bc-module-intsvc-1.0-SNAPSHOT.war</web-uri>
+      <web-uri>iFeed-core-bc-module-intsvc.war</web-uri>
       <context-root>/iFeed-core-bc-module-intsvc</context-root>
     </web>
   </module>

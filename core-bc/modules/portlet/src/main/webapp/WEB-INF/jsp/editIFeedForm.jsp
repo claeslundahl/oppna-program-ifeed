@@ -30,7 +30,7 @@
     <p>${ifeed.description}</p>
 
     <aui:button-row>
-      <aui:button type="submit" value="save" />
+      <aui:button onClick="${editIFeedURL}" value="save" />
       <aui:button onClick="${cancel}" type="cancel" />
     </aui:button-row>
 

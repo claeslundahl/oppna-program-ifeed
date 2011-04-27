@@ -23,14 +23,14 @@
 <div class="lfr-portlet-toolbar">
 
 	<portlet:renderURL var="viewAllURL">
-		<portlet:param name="action" value="showIFeeds" />
+		<portlet:param name="view" value="showIFeeds" />
 	</portlet:renderURL>
 	<span class="lfr-toolbar-button view-button <c:if test='${toolbarItem == "view-all"}'>current</c:if>">
 		<a href="<%= viewAllURL %>"><liferay-ui:message key="viewAll" /></a>
 	</span>
 
 	<portlet:renderURL var="addIFeedFormURL">
-		<portlet:param name="action" value="showAddIFeedForm" />
+		<portlet:param name="view" value="showAddIFeedForm" />
 	</portlet:renderURL>
 	<span class="lfr-toolbar-button add-button <c:if test='${toolbarItem == "add"}'>current</c:if>">
 		<a href="<%= addIFeedFormURL %>"><liferay-ui:message key="add" /></a>

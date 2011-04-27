@@ -2,8 +2,6 @@ package se.vgregion.ifeed.controller;
 
 import java.util.List;
 
-import javax.portlet.RenderResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,7 +24,7 @@ public class IFeedController {
     }
 
     @RenderMapping
-    public String showIFeeds(RenderResponse response) {
+    public String showIFeeds() {
         return "index";
     }
 

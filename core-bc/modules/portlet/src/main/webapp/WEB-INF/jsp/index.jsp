@@ -29,12 +29,13 @@
 
 <portlet:defineObjects/>
 
+
 <c:set var="toolbarItem" value="view-all" />
 
 <%@include file="toolbar.jspf" %>
 
 <liferay-ui:search-container 
-	id='<%= renderResponse.getNamespace() + "parentSearchContainer" %>'
+	id='<portlet:namespace/>-parent-search-container'
 	delta="10">
 	<liferay-ui:search-container-results results="${ifeeds}"
 		total="${fn:length(ifeeds)}" />
@@ -50,7 +51,7 @@
 		<liferay-ui:search-container-column-text>
 			<liferay-ui:icon-menu cssClass="">
 				<portlet:renderURL var="editIFeedURL">
-					<portlet:param name="action" value="showEditIFeedForm" />
+					<portlet:param name="view" value="showEditIFeedForm" />
 					<portlet:param name="feedId" value="${iFeed.id}" />
 				</portlet:renderURL>
 				<liferay-ui:icon image="edit" url="${editIFeedURL}" />

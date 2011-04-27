@@ -36,7 +36,7 @@ public class AddIFeedController {
         return new IFeed();
     }
 
-    @RenderMapping(params = "action=showAddIFeedForm")
+    @RenderMapping(params = "view=showAddIFeedForm")
     public String showAddIFeedForm(RenderResponse response) {
         return "addIFeedForm";
     }
@@ -47,19 +47,19 @@ public class AddIFeedController {
     }
 
     // @ExceptionHandler({ Exception.class })
-    // public String handleException() {
-    // return "errorPage";
-    // }
+    public String handleException() {
+        return "errorPage";
+    }
 
     @ActionMapping(params = "action=addIFeed")
     public void addIFeed(@Valid @ModelAttribute(value = "ifeed") IFeed iFeed, BindingResult bindingResult,
             ActionResponse response, SessionStatus sessionStatus) {
         if (!bindingResult.hasErrors()) {
             iFeedService.addIFeed(iFeed);
-            response.setRenderParameter("action", "showIFeeds");
+            response.setRenderParameter("view", "showIFeeds");
             sessionStatus.setComplete();
         } else {
-            response.setRenderParameter("action", "showAddIFeedForm");
+            response.setRenderParameter("view", "showAddIFeedForm");
         }
     }
 }

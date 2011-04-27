@@ -38,8 +38,9 @@ public class EditIFeedController {
     @Autowired
     private Validator iFeedValidator;
 
-    @RenderMapping(params = "action=showEditIFeedForm")
-    public String showEditIFeedForm(@ModelAttribute("iFeed") IFeed iFeed) {
+    @RenderMapping(params = "view=showEditIFeedForm")
+    public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed) {
+        System.out.println(iFeed);
         return "editIFeedForm";
     }
 
@@ -49,11 +50,10 @@ public class EditIFeedController {
         iFeedValidator.validate(iFeed, bindingResult);
         if (!bindingResult.hasErrors()) {
             iFeedService.updateIFeed(iFeed);
-            response.setRenderParameter("action", "showIFeeds");
+            response.setRenderParameter("view", "showIFeeds");
             sessionStatus.setComplete();
         } else {
-            response.setRenderParameter("feedId", iFeed.getId().toString());
-            response.setRenderParameter("action", "showEditIFeedForm");
+            response.setRenderParameter("view", "showEditIFeedForm");
         }
     }
 
@@ -61,16 +61,14 @@ public class EditIFeedController {
     public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean,
             ActionResponse response) {
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
-        response.setRenderParameter("feedId", iFeed.getId().toString());
-        response.setRenderParameter("action", "showEditIFeedForm");
+        response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=removeFilter")
     public void removeFilter(ActionResponse response, @ModelAttribute("ifeed") IFeed iFeed,
             @RequestParam("filter") FilterType.Filter filter, @RequestParam("filterQuery") String filterQuery) {
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
-        response.setRenderParameter("feedId", iFeed.getId().toString());
-        response.setRenderParameter("action", "showEditIFeedForm");
+        response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=saveIFeed")
@@ -81,7 +79,7 @@ public class EditIFeedController {
     @ActionMapping(params = "action=cancel")
     public void cancel(ActionResponse response, SessionStatus sessionStatus) {
         sessionStatus.setComplete();
-        response.setRenderParameter("action", "showIFeeds");
+        response.setRenderParameter("view", "showIFeeds");
     }
 
     @InitBinder("ifeed")

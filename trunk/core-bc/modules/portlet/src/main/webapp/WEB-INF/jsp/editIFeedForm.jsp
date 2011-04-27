@@ -11,16 +11,16 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<portlet:actionURL name="editIFeedURL" var="editIFeedURL">
+<portlet:actionURL name="editIFeed" var="editIFeedURL">
   <portlet:param name="action" value="editIFeed" />
   <portlet:param name="feedId" value="${iFeed.id}" />
 </portlet:actionURL>
 
-<portlet:actionURL name="addFilter" var="addFilter">
+<portlet:actionURL name="addFilter" var="addFilterURL">
   <portlet:param name="action" value="addFilter" />
 </portlet:actionURL>
 
-<portlet:actionURL name="cancel" var="cancel">
+<portlet:actionURL name="cancel" var="cancelURL">
   <portlet:param name="action" value="cancel" />
 </portlet:actionURL>
 
@@ -31,9 +31,8 @@
 
     <aui:button-row>
       <aui:button onClick="${editIFeedURL}" value="save" />
-      <aui:button onClick="${cancel}" type="cancel" />
+      <aui:button onClick="${cancelURL}" type="cancel" />
     </aui:button-row>
-
   </aui:column>
 
   <aui:column columnWidth="33">
@@ -65,7 +64,7 @@
         <c:forEach items="${filterTypes}" var="filterType" varStatus="filterRow">
           <liferay-ui:panel collapsible="true" defaultState="close" extended="true"
             id="feedConfigurationBlock-${filterRow.index}" persistState="false" title="${filterType.keyString}">
-            <aui:form action="<%= addFilter %>" method="post" cssClass="edit-feed-configuration-fm">
+            <aui:form action="${addFilterURL}" method="post" cssClass="edit-feed-configuration-fm">
               <aui:fieldset>
                 <aui:field-wrapper inlineField="true" inlineLabel="false">
                   <aui:select name="filter" label="">

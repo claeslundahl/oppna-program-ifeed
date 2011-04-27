@@ -33,12 +33,12 @@
 
 <%@include file="toolbar.jspf" %>
 
-<portlet:actionURL name="addIFeedURL" var="addIFeedURL">
+<portlet:actionURL name="addIFeed" var="addIFeedURL">
 	<portlet:param name="action" value="addIFeed" />
 	<portlet:param name="feedId" value="${iFeed.id}" />
 </portlet:actionURL>
 
-<aui:form action="<%= addIFeedURL %>" method="post"
+<aui:form action="${addIFeedURL}" method="post"
 	name="editFeedConfigurationFm" cssClass="edit-feed-configuration-fm">
 	<aui:fieldset>
 		<h1>Edit iFeed Configuration</h1>
@@ -62,7 +62,7 @@
 	<aui:button-row>
 		<aui:button type="submit" value="save" />
 		<portlet:renderURL var="viewIFeedsURL">
-			<portlet:param name="action" value="showIFeeds" />
+			<portlet:param name="view" value="showIFeeds" />
 		</portlet:renderURL>
 		<aui:button onClick="${viewIFeedsURL}" type="cancel" />
 	</aui:button-row>

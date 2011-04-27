@@ -42,6 +42,7 @@ public class IFeedServiceImpl implements IFeedService {
     @Override
     @Transactional
     public void updateIFeed(IFeed iFeed) {
+        System.out.println(iFeed);
         iFeedRepo.merge(iFeed);
     }
 

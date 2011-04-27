@@ -18,7 +18,7 @@ public class RemoveIFeedController {
         this.iFeedService = iFeedService;
     }
 
-    @ActionMapping(params = "action=removeIFeed")
+    @ActionMapping(params = "view=removeIFeed")
     public void removeBook(@RequestParam Long feedId) {
         iFeedService.removeIFeed(feedId);
     }

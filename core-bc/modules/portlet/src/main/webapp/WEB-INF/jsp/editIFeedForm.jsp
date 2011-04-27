@@ -41,7 +41,7 @@
         <c:forEach items="${ifeed.filters}" var="iFeedFilter" varStatus="filtersRow">
           <portlet:actionURL name="removeFilter" var="removeFilter">
             <portlet:param name="action" value="removeFilter" />
-            <portlet:param name="feedId" value="${iFeed.id}" />
+            <portlet:param name="feedId" value="${ifeed.id}" />
             <portlet:param name="filter" value="${iFeedFilter.filter}" />
             <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
           </portlet:actionURL>
@@ -56,7 +56,18 @@
 
 <aui:layout>
   <aui:column columnWidth="66">
-  Preview pane  
+    <liferay-ui:search-container id='<portlet:namespace/>-parent-search-container' delta="10">
+      <liferay-ui:search-container-results results="${ifeed.filters}" total="${fn:length(ifeed.filters)}" />
+
+      <liferay-ui:search-container-row className="se.vgregion.ifeed.types.IFeedFilter" modelVar="iFeedFilter">
+
+        <liferay-ui:search-container-column-text name="Filter" property="filter" />
+        <liferay-ui:search-container-column-text name="Query" property="filterQuery" />
+
+      </liferay-ui:search-container-row>
+      <liferay-ui:search-iterator />
+    </liferay-ui:search-container>
+
   </aui:column>
   <aui:column columnWidth="33">
     <liferay-ui:panel-container extended="true" id="feedConfiguration" persistState="false" accordion="false">

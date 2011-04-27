@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.types;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -48,9 +49,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
 
     public Collection<IFeedFilter> getFilters() {
         if(filters == null) {
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableCollection(filters);
+        return Collections.unmodifiableList(new ArrayList<IFeedFilter>(filters));
     }
 
     public boolean addFilter(IFeedFilter filter) {

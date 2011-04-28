@@ -45,9 +45,9 @@
             <portlet:param name="filter" value="${iFeedFilter.filter}" />
             <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
           </portlet:actionURL>
-          <li><liferay-ui:message key="${iFeedFilter.filter.keyString}" /> är ${iFeedFilter.filterQuery} <aui:a
+          <li><liferay-ui:message key="${iFeedFilter.filter.keyString}" /> : ${iFeedFilter.filterQuery} <aui:a
             href="${removeFilter}">
-            <img src="${themeDisplay.pathThemeImages}/common/delete.png" />Ta bort</aui:a></li>
+            <img src="${themeDisplay.pathThemeImages}/common/delete.png" /><liferay-ui:message key="remove" /></aui:a></li>
         </c:forEach>
       </ul>
     </aui:fieldset>

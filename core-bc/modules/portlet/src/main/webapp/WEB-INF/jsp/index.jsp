@@ -29,7 +29,6 @@
 
 <portlet:defineObjects/>
 
-
 <c:set var="toolbarItem" value="view-all" />
 
 <%@include file="toolbar.jspf" %>

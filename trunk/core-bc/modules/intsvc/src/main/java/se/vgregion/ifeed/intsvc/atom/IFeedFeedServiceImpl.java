@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -45,7 +46,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         // f.setUpdated(value);
         // f.setGenerator(iri, version, value);
 
-        solrQuery.setQuery("").setRows(20);
+        //solrQuery.setQuery("").setRows(20);
 
         // Retrieve feed from store
         IFeed retrievedFeed = iFeedService.getIFeed(id);
@@ -60,13 +61,13 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         f.setUpdated(retrievedFeed.getTimestamp());
 
         // Populate the query with the feed's filters
-        solrQuery.setFilterQueries(retrievedFeed.getFilters().toArray(new String[0]));
+        // solrQuery.setFilterQueries(retrievedFeed.getFilters().toArray(new String[0]));
 
         // Perform query
-        ArrayList<Map<String, Object>> hits = solrQuery.doFilterQuery();
-
+        // List<Map<String, Object>> hits = solrQuery.doFilterQuery();
+        
         // Populate the feed with search results
-        populateFeed(f, hits);
+        populateFeed(f, solrQuery.getIFeedResults(retrievedFeed));
 
         return f;
     }
@@ -104,11 +105,11 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return solrQuery;
     }
 
-    public IFeedService getIFeedService() {
+    public IFeedService getFeedService() {
         return iFeedService;
     }
 
-    public void setIFeedService(IFeedService iFeedService) {
+    public void setFeedService(IFeedService iFeedService) {
         this.iFeedService = iFeedService;
     }
 
@@ -137,18 +138,18 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
         map.remove("body");
 
-        for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
-            String k = mapEntry.getKey();
-            // TODO Should handle the collection properly rather than just doing toString
-            String v = mapEntry.getValue().toString();
-            QName extensionQName = new QName("tag:vgregion.se,2006:/namespaces", k, "vgr");
-            Element element = e.addExtension(extensionQName);
-            element.setText(v);
-        }
+//        for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
+//            String k = mapEntry.getKey();
+//            // TODO Should handle the collection properly rather than just doing toString
+//            String v = mapEntry.getValue().toString();
+//            QName extensionQName = new QName("tag:vgregion.se,2006:/namespaces", k, "vgr");
+//            Element element = e.addExtension(extensionQName);
+//            element.setText(v);
+//        }
         return e;
     }
 
-    private Feed populateFeed(Feed f, ArrayList<Map<String, Object>> hits) {
+    private Feed populateFeed(Feed f, List<Map<String, Object>> hits) {
         for (Map<String, Object> map : hits) {
             Entry e = f.addEntry();
             populateEntry(e, map);

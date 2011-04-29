@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import org.apache.abdera.model.Feed;
 
+import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 
 
@@ -22,8 +23,10 @@ public interface IFeedFeedService {
 		@Path("/entry/{id}")
 		public abstract Entry getIFeedEntry(@PathParam("id") Long id);
 	 */
-	public abstract void setSolrQuery(IFeedSolrQuery solrQuery);
-
-	public abstract IFeedSolrQuery getSolrQuery();
+	void setSolrQuery(IFeedSolrQuery solrQuery);
+	IFeedSolrQuery getSolrQuery();
+	
+	void setFeedService(IFeedService feedService);
+	IFeedService getFeedService();
 
 }

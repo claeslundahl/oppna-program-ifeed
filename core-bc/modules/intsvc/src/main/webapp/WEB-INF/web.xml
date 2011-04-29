@@ -25,8 +25,7 @@
 	version="2.4">
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:services-config.xml
-		classpath*:ifeed-jpa.xml</param-value>
+		<param-value>/WEB-INF/services-config.xml</param-value>
 	</context-param>
 
 	<listener>

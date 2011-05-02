@@ -37,6 +37,10 @@
 
   <aui:column columnWidth="33">
     <aui:fieldset label="active-filters">
+<liferay-ui:table-iterator rowLength="100" listType="se.vgregion.ifeed.types.IFeedFilter" list="${ifeed.filters}" >
+<h1>dfsefdf</h1>
+</liferay-ui:table-iterator>
+
       <ul>
         <c:forEach items="${ifeed.filters}" var="iFeedFilter" varStatus="filtersRow">
           <portlet:actionURL name="removeFilter" var="removeFilter">

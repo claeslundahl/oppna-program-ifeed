@@ -14,8 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.slf4j.Logger;
@@ -42,7 +40,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
 
     private String name;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //    @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp = new Date();
     private String description;
     private Long userId;

@@ -24,17 +24,6 @@
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
-		<plugins>
-			<plugin>
-				<!-- Configure eclipse plug-in to generate a context root that does not 
-					have the version number on it -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<wtpContextName>${project.artifactId}</wtpContextName>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 	<dependencies>
@@ -50,11 +39,6 @@
 		<dependency>
 			<groupId>com.sun.portal</groupId>
 			<artifactId>portlet-container</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>se.vgregion.javg</groupId>
-			<artifactId>javg-rt-support</artifactId>
-			<version>${javg.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>taglibs</groupId>
@@ -121,12 +105,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>se.vgregion.daoframework</groupId>
-			<artifactId>dao-framework-jpa-spring</artifactId>
-			<version>3.5-SNAPSHOT</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>

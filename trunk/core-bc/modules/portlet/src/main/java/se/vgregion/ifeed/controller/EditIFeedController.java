@@ -3,6 +3,7 @@ package se.vgregion.ifeed.controller;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionResponse;
 
@@ -24,6 +25,7 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.service.IFeedService;
+import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
@@ -35,6 +37,9 @@ public class EditIFeedController {
     @Autowired
     @Qualifier("iFeedService")
     private IFeedService iFeedService;
+    @Autowired
+    @Qualifier("iFeedSolrQuery")
+    private IFeedSolrQuery iFeedSolrQuery;
     @Autowired
     private Validator iFeedValidator;
 
@@ -90,7 +95,10 @@ public class EditIFeedController {
     @ModelAttribute("ifeed")
     public IFeed getIFeed(@RequestParam(required=false) Long feedId, Model model) {
         model.addAttribute("feedId", feedId);
-        return iFeedService.getIFeed(feedId);
+        IFeed feed = iFeedService.getIFeed(feedId);
+        List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(feed);
+        model.addAttribute("hits", hits);
+        return feed;
     }
 
     @ModelAttribute("filterTypes")

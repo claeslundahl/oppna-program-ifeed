@@ -1,9 +1,5 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +9,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
-import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.springframework.transaction.annotation.Transactional;
 
 import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
@@ -39,6 +34,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=feed" })
     @Path("/feed/{id}")
+    @Transactional
     public Feed getIFeed(@PathParam("id") Long id) {
         Feed f = Abdera.getInstance().newFeed();
 
@@ -65,7 +61,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
         // Perform query
         // List<Map<String, Object>> hits = solrQuery.doFilterQuery();
-        
+
         // Populate the feed with search results
         populateFeed(f, solrQuery.getIFeedResults(retrievedFeed));
 
@@ -114,14 +110,14 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     }
 
     private Entry populateEntry(Entry e, Map<String, Object> map) {
-        DateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss zzzz yyyy");
-        try {
-            e.setUpdated(df.parse(map.get("revisiondate").toString()));
-        } catch (ParseException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        map.remove("revisiondate");
+        //        DateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss zzzz yyyy");
+        //        try {
+        //            e.setUpdated(df.parse(map.get("revisiondate").toString()));
+        //        } catch (ParseException e1) {
+        //            // TODO Auto-generated catch block
+        //            e1.printStackTrace();
+        //        }
+        //        map.remove("revisiondate");
 
         if (map.get("author") != null) {
             e.addAuthor(map.get("author").toString());
@@ -136,16 +132,16 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         e.setId(url);
         map.remove("url");
 
-        map.remove("body");
+        //        map.remove("body");
 
-//        for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
-//            String k = mapEntry.getKey();
-//            // TODO Should handle the collection properly rather than just doing toString
-//            String v = mapEntry.getValue().toString();
-//            QName extensionQName = new QName("tag:vgregion.se,2006:/namespaces", k, "vgr");
-//            Element element = e.addExtension(extensionQName);
-//            element.setText(v);
-//        }
+        //        for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
+        //            String k = mapEntry.getKey();
+        //            // TODO Should handle the collection properly rather than just doing toString
+        //            String v = mapEntry.getValue().toString();
+        //            QName extensionQName = new QName("tag:vgregion.se,2006:/namespaces", k, "vgr");
+        //            Element element = e.addExtension(extensionQName);
+        //            element.setText(v);
+        //        }
         return e;
     }
 

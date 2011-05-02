@@ -57,7 +57,6 @@
 			<artifactId>spring-web</artifactId>
 		</dependency>
 		<dependency>
-			<!-- required by the Spring-JS resource-loading servlet -->
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>

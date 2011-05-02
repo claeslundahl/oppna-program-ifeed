@@ -36,4 +36,8 @@
     <property name="contentType" value="text/html;charset=UTF-8" />
   </bean>
 
+  <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="interceptors" ref="openEntityInView" />
+  </bean>
+
 </beans>

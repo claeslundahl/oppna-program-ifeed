@@ -27,7 +27,7 @@
         <entry key="hibernate.format_sql" value="${hibernate.database.showsql}" />
       </map>
     </property>
-   </bean>
+  </bean>
 
   <bean id="jpaVendor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
     <property name="database" value="${hibernate.vendor.database}" />
@@ -36,7 +36,6 @@
     <property name="showSql" value="${hibernate.database.showsql}" />
   </bean>
 
-  
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
     <property name="driverClassName" value="org.postgresql.Driver" />
     <property name="url" value="jdbc:postgresql:lportalee6sp1" />
@@ -44,15 +43,8 @@
     <property name="password" value="liferay" />
   </bean>
 
-
-  <!-- <bean id="openEntityInView" -->
-  <!-- class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor"> -->
-  <!-- <property name="entityManagerFactory" ref="entityManagerFactory" /> -->
-  <!-- </bean> -->
-
-  <!-- <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping"> -->
-  <!-- <property name="interceptors" ref="openEntityInView" /> -->
-  <!-- </bean> -->
+  <bean id="openEntityInView" class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
+    <property name="entityManagerFactory" ref="entityManagerFactory" />
+  </bean>
 
 </beans>
-

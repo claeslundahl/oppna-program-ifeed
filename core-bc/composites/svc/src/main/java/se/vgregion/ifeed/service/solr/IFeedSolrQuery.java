@@ -2,6 +2,8 @@ package se.vgregion.ifeed.service.solr;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrQuery;
@@ -9,6 +11,10 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+
+import se.vgregion.ifeed.types.FilterType;
+import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 
 public class IFeedSolrQuery extends SolrQuery {
@@ -51,5 +57,20 @@ public class IFeedSolrQuery extends SolrQuery {
 			e.printStackTrace();
 		}
 		return hits;
+	}
+	
+	public List<Map<String, Object>> getIFeedResults(IFeed iFeed) {
+		setQuery("*:test");
+		String[] solrFilters = new String[iFeed.getFilters().size()];
+		
+		int index = 0; 
+		for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
+			solrFilters[index++] = iFeedFilter.getFilter().getFilterField() + ":" + iFeedFilter.getFilterQuery();
+		}
+		// Populate the query with the feed's filters
+        //setFilterQueries(solrFilters);
+
+        // Perform query
+        return doFilterQuery();
 	}
 }

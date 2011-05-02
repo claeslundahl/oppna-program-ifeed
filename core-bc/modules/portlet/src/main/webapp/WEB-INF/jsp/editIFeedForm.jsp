@@ -77,10 +77,9 @@ div.aui-button-holder {
 <aui:layout>
   <aui:column columnWidth="66">
     <liferay-ui:search-container id='<portlet:namespace/>-parent-search-container' delta="10">
-      <liferay-ui:search-container-results results="${ifeed.filters}" total="${fn:length(ifeed.filters)}" />
-      <liferay-ui:search-container-row className="se.vgregion.ifeed.types.IFeedFilter" modelVar="iFeedFilter">
-        <liferay-ui:search-container-column-text name="Filter" property="filter" />
-        <liferay-ui:search-container-column-text name="Query" property="filterQuery" />
+      <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
+      <liferay-ui:search-container-row className="java.util.Map" modelVar="hit" stringKey="true">
+        <liferay-ui:search-container-column-text name="Title" property="title" />
       </liferay-ui:search-container-row>
       <liferay-ui:search-iterator />
     </liferay-ui:search-container>

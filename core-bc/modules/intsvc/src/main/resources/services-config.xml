@@ -39,6 +39,11 @@
   <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
     <property name="formattedOutput" value="true" />
   </bean>
+  
+  <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="interceptors" ref="openEntityInView" />
+  </bean>
+  
   <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.AtomEntryProvider" />
 
 </beans>

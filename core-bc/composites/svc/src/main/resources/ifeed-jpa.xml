@@ -21,57 +21,38 @@
 
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceUnitManager" ref="pum" />
 		<property name="dataSource" ref="dataSource" />
+		<property name="persistenceXmlLocation" value="classpath*:META-INF/ifeed-persistence.xml" />
 		<property name="jpaVendorAdapter" ref="jpaVendor" />
-		<property name="jpaProperties">
+		<property name="jpaPropertyMap">
 			<props>
-				<prop key="hibernate.hbm2dll.auto">${hibernate.hbm2dll.auto}</prop>
-				<prop key="hibernate.show_sql">${hibernate.database.showsql}</prop>
 				<prop key="hibernate.format_sql">${hibernate.database.showsql}</prop>
 			</props>
 		</property>
 	</bean>
 
-	<bean id="jpaVendor"
-		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-		<property name="generateDdl" value="${hibernate.vendor.generateDdl}" />
-		<property name="databasePlatform" value="${hibernate.vendor.databasePlatform}" />
+	<bean id="jpaVendor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 		<property name="database" value="${hibernate.vendor.database}" />
+		<property name="databasePlatform" value="${hibernate.vendor.databaseDialect}" />
+		<property name="generateDdl" value="${hibernate.vendor.generateDdl}" />
+		<property name="showSql" value="${hibernate.database.showsql}" />
 	</bean>
 
-	<bean id="pum"
-		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
-		<property name="persistenceXmlLocations">
-			<list>
-				<value>classpath*:META-INF/*-persistence.xml</value>
-			</list>
-		</property>
-		<property name="persistenceUnitPostProcessors">
-			<bean
-				class="se.vgregion.dao.infrastructure.persistence.jpa.MergingPersistenceUnitPostProcessor" />
-		</property>
-		<property name="defaultDataSource" ref="dataSource" />
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://localhost:5433/ifeed" />
+		<property name="username" value="liferay" />
+		<property name="password" value="liferay" />
 	</bean>
 
-	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:comp/env/jdbc/PortalDbPool" />
-	</bean>
+<!-- 	<bean id="openEntityInView" -->
+<!-- 		class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor"> -->
+<!-- 		<property name="entityManagerFactory" ref="entityManagerFactory" /> -->
+<!-- 	</bean> -->
 	
-	<bean
-		class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-		<property name="interceptors">
-			<ref local="openEntityInView" />
-		</property>
-	</bean>
-
-	<bean id="openEntityInView"
-		class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
-		<property name="entityManagerFactory">
-			<ref local="entityManagerFactory" />
-		</property>
-	</bean>
+<!-- 	<bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping"> -->
+<!-- 		<property name="interceptors" ref="openEntityInView" /> -->
+<!-- 	</bean> -->
 
 </beans>
-
 

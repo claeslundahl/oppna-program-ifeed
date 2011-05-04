@@ -12,15 +12,9 @@
         http://www.springframework.org/schema/util/spring-util-3.0.xsd
         ">
 
-  <context:component-scan base-package="se.vgregion.ifeed.controller" />
-
-  <bean id="iFeedValidator" class="se.vgregion.ifeed.controller.IFeedValidator" />
-
-  <import resource="classpath*:ifeed-jpa.xml" />
-  <import resource="classpath*:services-config.xml" />
-
+  <import resource="applicationContext.xml" />
+  
   <mvc:resources mapping="/resources/**" location="classpath:/resources/" />
-
 
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="basename" value="classpath:i18n/ifeed-messages" />
@@ -28,16 +22,11 @@
     <property name="defaultEncoding" value="UTF-8" />
   </bean>
 
-
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
     <property name="prefix" value="/WEB-INF/jsp/" />
     <property name="suffix" value=".jsp" />
     <property name="contentType" value="text/html;charset=UTF-8" />
-  </bean>
-
-  <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-    <property name="interceptors" ref="openEntityInView" />
   </bean>
 
 </beans>

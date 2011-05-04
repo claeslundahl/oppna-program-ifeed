@@ -25,12 +25,16 @@
 	version="2.4">
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:services-config.xml</param-value>
+		<param-value>classpath*:spring/ifeed-*.xml</param-value>
 	</context-param>
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+  
+<!--     <listener> -->
+<!--         <listener-class>se.vgregion.spring.bootstrap.MyContextLoaderListener</listener-class> -->
+<!--     </listener> -->
 
 	<servlet>
 		<servlet-name>CXFServlet</servlet-name>

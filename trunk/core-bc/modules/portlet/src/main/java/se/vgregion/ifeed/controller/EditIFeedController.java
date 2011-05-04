@@ -32,7 +32,7 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 @Controller(value = "editIFeedController")
 @RequestMapping(value = "VIEW")
-@SessionAttributes(value = {"ifeed", "feedId"})
+@SessionAttributes(value = {"ifeed", "feedId", "hits"})
 public class EditIFeedController {
     @Autowired
     @Qualifier("iFeedService")
@@ -64,15 +64,21 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=addFilter")
     public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean,
-            ActionResponse response) {
+            ActionResponse response, Model model) {
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
+        List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(iFeed);
+        model.addAttribute("hits", hits);
+
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=removeFilter")
     public void removeFilter(ActionResponse response, @ModelAttribute("ifeed") IFeed iFeed,
-            @RequestParam("filter") FilterType.Filter filter, @RequestParam("filterQuery") String filterQuery) {
+            @RequestParam("filter") FilterType.Filter filter, @RequestParam("filterQuery") String filterQuery, Model model) {
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
+        List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(iFeed);
+        model.addAttribute("hits", hits);
+
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 

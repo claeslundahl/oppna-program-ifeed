@@ -36,13 +36,8 @@
     <property name="showSql" value="${hibernate.database.showsql}" />
   </bean>
 
-  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-    <property name="driverClassName" value="org.postgresql.Driver" />
-    <property name="url" value="jdbc:postgresql:lportalee6sp1" />
-    <property name="username" value="liferay" />
-    <property name="password" value="liferay" />
-  </bean>
-
+  <bean id="dataSource" abstract="true" />
+  
   <bean id="openEntityInView" class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
     <property name="entityManagerFactory" ref="entityManagerFactory" />
   </bean>

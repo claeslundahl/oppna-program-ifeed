@@ -31,10 +31,7 @@
     </jaxrs:providers>
   </jaxrs:server>
 
-  <bean id="iFeedFeedService" class="se.vgregion.ifeed.intsvc.atom.IFeedFeedServiceImpl">
-    <property name="feedService" ref="iFeedService" />
-    <property name="solrQuery" ref="iFeedSolrQuery" />
-  </bean>
+  <bean id="iFeedFeedService" class="se.vgregion.ifeed.intsvc.atom.IFeedFeedServiceImpl" />
 
   <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
     <property name="formattedOutput" value="true" />
@@ -45,5 +42,17 @@
   </bean>
   
   <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.AtomEntryProvider" />
+
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="org.postgresql.Driver" />
+    <property name="url" value="jdbc:postgresql:lportalee6sp1" />
+    <property name="username" value="liferay" />
+    <property name="password" value="liferay" />
+  </bean>
+
+<!--   <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!--     <property name="jndiName" value="java:comp/env/jdbc/PortalDbPool" /> -->
+<!--   </bean> -->
+
 
 </beans>

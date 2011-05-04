@@ -9,21 +9,32 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
-@Path("ifeed")
+@Path("ifeeds")
 public class IFeedFeedServiceImpl implements IFeedFeedService {
 
-    private IFeedSolrQuery solrQuery;
     private IFeedService iFeedService;
+    private IFeedSolrQuery solrQuery;
+
+    @Autowired
+    public IFeedFeedServiceImpl(IFeedSolrQuery solrQuery, IFeedService iFeedService) {
+        super();
+        this.solrQuery = solrQuery;
+        this.iFeedService = iFeedService;
+    }
 
     /*
      * (non-Javadoc)
@@ -33,7 +44,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     @Override
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=feed" })
-    @Path("/feed/{id}")
+    @Path("/{id}/feed")
     @Transactional
     public Feed getIFeed(@PathParam("id") Long id) {
         Feed f = Abdera.getInstance().newFeed();
@@ -42,7 +53,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         // f.setUpdated(value);
         // f.setGenerator(iri, version, value);
 
-        //solrQuery.setQuery("").setRows(20);
+        // solrQuery.setQuery("").setRows(20);
 
         // Retrieve feed from store
         IFeed retrievedFeed = iFeedService.getIFeed(id);
@@ -56,68 +67,46 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         f.setTitleAsXhtml(retrievedFeed.getName());
         f.setUpdated(retrievedFeed.getTimestamp());
 
-        // Populate the query with the feed's filters
-        // solrQuery.setFilterQueries(retrievedFeed.getFilters().toArray(new String[0]));
-
-        // Perform query
-        // List<Map<String, Object>> hits = solrQuery.doFilterQuery();
-
         // Populate the feed with search results
         populateFeed(f, solrQuery.getIFeedResults(retrievedFeed));
 
         return f;
     }
 
-    /*
-     * @GET
-     * 
-     * @Produces({ "application/xml", "application/atom+xml;type=entry" })
-     * 
-     * @Path("/entry/{id}") public Entry getIFeedEntry(@PathParam("id") Long id) { Entry e =
-     * Abdera.getInstance().newEntry();
-     * 
-     * // Populate the entry with some data
-     * 
-     * return e; }
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * se.vgregion.ifeed.intsvc.atom.IFeedFeedService#setSolrQuery(se.vgregion.ifeed.service.solr.IFeedSolrQuery)
-     */
-    @Override
-    public void setSolrQuery(IFeedSolrQuery solrQuery) {
-        this.solrQuery = solrQuery;
-    }
+    @GET
+    @Produces({ "application/xml", "application/atom+xml;type=entry" })
+    @Path("/{id}")
+    @Transactional
+    public Entry getIFeedEntry(@PathParam("id") Long id) {
+        Entry e = Abdera.getInstance().newEntry();
+        IFeed retrievedFeed = iFeedService.getIFeed(id);
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getSolrQuery()
-     */
-    @Override
-    public IFeedSolrQuery getSolrQuery() {
-        return solrQuery;
-    }
+        if (retrievedFeed == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            // TODO create a html view of the error to enhance the browser experience
+        }
 
-    public IFeedService getFeedService() {
-        return iFeedService;
-    }
+        e.setTitleAsXhtml(retrievedFeed.getName());
+        e.setUpdated(retrievedFeed.getTimestamp());
 
-    public void setFeedService(IFeedService iFeedService) {
-        this.iFeedService = iFeedService;
+        for (IFeedFilter iFeedFilter : retrievedFeed.getFilters()) {
+            Element element = e.addExtension(new QName("http://dublincore.org/documents/dcmi-namespace/", iFeedFilter.getFilter()
+                    .getFilterField(), "dc"));
+            element.setText(iFeedFilter.getFilterQuery());
+        }
+
+        return e;
     }
 
     private Entry populateEntry(Entry e, Map<String, Object> map) {
-        //        DateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss zzzz yyyy");
-        //        try {
-        //            e.setUpdated(df.parse(map.get("revisiondate").toString()));
-        //        } catch (ParseException e1) {
-        //            // TODO Auto-generated catch block
-        //            e1.printStackTrace();
-        //        }
-        //        map.remove("revisiondate");
+        // DateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss zzzz yyyy");
+        // try {
+        // e.setUpdated(df.parse(map.get("revisiondate").toString()));
+        // } catch (ParseException e1) {
+        // // TODO Auto-generated catch block
+        // e1.printStackTrace();
+        // }
+        // map.remove("revisiondate");
 
         if (map.get("author") != null) {
             e.addAuthor(map.get("author").toString());
@@ -132,16 +121,16 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         e.setId(url);
         map.remove("url");
 
-        //        map.remove("body");
+        // map.remove("body");
 
-        //        for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
-        //            String k = mapEntry.getKey();
-        //            // TODO Should handle the collection properly rather than just doing toString
-        //            String v = mapEntry.getValue().toString();
-        //            QName extensionQName = new QName("tag:vgregion.se,2006:/namespaces", k, "vgr");
-        //            Element element = e.addExtension(extensionQName);
-        //            element.setText(v);
-        //        }
+        // for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
+        // String k = mapEntry.getKey();
+        // // TODO Should handle the collection properly rather than just doing toString
+        // String v = mapEntry.getValue().toString();
+        // QName extensionQName = new QName("tag:vgregion.se,2006:/namespaces", k, "vgr");
+        // Element element = e.addExtension(extensionQName);
+        // element.setText(v);
+        // }
         return e;
     }
 

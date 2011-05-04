@@ -62,9 +62,11 @@ public enum FilterType {
         PUBLISHING_DATE("DC:date.issued"),
         PUBLIC_ACCESSIBILITY("DC:rights.accessrights"),
         SAVED_BY("DC:contributor.savedby"),
-        CREATED_BY_FIX("DC:creator"),
+        CREATED_BY_FIX("author"),
+        //        CREATED_BY_FIX("DC:creator"),
         CREATED_BY_FREE("DC:creator.freetext"),
-        TITLE("DC:title"),
+        TITLE("title"),
+        //        TITLE("DC:title"),
         ALT_TITLE("DC:title.alternative"),
         KEYWORDS("DC:subject.keywords"),
         AUTHORS_KEYWORDS("DC:subject.authorkeywords"),
@@ -73,15 +75,15 @@ public enum FilterType {
         FILE_EXTENSION("DC:format.extension"),
         DOCUMENT_STATUS("HC:status.document");
 
-        private String filterField;
+        private String metadataField;
         private String keyString;
 
         Filter(String filterField) {
-            this.filterField = filterField;
+            this.metadataField = filterField;
         }
 
         public String getFilterField() {
-            return filterField;
+            return metadataField;
         }
 
         public String getKeyString() {

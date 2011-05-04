@@ -42,8 +42,9 @@ div.aui-button-holder {
         <p>${ifeed.description}</p>
       </aui:column>
       <aui:column columnWidth="40">
-      <div>Senast ändrad: <fmt:formatDate value="${ifeed.timestamp }" timeStyle="short" dateStyle="long" type="both"/></div>
+      <div>Id: ${ifeed.id}</div>
       <div>Ägare: ${ifeed.userId}</div>
+      <div>Senast ändrad: <fmt:formatDate value="${ifeed.timestamp }" timeStyle="short" dateStyle="long" type="both"/></div>
       </aui:column>
       <aui:button-row>
         <aui:button onClick="alert('Not yet implemented')" value="edit" />

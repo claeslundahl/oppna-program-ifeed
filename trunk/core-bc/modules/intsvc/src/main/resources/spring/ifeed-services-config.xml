@@ -19,7 +19,6 @@
   <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
-  <import resource="classpath:ifeed-jpa.xml" />
   <jaxrs:server id="iFeedIntService" address="/">
     <jaxrs:serviceBeans>
       <ref bean="iFeedFeedService" />
@@ -32,8 +31,8 @@
   </jaxrs:server>
 
   <bean id="iFeedFeedService" class="se.vgregion.ifeed.intsvc.atom.IFeedFeedServiceImpl" />
-
-  <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
+  
+    <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
     <property name="formattedOutput" value="true" />
   </bean>
   
@@ -42,17 +41,5 @@
   </bean>
   
   <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.AtomEntryProvider" />
-
-  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-    <property name="driverClassName" value="org.postgresql.Driver" />
-    <property name="url" value="jdbc:postgresql:lportalee6sp1" />
-    <property name="username" value="liferay" />
-    <property name="password" value="liferay" />
-  </bean>
-
-<!--   <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
-<!--     <property name="jndiName" value="java:comp/env/jdbc/PortalDbPool" /> -->
-<!--   </bean> -->
-
 
 </beans>

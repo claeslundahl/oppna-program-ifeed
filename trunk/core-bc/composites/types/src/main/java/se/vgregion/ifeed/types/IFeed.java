@@ -45,7 +45,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp = new Date();
     private String description;
-    private Long userId;
+    private String userId;
 
     public Collection<IFeedFilter> getFilters() {
         if(filters == null) {
@@ -82,6 +82,14 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
         }
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public void setTimestamp() {
         this.timestamp = new Date();
     }
@@ -100,14 +108,6 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
 
     public Long getId() {
         return id;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getUserId() {
-        return userId;
     }
 
     public void setVersion(Long version) {

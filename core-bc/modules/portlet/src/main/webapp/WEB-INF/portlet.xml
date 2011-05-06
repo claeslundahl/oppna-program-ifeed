@@ -53,4 +53,10 @@
 			<role-name>user</role-name>
 		</security-role-ref>
 	</portlet>
+  
+    <!-- Used to get remote user. See more info in JSR-286 Section 21.1. -->
+  <user-attribute>
+    <description>User Login Id</description>
+    <name>user.login.id</name>
+  </user-attribute>
 </portlet-app>

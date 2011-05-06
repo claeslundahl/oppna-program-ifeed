@@ -1,6 +1,10 @@
 package se.vgregion.ifeed.controller;
 
+import java.util.Map;
+
+import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletRequest;
 import javax.portlet.RenderResponse;
 import javax.validation.Valid;
 
@@ -53,8 +57,9 @@ public class AddIFeedController {
 
     @ActionMapping(params = "action=addIFeed")
     public void addIFeed(@Valid @ModelAttribute(value = "ifeed") IFeed iFeed, BindingResult bindingResult,
-            ActionResponse response, SessionStatus sessionStatus) {
+            ActionRequest request, ActionResponse response, SessionStatus sessionStatus) {
         if (!bindingResult.hasErrors()) {
+            iFeed.setUserId(getRemoteUserId(request));
             iFeedService.addIFeed(iFeed);
             response.setRenderParameter("view", "showIFeeds");
             sessionStatus.setComplete();
@@ -62,4 +67,16 @@ public class AddIFeedController {
             response.setRenderParameter("view", "showAddIFeedForm");
         }
     }
+
+    private String getRemoteUserId(PortletRequest request) {
+        @SuppressWarnings("unchecked")
+        Map<String, ?> userInfo = (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
+        String userId = "";
+        if (userInfo != null) {
+            userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
+        }
+        System.out.println("userId: " + userId);
+        return userId;
+    }
+
 }

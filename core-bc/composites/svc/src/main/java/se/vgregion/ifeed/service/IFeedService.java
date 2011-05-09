@@ -6,6 +6,8 @@ import se.vgregion.ifeed.types.IFeed;
 
 public interface IFeedService {
 	public List<IFeed> getIFeeds();
+	
+	public List<IFeed> getUserIFeeds(String userId);
 
 	public IFeed getIFeed(Long id);
 	

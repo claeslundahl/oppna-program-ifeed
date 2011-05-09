@@ -22,8 +22,15 @@
 
 <div class="lfr-portlet-toolbar">
 
+    <portlet:renderURL var="viewOwnedURL">
+		<portlet:param name="view" value="viewUserIFeeds" />
+	</portlet:renderURL>
+	<span class="lfr-toolbar-button view-button <c:if test='${toolbarItem == "view"}'>current</c:if>">
+		<a href="${viewOwnedURL}"><liferay-ui:message key="view" /></a>
+	</span>
+
 	<portlet:renderURL var="viewAllURL">
-		<portlet:param name="view" value="showIFeeds" />
+		<portlet:param name="view" value="viewAllIFeeds" />
 	</portlet:renderURL>
 	<span class="lfr-toolbar-button view-button <c:if test='${toolbarItem == "view-all"}'>current</c:if>">
 		<a href="${viewAllURL}"><liferay-ui:message key="viewAll" /></a>

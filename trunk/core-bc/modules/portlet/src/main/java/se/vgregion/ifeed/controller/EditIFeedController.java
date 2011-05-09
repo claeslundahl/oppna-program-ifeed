@@ -34,7 +34,8 @@ import se.vgregion.ifeed.types.IFeedFilter;
 @RequestMapping(value = "VIEW")
 @SessionAttributes(value = {"ifeed", "feedId", "hits"})
 public class EditIFeedController {
-    @Autowired
+
+	@Autowired
     @Qualifier("iFeedService")
     private IFeedService iFeedService;
     @Autowired
@@ -45,17 +46,18 @@ public class EditIFeedController {
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed) {
-        System.out.println(iFeed);
+    	System.out.println("EditIFeedController.showEditIFeedForm()");
         return "editIFeedForm";
     }
 
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@ModelAttribute("ifeed") IFeed iFeed, BindingResult bindingResult,
-            ActionResponse response, SessionStatus sessionStatus) {
+            ActionResponse response, SessionStatus sessionStatus, Model model) {
         iFeedValidator.validate(iFeed, bindingResult);
         if (!bindingResult.hasErrors()) {
             iFeedService.updateIFeed(iFeed);
-            response.setRenderParameter("view", "showIFeeds");
+            model.addAttribute("view", "showAllIFeeds");
+            //response.setRenderParameter("view", "showAllIFeeds");
             sessionStatus.setComplete();
         } else {
             response.setRenderParameter("view", "showEditIFeedForm");
@@ -88,9 +90,10 @@ public class EditIFeedController {
     }
 
     @ActionMapping(params = "action=cancel")
-    public void cancel(ActionResponse response, SessionStatus sessionStatus) {
+    public void cancel(ActionResponse response, SessionStatus sessionStatus, Model model) {
         sessionStatus.setComplete();
-        response.setRenderParameter("view", "showIFeeds");
+        model.addAttribute("view", "showAllIFeeds");
+        response.setRenderParameter("view", "showAllIFeeds");
     }
 
     @InitBinder("ifeed")

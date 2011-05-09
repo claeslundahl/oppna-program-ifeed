@@ -29,9 +29,11 @@
 
 <portlet:defineObjects/>
 
-<c:set var="toolbarItem" value="view-all" />
+<c:set var="toolbarItem" value="${view}" />
 
 <%@include file="toolbar.jspf" %>
+
+<h1>${view}</h1>
 
 <liferay-ui:search-container 
 	id='<portlet:namespace/>-parent-search-container'
@@ -44,8 +46,7 @@
 		modelVar="iFeed">
 
 		<liferay-ui:search-container-column-text name="Namn" property="name" />
-		<liferay-ui:search-container-column-text name="Beskrivning"
-			property="description" />
+		<liferay-ui:search-container-column-text name="Beskrivning" property="description" />
 
 		<liferay-ui:search-container-column-text>
 			<liferay-ui:icon-menu cssClass="">

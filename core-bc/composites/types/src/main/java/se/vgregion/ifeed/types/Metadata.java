@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
+
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 /**
@@ -22,7 +24,7 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
  */
 @Entity
 @Table(name="vgr_apelon_metadata")
-public class Metadata extends AbstractEntity<Long> {
+public class Metadata extends AbstractEntity<Long> implements Comparable<Metadata> {
 
     @Id
     @GeneratedValue
@@ -60,5 +62,10 @@ public class Metadata extends AbstractEntity<Long> {
 
     public void removeAllChildren() {
         children.clear();
+    }
+
+    @Override
+    public int compareTo(Metadata other) {
+        return new CompareToBuilder().append(this.name, other.name).toComparison();
     }
 }

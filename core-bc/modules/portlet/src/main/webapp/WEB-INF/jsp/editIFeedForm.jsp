@@ -104,6 +104,16 @@ div.aui-button-holder {
                 <aui:field-wrapper inlineField="true" inlineLabel="false">
                   <aui:button type="submit" value="add" />
                 </aui:field-wrapper>
+                
+                <aui:field-wrapper inlineField="true" inlineLabel="false">
+                  <aui:select name="filter" label="">
+                    <c:forEach items="${metadata['Handlingstyp']}" var="meta">
+                      <aui:option label="${meta}" value="${meta}" />
+                    </c:forEach>
+                  </aui:select>
+                  <aui:input name="filterValue" label="" />
+                </aui:field-wrapper>
+                
               </aui:fieldset>
             </aui:form>
           </liferay-ui:panel>

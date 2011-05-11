@@ -34,7 +34,7 @@
 
   <bean id="apelonService" class="se.vgregion.metaservice.vocabularyservice.intsvc.VocabularyServiceIntServiceImplService" />
 
-  <bean class="se.vgregion.ifeed.metadata.service.MetadataCacheImpl">
+  <bean class="se.vgregion.ifeed.metadata.service.MetadataServiceImpl">
     <constructor-arg>
       <bean factory-bean="apelonService" factory-method="getVocabularyServiceIntServiceImplPort" />
     </constructor-arg>

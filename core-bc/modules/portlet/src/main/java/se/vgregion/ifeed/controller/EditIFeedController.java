@@ -1,7 +1,9 @@
 package se.vgregion.ifeed.controller;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,18 +26,20 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 import se.vgregion.ifeed.formbean.FilterFormBean;
+import se.vgregion.ifeed.metadata.service.MetadataService;
 import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ifeed.types.Metadata;
 
 @Controller(value = "editIFeedController")
 @RequestMapping(value = "VIEW")
 @SessionAttributes(value = {"ifeed", "feedId", "hits"})
 public class EditIFeedController {
 
-	@Autowired
+    @Autowired
     @Qualifier("iFeedService")
     private IFeedService iFeedService;
     @Autowired
@@ -43,10 +47,12 @@ public class EditIFeedController {
     private IFeedSolrQuery iFeedSolrQuery;
     @Autowired
     private Validator iFeedValidator;
+    @Autowired
+    MetadataService metadataService;
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed) {
-    	System.out.println("EditIFeedController.showEditIFeedForm()");
+        System.out.println("EditIFeedController.showEditIFeedForm()");
         return "editIFeedForm";
     }
 
@@ -70,7 +76,6 @@ public class EditIFeedController {
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
         List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(iFeed);
         model.addAttribute("hits", hits);
-
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
@@ -87,6 +92,25 @@ public class EditIFeedController {
     @ActionMapping(params = "action=saveIFeed")
     public void saveIFeed(@ModelAttribute("ifeed") IFeed iFeed) {
         iFeedService.updateIFeed(iFeed);
+    }
+
+
+    @ModelAttribute("metadata")
+    public Map<String, Collection<Metadata>> getMetdata() {
+        Map<String, Collection<Metadata>> metadataMap = new HashMap<String, Collection<Metadata>>();
+        List<String> rootNodeNames = Arrays.asList("Handlingstyp", "Dokumentstatus", "Dokumenttyp VGR", "Verksamhetskod");
+        for (String rootNodeName : rootNodeNames) {
+            collectMetadata(metadataMap, rootNodeName);
+        }
+        return metadataMap;
+    }
+
+    private void collectMetadata(Map<String, Collection<Metadata>> metadataMap, String nodeName) {
+        Collection<Metadata> children = metadataService.getVocabulary(nodeName);
+        metadataMap.put(nodeName, children);
+        for (Metadata metadata : children) {
+            collectMetadata(metadataMap, metadata.getName());
+        }
     }
 
     @ActionMapping(params = "action=cancel")

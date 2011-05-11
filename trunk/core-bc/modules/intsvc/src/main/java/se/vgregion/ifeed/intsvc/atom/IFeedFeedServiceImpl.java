@@ -18,6 +18,7 @@ import org.apache.abdera.model.Feed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import se.vgregion.ifeed.metadata.service.MetadataCache;
 import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
@@ -28,12 +29,15 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     private IFeedService iFeedService;
     private IFeedSolrQuery solrQuery;
+    private MetadataCache metadataService;
 
     @Autowired
-    public IFeedFeedServiceImpl(IFeedSolrQuery solrQuery, IFeedService iFeedService) {
+    public IFeedFeedServiceImpl(IFeedSolrQuery solrQuery, IFeedService iFeedService,
+            MetadataCache metadataService) {
         super();
         this.solrQuery = solrQuery;
         this.iFeedService = iFeedService;
+        this.metadataService = metadataService;
     }
 
     /*
@@ -79,6 +83,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     @Transactional
     public Entry getIFeedEntry(@PathParam("id") Long id) {
         Entry e = Abdera.getInstance().newEntry();
+        metadataService.updateCache();
         IFeed retrievedFeed = iFeedService.getIFeed(id);
 
         if (retrievedFeed == null) {
@@ -90,8 +95,8 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         e.setUpdated(retrievedFeed.getTimestamp());
 
         for (IFeedFilter iFeedFilter : retrievedFeed.getFilters()) {
-            Element element = e.addExtension(new QName("http://dublincore.org/documents/dcmi-namespace/", iFeedFilter.getFilter()
-                    .getFilterField(), "dc"));
+            Element element = e.addExtension(new QName("http://dublincore.org/documents/dcmi-namespace/",
+                    iFeedFilter.getFilter().getFilterField(), "dc"));
             element.setText(iFeedFilter.getFilterQuery());
         }
 

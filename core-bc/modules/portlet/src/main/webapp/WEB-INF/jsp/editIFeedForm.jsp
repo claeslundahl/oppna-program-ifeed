@@ -67,8 +67,7 @@ div.aui-button-holder {
           <li class="active-filter"><liferay-ui:message key="${iFeedFilter.filter.keyString}" /> :
             ${iFeedFilter.filterQuery} <aui:a href="${removeFilter}">
               <img src="${themeDisplay.pathThemeImages}/common/remove.png" />
-            </aui:a>
-          </li>
+            </aui:a></li>
         </c:forEach>
       </ul>
     </aui:fieldset>
@@ -104,51 +103,33 @@ div.aui-button-holder {
                     </c:forEach>
                   </aui:select>
                   <div>
-                  <c:forEach items="${filterType.filters}" var="filter">
-                    <c:choose>
-                      <c:when test="${filter.metadataType == 'MULTI_VALUE'}">
-                        <aui:select name="filterValue">
-                          <c:forEach items="${metadata['Handlingstyp']}" var="meta">
-                            <aui:option label="${meta}" value="${meta}" />
-                          </c:forEach>
-                        </aui:select>
-                      </c:when>
-                      <c:when test="${filter.metadataType == 'MULTI_VALUE_EXT'}">
-                        <aui:select name="filterValue">
-                          <c:forEach items="${metadata['filter.metadataKey']}" var="meta">
-                            <aui:option label="${meta}" value="${meta}" />
-                          </c:forEach>
-                        </aui:select>
-                      </c:when>
-                      <c:when test="${filter.metadataType == 'DATE'}">
-                      <aui:input name="filterValue" />
-                      </c:when>
-                      <c:otherwise>
-                        <aui:input name="filterValue" />
-                      </c:otherwise>
-                    </c:choose>
-                  </c:forEach>
+                    <c:forEach items="${filterType.filters}" var="filter">
+                      <c:choose>
+                        <c:when test="${filter.metadataType == 'MULTI_VALUE'}">
+                          <aui:select name="filterValue">
+                            <c:forEach items="${metadata['Handlingstyp']}" var="meta">
+                              <aui:option label="${meta}" value="${meta}" />
+                            </c:forEach>
+                          </aui:select>
+                        </c:when>
+                        <c:when test="${filter.metadataType == 'MULTI_VALUE_EXT'}">
+                            <div id="dokumentstatus-filter-value-box">
+                                <aui:input name="dokumentstatus-filter-value" id="dokumentstatus-filter-value" />
+                            </div>
+                        </c:when>
+                        <c:when test="${filter.metadataType == 'DATE'}">
+                          <liferay-ui:calendar day="" year="" month="" />
+                        </c:when>
+                        <c:otherwise>
+                          <aui:input name="filterValue" />
+                        </c:otherwise>
+                      </c:choose>
+                    </c:forEach>
                   </div>
                 </aui:field-wrapper>
                 <aui:field-wrapper inlineField="true" inlineLabel="false">
                   <aui:button type="submit" value="add" />
                 </aui:field-wrapper>
-
-                <%--                 <aui:field-wrapper inlineField="true" inlineLabel="false"> --%>
-                <%--                   <aui:select name="handlingstyp"> --%>
-                <%--                     <c:forEach items="${metadata['Handlingstyp']}" var="meta"> --%>
-                <%--                       <aui:option label="${meta}" value="${meta}" /> --%>
-                <%--                     </c:forEach> --%>
-                <%--                   </aui:select> --%>
-                <%--                 </aui:field-wrapper> --%>
-                <%--                 <aui:field-wrapper inlineField="true" inlineLabel="false"> --%>
-                <%--                   <aui:select name="avtal"> --%>
-                <%--                     <c:forEach items="${metadata['Avtal']}" var="meta"> --%>
-                <%--                       <aui:option label="${meta}" value="${meta}" /> --%>
-                <%--                     </c:forEach> --%>
-                <%--                   </aui:select> --%>
-                <%--                 </aui:field-wrapper> --%>
-
               </aui:fieldset>
             </aui:form>
           </liferay-ui:panel>
@@ -157,3 +138,16 @@ div.aui-button-holder {
     </liferay-ui:panel-container>
   </aui:column>
 </aui:layout>
+
+<h1>${metadata['Dokumentstatus']}</h1>
+<script>
+AUI().ready('aui-autocomplete', function(A) {
+  var instance = new A.AutoComplete({
+      dataSource: ['Arbetsmaterial', 'Arkiverad', 'Beslutad', 'Beslutsunderlag', 'Förslag', 'Makulerad', 'Remissversion', 'Under revidering'],
+      typeAhead: true,
+      contentBox: '#<portlet:namespace />dokumentstatus-filter-value-box',
+      input: '#<portlet:namespace />dokumentstatus-filter-value'
+  }).render();
+});
+
+</script>

@@ -133,9 +133,8 @@ public class EditIFeedController {
     public IFeed getIFeed(@RequestParam(required = false) Long feedId, Model model) {
         model.addAttribute("feedId", feedId);
         IFeed feed = iFeedService.getIFeed(feedId);
-        // List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(feed);
-        // model.addAttribute("hits", hits);
-        model.addAttribute("hits", Collections.emptyList());
+        List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(feed);
+        model.addAttribute("hits", hits);
         return feed;
     }
 

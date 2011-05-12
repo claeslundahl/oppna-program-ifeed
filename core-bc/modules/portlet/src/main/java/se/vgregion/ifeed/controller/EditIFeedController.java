@@ -36,7 +36,7 @@ import se.vgregion.ifeed.types.Metadata;
 
 @Controller(value = "editIFeedController")
 @RequestMapping(value = "VIEW")
-@SessionAttributes(value = {"ifeed", "feedId", "hits"})
+@SessionAttributes(value = { "ifeed", "feedId", "hits", "metadata" })
 public class EditIFeedController {
 
     @Autowired
@@ -63,7 +63,7 @@ public class EditIFeedController {
         if (!bindingResult.hasErrors()) {
             iFeedService.updateIFeed(iFeed);
             model.addAttribute("view", "showAllIFeeds");
-            //response.setRenderParameter("view", "showAllIFeeds");
+            // response.setRenderParameter("view", "showAllIFeeds");
             sessionStatus.setComplete();
         } else {
             response.setRenderParameter("view", "showEditIFeedForm");
@@ -81,7 +81,8 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=removeFilter")
     public void removeFilter(ActionResponse response, @ModelAttribute("ifeed") IFeed iFeed,
-            @RequestParam("filter") FilterType.Filter filter, @RequestParam("filterQuery") String filterQuery, Model model) {
+            @RequestParam("filter") FilterType.Filter filter, @RequestParam("filterQuery") String filterQuery,
+            Model model) {
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
         List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(iFeed);
         model.addAttribute("hits", hits);
@@ -94,14 +95,17 @@ public class EditIFeedController {
         iFeedService.updateIFeed(iFeed);
     }
 
-
     @ModelAttribute("metadata")
     public Map<String, Collection<Metadata>> getMetdata() {
         Map<String, Collection<Metadata>> metadataMap = new HashMap<String, Collection<Metadata>>();
-        List<String> rootNodeNames = Arrays.asList("Handlingstyp", "Dokumentstatus", "Dokumenttyp VGR", "Verksamhetskod");
+        List<String> rootNodeNames = Arrays.asList("Handlingstyp", "Dokumentstatus", "Dokumenttyp VGR",
+        "Verksamhetskod");
+        Long start = System.currentTimeMillis();
         for (String rootNodeName : rootNodeNames) {
             collectMetadata(metadataMap, rootNodeName);
         }
+        Long stop = System.currentTimeMillis();
+        System.out.println("Time taken: " + (stop - start));
         return metadataMap;
     }
 
@@ -122,15 +126,16 @@ public class EditIFeedController {
 
     @InitBinder("ifeed")
     public void initBinder(WebDataBinder binder) {
-        //TODO Add validators
+        // TODO Add validators
     }
 
     @ModelAttribute("ifeed")
-    public IFeed getIFeed(@RequestParam(required=false) Long feedId, Model model) {
+    public IFeed getIFeed(@RequestParam(required = false) Long feedId, Model model) {
         model.addAttribute("feedId", feedId);
         IFeed feed = iFeedService.getIFeed(feedId);
-        List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(feed);
-        model.addAttribute("hits", hits);
+        // List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(feed);
+        // model.addAttribute("hits", hits);
+        model.addAttribute("hits", Collections.emptyList());
         return feed;
     }
 

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,11 +51,13 @@ public class MetadataServiceImpl implements MetadataService {
 
     @Transactional
     public void importMetdata(String rootMetadataName) {
-        Metadata root = repo.findByAttribute("name", rootMetadataName);
-        if (root != null) {
-            repo.remove(root);
+        Collection<Metadata> roots = repo.findByAttribute("name", rootMetadataName);
+        if (!roots.isEmpty()) {
+            for (Metadata root : roots) {
+                repo.remove(root);
+            }
         }
-        root = new Metadata(rootMetadataName);
+        Metadata root = new Metadata(rootMetadataName);
         updateCacheTree(root, StringUtils.EMPTY);
         repo.store(root);
     }
@@ -96,17 +99,32 @@ public class MetadataServiceImpl implements MetadataService {
         public Collection<Metadata> getMetadataChildNodes() {
             return metadataChildNodes;
         }
+
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
+        }
     }
 
     public Collection<Metadata> getVocabulary(String metadataNodeName) {
         CachedMetadata cachedMetadataNode = metadataCache.get(metadataNodeName);
-        Date now = new Date();
-        if(cachedMetadataNode == null || cachedMetadataNode.getTime().after(now)) {
-            Metadata metadataNode = repo.findByAttribute("name", metadataNodeName);
-            List<Metadata> metadataChildNodes = (List<Metadata>)metadataNode.getChildren();
-            Collections.sort(metadataChildNodes);
-            metadataCache.put(metadataNodeName, new CachedMetadata(metadataChildNodes));
+
+        System.out.println(metadataNodeName + " --> " + cachedMetadataNode);
+
+        if(emptyOrInvalidCache(cachedMetadataNode)) {
+            Collection<Metadata> metadataNodes = repo.findByAttribute("name", metadataNodeName);
+            if(!metadataNodes.isEmpty()) {
+                List<Metadata> metadataChildNodes = (List<Metadata>)metadataNodes.iterator().next().getChildren();
+                Collections.sort(metadataChildNodes);
+                metadataCache.put(metadataNodeName, new CachedMetadata(metadataChildNodes));
+            }
         }
+
         return Collections.unmodifiableCollection(metadataCache.get(metadataNodeName).getMetadataChildNodes());
+    }
+
+    private boolean emptyOrInvalidCache(CachedMetadata cachedMetadataNode) {
+        Date now = new Date();
+        return cachedMetadataNode == null || cachedMetadataNode.getTime().after(now);
     }
 }

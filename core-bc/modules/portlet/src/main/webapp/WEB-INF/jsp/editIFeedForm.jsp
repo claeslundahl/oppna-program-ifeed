@@ -106,12 +106,18 @@ div.aui-button-holder {
                 </aui:field-wrapper>
                 
                 <aui:field-wrapper inlineField="true" inlineLabel="false">
-                  <aui:select name="filter" label="">
+                  <aui:select name="handlingstyp">
                     <c:forEach items="${metadata['Handlingstyp']}" var="meta">
                       <aui:option label="${meta}" value="${meta}" />
                     </c:forEach>
                   </aui:select>
-                  <aui:input name="filterValue" label="" />
+                </aui:field-wrapper>
+                <aui:field-wrapper inlineField="true" inlineLabel="false">
+                  <aui:select name="avtal">
+                    <c:forEach items="${metadata['Avtal']}" var="meta">
+                      <aui:option label="${meta}" value="${meta}" />
+                    </c:forEach>
+                  </aui:select>
                 </aui:field-wrapper>
                 
               </aui:fieldset>

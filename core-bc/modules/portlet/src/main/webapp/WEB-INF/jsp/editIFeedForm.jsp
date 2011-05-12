@@ -5,7 +5,7 @@
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
@@ -35,16 +35,19 @@ div.aui-button-holder {
 </portlet:actionURL>
 
 <aui:layout>
-    <aui:column columnWidth="66">
+  <aui:column columnWidth="66">
     <aui:fieldset label="ifeed-properties">
       <aui:column columnWidth="60">
         <h3>${ifeed.name}</h3>
         <p>${ifeed.description}</p>
       </aui:column>
       <aui:column columnWidth="40">
-      <div>Id: ${ifeed.id}</div>
-      <div>Ägare: ${ifeed.userId}</div>
-      <div>Senast ändrad: <fmt:formatDate value="${ifeed.timestamp }" timeStyle="short" dateStyle="long" type="both"/></div>
+        <div>Id: ${ifeed.id}</div>
+        <div>Ägare: ${ifeed.userId}</div>
+        <div>
+          Senast ändrad:
+          <fmt:formatDate value="${ifeed.timestamp }" timeStyle="short" dateStyle="long" type="both" />
+        </div>
       </aui:column>
       <aui:button-row>
         <aui:button onClick="alert('Not yet implemented')" value="edit" />
@@ -64,7 +67,8 @@ div.aui-button-holder {
           <li class="active-filter"><liferay-ui:message key="${iFeedFilter.filter.keyString}" /> :
             ${iFeedFilter.filterQuery} <aui:a href="${removeFilter}">
               <img src="${themeDisplay.pathThemeImages}/common/remove.png" />
-            </aui:a></li>
+            </aui:a>
+          </li>
         </c:forEach>
       </ul>
     </aui:fieldset>
@@ -99,27 +103,52 @@ div.aui-button-holder {
                       <aui:option label="${filter.keyString}" value="${filter}" />
                     </c:forEach>
                   </aui:select>
-                  <aui:input name="filterValue" label="" />
+                  <div>
+                  <c:forEach items="${filterType.filters}" var="filter">
+                    <c:choose>
+                      <c:when test="${filter.metadataType == 'MULTI_VALUE'}">
+                        <aui:select name="filterValue">
+                          <c:forEach items="${metadata['Handlingstyp']}" var="meta">
+                            <aui:option label="${meta}" value="${meta}" />
+                          </c:forEach>
+                        </aui:select>
+                      </c:when>
+                      <c:when test="${filter.metadataType == 'MULTI_VALUE_EXT'}">
+                        <aui:select name="filterValue">
+                          <c:forEach items="${metadata['filter.metadataKey']}" var="meta">
+                            <aui:option label="${meta}" value="${meta}" />
+                          </c:forEach>
+                        </aui:select>
+                      </c:when>
+                      <c:when test="${filter.metadataType == 'DATE'}">
+                      <aui:input name="filterValue" />
+                      </c:when>
+                      <c:otherwise>
+                        <aui:input name="filterValue" />
+                      </c:otherwise>
+                    </c:choose>
+                  </c:forEach>
+                  </div>
                 </aui:field-wrapper>
                 <aui:field-wrapper inlineField="true" inlineLabel="false">
                   <aui:button type="submit" value="add" />
                 </aui:field-wrapper>
-                
-                <aui:field-wrapper inlineField="true" inlineLabel="false">
-                  <aui:select name="handlingstyp">
-                    <c:forEach items="${metadata['Handlingstyp']}" var="meta">
-                      <aui:option label="${meta}" value="${meta}" />
-                    </c:forEach>
-                  </aui:select>
-                </aui:field-wrapper>
-                <aui:field-wrapper inlineField="true" inlineLabel="false">
-                  <aui:select name="avtal">
-                    <c:forEach items="${metadata['Avtal']}" var="meta">
-                      <aui:option label="${meta}" value="${meta}" />
-                    </c:forEach>
-                  </aui:select>
-                </aui:field-wrapper>
-                
+
+                <%--                 <aui:field-wrapper inlineField="true" inlineLabel="false"> --%>
+                <%--                   <aui:select name="handlingstyp"> --%>
+                <%--                     <c:forEach items="${metadata['Handlingstyp']}" var="meta"> --%>
+                <%--                       <aui:option label="${meta}" value="${meta}" /> --%>
+                <%--                     </c:forEach> --%>
+                <%--                   </aui:select> --%>
+                <%--                 </aui:field-wrapper> --%>
+                <%--                 <aui:field-wrapper inlineField="true" inlineLabel="false"> --%>
+                <%--                   <aui:select name="avtal"> --%>
+                <%--                     <c:forEach items="${metadata['Avtal']}" var="meta"> --%>
+                <%--                       <aui:option label="${meta}" value="${meta}" /> --%>
+                <%--                     </c:forEach> --%>
+                <%--                   </aui:select> --%>
+                <%--                 </aui:field-wrapper> --%>
+
               </aui:fieldset>
             </aui:form>
           </liferay-ui:panel>

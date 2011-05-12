@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.types;
 
 import static se.vgregion.ifeed.types.FilterType.Filter.*;
+import static se.vgregion.ifeed.types.MetadataType.*;
 
 import java.util.EnumSet;
 
@@ -37,53 +38,65 @@ public enum FilterType {
     }
 
     public enum Filter {
-        H_O_S("DC:audience"),
-        CREATED_FOR_UNIT("DC:creator.forunit"),
-        PUBLISHED_FOR_UNIT("DC:publisher.forunit"),
-        CREATED_FOR_PROJECT("DC:creator.project-assignment "),
-        PUBLISHED_FOR_PROJECT("DC:publisher.projects-assignment"),
-        RECORD_TYPE("DC:type.record"),
-        DOC_TYPE("DC:type.document"),
-        ARCHIVE_CREATOR("DC:creator.recordscreator"),
-        PROCESS_NAME("DC:type.process.name"),
-        CASE_TYPE("DC:type.file.process"),
-        CASE("DC:type.file"),
-        JOURNAL_ID("DC:identifier.diarie.id"),
-        DOCUMENT_SERIES("DC:type.document.serie"),
-        DOCUMENT_SERIES_ID("DC:type.document.id"),
-        PHYSICAL_LOCATION(""),
-        PUBLISHED_BY("DC:publisher"),
-        RESPONSIBLE("DC:creator.document"),
-        RESPONSIBLE_FUNC("DC:creator.function"),
-        VALID_FROM_DATE("DC:date.validfrom"),
-        VALID_TO_DATE("DC:date.validto"),
-        AVAILABLE_FROM_DATE("DC:date.availablefrom"),
-        AVAILABLE_TO_DATE("DC:date.availableto"),
-        PUBLISHING_DATE("DC:date.issued"),
-        PUBLIC_ACCESSIBILITY("DC:rights.accessrights"),
-        SAVED_BY("DC:contributor.savedby"),
-        CREATED_BY_FIX("author"),
-        //        CREATED_BY_FIX("DC:creator"),
-        CREATED_BY_FREE("DC:creator.freetext"),
-        TITLE("title"),
-        //        TITLE("DC:title"),
-        ALT_TITLE("DC:title.alternative"),
-        KEYWORDS("DC:subject.keywords"),
-        AUTHORS_KEYWORDS("DC:subject.authorkeywords"),
-        HSA("DC:coverage.hsacode"),
-        LANGUAGE("DC:language"),
-        FILE_EXTENSION("DC:format.extension"),
-        DOCUMENT_STATUS("HC:status.document");
+        H_O_S("DC:audience", MULTI_VALUE, ""),
+        CREATED_FOR_UNIT("DC:creator.forunit", MULTI_VALUE, ""),
+        PUBLISHED_FOR_UNIT("DC:publisher.forunit", MULTI_VALUE, ""),
+        CREATED_FOR_PROJECT("DC:creator.project-assignment", TEXT, ""),
+        PUBLISHED_FOR_PROJECT("DC:publisher.projects-assignment", TEXT, ""),
+        RECORD_TYPE("DC:type.record", MULTI_VALUE, "Handlingstyp"),
+        DOC_TYPE("DC:type.document", MULTI_VALUE, ""),
+        ARCHIVE_CREATOR("DC:creator.recordscreator", MULTI_VALUE, ""),
+        PROCESS_NAME("DC:type.process.name", TEXT, ""),
+        CASE_TYPE("DC:type.file.process", TEXT, ""),
+        CASE("DC:type.file", TEXT, ""),
+        JOURNAL_ID("DC:identifier.diarie.id", TEXT, ""),
+        DOCUMENT_SERIES("DC:type.document.serie", TEXT, ""),
+        DOCUMENT_SERIES_ID("DC:type.document.id", TEXT, ""),
+        PHYSICAL_LOCATION("DC:identifier.location", TEXT, ""),
+        PUBLISHED_BY("DC:publisher", MULTI_VALUE, ""),
+        RESPONSIBLE("DC:creator.document", MULTI_VALUE, ""),
+        RESPONSIBLE_FUNC("DC:creator.function", TEXT, ""),
+        VALID_FROM_DATE("DC:date.validfrom", DATE, ""),
+        VALID_TO_DATE("DC:date.validto", DATE, ""),
+        AVAILABLE_FROM_DATE("DC:date.availablefrom", DATE, ""),
+        AVAILABLE_TO_DATE("DC:date.availableto", DATE, ""),
+        PUBLISHING_DATE("DC:date.issued", DATE, ""),
+        PUBLIC_ACCESSIBILITY("DC:rights.accessrights", TEXT, ""),
+        SAVED_BY("DC:contributor.savedby", MULTI_VALUE, ""),
+        CREATED_BY_FIX("author", MULTI_VALUE, ""),
+        //        CREATED_BY_FIX("DC:creator", MULTI_VALUE, ""),
+        CREATED_BY_FREE("DC:creator.freetext", TEXT, ""),
+        TITLE("title", MULTI_VALUE, ""),
+        //        TITLE("DC:title", TEXT, ""),
+        ALT_TITLE("DC:title.alternative", TEXT, ""),
+        KEYWORDS("DC:subject.keywords", MULTI_VALUE, ""),
+        AUTHORS_KEYWORDS("DC:subject.authorkeywords", TEXT, ""),
+        HSA("DC:coverage.hsacode", MULTI_VALUE, ""),
+        LANGUAGE("DC:language", MULTI_VALUE, ""),
+        FILE_EXTENSION("DC:format.extension", MULTI_VALUE, ""),
+        DOCUMENT_STATUS("HC:status.document", MULTI_VALUE_EXT, "Dokumentstatus");
 
         private String metadataField;
         private String keyString;
+        private String metadataKey;
+        private MetadataType metadataType;
 
-        Filter(String filterField) {
+        Filter(String filterField, MetadataType metadataType, String metadataKey) {
             this.metadataField = filterField;
+            this.metadataType = metadataType;
+            this.metadataKey = metadataKey;
         }
 
         public String getFilterField() {
             return metadataField;
+        }
+
+        public MetadataType getMetadataType() {
+            return metadataType;
+        }
+
+        public String getMetadataKey() {
+            return metadataKey;
         }
 
         public String getKeyString() {

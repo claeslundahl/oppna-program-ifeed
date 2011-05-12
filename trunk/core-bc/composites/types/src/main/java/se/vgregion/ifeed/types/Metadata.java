@@ -68,4 +68,9 @@ public class Metadata extends AbstractEntity<Long> implements Comparable<Metadat
     public int compareTo(Metadata other) {
         return new CompareToBuilder().append(this.name, other.name).toComparison();
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

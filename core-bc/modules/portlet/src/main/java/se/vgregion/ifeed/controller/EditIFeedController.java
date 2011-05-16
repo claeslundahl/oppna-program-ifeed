@@ -47,8 +47,8 @@ public class EditIFeedController {
     private IFeedSolrQuery iFeedSolrQuery;
     @Autowired
     private Validator iFeedValidator;
-    @Autowired
-    MetadataService metadataService;
+//    @Autowired
+//    MetadataService metadataService;
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed) {
@@ -95,27 +95,27 @@ public class EditIFeedController {
         iFeedService.updateIFeed(iFeed);
     }
 
-    @ModelAttribute("metadata")
-    public Map<String, Collection<Metadata>> getMetdata() {
-        Map<String, Collection<Metadata>> metadataMap = new HashMap<String, Collection<Metadata>>();
-        List<String> rootNodeNames = Arrays.asList("Handlingstyp", "Dokumentstatus", "Dokumenttyp VGR",
-        "Verksamhetskod");
-        Long start = System.currentTimeMillis();
-        for (String rootNodeName : rootNodeNames) {
-            collectMetadata(metadataMap, rootNodeName);
-        }
-        Long stop = System.currentTimeMillis();
-        System.out.println("Time taken: " + (stop - start));
-        return metadataMap;
-    }
+//    @ModelAttribute("metadata")
+//    public Map<String, Collection<Metadata>> getMetdata() {
+//        Map<String, Collection<Metadata>> metadataMap = new HashMap<String, Collection<Metadata>>();
+//        List<String> rootNodeNames = Arrays.asList("Handlingstyp", "Dokumentstatus", "Dokumenttyp VGR",
+//        "Verksamhetskod");
+//        Long start = System.currentTimeMillis();
+//        for (String rootNodeName : rootNodeNames) {
+//            collectMetadata(metadataMap, rootNodeName);
+//        }
+//        Long stop = System.currentTimeMillis();
+//        System.out.println("Time taken: " + (stop - start));
+//        return metadataMap;
+//    }
 
-    private void collectMetadata(Map<String, Collection<Metadata>> metadataMap, String nodeName) {
-        Collection<Metadata> children = metadataService.getVocabulary(nodeName);
-        metadataMap.put(nodeName, children);
-        for (Metadata metadata : children) {
-            collectMetadata(metadataMap, metadata.getName());
-        }
-    }
+//    private void collectMetadata(Map<String, Collection<Metadata>> metadataMap, String nodeName) {
+//        Collection<Metadata> children = metadataService.getVocabulary(nodeName);
+//        metadataMap.put(nodeName, children);
+//        for (Metadata metadata : children) {
+//            collectMetadata(metadataMap, metadata.getName());
+//        }
+//    }
 
     @ActionMapping(params = "action=cancel")
     public void cancel(ActionResponse response, SessionStatus sessionStatus, Model model) {

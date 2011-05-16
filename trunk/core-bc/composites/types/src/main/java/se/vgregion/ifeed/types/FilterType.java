@@ -15,7 +15,7 @@ public enum FilterType {
     STATUS_AND_LIMITATIONS(EnumSet.<Filter> of(DOCUMENT_STATUS, VALID_FROM_DATE, VALID_TO_DATE, AVAILABLE_FROM_DATE, AVAILABLE_TO_DATE, PUBLISHING_DATE, PUBLIC_ACCESSIBILITY)),
     CREATED_BY(EnumSet.<Filter> of(SAVED_BY, CREATED_BY_FIX, CREATED_BY_FREE)),
     DESCRIPTION(EnumSet.<Filter> of(TITLE, ALT_TITLE)),
-    KEYWORDS(EnumSet.<Filter> of(Filter.KEYWORDS, AUTHORS_KEYWORDS)),
+    KEYWORDS_FOR(EnumSet.<Filter> of(KEYWORDS_FIX, AUTHORS_KEYWORDS)),
     HSA_CONTEXT(EnumSet.<Filter> of(HSA)),
     OTHER(EnumSet.<Filter> of(LANGUAGE, FILE_EXTENSION));
 
@@ -69,7 +69,7 @@ public enum FilterType {
         TITLE("title", MULTI_VALUE, ""),
         //        TITLE("DC:title", TEXT, ""),
         ALT_TITLE("DC:title.alternative", TEXT, ""),
-        KEYWORDS("DC:subject.keywords", MULTI_VALUE, ""),
+        KEYWORDS_FIX("DC:subject.keywords", MULTI_VALUE, ""),
         AUTHORS_KEYWORDS("DC:subject.authorkeywords", TEXT, ""),
         HSA("DC:coverage.hsacode", MULTI_VALUE, ""),
         LANGUAGE("DC:language", MULTI_VALUE, ""),

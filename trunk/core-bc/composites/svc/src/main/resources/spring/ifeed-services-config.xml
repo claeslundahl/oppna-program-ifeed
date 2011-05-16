@@ -14,9 +14,13 @@
         	http://www.springframework.org/schema/context
         	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-  <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer">
-    <constructor-arg type="java.lang.String" value="http://vgas0488.vgregion.se:8280/solr/core0" />
-  </bean>
+<!--   <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer"> -->
+<!--     <constructor-arg type="java.lang.String" value="http://vgas0488.vgregion.se:8280/solr/core0" /> -->
+<!--   </bean> -->
+	<bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer">
+		<constructor-arg type="java.lang.String" value="http://localhost:8983/solr/" />
+	</bean>
+
   <bean id="iFeedSolrQuery" class="se.vgregion.ifeed.service.solr.IFeedSolrQuery">
     <property name="solrServer" ref="solrServer" />
   </bean>
@@ -28,7 +32,7 @@
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.IFeed" />
   </bean>
 
-  <bean id="metadataRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
+  <!-- <bean id="metadataRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.Metadata" />
   </bean>
 
@@ -47,6 +51,6 @@
         <value>Verksamhetskod</value>
       </set>
     </property>
-  </bean>
+  </bean> -->
 </beans>
         

@@ -1,14 +1,17 @@
 package se.vgregion.ifeed.controller;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.portlet.ActionResponse;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -30,13 +33,13 @@ import se.vgregion.ifeed.metadata.service.MetadataService;
 import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.FilterType;
+import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
-import se.vgregion.ifeed.types.Metadata;
 
 @Controller(value = "editIFeedController")
 @RequestMapping(value = "VIEW")
-@SessionAttributes(value = { "ifeed", "feedId", "hits", "metadata" })
+@SessionAttributes(value = { "ifeed", "feedId", "hits"})
 public class EditIFeedController {
 
     @Autowired
@@ -47,8 +50,8 @@ public class EditIFeedController {
     private IFeedSolrQuery iFeedSolrQuery;
     @Autowired
     private Validator iFeedValidator;
-//    @Autowired
-//    MetadataService metadataService;
+    @Autowired
+    MetadataService metadataService;
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed) {
@@ -68,6 +71,14 @@ public class EditIFeedController {
         } else {
             response.setRenderParameter("view", "showEditIFeedForm");
         }
+    }
+
+    @ActionMapping(params = "action=selectFilter")
+    public void selectNewFilter(@RequestParam(required=false, value="filter") Filter filter, Model model, ActionResponse response) throws JsonGenerationException, JsonMappingException, IOException {
+        model.addAttribute("newFilter", filter);
+        Collection<String> vocabulary = metadataService.getVocabulary(filter.getMetadataKey());
+        model.addAttribute("vocabulary", new ObjectMapper().writeValueAsString(vocabulary));
+        response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=addFilter")
@@ -95,27 +106,27 @@ public class EditIFeedController {
         iFeedService.updateIFeed(iFeed);
     }
 
-//    @ModelAttribute("metadata")
-//    public Map<String, Collection<Metadata>> getMetdata() {
-//        Map<String, Collection<Metadata>> metadataMap = new HashMap<String, Collection<Metadata>>();
-//        List<String> rootNodeNames = Arrays.asList("Handlingstyp", "Dokumentstatus", "Dokumenttyp VGR",
-//        "Verksamhetskod");
-//        Long start = System.currentTimeMillis();
-//        for (String rootNodeName : rootNodeNames) {
-//            collectMetadata(metadataMap, rootNodeName);
-//        }
-//        Long stop = System.currentTimeMillis();
-//        System.out.println("Time taken: " + (stop - start));
-//        return metadataMap;
-//    }
+    //    @ModelAttribute("metadata")
+    //    public Map<String, Collection<Metadata>> getMetdata() {
+    //        Map<String, Collection<Metadata>> metadataMap = new HashMap<String, Collection<Metadata>>();
+    //        List<String> rootNodeNames = Arrays.asList("Handlingstyp", "Dokumentstatus", "Dokumenttyp VGR",
+    //        "Verksamhetskod");
+    //        Long start = System.currentTimeMillis();
+    //        for (String rootNodeName : rootNodeNames) {
+    //            collectMetadata(metadataMap, rootNodeName);
+    //        }
+    //        Long stop = System.currentTimeMillis();
+    //        System.out.println("Time taken: " + (stop - start));
+    //        return metadataMap;
+    //    }
 
-//    private void collectMetadata(Map<String, Collection<Metadata>> metadataMap, String nodeName) {
-//        Collection<Metadata> children = metadataService.getVocabulary(nodeName);
-//        metadataMap.put(nodeName, children);
-//        for (Metadata metadata : children) {
-//            collectMetadata(metadataMap, metadata.getName());
-//        }
-//    }
+    //    private void collectMetadata(Map<String, Collection<Metadata>> metadataMap, String nodeName) {
+    //        Collection<Metadata> children = metadataService.getVocabulary(nodeName);
+    //        metadataMap.put(nodeName, children);
+    //        for (Metadata metadata : children) {
+    //            collectMetadata(metadataMap, metadata.getName());
+    //        }
+    //    }
 
     @ActionMapping(params = "action=cancel")
     public void cancel(ActionResponse response, SessionStatus sessionStatus, Model model) {

@@ -4,8 +4,6 @@ import java.util.Collection;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import se.vgregion.ifeed.types.Metadata;
-
 public interface MetadataService {
 
     void importMetadata();
@@ -13,5 +11,5 @@ public interface MetadataService {
     @Transactional
     void importMetdata(String rootMetadataName);
 
-    Collection<Metadata> getVocabulary(String metadataNodeName);
+    Collection<String> getVocabulary(String metadataNodeName);
 }

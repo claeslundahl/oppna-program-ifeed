@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -79,12 +81,16 @@
 	margin: 0 5px 0 0;
 }
 
-.ifeed-portlet .tree-node-link,
-.ifeed-portlet .tree-node-tooltip {
-	font-size: 0;
+.ifeed-portlet .tree-node-link {
 	height: 16px;
-	text-align: -9999em;
-	width: 16px;
+	padding-left: 20px;
+}
+
+.ifeed-portlet .tree-node-tooltip {
+    font-size: 0;
+    height: 16px;
+    text-align: -9999em;
+    width: 16px;
 }
 
 .ifeed-portlet .tree-node-label {

@@ -2,6 +2,7 @@ package se.vgregion.ifeed.metadata.service;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +28,7 @@ import vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService;
 
 public class MetadataServiceImpl implements MetadataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataService.class);
-    private static Map<String, CachedMetadata> metadataCache = new HashMap<String, CachedMetadata>();
+    private static Map<String, CachedVocabulary> vocabularyCache = new HashMap<String, CachedVocabulary>();
 
     private VocabularyService port;
     private JpaRepository<Metadata, Long, Long> repo;
@@ -81,12 +82,12 @@ public class MetadataServiceImpl implements MetadataService {
         }
     }
 
-    private static class CachedMetadata {
+    private static class CachedVocabulary {
         private Date time;
-        private Collection<Metadata> metadataChildNodes;
+        private Collection<String> vocabulary;
 
-        public CachedMetadata(List<Metadata> metadata) {
-            this.metadataChildNodes = metadata;
+        public CachedVocabulary(List<String> vocabulary) {
+            this.vocabulary = vocabulary;
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.HOUR, 1);
             time = cal.getTime();
@@ -96,8 +97,12 @@ public class MetadataServiceImpl implements MetadataService {
             return time;
         }
 
-        public Collection<Metadata> getMetadataChildNodes() {
-            return metadataChildNodes;
+        public Collection<String> getVocabulary() {
+            return vocabulary;
+        }
+
+        public boolean isValid() {
+            return getTime().after(new Date());
         }
 
         @Override
@@ -106,25 +111,36 @@ public class MetadataServiceImpl implements MetadataService {
         }
     }
 
-    public Collection<Metadata> getVocabulary(String metadataNodeName) {
-        CachedMetadata cachedMetadataNode = metadataCache.get(metadataNodeName);
-
-        System.out.println(metadataNodeName + " --> " + cachedMetadataNode);
-
-        if(emptyOrInvalidCache(cachedMetadataNode)) {
-            Collection<Metadata> metadataNodes = repo.findByAttribute("name", metadataNodeName);
-            if(!metadataNodes.isEmpty()) {
-                List<Metadata> metadataChildNodes = (List<Metadata>)metadataNodes.iterator().next().getChildren();
-                Collections.sort(metadataChildNodes);
-                metadataCache.put(metadataNodeName, new CachedMetadata(metadataChildNodes));
-            }
+    public Collection<String> getVocabulary(String metadataNodeName) {
+        LOGGER.debug("Get vocabulary for metadata: {}", metadataNodeName);
+        List<String> vocabulary = Collections.emptyList();
+        if(isBlank(metadataNodeName)) {
+            return vocabulary;
         }
+        CachedVocabulary cachedVocabulary = vocabularyCache.get(metadataNodeName);
 
-        return Collections.unmodifiableCollection(metadataCache.get(metadataNodeName).getMetadataChildNodes());
+        if(emptyOrInvalidCache(cachedVocabulary)) {
+            LOGGER.debug("Reading vocabulary from source");
+            Collection<Metadata> vocabularyNodes = repo.findByAttribute("name", metadataNodeName);
+
+            if(!vocabularyNodes.isEmpty()) {
+                vocabulary = new ArrayList<String>(vocabularyNodes.size());
+                List<Metadata> metadataChildNodes = (List<Metadata>)vocabularyNodes.iterator().next().getChildren();
+                for (Metadata metadata : metadataChildNodes) {
+                    vocabulary.add(metadata.getName());
+                }
+                Collections.sort(vocabulary);
+            }
+            vocabularyCache.put(metadataNodeName, new CachedVocabulary(vocabulary));
+        } else {
+            LOGGER.debug("Reading vocabulary from cache");
+        }
+        LOGGER.debug("Vocabulary: " + vocabularyCache.get(metadataNodeName).getVocabulary());
+
+        return Collections.unmodifiableCollection(vocabularyCache.get(metadataNodeName).getVocabulary());
     }
 
-    private boolean emptyOrInvalidCache(CachedMetadata cachedMetadataNode) {
-        Date now = new Date();
-        return cachedMetadataNode == null || cachedMetadataNode.getTime().after(now);
+    private boolean emptyOrInvalidCache(CachedVocabulary cachedVocabulary) {
+        return cachedVocabulary == null || !cachedVocabulary.isValid();
     }
 }

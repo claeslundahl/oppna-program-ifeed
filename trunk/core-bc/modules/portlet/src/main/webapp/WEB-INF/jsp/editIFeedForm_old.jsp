@@ -67,7 +67,8 @@ div.aui-button-holder {
           <li class="active-filter"><liferay-ui:message key="${iFeedFilter.filter.keyString}" /> :
             ${iFeedFilter.filterQuery} <aui:a href="${removeFilter}">
               <img src="${themeDisplay.pathThemeImages}/common/remove.png" />
-            </aui:a></li>
+            </aui:a>
+          </li>
         </c:forEach>
       </ul>
     </aui:fieldset>
@@ -113,9 +114,9 @@ div.aui-button-holder {
                           </aui:select>
                         </c:when>
                         <c:when test="${filter.metadataType == 'MULTI_VALUE_EXT'}">
-                            <div id="dokumentstatus-filter-value-box">
-                                <aui:input name="dokumentstatus-filter-value" id="dokumentstatus-filter-value" />
-                            </div>
+                          <div id="<portlet:namespace />dokumentstatus-filter-value-box">
+                            <aui:input name="dokumentstatus-filter-value" id="dokumentstatus-filter-value" />
+                          </div>
                         </c:when>
                         <c:when test="${filter.metadataType == 'DATE'}">
                           <liferay-ui:calendar day="" year="" month="" />
@@ -139,8 +140,7 @@ div.aui-button-holder {
   </aui:column>
 </aui:layout>
 
-<h1>${metadata['Dokumentstatus']}</h1>
-<script>
+<aui:script>
 AUI().ready('aui-autocomplete', function(A) {
   var instance = new A.AutoComplete({
       dataSource: ['Arbetsmaterial', 'Arkiverad', 'Beslutad', 'Beslutsunderlag', 'Förslag', 'Makulerad', 'Remissversion', 'Under revidering'],
@@ -149,5 +149,4 @@ AUI().ready('aui-autocomplete', function(A) {
       input: '#<portlet:namespace />dokumentstatus-filter-value'
   }).render();
 });
-
-</script>
+</aui:script>

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.portlet.ActionResponse;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -55,7 +56,6 @@ public class EditIFeedController {
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed) {
-        System.out.println("EditIFeedController.showEditIFeedForm()");
         return "editIFeedForm";
     }
 
@@ -86,7 +86,9 @@ public class EditIFeedController {
     @ActionMapping(params = "action=addFilter")
     public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean,
             ActionResponse response, Model model) {
+        System.out.println(ToStringBuilder.reflectionToString(filterFormBean));
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
+        System.out.println(iFeed);
         List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(iFeed);
         model.addAttribute("hits", hits);
         response.setRenderParameter("view", "showEditIFeedForm");
@@ -107,28 +109,6 @@ public class EditIFeedController {
     public void saveIFeed(@ModelAttribute("ifeed") IFeed iFeed) {
         iFeedService.updateIFeed(iFeed);
     }
-
-    //    @ModelAttribute("metadata")
-    //    public Map<String, Collection<Metadata>> getMetdata() {
-    //        Map<String, Collection<Metadata>> metadataMap = new HashMap<String, Collection<Metadata>>();
-    //        List<String> rootNodeNames = Arrays.asList("Handlingstyp", "Dokumentstatus", "Dokumenttyp VGR",
-    //        "Verksamhetskod");
-    //        Long start = System.currentTimeMillis();
-    //        for (String rootNodeName : rootNodeNames) {
-    //            collectMetadata(metadataMap, rootNodeName);
-    //        }
-    //        Long stop = System.currentTimeMillis();
-    //        System.out.println("Time taken: " + (stop - start));
-    //        return metadataMap;
-    //    }
-
-    //    private void collectMetadata(Map<String, Collection<Metadata>> metadataMap, String nodeName) {
-    //        Collection<Metadata> children = metadataService.getVocabulary(nodeName);
-    //        metadataMap.put(nodeName, children);
-    //        for (Metadata metadata : children) {
-    //            collectMetadata(metadataMap, metadata.getName());
-    //        }
-    //    }
 
     @ActionMapping(params = "action=cancel")
     public void cancel(ActionResponse response, SessionStatus sessionStatus, Model model) {

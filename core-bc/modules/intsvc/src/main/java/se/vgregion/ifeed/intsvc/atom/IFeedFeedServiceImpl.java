@@ -18,6 +18,7 @@ import org.apache.abdera.model.Feed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import se.vgregion.ifeed.metadata.service.MetadataService;
 import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
@@ -28,12 +29,15 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     private IFeedService iFeedService;
     private IFeedSolrQuery solrQuery;
+    private MetadataService metadataService;
 
     @Autowired
-    public IFeedFeedServiceImpl(IFeedSolrQuery solrQuery, IFeedService iFeedService) {
+    public IFeedFeedServiceImpl(IFeedSolrQuery solrQuery, IFeedService iFeedService,
+            MetadataService metadataService) {
         super();
         this.solrQuery = solrQuery;
         this.iFeedService = iFeedService;
+        this.metadataService = metadataService;
     }
 
     /*
@@ -71,6 +75,14 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         populateFeed(f, solrQuery.getIFeedResults(retrievedFeed));
 
         return f;
+    }
+
+    @GET
+    @Path("/import-meta")
+    @Transactional
+    public String importMeta() {
+        metadataService.importMetadata();
+        return "OK";
     }
 
     @GET

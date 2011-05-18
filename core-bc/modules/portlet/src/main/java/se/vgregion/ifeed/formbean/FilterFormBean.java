@@ -5,13 +5,11 @@ import se.vgregion.ifeed.types.FilterType.Filter;
 public class FilterFormBean {
     private Filter filter;
     private String filterValue;
+    private int validFromYear;
+    private int validFromMonth;
+    private int validFromDay;
 
     public FilterFormBean() {
-    }
-
-    public FilterFormBean(Filter filter, String filterValue) {
-        this.filter = filter;
-        this.filterValue = filterValue;
     }
 
     public Filter getFilter() {
@@ -28,5 +26,29 @@ public class FilterFormBean {
 
     public void setFilterValue(String filterValue) {
         this.filterValue = filterValue;
+    }
+
+    public int getValidFromYear() {
+        return validFromYear;
+    }
+
+    public void setValidFromYear(int validFromYear) {
+        this.validFromYear = validFromYear;
+    }
+
+    public int getValidFromMonth() {
+        return validFromMonth;
+    }
+
+    public void setValidFromMonth(int validFromMonth) {
+        this.validFromMonth = validFromMonth;
+    }
+
+    public int getValidFromDay() {
+        return validFromDay;
+    }
+
+    public void setValidFromDay(int validFromDay) {
+        this.validFromDay = validFromDay;
     }
 }

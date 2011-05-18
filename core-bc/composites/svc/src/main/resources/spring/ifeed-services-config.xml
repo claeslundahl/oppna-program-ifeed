@@ -49,6 +49,8 @@
         <value>Dokumenttyp VGR</value>
         <value>Handlingstyp</value>
         <value>Verksamhetskod</value>
+        <value>Språk</value>
+        <value>HosPersKat</value>
       </set>
     </property>
   </bean>

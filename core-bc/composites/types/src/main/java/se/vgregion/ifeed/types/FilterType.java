@@ -69,10 +69,10 @@ public enum FilterType {
         ALT_TITLE("DC:title.alternative", TEXT, ""),
         KEYWORDS_FIX("DC:subject.keywords", MULTI_VALUE, ""),
         AUTHORS_KEYWORDS("DC:subject.authorkeywords", TEXT, ""),
-        HSA("DC:coverage.hsacode", MULTI_VALUE, "Verksamhetskod"),
+        HSA("DC:coverage.hsacode", MULTI_VALUE_EXT, "Verksamhetskod"),
         LANGUAGE("DC:language", MULTI_VALUE, "Språk"),
         FILE_EXTENSION("DC:format.extension", MULTI_VALUE_EXT, ""),
-        DOCUMENT_STATUS("HC:status.document", MULTI_VALUE_EXT, "Dokumentstatus");
+        DOCUMENT_STATUS("HC:status.document", MULTI_VALUE, "Dokumentstatus");
 
         private String metadataField;
         private String keyString;

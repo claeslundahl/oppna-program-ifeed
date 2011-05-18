@@ -77,7 +77,9 @@ public class EditIFeedController {
     public void selectNewFilter(@RequestParam(required=false, value="filter") Filter filter, Model model, ActionResponse response) throws JsonGenerationException, JsonMappingException, IOException {
         model.addAttribute("newFilter", filter);
         Collection<String> vocabulary = metadataService.getVocabulary(filter.getMetadataKey());
-        model.addAttribute("vocabulary", new ObjectMapper().writeValueAsString(vocabulary));
+        model.addAttribute("vocabulary", vocabulary);
+        String vocabularyJson = new ObjectMapper().writeValueAsString(vocabulary);
+        model.addAttribute("vocabularyJson", vocabularyJson);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 

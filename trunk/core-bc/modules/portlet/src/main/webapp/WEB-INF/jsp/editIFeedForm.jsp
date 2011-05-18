@@ -86,19 +86,24 @@
           <ul>
             <c:forEach items="${filterTypes}" var="filterType" varStatus="filterRow">
               <li><span class="tree-node-wrap clearfix"> <span class="tree-node-label"><liferay-ui:message
-                      key="${filterType.keyString}" />
-                </span> </span>
+                      key="${filterType.keyString}" /> </span> </span>
                 <ul>
                   <c:forEach items="${filterType.filters}" var="filter">
-                    <li><span class="tree-node-wrap clearfix"> <span class="tree-node-tooltip"
-                        title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean malesuada dolor vel nisl venenatis tincidunt non a leo.">Icon</span>
+                    <li>
+                      <span class="tree-node-wrap clearfix">
                         <portlet:actionURL name="selectFilter" var="selectFilter">
                           <portlet:param name="action" value="selectFilter" />
                           <portlet:param name="filter" value="${filter}" />
-                        </portlet:actionURL> <a href="${selectFilter}" class="tree-node-use tree-node-link"> <span
-                          class="tree-node-label"> <liferay-ui:message key="${filter.keyString}" /> </span> </a> </span></li>
+                        </portlet:actionURL>
+                        <span class="tree-node-tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean malesuada dolor vel nisl venenatis tincidunt non a leo.">Icon</span>
+                        <a href="${selectFilter}" class="tree-node-use tree-node-link">
+                          <span class="tree-node-label"><liferay-ui:message key="${filter.keyString}" /></span>
+                        </a>
+                        </span>
+                    </li>
                   </c:forEach>
-                </ul></li>
+                </ul>
+              </li>
             </c:forEach>
           </ul>
         </div>
@@ -111,29 +116,30 @@
         <div id="<portlet:namespace />filter-value-box">
           <c:choose>
             <c:when test="${newFilter.metadataType == 'MULTI_VALUE'}">
-<%--             <aui:select name="filterValue"> --%>
-<%--               <c:forEach items="${metadata['Handlingstyp']}" var="meta"> --%>
-<%--                 <aui:option label="${meta}" value="${meta}" /> --%>
-<%--               </c:forEach> --%>
-<%--             </aui:select> --%>
-            <aui:input label="${newFilter.keyString}" name="filterValue" id="filter-value" />
+              <aui:select label="${newFilter.keyString}" name="filterValue">
+                <c:forEach items="${vocabulary}" var="meta">
+                  <aui:option label="${meta}" value="${meta}" />
+                </c:forEach>
+              </aui:select>
             </c:when>
             <c:when test="${newFilter.metadataType == 'MULTI_VALUE_EXT'}">
-              <aui:input label="${newFilter.keyString}" name="filterValue" id="${newFilter.keyString}" />
+              <aui:input label="${newFilter.keyString}" name="filterValue" id="filter-value" />
             </c:when>
             <c:when test="${newFilter.metadataType == 'DATE'}">
               <liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
                 monthParam="validFromMonth" dayParam="validFromDay" />
             </c:when>
             <c:when test="${newFilter.metadataType == 'TEXT'}">
-              <aui:input label="${newFilter.keyString}" name="filterValue" id="${newFilter.keyString}"/>
+              <aui:input label="${newFilter.keyString}" name="filterValue" id="${newFilter.keyString}" />
             </c:when>
           </c:choose>
+        </div>
+        <c:if test="${not empty newFilter}">
           <aui:button-row>
             <aui:button onClick="${editIFeedURL}" value="save" />
             <aui:button onClick="${cancelURL}" type="cancel" />
           </aui:button-row>
-        </div>
+          </c:if>
       </liferay-ui:panel>
       <liferay-ui:panel title="Valda filter" collapsible="true" extended="true">
         <div id="<portlet:namespace />usedFiltersWrap">
@@ -147,7 +153,8 @@
               </portlet:actionURL>
               <li><span class="tree-node-wrap clearfix"> <aui:a href="${removeFilter}"
                     class="tree-node-link tree-node-delete">Ta bort</aui:a> <span class="tree-node-label"> <liferay-ui:message
-                      key="${iFeedFilter.filter.keyString}" />: ${iFeedFilter.filterQuery} </span> </span></li>
+                      key="${iFeedFilter.filter.keyString}" />: ${iFeedFilter.filterQuery} </span> </span>
+              </li>
             </c:forEach>
           </ul>
         </div>
@@ -173,7 +180,6 @@
   <%@ include file="ifeed_css.jsp"%>
   <script type="text/javascript" src="${renderRequest.contextPath}/js/vgr-ifeed-config.js"></script>
 </liferay-util:html-top>
-
 <aui:script use="vgr-ifeed-config">
 
 	var vgrIfeedConfig = new A.VgrIfeedConfig({
@@ -188,13 +194,13 @@
 	})
 	.render();
 
-    AUI().ready('aui-autocomplete', function(A) {
-      var instance = new A.AutoComplete({
-          dataSource: ${vocabulary},
-          typeAhead: false,
-          contentBox: '#<portlet:namespace />filter-value-box',
-          input: '#<portlet:namespace />filter-value'
-      }).render();
-      
-    });
+<!--     AUI().ready('aui-autocomplete', function(A) { -->
+<!--       var instance = new A.AutoComplete({ -->
+<%--           dataSource: ${vocabularyJson}, --%>
+<!--           typeAhead: false, -->
+<%--           contentBox: '#<portlet:namespace />filter-value-box', --%>
+<%--           input: '#<portlet:namespace />filter-value' --%>
+<!--       }).render(); -->
+<!--     }); -->
+
 </aui:script>

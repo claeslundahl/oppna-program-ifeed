@@ -89,17 +89,14 @@
                       key="${filterType.keyString}" /> </span> </span>
                 <ul>
                   <c:forEach items="${filterType.filters}" var="filter">
-                    <li>
-                      <span class="tree-node-wrap clearfix">
-                        <portlet:actionURL name="selectFilter" var="selectFilter">
+                    <li><span class="tree-node-wrap clearfix">
+                      <portlet:actionURL name="selectFilter" var="selectFilter">
                           <portlet:param name="action" value="selectFilter" />
                           <portlet:param name="filter" value="${filter}" />
-                        </portlet:actionURL>
-                        <span class="tree-node-tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean malesuada dolor vel nisl venenatis tincidunt non a leo.">Icon</span>
+                      </portlet:actionURL>
+                      <span class="tree-node-tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean malesuada dolor vel nisl venenatis tincidunt non a leo.">Icon</span>
                         <a href="${selectFilter}" class="tree-node-use tree-node-link">
-                          <span class="tree-node-label"><liferay-ui:message key="${filter.keyString}" /></span>
-                        </a>
-                        </span>
+                            <span class="tree-node-label"><liferay-ui:message key="${filter.keyString}" /> </span> </a> </span>
                     </li>
                   </c:forEach>
                 </ul>
@@ -113,33 +110,35 @@
   <aui:column columnWidth="33">
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Nytt filter" collapsible="true" extended="true">
-        <div id="<portlet:namespace />filter-value-box">
-          <c:choose>
-            <c:when test="${newFilter.metadataType == 'MULTI_VALUE'}">
-              <aui:select label="${newFilter.keyString}" name="filterValue">
-                <c:forEach items="${vocabulary}" var="meta">
-                  <aui:option label="${meta}" value="${meta}" />
-                </c:forEach>
-              </aui:select>
-            </c:when>
-            <c:when test="${newFilter.metadataType == 'MULTI_VALUE_EXT'}">
-              <aui:input label="${newFilter.keyString}" name="filterValue" id="filter-value" />
-            </c:when>
-            <c:when test="${newFilter.metadataType == 'DATE'}">
-              <liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
-                monthParam="validFromMonth" dayParam="validFromDay" />
-            </c:when>
-            <c:when test="${newFilter.metadataType == 'TEXT'}">
-              <aui:input label="${newFilter.keyString}" name="filterValue" id="${newFilter.keyString}" />
-            </c:when>
-          </c:choose>
-        </div>
-        <c:if test="${not empty newFilter}">
-          <aui:button-row>
-            <aui:button onClick="${editIFeedURL}" value="save" />
-            <aui:button onClick="${cancelURL}" type="cancel" />
-          </aui:button-row>
+        <aui:form action="${addFilterURL}">
+          <div id="<portlet:namespace />filter-value-box">
+            <c:choose>
+              <c:when test="${newFilter.metadataType == 'MULTI_VALUE'}">
+                <aui:select label="${newFilter.keyString}" name="filterValue">
+                  <c:forEach items="${vocabulary}" var="meta">
+                    <aui:option label="${meta}" value="${meta}" />
+                  </c:forEach>
+                </aui:select>
+              </c:when>
+              <c:when test="${newFilter.metadataType == 'MULTI_VALUE_EXT'}">
+                <aui:input label="${newFilter.keyString}" name="filterValue" id="filter-value" />
+              </c:when>
+              <c:when test="${newFilter.metadataType == 'DATE'}">
+                <liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
+                  monthParam="validFromMonth" dayParam="validFromDay" />
+              </c:when>
+              <c:when test="${newFilter.metadataType == 'TEXT'}">
+                <aui:input label="${newFilter.keyString}" name="filterValue" id="filter-value" />
+              </c:when>
+            </c:choose>
+          </div>
+          <c:if test="${not empty newFilter}">
+            <aui:button-row>
+              <aui:button type="submit" />
+              <aui:button type="cancel" />
+            </aui:button-row>
           </c:if>
+        </aui:form>
       </liferay-ui:panel>
       <liferay-ui:panel title="Valda filter" collapsible="true" extended="true">
         <div id="<portlet:namespace />usedFiltersWrap">
@@ -195,12 +194,12 @@
 	.render();
 
 <!--     AUI().ready('aui-autocomplete', function(A) { -->
-<!--       var instance = new A.AutoComplete({ -->
-<%--           dataSource: ${vocabularyJson}, --%>
-<!--           typeAhead: false, -->
-<%--           contentBox: '#<portlet:namespace />filter-value-box', --%>
-<%--           input: '#<portlet:namespace />filter-value' --%>
-<!--       }).render(); -->
-<!--     }); -->
+  <!--       var instance = new A.AutoComplete({ -->
+  <%--           dataSource: ${vocabularyJson}, --%>
+  <!--           typeAhead: false, -->
+  <%--           contentBox: '#<portlet:namespace />filter-value-box', --%>
+  <%--           input: '#<portlet:namespace />filter-value' --%>
+  <!--       }).render(); -->
+  <!--     }); -->
 
 </aui:script>

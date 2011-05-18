@@ -12,7 +12,7 @@ public enum FilterType {
     CREATED_FOR(EnumSet.<Filter> of(H_O_S, CREATED_FOR_UNIT, PUBLISHED_FOR_UNIT, CREATED_FOR_PROJECT, PUBLISHED_FOR_PROJECT)),
     CONTEXT(EnumSet.<Filter> of(RECORD_TYPE, DOC_TYPE, ARCHIVE_CREATOR, PROCESS_NAME, CASE_TYPE, CASE, JOURNAL_ID, DOCUMENT_SERIES, DOCUMENT_SERIES_ID, PHYSICAL_LOCATION)),
     MANAGED_BY(EnumSet.<Filter> of(PUBLISHED_BY, RESPONSIBLE, RESPONSIBLE_FUNC)),
-    STATUS_AND_LIMITATIONS(EnumSet.<Filter> of(DOCUMENT_STATUS, VALID_FROM_DATE, VALID_TO_DATE, AVAILABLE_FROM_DATE, AVAILABLE_TO_DATE, PUBLISHING_DATE, PUBLIC_ACCESSIBILITY)),
+    STATUS_AND_LIMITATIONS(EnumSet.<Filter> of(DOCUMENT_STATUS, VALID_FROM_DATE, VALID_TO_DATE, AVAILABLE_FROM_DATE, AVAILABLE_TO_DATE, PUBLISHING_FROM_DATE, PUBLISHING_TO_DATE, PUBLIC_ACCESSIBILITY)),
     CREATED_BY(EnumSet.<Filter> of(SAVED_BY, CREATED_BY_FIX, CREATED_BY_FREE)),
     DESCRIPTION(EnumSet.<Filter> of(TITLE, ALT_TITLE)),
     KEYWORDS_FOR(EnumSet.<Filter> of(KEYWORDS_FIX, AUTHORS_KEYWORDS)),
@@ -38,7 +38,7 @@ public enum FilterType {
     }
 
     public enum Filter {
-        H_O_S("DC:audience", MULTI_VALUE, ""),
+        H_O_S("DC:audience", MULTI_VALUE, "HosPersKat"),
         CREATED_FOR_UNIT("DC:creator.forunit", MULTI_VALUE, ""),
         PUBLISHED_FOR_UNIT("DC:publisher.forunit", MULTI_VALUE_EXT, ""),
         CREATED_FOR_PROJECT("DC:creator.project-assignment", TEXT, ""),
@@ -60,7 +60,8 @@ public enum FilterType {
         VALID_TO_DATE("DC:date.validto", DATE, ""),
         AVAILABLE_FROM_DATE("DC:date.availablefrom", DATE, ""),
         AVAILABLE_TO_DATE("DC:date.availableto", DATE, ""),
-        PUBLISHING_DATE("DC:date.issued", DATE, ""),
+        PUBLISHING_FROM_DATE("DC:date.issued", DATE, ""),
+        PUBLISHING_TO_DATE("DC:date.issued", DATE, ""),
         PUBLIC_ACCESSIBILITY("DC:rights.accessrights", TEXT, ""),
         SAVED_BY("DC:contributor.savedby", MULTI_VALUE_EXT, ""),
         CREATED_BY_FIX("DC:creator", MULTI_VALUE_EXT, ""),

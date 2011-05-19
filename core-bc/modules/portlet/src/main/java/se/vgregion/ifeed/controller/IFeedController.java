@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 import se.vgregion.ifeed.service.IFeedService;
 
 @Controller
-@RequestMapping(value = "VIEW")
+@RequestMapping("VIEW")
+@SessionAttributes({ "ifeed", "feedId", "hits"})
 public class IFeedController {
 
     private IFeedService iFeedService;
@@ -25,26 +27,26 @@ public class IFeedController {
         this.iFeedService = iFeedService;
     }
 
-    @RenderMapping() 
+    @RenderMapping
     public String showIFeedsDefault(Model model, RenderRequest request) {
-    	System.out.println("IFeedController.showIFeedsDefault()");
+        System.out.println("IFeedController.showIFeedsDefault()");
         return showUserIFeeds(model, request);
     }
 
-    @RenderMapping(params={"viewUserIFeeds"}) 
+    @RenderMapping(params={"viewUserIFeeds"})
     public String showUserIFeeds(Model model, RenderRequest request) {
-    	System.out.println("IFeedController.showUserIFeeds()");
-    	model.addAttribute("ifeeds", iFeedService.getUserIFeeds(getRemoteUserId(request)));
+        System.out.println("IFeedController.showUserIFeeds()");
+        model.addAttribute("ifeeds", iFeedService.getUserIFeeds(getRemoteUserId(request)));
         return "index";
     }
 
-    @RenderMapping(params={"viewAllIFeeds"}) 
+    @RenderMapping(params={"viewAllIFeeds"})
     public String showIFeeds(Model model) {
-    	System.out.println("IFeedController.showIFeeds()");
-    	model.addAttribute("ifeeds", iFeedService.getIFeeds());
+        System.out.println("IFeedController.showIFeeds()");
+        model.addAttribute("ifeeds", iFeedService.getIFeeds());
         return "index";
     }
-    
+
     private String getRemoteUserId(PortletRequest request) {
         @SuppressWarnings("unchecked")
         Map<String, ?> userInfo = (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
@@ -55,7 +57,7 @@ public class IFeedController {
         System.out.println("userId: " + userId);
         return userId;
     }
-    
+
 
     // @ExceptionHandler({ Exception.class })
     public String handleException() {

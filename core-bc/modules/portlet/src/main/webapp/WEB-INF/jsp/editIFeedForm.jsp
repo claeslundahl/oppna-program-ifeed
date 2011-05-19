@@ -55,6 +55,10 @@
   <portlet:param name="action" value="cancel" />
 </portlet:actionURL>
 
+<portlet:actionURL name="saveIFeed" var="saveIFeedURL">
+  <portlet:param name="action" value="saveIFeed" />
+</portlet:actionURL>
+
 <aui:layout>
   <aui:column columnWidth="100" first="true" last="true">
     <h1 class="heading">
@@ -63,6 +67,8 @@
     <p class="description">
       <span id="<portlet:namespace />descriptionText">${ifeed.description}</span>
     </p>
+    <a href="${saveIFeedURL}" class="tree-node-save tree-node-link">Spara</a>
+    <a href="${cancelURL}" class="tree-node-cancel tree-node-link">Avbryt</a>
   </aui:column>
   <aui:column columnWidth="33" first="true">
     <div class="ifeed-step">
@@ -89,18 +95,18 @@
                       key="${filterType.keyString}" /> </span> </span>
                 <ul>
                   <c:forEach items="${filterType.filters}" var="filter">
-                    <li><span class="tree-node-wrap clearfix">
-                      <portlet:actionURL name="selectFilter" var="selectFilter">
+                    <li><span class="tree-node-wrap clearfix"> <portlet:actionURL name="selectFilter"
+                          var="selectFilter">
                           <portlet:param name="action" value="selectFilter" />
                           <portlet:param name="filter" value="${filter}" />
-                      </portlet:actionURL>
-                      <span class="tree-node-tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean malesuada dolor vel nisl venenatis tincidunt non a leo.">Icon</span>
+                        </portlet:actionURL> <span class="tree-node-tooltip"
+                        title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean malesuada dolor vel nisl venenatis tincidunt non a leo.">Icon</span>
                         <a href="${selectFilter}" class="tree-node-use tree-node-link">
-                            <span class="tree-node-label"><liferay-ui:message key="${filter.keyString}" /> </span> </a> </span>
-                    </li>
+                          <span class="tree-node-label"><liferay-ui:message key="${filter.keyString}" />
+                          </span>
+                        </a> </span></li>
                   </c:forEach>
-                </ul>
-              </li>
+                </ul></li>
             </c:forEach>
           </ul>
         </div>
@@ -110,7 +116,8 @@
   <aui:column columnWidth="33">
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Nytt filter" collapsible="true" extended="true">
-        <aui:form action="${addFilterURL}">
+        <aui:form action="${addFilterURL}" method="post">
+          <aui:input name="filter" type="hidden" value="${newFilter}" />
           <div id="<portlet:namespace />filter-value-box">
             <c:choose>
               <c:when test="${newFilter.metadataType == 'MULTI_VALUE'}">
@@ -134,8 +141,7 @@
           </div>
           <c:if test="${not empty newFilter}">
             <aui:button-row>
-              <aui:button type="submit" />
-              <aui:button type="cancel" />
+              <aui:button type="submit" value="Add" name="add" />
             </aui:button-row>
           </c:if>
         </aui:form>
@@ -146,14 +152,12 @@
             <c:forEach items="${ifeed.filters}" var="iFeedFilter" varStatus="filtersRow">
               <portlet:actionURL name="removeFilter" var="removeFilter">
                 <portlet:param name="action" value="removeFilter" />
-                <portlet:param name="feedId" value="${ifeed.id}" />
                 <portlet:param name="filter" value="${iFeedFilter.filter}" />
                 <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
               </portlet:actionURL>
-              <li><span class="tree-node-wrap clearfix"> <aui:a href="${removeFilter}"
-                    class="tree-node-link tree-node-delete">Ta bort</aui:a> <span class="tree-node-label"> <liferay-ui:message
-                      key="${iFeedFilter.filter.keyString}" />: ${iFeedFilter.filterQuery} </span> </span>
-              </li>
+              <li><span class="tree-node-wrap clearfix"> <a href="${removeFilter}"
+                    class="tree-node-link tree-node-delete">Ta bort</a> <span class="tree-node-label"> <liferay-ui:message
+                      key="${iFeedFilter.filter.keyString}" />: ${iFeedFilter.filterQuery} </span> </span></li>
             </c:forEach>
           </ul>
         </div>

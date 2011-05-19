@@ -4,6 +4,15 @@
 <liferay-portlet-app>
 	<portlet>
 		<portlet-name>iFeed</portlet-name>
+		<scheduler-entry>
+			<scheduler-event-listener-class>se.vgregion.ifeed.scheduler.iFeedScheduledJob</scheduler-event-listener-class>
+			<trigger>
+				<simple>
+					<simple-trigger-value>10</simple-trigger-value>
+					<time-unit>second</time-unit>
+				</simple>
+			</trigger>
+		</scheduler-entry>
 		<instanceable>true</instanceable>
 		<css-class-wrapper>ifeed-portlet</css-class-wrapper>
 	</portlet>

@@ -23,9 +23,9 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.ifeed.service.IFeedService;
 import se.vgregion.ifeed.types.IFeed;
 
-@Controller(value = "addIFeedController")
-@RequestMapping(value = "VIEW")
-@SessionAttributes(types = IFeed.class)
+@Controller
+@RequestMapping("VIEW")
+@SessionAttributes({"ifeed", "feedId", "hits"})
 public class AddIFeedController {
     private IFeedService iFeedService;
 
@@ -40,9 +40,9 @@ public class AddIFeedController {
         return new IFeed();
     }
 
-    @RenderMapping(params = "view=showAddIFeedForm")
+    @RenderMapping(params = "{view=showAddIFeedForm}")
     public String showAddIFeedForm(RenderResponse response) {
-    	System.out.println("AddIFeedController.showAddIFeedForm()");
+        System.out.println("AddIFeedController.showAddIFeedForm()");
         return "addIFeedForm";
     }
 
@@ -56,7 +56,7 @@ public class AddIFeedController {
         return "errorPage";
     }
 
-    @ActionMapping(params = "action=addIFeed")
+    @ActionMapping(params = "{action=addIFeed}")
     public void addIFeed(@Valid @ModelAttribute(value = "ifeed") IFeed iFeed, BindingResult bindingResult,
             ActionRequest request, ActionResponse response, SessionStatus sessionStatus) {
         if (!bindingResult.hasErrors()) {

@@ -68,15 +68,9 @@
 }
 
 .ifeed-portlet .tree-node-label,
-.ifeed-portlet .tree-node-label,
 .ifeed-portlet .tree-node-link,
 .ifeed-portlet .tree-node-tooltip {
 	display: block;
-}
-
-.ifeed-portlet .tree-node-label,
-.ifeed-portlet .tree-node-link,
-.ifeed-portlet .tree-node-tooltip {
 	float: left;
 	margin: 0 5px 0 0;
 }
@@ -86,7 +80,8 @@
 	padding-left: 20px;
 }
 
-.ifeed-portlet .tree-node-tooltip {
+.ifeed-portlet .tree-node-tooltip, 
+.ifeed-portlet .tree-node-delete {
     font-size: 0;
     height: 16px;
     text-align: -9999em;
@@ -98,12 +93,20 @@
 	font-weight: bold;
 }
 
+.ifeed-portlet .tree-node-cancel {
+    background: transparent url(${themeDisplay.pathThemeImages}/common/close.png) 0 0 no-repeat;
+}
+
+.ifeed-portlet .tree-node-save {
+	background: transparent url(${themeDisplay.pathThemeImages}/common/export.png) 0 0 no-repeat;
+}
+
 .ifeed-portlet .tree-node-edit {
-	background: transparent url(${themeDisplay.pathThemeImages}/common/edit.png) 0 0 no-repeat;
+    background: transparent url(${themeDisplay.pathThemeImages}/common/edit.png) 0 0 no-repeat;
 }
 
 .ifeed-portlet .tree-node-delete {
-	background: transparent url(${themeDisplay.pathThemeImages}/common/close.png) 0 0 no-repeat;
+	background: transparent url(${themeDisplay.pathThemeImages}/common/delete.png) 0 0 no-repeat;
 }
 
 .ifeed-portlet .tree-node-use {

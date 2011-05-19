@@ -2,6 +2,7 @@ package se.vgregion.ifeed.service.solr;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
@@ -21,6 +24,8 @@ public class IFeedSolrQuery extends SolrQuery {
      * 
      */
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(IFeedSolrQuery.class);
+
     private CommonsHttpSolrServer solrServer;
 
     /*public enum ORDER { desc, asc;
@@ -42,17 +47,15 @@ public class IFeedSolrQuery extends SolrQuery {
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList<Map<String, Object>> doFilterQuery() {
+    public List<Map<String, Object>> doFilterQuery() {
         this.setSortField("revisiondate", SolrQuery.ORDER.desc);
-        ArrayList<Map<String, Object>> hits = null;
+        List<Map<String, Object>> hits = Collections.emptyList();
         try {
             hits = (ArrayList<Map<String, Object>>)this.query().getResults().clone();
         } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Felaktigt url till sökserver: {}", e.getCause());
         } catch (SolrServerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Serverfel: {}", e.getCause());
         }
         return hits;
     }
@@ -69,6 +72,9 @@ public class IFeedSolrQuery extends SolrQuery {
         setFilterQueries(solrFilters);
 
         // Perform query
-        return doFilterQuery();
+        List<Map<String, Object>> hits = doFilterQuery();
+        LOGGER.debug("Number of search hits: {}", hits.size());
+
+        return hits;
     }
 }

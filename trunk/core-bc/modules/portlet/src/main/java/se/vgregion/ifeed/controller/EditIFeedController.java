@@ -13,8 +13,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,21 +39,20 @@ import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-@Controller(value = "editIFeedController")
-@RequestMapping(value = "VIEW")
-@SessionAttributes(value = { "ifeed", "feedId", "hits"})
+@Controller
+@RequestMapping("VIEW")
+@SessionAttributes({"ifeed", "feedId", "hits"})
 public class EditIFeedController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditIFeedController.class);
 
     @Autowired
-    @Qualifier("iFeedService")
     private IFeedService iFeedService;
     @Autowired
-    @Qualifier("iFeedSolrQuery")
     private IFeedSolrQuery iFeedSolrQuery;
     @Autowired
     private Validator iFeedValidator;
     @Autowired
-    MetadataService metadataService;
+    private MetadataService metadataService;
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed) {
@@ -86,7 +86,7 @@ public class EditIFeedController {
     @ActionMapping(params = "action=addFilter")
     public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean,
             ActionResponse response, Model model) {
-        System.out.println(ToStringBuilder.reflectionToString(filterFormBean));
+        LOGGER.debug("Add: {}", ToStringBuilder.reflectionToString(filterFormBean));
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
         System.out.println(iFeed);
         List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(iFeed);
@@ -107,6 +107,7 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=saveIFeed")
     public void saveIFeed(@ModelAttribute("ifeed") IFeed iFeed) {
+        LOGGER.debug("Saving iFeed: {}", iFeed);
         iFeedService.updateIFeed(iFeed);
     }
 

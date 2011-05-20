@@ -44,6 +44,7 @@ public class MetadataServiceImpl implements MetadataService {
         this.metadataRoots = metadataRoots;
     }
 
+    @Transactional
     public void importMetadata() {
         for (String metadataRoot : metadataRoots) {
             importMetdata(metadataRoot);

@@ -2,18 +2,18 @@
 <!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.0.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_0_0.dtd">
 
 <liferay-portlet-app>
-	<portlet>
-		<portlet-name>iFeed</portlet-name>
-		<scheduler-entry>
-			<scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedScheduledJob</scheduler-event-listener-class>
-			<trigger>
-				<simple>
-					<simple-trigger-value>10</simple-trigger-value>
-					<time-unit>second</time-unit>
-				</simple>
-			</trigger>
-		</scheduler-entry>
-		<instanceable>true</instanceable>
-		<css-class-wrapper>ifeed-portlet</css-class-wrapper>
-	</portlet>
+  <portlet>
+    <portlet-name>iFeed</portlet-name>
+    <scheduler-entry>
+      <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedScheduledJob</scheduler-event-listener-class>
+      <trigger>
+        <cron>
+          <!-- Run every weekday night at 3 a.m -->
+          <cron-trigger-value>0 15 3 ? * *</cron-trigger-value>
+        </cron>
+      </trigger>
+    </scheduler-entry>
+    <instanceable>true</instanceable>
+    <css-class-wrapper>ifeed-portlet</css-class-wrapper>
+  </portlet>
 </liferay-portlet-app>

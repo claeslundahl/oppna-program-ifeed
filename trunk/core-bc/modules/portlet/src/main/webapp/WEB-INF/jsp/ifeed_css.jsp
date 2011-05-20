@@ -75,6 +75,10 @@
 	margin: 0 5px 0 0;
 }
 
+.ifeed-portlet .aui-tree-view {
+    overflow: visible;
+} 
+
 .ifeed-portlet .tree-node-link {
 	height: 16px;
 	padding-left: 20px;

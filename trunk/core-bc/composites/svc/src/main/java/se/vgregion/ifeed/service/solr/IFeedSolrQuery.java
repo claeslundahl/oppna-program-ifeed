@@ -51,7 +51,8 @@ public class IFeedSolrQuery extends SolrQuery {
         this.setSortField("revisiondate", SolrQuery.ORDER.desc);
         List<Map<String, Object>> hits = Collections.emptyList();
         try {
-            hits = (ArrayList<Map<String, Object>>)this.query().getResults().clone();
+            QueryResponse response = this.query();
+            hits = (ArrayList<Map<String, Object>>)response.getResults().clone();
         } catch (MalformedURLException e) {
             LOGGER.error("Felaktigt url till sökserver: {}", e.getCause());
         } catch (SolrServerException e) {
@@ -61,12 +62,14 @@ public class IFeedSolrQuery extends SolrQuery {
     }
 
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed) {
+        this.setShowDebugInfo(true);
+
         setQuery("");
         String[] solrFilters = new String[iFeed.getFilters().size()];
 
         int index = 0;
         for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
-            solrFilters[index++] = iFeedFilter.getFilter().getFilterField() + ":" + iFeedFilter.getFilterQuery();
+            solrFilters[index++] = iFeedFilter.getFilter().getFilterField() + ":" + iFeedFilter.getFilterQuery() + "*";
         }
         // Populate the query with the feed's filters
         setFilterQueries(solrFilters);

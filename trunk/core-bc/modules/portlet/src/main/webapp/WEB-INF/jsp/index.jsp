@@ -31,10 +31,10 @@
 
 		<liferay-ui:search-container-column-text>
 			<liferay-ui:icon-menu cssClass="">
-				<portlet:renderURL var="editIFeedURL">
-					<portlet:param name="view" value="showEditIFeedForm" />
+				<portlet:actionURL var="editIFeedURL">
+					<portlet:param name="action" value="editIFeed" />
 					<portlet:param name="feedId" value="${iFeed.id}" />
-				</portlet:renderURL>
+				</portlet:actionURL>
 				<liferay-ui:icon image="edit" url="${editIFeedURL}" />
 				<portlet:actionURL name="removeIFeed" var="removeIFeedURL">
 					<portlet:param name="action" value="removeIFeed" />

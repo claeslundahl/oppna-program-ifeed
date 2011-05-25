@@ -38,8 +38,4 @@
 
   <bean id="dataSource" abstract="true" />
   
-  <bean id="openEntityInView" class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
-    <property name="entityManagerFactory" ref="entityManagerFactory" />
-  </bean>
-
 </beans>

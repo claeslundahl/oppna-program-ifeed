@@ -3,14 +3,14 @@
 <div class="lfr-portlet-toolbar">
 
     <portlet:renderURL var="viewOwnedURL">
-		<portlet:param name="view" value="viewUserIFeeds" />
+		<portlet:param name="view" value="showUserIFeeds" />
 	</portlet:renderURL>
 	<span class="lfr-toolbar-button view-button <c:if test='${toolbarItem == "view"}'>current</c:if>">
 		<a href="${viewOwnedURL}"><liferay-ui:message key="view" /></a>
 	</span>
 
 	<portlet:renderURL var="viewAllURL">
-		<portlet:param name="view" value="viewAllIFeeds" />
+		<portlet:param name="view" value="showAllIFeeds" />
 	</portlet:renderURL>
 	<span class="lfr-toolbar-button view-button <c:if test='${toolbarItem == "view-all"}'>current</c:if>">
 		<a href="${viewAllURL}"><liferay-ui:message key="view-all" /></a>

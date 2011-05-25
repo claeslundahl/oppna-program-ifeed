@@ -33,14 +33,14 @@
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.Metadata" />
   </bean>
 
-  <bean id="apelonService" class="se.vgregion.metaservice.vocabularyservice.intsvc.VocabularyServiceIntServiceImplService">
-    <constructor-arg value="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService?wsdl" />
-  </bean>
+<!--   <bean id="apelonService" class="se.vgregion.metaservice.vocabularyservice.intsvc.VocabularyServiceIntServiceImplService"> -->
+<!--     <constructor-arg value="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService?wsdl" /> -->
+<!--   </bean> -->
 
   <bean name="metadataService" class="se.vgregion.ifeed.metadata.service.MetadataServiceImpl">
-    <constructor-arg>
-      <bean factory-bean="apelonService" factory-method="getVocabularyServiceIntServiceImplPort" />
-    </constructor-arg>
+<!--     <constructor-arg> -->
+<!--       <bean factory-bean="apelonService" factory-method="getVocabularyServiceIntServiceImplPort" /> -->
+<!--     </constructor-arg> -->
     <constructor-arg ref="metadataRepo" />
     <property name="metadataRoots">
       <set>

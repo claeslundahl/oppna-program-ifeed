@@ -13,19 +13,15 @@
         ">
 
   <import resource="applicationContext.xml" />
-  
-  <!--   <context:component-scan base-package="se.vgregion.ifeed.controller" /> -->
+
+  <!-- <context:component-scan base-package="se.vgregion.ifeed.controller" /> -->
   <bean class="se.vgregion.ifeed.controller.AddIFeedController" />
   <bean class="se.vgregion.ifeed.controller.EditIFeedController" />
   <bean class="se.vgregion.ifeed.controller.IFeedController" />
   <bean class="se.vgregion.ifeed.controller.RemoveIFeedController" />
-  
+
   <bean id="iFeedValidator" class="se.vgregion.ifeed.controller.IFeedValidator" />
-  
-  <bean class="org.springframework.web.portlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-    <property name="interceptors" ref="openEntityInView" />
-  </bean>
-  
+
   <mvc:resources mapping="/resources/**" location="classpath:/resources/" />
 
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

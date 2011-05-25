@@ -24,19 +24,18 @@ import se.vgr.metaservice.schema.response.v1.NodeListResponseObjectType;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.types.Metadata;
 import vocabularyservices.wsdl.metaservice_vgr_se.v2.GetVocabularyRequest;
-import vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService;
 
 public class MetadataServiceImpl implements MetadataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataService.class);
     private static Map<String, CachedVocabulary> vocabularyCache = new HashMap<String, CachedVocabulary>();
 
-    private VocabularyService port;
+    //    private VocabularyService port;
     private JpaRepository<Metadata, Long, Long> repo;
 
     private Collection<String> metadataRoots;
 
-    public MetadataServiceImpl(VocabularyService port, JpaRepository<Metadata, Long, Long> repo) {
-        this.port = port;
+    public MetadataServiceImpl(/*VocabularyService port, */JpaRepository<Metadata, Long, Long> repo) {
+        //        this.port = port;
         this.repo = repo;
     }
 
@@ -67,12 +66,13 @@ public class MetadataServiceImpl implements MetadataService {
     @Transactional
     private void updateCacheTree(Metadata parent, String path) {
 
+        NodeListResponseObjectType result = null;
         GetVocabularyRequest req = new GetVocabularyRequest();
         req.setRequestId(UUID.randomUUID().toString());
         String fullPath = path + (isBlank(path) ? "" : "/") + parent.getName();
         req.setPath(fullPath);
 
-        NodeListResponseObjectType result = port.getVocabulary(req);
+        //        result = port.getVocabulary(req);
 
         NodeListType nodes = result.getNodeList();
         for (NodeType node : nodes.getNode()) {

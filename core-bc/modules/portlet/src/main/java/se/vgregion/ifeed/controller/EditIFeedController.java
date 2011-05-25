@@ -17,11 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +40,8 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 @Controller
 @RequestMapping("VIEW")
-@SessionAttributes({"ifeed", "feedId", "hits"})
+@SessionAttributes({"ifeed", "hits"})
+@Transactional
 public class EditIFeedController {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditIFeedController.class);
 
@@ -54,19 +54,27 @@ public class EditIFeedController {
     @Autowired
     private MetadataService metadataService;
 
+    @ActionMapping(params = "action=editIFeed")
+    public void editIFeed(@RequestParam(required = true) Long feedId, Model model, ActionResponse response) {
+        LOGGER.debug("Edit IFeed with id: {}", feedId);
+        IFeed iFeed = iFeedService.getIFeed(feedId);
+        model.addAttribute("ifeed", iFeed);
+        model.addAttribute("hits", iFeedSolrQuery.getIFeedResults(iFeed));
+        response.setRenderParameter("view", "showEditIFeedForm");
+    }
+
     @RenderMapping(params = "view=showEditIFeedForm")
-    public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed) {
+    public String showEditIFeedForm(Model model) {
         return "editIFeedForm";
     }
 
-    @ActionMapping(params = "action=editIFeed")
+    @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") IFeed iFeed, BindingResult bindingResult,
             ActionResponse response, SessionStatus sessionStatus, Model model) {
         iFeedValidator.validate(iFeed, bindingResult);
         if (!bindingResult.hasErrors()) {
             iFeedService.updateIFeed(iFeed);
-            model.addAttribute("view", "showAllIFeeds");
-            // response.setRenderParameter("view", "showAllIFeeds");
+            response.setRenderParameter("view", "showAllIFeeds");
             sessionStatus.setComplete();
         } else {
             response.setRenderParameter("view", "showEditIFeedForm");
@@ -105,32 +113,29 @@ public class EditIFeedController {
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
-    @ActionMapping(params = "action=saveIFeed")
-    public void saveIFeed(@ModelAttribute("ifeed") IFeed iFeed) {
-        LOGGER.debug("Saving iFeed: {}", iFeed);
-        iFeedService.updateIFeed(iFeed);
-    }
-
     @ActionMapping(params = "action=cancel")
     public void cancel(ActionResponse response, SessionStatus sessionStatus, Model model) {
+        LOGGER.debug("Cancel ifeed editing and clear session");
         sessionStatus.setComplete();
-        model.addAttribute("view", "showAllIFeeds");
         response.setRenderParameter("view", "showAllIFeeds");
     }
 
-    @InitBinder("ifeed")
-    public void initBinder(WebDataBinder binder) {
-        // TODO Add validators
-    }
+    //    @InitBinder("ifeed")
+    //    public void initBinder(WebDataBinder binder) {
+    //        // TODO Add validators
+    //    }
 
-    @ModelAttribute("ifeed")
-    public IFeed getIFeed(@RequestParam(required = false) Long feedId, Model model) {
-        model.addAttribute("feedId", feedId);
-        IFeed feed = iFeedService.getIFeed(feedId);
-        List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(feed);
-        model.addAttribute("hits", hits);
-        return feed;
-    }
+    //    @ModelAttribute("ifeed")
+    //    public IFeed getIFeed(@RequestParam(required = true) Long feedId, Model model) {
+    //        model.addAttribute("feedId", feedId);
+    //        IFeed feed = iFeedService.getIFeed(feedId);
+    //        return feed;
+    //    }
+    //
+    //    @ModelAttribute("hits")
+    //    public List<Map<String, Object>> getHits(@ModelAttribute("ifeed") IFeed iFeed) {
+    //        return iFeedSolrQuery.getIFeedResults(iFeed);
+    //    }
 
     @ModelAttribute("filterTypes")
     public List<FilterType> getFilterTypes() {
@@ -138,7 +143,7 @@ public class EditIFeedController {
     }
 
     // @ExceptionHandler({ Exception.class })
-    public String handleException() {
-        return "errorPage";
-    }
+    //    public String handleException() {
+    //        return "errorPage";
+    //    }
 }

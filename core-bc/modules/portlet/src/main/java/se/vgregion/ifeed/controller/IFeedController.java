@@ -33,14 +33,14 @@ public class IFeedController {
         return showUserIFeeds(model, request);
     }
 
-    @RenderMapping(params={"viewUserIFeeds"})
+    @RenderMapping(params={"view=showUserIFeeds"})
     public String showUserIFeeds(Model model, RenderRequest request) {
         System.out.println("IFeedController.showUserIFeeds()");
         model.addAttribute("ifeeds", iFeedService.getUserIFeeds(getRemoteUserId(request)));
         return "index";
     }
 
-    @RenderMapping(params={"viewAllIFeeds"})
+    @RenderMapping(params={"view=showAllIFeeds"})
     public String showIFeeds(Model model) {
         System.out.println("IFeedController.showIFeeds()");
         model.addAttribute("ifeeds", iFeedService.getIFeeds());

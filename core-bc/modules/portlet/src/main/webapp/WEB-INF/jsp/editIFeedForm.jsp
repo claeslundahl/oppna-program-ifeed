@@ -64,6 +64,9 @@
     <h1 class="heading">
       <span id="<portlet:namespace />headingText">${ifeed.name}</span>
     </h1>
+    <p class="id">
+      <span id="<portlet:namespace />idText">${ifeed.id}</span>
+    </p>
     <p class="description">
       <span id="<portlet:namespace />descriptionText">${ifeed.description}</span>
     </p>

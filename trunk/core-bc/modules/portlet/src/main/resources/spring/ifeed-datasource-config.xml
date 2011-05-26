@@ -5,11 +5,11 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
   <!-- Loads configuration in the specified order. Duplicated properties is overridden which means that it is possible 
-    to change configuration at runtime. -->
+    to change configuration without a recompile. -->
   <context:property-placeholder
-    location="classpath:datasource.properties, file:${user.home}/.ifeed/config.properties, ${ifeed.properties}"
+    location="classpath:default-config.properties, file:${user.home}/.ifeed/config.properties, ${ifeed.properties}"
     ignore-resource-not-found="true" ignore-unresolvable="true" />
-
+    
   <import resource="classpath:spring/jpa-connector.xml" />
   
   <!-- Imports a connector type configuration to the jpa connector - defaults to jndi. -->

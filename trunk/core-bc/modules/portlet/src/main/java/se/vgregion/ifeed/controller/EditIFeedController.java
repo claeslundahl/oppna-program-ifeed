@@ -5,17 +5,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.portlet.ActionResponse;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -54,17 +53,21 @@ public class EditIFeedController {
     @Autowired
     private MetadataService metadataService;
 
+    @Value("${ifeed.feed}")
+    private String ifeedAtomFeed;
+
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) Long feedId, Model model, ActionResponse response) {
         LOGGER.debug("Edit IFeed with id: {}", feedId);
         IFeed iFeed = iFeedService.getIFeed(feedId);
         model.addAttribute("ifeed", iFeed);
-        model.addAttribute("hits", iFeedSolrQuery.getIFeedResults(iFeed));
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @RenderMapping(params = "view=showEditIFeedForm")
-    public String showEditIFeedForm(Model model) {
+    public String showEditIFeedForm(@ModelAttribute("ifeed") IFeed iFeed, Model model) {
+        model.addAttribute("hits", iFeedSolrQuery.getIFeedResults(iFeed));
+        model.addAttribute("atomFeedLink", String.format(ifeedAtomFeed, iFeed.getId()));
         return "editIFeedForm";
     }
 
@@ -94,11 +97,7 @@ public class EditIFeedController {
     @ActionMapping(params = "action=addFilter")
     public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean,
             ActionResponse response, Model model) {
-        LOGGER.debug("Add: {}", ToStringBuilder.reflectionToString(filterFormBean));
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
-        System.out.println(iFeed);
-        List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(iFeed);
-        model.addAttribute("hits", hits);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
@@ -107,36 +106,14 @@ public class EditIFeedController {
             @RequestParam("filter") FilterType.Filter filter, @RequestParam("filterQuery") String filterQuery,
             Model model) {
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
-        List<Map<String, Object>> hits = iFeedSolrQuery.getIFeedResults(iFeed);
-        model.addAttribute("hits", hits);
-
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=cancel")
     public void cancel(ActionResponse response, SessionStatus sessionStatus, Model model) {
-        LOGGER.debug("Cancel ifeed editing and clear session");
         sessionStatus.setComplete();
         response.setRenderParameter("view", "showAllIFeeds");
     }
-
-    //    @InitBinder("ifeed")
-    //    public void initBinder(WebDataBinder binder) {
-    //        // TODO Add validators
-    //    }
-
-    //    @ModelAttribute("ifeed")
-    //    public IFeed getIFeed(@RequestParam(required = true) Long feedId, Model model) {
-    //        model.addAttribute("feedId", feedId);
-    //        IFeed feed = iFeedService.getIFeed(feedId);
-    //        return feed;
-    //    }
-    //
-    //    @ModelAttribute("hits")
-    //    public List<Map<String, Object>> getHits(@ModelAttribute("ifeed") IFeed iFeed) {
-    //        return iFeedSolrQuery.getIFeedResults(iFeed);
-    //    }
-
     @ModelAttribute("filterTypes")
     public List<FilterType> getFilterTypes() {
         return Collections.unmodifiableList(Arrays.asList(FilterType.values()));

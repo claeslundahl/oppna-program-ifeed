@@ -34,7 +34,7 @@
   </bean>
 
 <!--   <bean id="apelonService" class="se.vgregion.metaservice.vocabularyservice.intsvc.VocabularyServiceIntServiceImplService"> -->
-<!--     <constructor-arg value="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService?wsdl" /> -->
+<!--     <constructor-arg value="${apelon.serivce.location}" /> -->
 <!--   </bean> -->
 
   <bean name="metadataService" class="se.vgregion.ifeed.metadata.service.MetadataServiceImpl">

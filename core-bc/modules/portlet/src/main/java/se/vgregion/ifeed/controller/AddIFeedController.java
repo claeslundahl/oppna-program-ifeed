@@ -19,7 +19,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
-import se.vgregion.ifeed.service.IFeedService;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.IFeed;
 
 @Controller

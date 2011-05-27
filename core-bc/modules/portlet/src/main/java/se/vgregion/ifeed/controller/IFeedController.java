@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
-import se.vgregion.ifeed.service.IFeedService;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
 
 @Controller
 @RequestMapping("VIEW")

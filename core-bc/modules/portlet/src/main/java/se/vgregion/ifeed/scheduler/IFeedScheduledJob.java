@@ -6,7 +6,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import se.vgregion.ifeed.metadata.service.MetadataService;
+import se.vgregion.ifeed.service.metadata.MetadataService;
 
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;

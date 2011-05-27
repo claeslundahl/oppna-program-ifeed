@@ -1,4 +1,4 @@
-package se.vgregion.ifeed.service;
+package se.vgregion.ifeed.service.ifeed;
 
 import java.util.ArrayList;
 import java.util.List;

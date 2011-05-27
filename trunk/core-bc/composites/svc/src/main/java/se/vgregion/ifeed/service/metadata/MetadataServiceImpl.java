@@ -1,4 +1,4 @@
-package se.vgregion.ifeed.metadata.service;
+package se.vgregion.ifeed.service.metadata;
 
 import static org.apache.commons.lang.StringUtils.*;
 

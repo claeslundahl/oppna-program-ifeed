@@ -29,8 +29,8 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 import se.vgregion.ifeed.formbean.FilterFormBean;
-import se.vgregion.ifeed.metadata.service.MetadataService;
-import se.vgregion.ifeed.service.IFeedService;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.FilterType.Filter;

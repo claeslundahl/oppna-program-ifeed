@@ -18,8 +18,8 @@ import org.apache.abdera.model.Feed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import se.vgregion.ifeed.metadata.service.MetadataService;
-import se.vgregion.ifeed.service.IFeedService;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;

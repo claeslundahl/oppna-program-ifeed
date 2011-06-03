@@ -37,19 +37,19 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
     @Version
     private Long version;
 
-    @ElementCollection(fetch=FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
     private Set<IFeedFilter> filters;
 
     private String name;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp = new Date();
+    private Date timestamp = null;
     private String description;
     private String userId;
 
     public Collection<IFeedFilter> getFilters() {
-        if(filters == null) {
+        if (filters == null) {
             return Collections.emptyList();
         }
         return Collections.unmodifiableList(new ArrayList<IFeedFilter>(filters));
@@ -72,15 +72,15 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
     }
 
     public Date getTimestamp() {
-        return new Date(timestamp.getTime());
+        if (timestamp == null) {
+            return null;
+        } else {
+            return new Date(timestamp.getTime());
+        }
     }
 
-    public void setTimestamp(Date timestamp) {
-        if(timestamp == null) {
-            setTimestamp();
-        } else {
-            this.timestamp = new Date(timestamp.getTime());
-        }
+    public void clearTimestamp() {
+        this.timestamp = null;
     }
 
     public String getUserId() {

@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.scheduler;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -17,8 +18,7 @@ public class IFeedScheduledJob implements MessageListener {
     private MetadataService service;
     @Override
     public void receive(Message message) {
-        System.out.println("Scheduler started");
-        LOGGER.debug("Schedule task is started {}", message);
+        LOGGER.debug("Schedule task is started {}", ToStringBuilder.reflectionToString(message));
         LOGGER.debug("Trying to get hold of an application context");
         LOGGER.debug("Metadataservice is: {}", service);
         ApplicationContext context = null;

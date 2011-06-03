@@ -33,14 +33,14 @@
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.Metadata" />
   </bean>
 
-<!--   <bean id="apelonService" class="se.vgregion.metaservice.vocabularyservice.intsvc.VocabularyServiceIntServiceImplService"> -->
-<!--     <constructor-arg value="${apelon.serivce}" /> -->
-<!--   </bean> -->
+  <!-- <bean id="apelonService" class="se.vgregion.metaservice.vocabularyservice.intsvc.VocabularyServiceIntServiceImplService"> -->
+  <!-- <constructor-arg value="${apelon.serivce}" /> -->
+  <!-- </bean> -->
 
   <bean name="metadataService" class="se.vgregion.ifeed.service.metadata.MetadataServiceImpl">
-<!--     <constructor-arg> -->
-<!--       <bean factory-bean="apelonService" factory-method="getVocabularyServiceIntServiceImplPort" /> -->
-<!--     </constructor-arg> -->
+    <!-- <constructor-arg> -->
+    <!-- <bean factory-bean="apelonService" factory-method="getVocabularyServiceIntServiceImplPort" /> -->
+    <!-- </constructor-arg> -->
     <constructor-arg ref="metadataRepo" />
     <property name="metadataRoots">
       <set>
@@ -53,5 +53,10 @@
       </set>
     </property>
   </bean>
+
+  <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher">
+    <constructor-arg value="${push.service}"/>
+  </bean>
+
 </beans>
         

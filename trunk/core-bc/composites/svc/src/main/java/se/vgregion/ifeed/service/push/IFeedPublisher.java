@@ -4,9 +4,9 @@
 package se.vgregion.ifeed.service.push;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -43,7 +43,8 @@ public class IFeedPublisher {
 
     public void addIFeed(IFeed iFeed) {
         try {
-            content.append("&hub.url=").append(URLEncoder.encode(String.format(ifeedAtomFeed, iFeed.getId()), "UTF-8"));
+            content.append("&hub.url=").append(
+                    URLEncoder.encode(String.format(ifeedAtomFeed, iFeed.getId()), "UTF-8"));
             ++ifeedCount;
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
@@ -62,47 +63,52 @@ public class IFeedPublisher {
         return content.toString();
     }
 
-    public void publish() {
+    public boolean publish() {
         try {
             LOGGER.info("Publishing {} ifeeds to push server.", ifeedCount);
             content.insert(0, "hub.mode=" + URLEncoder.encode("publish", "UTF-8"));
             LOGGER.debug("Open a connection to: {}", pushServerUrl);
             conn = (HttpURLConnection) pushServerUrl.openConnection();
 
-            sendPost();
+            boolean success = sendPost();
 
-            if (failedPost() && LOGGER.isWarnEnabled()) {
-                LOGGER.warn("Error when publishing feeds to push server: {}", getResponseBody());
-            } else if (LOGGER.isDebugEnabled()) {
+            if (success) {
                 LOGGER.debug("Published feeds to push server: {}", getResponseBody());
+            } else {
+                LOGGER.warn("Error when publishing feeds to push server: {}", getResponseBody());
             }
+            return success;
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
+            content = new StringBuilder();
             if (conn != null) {
-                content = new StringBuilder();
                 conn.disconnect();
             }
         }
     }
 
-    private boolean failedPost() throws IOException {
-        return conn.getResponseCode() != 204;
+    private boolean isSuccessfulPost() throws IOException {
+        return conn.getResponseCode() == 204;
     }
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
-    private void sendPost() throws IOException {
+    private boolean sendPost() throws IOException {
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);
+        conn.setDoInput(true);
         conn.setConnectTimeout(this.timeout);
-        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-        out.write(content.toString());
+
+        DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+        out.writeBytes(content.toString());
         LOGGER.debug("Posting request to push server with the following body: {}", content);
         out.flush();
+        out.close();
+        return isSuccessfulPost();
     }
 
     private String getResponseBody() throws IOException {

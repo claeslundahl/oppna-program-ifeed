@@ -1,19 +1,20 @@
 package se.vgregion.ifeed.service.ifeed;
 
-import java.util.List;
+import java.util.Collection;
 
 import se.vgregion.ifeed.types.IFeed;
 
 public interface IFeedService {
-	public List<IFeed> getIFeeds();
-	
-	public List<IFeed> getUserIFeeds(String userId);
+    Collection<IFeed> getIFeeds();
 
-	public IFeed getIFeed(Long id);
-	
-	public void addIFeed(IFeed iFeed);
-	
-	public void updateIFeed(IFeed iFeed);
-	
-	public void removeIFeed(Long id);
+    Collection<IFeed> getUserIFeeds(String userId);
+
+    IFeed getIFeed(Long id);
+
+    void addIFeed(IFeed iFeed);
+
+    void updateIFeed(IFeed iFeed);
+
+    void removeIFeed(Long id);
+
 }

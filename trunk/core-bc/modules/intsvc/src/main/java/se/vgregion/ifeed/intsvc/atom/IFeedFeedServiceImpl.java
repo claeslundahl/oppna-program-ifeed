@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -146,7 +146,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return e;
     }
 
-    private Feed populateFeed(Feed f, List<Map<String, Object>> hits) {
+    private Feed populateFeed(Feed f, Collection<Map<String, Object>> hits) {
         for (Map<String, Object> map : hits) {
             Entry e = f.addEntry();
             populateEntry(e, map);

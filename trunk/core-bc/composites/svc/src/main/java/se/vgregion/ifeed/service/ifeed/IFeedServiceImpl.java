@@ -1,10 +1,14 @@
 package se.vgregion.ifeed.service.ifeed;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Transactional;
+
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 public class IFeedServiceImpl implements IFeedService {
 
@@ -15,13 +19,13 @@ public class IFeedServiceImpl implements IFeedService {
     }
 
     @Override
-    public List<IFeed> getIFeeds() {
+    public Collection<IFeed> getIFeeds() {
         return new ArrayList<IFeed>(iFeedRepo.findAll());
     }
-    
+
     @Override
-    public List<IFeed> getUserIFeeds(String userId) {
-    	return new ArrayList<IFeed>(iFeedRepo.findByQuery("SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1", new Object[] { userId }));
+    public Collection<IFeed> getUserIFeeds(String userId) {
+        return new ArrayList<IFeed>(iFeedRepo.findByQuery("SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1", new Object[] { userId }));
     }
 
     @Override
@@ -44,7 +48,19 @@ public class IFeedServiceImpl implements IFeedService {
     @Override
     @Transactional
     public void updateIFeed(IFeed iFeed) {
+        IFeed oldIFeed = iFeedRepo.find(iFeed.getId());
+        if(oldIFeed == null || filterChanged(oldIFeed, iFeed)) {
+            iFeed.clearTimestamp();
+        }
+
         iFeedRepo.merge(iFeed);
+    }
+
+    private boolean filterChanged(IFeed oldIFeed, IFeed iFeed) {
+        Collection<IFeedFilter> oldFilters = oldIFeed.getFilters();
+        Collection<IFeedFilter> newFilters = iFeed.getFilters();
+
+        return CollectionUtils.isEqualCollection(oldFilters, newFilters);
     }
 
 }

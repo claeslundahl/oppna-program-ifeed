@@ -19,5 +19,4 @@ public interface IFeedFeedService {
     @Produces({ "application/xml", "application/atom+xml;type=entry" })
     @Path("/{id}")
     Entry getIFeedEntry(@PathParam("id") Long id);
-
 }

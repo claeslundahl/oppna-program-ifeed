@@ -73,6 +73,7 @@ public class IFeedPublisher {
             boolean success = sendPost();
 
             if (success) {
+                ifeedCount = 0;
                 LOGGER.debug("Published feeds to push server: {}", getResponseBody());
             } else {
                 LOGGER.warn("Error when publishing feeds to push server: {}", getResponseBody());

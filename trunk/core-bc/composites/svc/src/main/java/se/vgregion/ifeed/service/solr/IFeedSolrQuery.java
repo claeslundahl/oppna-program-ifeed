@@ -101,6 +101,7 @@ public class IFeedSolrQuery extends SolrQuery {
         List<Map<String, Object>> hits = doFilterQuery();
         LOGGER.debug("Number of search hits: {}", hits.size());
 
+        //Clear filter queries for next query
         setFilterQueries(new String[0]);
 
         return hits;

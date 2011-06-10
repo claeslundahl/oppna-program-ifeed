@@ -7,4 +7,31 @@
     <instanceable>true</instanceable>
     <css-class-wrapper>ifeed-portlet</css-class-wrapper>
   </portlet>
+
+  <portlet>
+    <portlet-name>apelon-scheduler</portlet-name>
+    <scheduler-entry>
+      <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedScheduledJob</scheduler-event-listener-class>
+      <trigger>
+        <cron>
+<!--           Run every night at 3.15 a.m -->
+          <cron-trigger-value>0 15 3 ? * *</cron-trigger-value>
+        </cron>
+      </trigger>
+    </scheduler-entry>
+    <system>true</system>
+  </portlet>
+
+  <portlet>
+    <portlet-name>publish-scheduler</portlet-name>
+    <scheduler-entry>
+      <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedPublishScheduler</scheduler-event-listener-class>
+      <trigger>
+        <cron>
+          <cron-trigger-value>0 */5 * ? * *</cron-trigger-value>
+        </cron>
+      </trigger>
+    </scheduler-entry>
+    <system>true</system>
+  </portlet>
 </liferay-portlet-app>

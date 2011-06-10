@@ -52,7 +52,6 @@ public class IFeedServiceImpl implements IFeedService {
         if(oldIFeed == null || filterChanged(oldIFeed, iFeed)) {
             iFeed.clearTimestamp();
         }
-
         iFeedRepo.merge(iFeed);
     }
 
@@ -60,7 +59,7 @@ public class IFeedServiceImpl implements IFeedService {
         Collection<IFeedFilter> oldFilters = oldIFeed.getFilters();
         Collection<IFeedFilter> newFilters = iFeed.getFilters();
 
-        return CollectionUtils.isEqualCollection(oldFilters, newFilters);
+        return !CollectionUtils.isEqualCollection(oldFilters, newFilters);
     }
 
 }

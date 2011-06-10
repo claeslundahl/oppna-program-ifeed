@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.push.IFeedPublisher;
@@ -29,15 +30,19 @@ import com.liferay.portal.kernel.messaging.MessageListener;
 public class IFeedPublishScheduler implements MessageListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedPublishScheduler.class);
 
+    private ApplicationContext context;
     private IFeedPublisher iFeedPublisher;
     private IFeedService iFeedService;
     private IFeedSolrQuery iFeedSolrQuery;
 
     @Override
+    @Transactional
     public void receive(Message message) {
         LOGGER.debug("Schedule task is started {}", ToStringBuilder.reflectionToString(message));
 
-        setupContext();
+        loadContext("classpath*:spring/ifeed-*.xml");
+        initBeans();
+
         Collection<IFeed> modifiedIFeeds = new HashSet<IFeed>();
 
         Collection<IFeed> ifeeds = iFeedService.getIFeeds();
@@ -46,7 +51,7 @@ public class IFeedPublishScheduler implements MessageListener {
                     iFeed.getName(), iFeed.getId() });
             Collection<Map<String, Object>> iFeedResults = iFeedSolrQuery.getIFeedResults(iFeed,
                     iFeed.getTimestamp());
-            if (!isEmpty(iFeedResults)) {
+            if (!isEmpty(iFeedResults) || iFeed.getTimestamp() == null) {
                 LOGGER.debug("{} new documents found in feed {} (id: {})", new Object[] { iFeedResults.size(),
                         iFeed.getName(), iFeed.getId() });
                 LOGGER.debug("Sending feed {} (id: {}) to PuSH server.",
@@ -64,19 +69,23 @@ public class IFeedPublishScheduler implements MessageListener {
         }
     }
 
-    private void setupContext() {
-        LOGGER.debug("Trying to get hold of an application context");
-        ApplicationContext context = null;
+    private void initBeans() {
+        iFeedPublisher = context.getBean(IFeedPublisher.class);
+        iFeedService = context.getBean(IFeedService.class);
+        iFeedSolrQuery = context.getBean(IFeedSolrQuery.class);
+    }
 
-        try {
-            context = new ClassPathXmlApplicationContext("classpath*:spring/ifeed-*.xml");
-            iFeedPublisher = context.getBean(IFeedPublisher.class);
-            iFeedService = context.getBean(IFeedService.class);
-            iFeedSolrQuery = context.getBean(IFeedSolrQuery.class);
-        } catch (BeansException e) {
-            e.printStackTrace();
-            LOGGER.error("Context is null, failed to inialize: {}", e.getCause());
-            return;
+    private void loadContext(String configLocation) {
+        LOGGER.debug("Loading spring context");
+        if (context == null) {
+            try {
+                LOGGER.debug("Creating new application context using config location: {}", configLocation);
+                context = new ClassPathXmlApplicationContext(configLocation);
+                LOGGER.debug("Context created: {}", context);
+            } catch (BeansException e) {
+                e.printStackTrace();
+                LOGGER.error("Context is null, failed to inialize: {}", e.getCause());
+            }
         }
     }
 
@@ -88,4 +97,5 @@ public class IFeedPublishScheduler implements MessageListener {
         IFeedPublishScheduler scheduler = new IFeedPublishScheduler();
         scheduler.receive(null);
     }
+
 }

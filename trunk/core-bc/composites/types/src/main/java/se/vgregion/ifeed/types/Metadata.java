@@ -20,23 +20,25 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 /**
  * @author Anders Asplund - Callista Enterprise
- *
+ * 
  */
 @Entity
-@Table(name="vgr_apelon_metadata")
+@Table(name = "vgr_apelon_metadata")
 public class Metadata extends AbstractEntity<Long> implements Comparable<Metadata> {
 
     @Id
     @GeneratedValue
     private Long id;
 
+    private String key;
+
     private String name;
 
-    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Metadata> children = new HashSet<Metadata>();
 
     Metadata() {
-        //To make JPA/Hibernate Happy
+        // To make JPA/Hibernate Happy
     }
 
     public Metadata(String name) {
@@ -50,6 +52,14 @@ public class Metadata extends AbstractEntity<Long> implements Comparable<Metadat
 
     public String getName() {
         return name;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
     }
 
     public Collection<Metadata> getChildren() {

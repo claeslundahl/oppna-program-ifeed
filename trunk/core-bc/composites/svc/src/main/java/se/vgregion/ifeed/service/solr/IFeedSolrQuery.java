@@ -47,6 +47,7 @@ public class IFeedSolrQuery extends SolrQuery {
     }
 
     public QueryResponse query() throws MalformedURLException, SolrServerException {
+        this.setFields("*");
         return getSolrServer().query(this);
     }
 

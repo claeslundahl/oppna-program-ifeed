@@ -31,11 +31,13 @@
   </jaxrs:server>
 
   <bean id="iFeedFeedService" class="se.vgregion.ifeed.intsvc.atom.IFeedFeedServiceImpl" />
-  
-    <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
+
+  <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
     <property name="formattedOutput" value="true" />
   </bean>
-  
-  <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.AtomEntryProvider" />
+
+  <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.AtomEntryProvider">
+    <property name="formattedOutput" value="true" />
+  </bean>
 
 </beans>

@@ -24,18 +24,19 @@ import se.vgr.metaservice.schema.response.v1.NodeListResponseObjectType;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.types.Metadata;
 import vocabularyservices.wsdl.metaservice_vgr_se.v2.GetVocabularyRequest;
+import vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService;
 
 public class MetadataServiceImpl implements MetadataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataService.class);
     private static Map<String, CachedVocabulary> vocabularyCache = new HashMap<String, CachedVocabulary>();
 
-    //    private VocabularyService port;
+    private VocabularyService port;
     private JpaRepository<Metadata, Long, Long> repo;
 
     private Collection<String> metadataRoots;
 
-    public MetadataServiceImpl(/*VocabularyService port, */JpaRepository<Metadata, Long, Long> repo) {
-        //        this.port = port;
+    public MetadataServiceImpl(VocabularyService port, JpaRepository<Metadata, Long, Long> repo) {
+        this.port = port;
         this.repo = repo;
     }
 
@@ -72,7 +73,7 @@ public class MetadataServiceImpl implements MetadataService {
         String fullPath = path + (isBlank(path) ? "" : "/") + parent.getName();
         req.setPath(fullPath);
 
-        //        result = port.getVocabulary(req);
+        result = port.getVocabulary(req);
 
         NodeListType nodes = result.getNodeList();
         for (NodeType node : nodes.getNode()) {
@@ -115,18 +116,19 @@ public class MetadataServiceImpl implements MetadataService {
     public Collection<String> getVocabulary(String metadataNodeName) {
         LOGGER.debug("Get vocabulary for metadata: {}", metadataNodeName);
         List<String> vocabulary = Collections.emptyList();
-        if(isBlank(metadataNodeName)) {
+        if (isBlank(metadataNodeName)) {
             return vocabulary;
         }
         CachedVocabulary cachedVocabulary = vocabularyCache.get(metadataNodeName);
 
-        if(emptyOrInvalidCache(cachedVocabulary)) {
+        if (emptyOrInvalidCache(cachedVocabulary)) {
             LOGGER.debug("Reading vocabulary from source");
             Collection<Metadata> vocabularyNodes = repo.findByAttribute("name", metadataNodeName);
 
-            if(!vocabularyNodes.isEmpty()) {
+            if (!vocabularyNodes.isEmpty()) {
                 vocabulary = new ArrayList<String>(vocabularyNodes.size());
-                List<Metadata> metadataChildNodes = (List<Metadata>)vocabularyNodes.iterator().next().getChildren();
+                List<Metadata> metadataChildNodes = (List<Metadata>) vocabularyNodes.iterator().next()
+                .getChildren();
                 for (Metadata metadata : metadataChildNodes) {
                     vocabulary.add(metadata.getName());
                 }

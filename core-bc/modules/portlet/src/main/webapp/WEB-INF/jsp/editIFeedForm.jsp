@@ -11,7 +11,7 @@
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>  
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <%@ page import="com.liferay.portal.kernel.dao.search.ResultRow"%>
 
@@ -66,10 +66,10 @@
       <span id="<portlet:namespace />headingText">${ifeed.name}</span>
     </h1>
     <p class="id">
-     <span class="label">Id:</span><span id="<portlet:namespace />idText">${ifeed.id}</span>
+      <span class="label">Id:</span><span id="<portlet:namespace />idText">${ifeed.id}</span>
     </p>
     <p class="link">
-     <span class="label">Link:</span><a href="${atomFeedLink}">${atomFeedLink}</a></span>
+      <span class="label">Link:</span><a href="${atomFeedLink}">${atomFeedLink}</a></span>
     </p>
     <p class="description">
       <span id="<portlet:namespace />descriptionText">${ifeed.description}</span>
@@ -108,12 +108,12 @@
                           <portlet:param name="filter" value="${filter}" />
                         </portlet:actionURL> <span class="tree-node-tooltip"
                         title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean malesuada dolor vel nisl venenatis tincidunt non a leo.">Icon</span>
-                        <a href="${selectFilter}" class="tree-node-use tree-node-link">
-                          <span class="tree-node-label"><liferay-ui:message key="${filter.keyString}" />
-                          </span>
-                        </a> </span></li>
+                        <a href="${selectFilter}" class="tree-node-use tree-node-link"> <span
+                          class="tree-node-label"><liferay-ui:message key="${filter.keyString}" /> </span> </a> </span>
+                    </li>
                   </c:forEach>
-                </ul></li>
+                </ul>
+              </li>
             </c:forEach>
           </ul>
         </div>
@@ -163,8 +163,9 @@
                 <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
               </portlet:actionURL>
               <li><span class="tree-node-wrap clearfix"> <a href="${removeFilter}"
-                    class="tree-node-link tree-node-delete">Ta bort</a> <span class="tree-node-label"> <liferay-ui:message
-                      key="${iFeedFilter.filter.keyString}" />: ${iFeedFilter.filterQuery} </span> </span></li>
+                  class="tree-node-link tree-node-delete">Ta bort</a> <span class="tree-node-label"> <liferay-ui:message
+                      key="${iFeedFilter.filter.keyString}" />: ${iFeedFilter.filterQuery} </span> </span>
+              </li>
             </c:forEach>
           </ul>
         </div>
@@ -174,13 +175,15 @@
   <aui:column columnWidth="33" last="true">
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Träfflista" collapsible="true" extended="true">
-        <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="10">
-          <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
-          <liferay-ui:search-container-row className="java.util.Map" modelVar="hit" stringKey="true">
-            <liferay-ui:search-container-column-text name="Title" property="title" />
-          </liferay-ui:search-container-row>
-          <liferay-ui:search-iterator />
-        </liferay-ui:search-container>
+        <c:if test="${not empty ifeed.filters}">
+          <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100">
+            <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
+            <liferay-ui:search-container-row className="java.util.Map" modelVar="hit" stringKey="true">
+              <liferay-ui:search-container-column-text name="Title" property="title" />
+            </liferay-ui:search-container-row>
+            <liferay-ui:search-iterator />
+          </liferay-ui:search-container>
+        </c:if>
       </liferay-ui:panel>
     </liferay-ui:panel-container>
   </aui:column>

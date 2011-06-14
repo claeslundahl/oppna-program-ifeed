@@ -6,8 +6,10 @@ import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
@@ -19,6 +21,9 @@ public class IFeedController {
 
     private IFeedService iFeedService;
 
+    @Value("${ifeed.feed}")
+    private String ifeedAtomFeed;
+
     @Autowired
     public IFeedController(IFeedService iFeedService) {
         super();
@@ -27,20 +32,22 @@ public class IFeedController {
 
     @RenderMapping
     public String showIFeedsDefault(Model model, RenderRequest request) {
-        System.out.println("IFeedController.showIFeedsDefault()");
         return showUserIFeeds(model, request);
     }
 
     @RenderMapping(params={"view=showUserIFeeds"})
     public String showUserIFeeds(Model model, RenderRequest request) {
-        System.out.println("IFeedController.showUserIFeeds()");
         model.addAttribute("ifeeds", iFeedService.getUserIFeeds(getRemoteUserId(request)));
         return "index";
     }
 
+    @ModelAttribute("atomFeedUrl")
+    public String getIfeedAtomFeed() {
+        return ifeedAtomFeed;
+    }
+
     @RenderMapping(params={"view=showAllIFeeds"})
     public String showIFeeds(Model model) {
-        System.out.println("IFeedController.showIFeeds()");
         model.addAttribute("ifeeds", iFeedService.getIFeeds());
         return "index";
     }

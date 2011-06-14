@@ -40,7 +40,6 @@ public class AddIFeedController {
 
     @RenderMapping(params = {"view=showAddIFeedForm"})
     public String showAddIFeedForm(RenderResponse response) {
-        System.out.println("AddIFeedController.showAddIFeedForm()");
         return "addIFeedForm";
     }
 
@@ -57,10 +56,11 @@ public class AddIFeedController {
     @ActionMapping(params = {"action=addIFeed"})
     public void addIFeed(@Valid @ModelAttribute(value = "ifeed") IFeed iFeed, BindingResult bindingResult,
             ActionRequest request, ActionResponse response, SessionStatus sessionStatus) {
+        System.out.println("AddIFeedController.addIFeed()");
         if (!bindingResult.hasErrors()) {
             iFeed.setUserId(getRemoteUserId(request));
             iFeedService.addIFeed(iFeed);
-            response.setRenderParameter("view", "showAllIFeeds");
+            response.setRenderParameter("view", "showEditIFeedForm");
             sessionStatus.setComplete();
         } else {
             response.setRenderParameter("view", "showAddIFeedForm");

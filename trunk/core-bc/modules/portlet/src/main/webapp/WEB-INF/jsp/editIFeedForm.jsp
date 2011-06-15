@@ -106,8 +106,9 @@
                           var="selectFilter">
                           <portlet:param name="action" value="selectFilter" />
                           <portlet:param name="filter" value="${filter}" />
-                        </portlet:actionURL> <span class="tree-node-tooltip"
-                        title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean malesuada dolor vel nisl venenatis tincidunt non a leo.">Icon</span>
+                        </portlet:actionURL>
+                        <span class="tree-node-tooltip"
+                        title="<liferay-ui:message key='${filter.keyString}.help' />">Icon</span>
                         <a href="${selectFilter}" class="tree-node-use tree-node-link"> <span
                           class="tree-node-label"><liferay-ui:message key="${filter.keyString}" /> </span> </a> </span>
                     </li>

@@ -25,6 +25,8 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 public class IFeedSolrQuery extends SolrQuery {
 
+    private static final SortOrder DEFAULT_SORT_ORDER = SortOrder.DESC;
+    private static final String DEFAULT_SORT_FIELD = "processingtime";
     /**
      * 
      */
@@ -33,9 +35,9 @@ public class IFeedSolrQuery extends SolrQuery {
 
     private CommonsHttpSolrServer solrServer;
 
-    /*
-     * public enum ORDER { desc, asc; public ORDER reverse() { return (this == asc) ? desc : asc; } }
-     */
+    public enum SortOrder {
+        DESC, ASC;
+    }
 
     public void setSolrServer(CommonsHttpSolrServer solrServer) {
         this.solrServer = solrServer;
@@ -46,15 +48,14 @@ public class IFeedSolrQuery extends SolrQuery {
         return solrServer;
     }
 
-    public QueryResponse query() throws MalformedURLException, SolrServerException {
+    protected QueryResponse query() throws MalformedURLException, SolrServerException {
         this.setFields("*");
         this.setRows(100);
         return getSolrServer().query(this);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> doFilterQuery() {
-        this.setSortField("revisiondate", SolrQuery.ORDER.desc);
+    public List<Map<String, Object>> doFilterQuery(String fieldName, SortOrder order) {
+        this.setSortField(fieldName, ORDER.valueOf(order.name().toLowerCase()));
         List<Map<String, Object>> hits = Collections.emptyList();
         try {
             QueryResponse response = this.query();
@@ -65,6 +66,11 @@ public class IFeedSolrQuery extends SolrQuery {
             LOGGER.error("Serverfel: {}", e.getCause());
         }
         return hits;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> doFilterQuery() {
+        return doFilterQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_ORDER);
     }
 
     public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
@@ -103,25 +109,10 @@ public class IFeedSolrQuery extends SolrQuery {
         List<Map<String, Object>> hits = doFilterQuery();
         LOGGER.debug("Number of search hits: {}", hits.size());
 
-        //Clear filter queries for next query
+        // Clear filter queries for next query
         setFilterQueries(new String[0]);
 
         return hits;
-    }
-
-    public static void main(String[] args) {
-        final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'";
-        final String ZULU_TIMEZONE = "Zulu";
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        TimeZone zuluTimeZoneori = TimeZone.getTimeZone(ZULU_TIMEZONE);
-        dateFormat.setTimeZone(zuluTimeZoneori);
-
-        // get current Date/time
-        Date now = new Date();
-        String dateTimestampFormat = dateFormat.format(now); // NOTE: pay attention to this line.
-
-        System.out.println(dateTimestampFormat);
     }
 
 }

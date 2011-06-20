@@ -15,7 +15,7 @@
 <%@include file="toolbar.jspf"%>
 
 <h1>${view}</h1>
-<liferay-ui:search-container id='<portlet:namespace/>-parent-search-container' delta="10" orderByCol="1">
+<liferay-ui:search-container id='<portlet:namespace/>-parent-search-container' delta="10" orderByCol="${orderByCol}" orderByType="${orderByType}">
   <liferay-ui:search-container-results results="${ifeeds}" total="${fn:length(ifeeds)}" />
 
   <liferay-ui:search-container-row className="se.vgregion.ifeed.types.IFeed" keyProperty="id" modelVar="iFeed">
@@ -31,8 +31,8 @@
     <liferay-ui:search-container-column-text>
       <liferay-ui:icon image="rss" url="${fn:replace(atomFeedUrl, '%s', iFeed.id)}" />
     </liferay-ui:search-container-column-text>
-    <liferay-ui:search-container-column-text name="Namn" property="name" orderable="true" href="${editIFeedURL}" />
-    <liferay-ui:search-container-column-text name="Ägare" property="userId" orderable="true" />
+    <liferay-ui:search-container-column-text name="Namn" property="name" orderableProperty="name" orderable="true" href="${editIFeedURL}" />
+    <liferay-ui:search-container-column-text name="Ägare" property="userId" orderableProperty="userId" orderable="true" />
     <liferay-ui:search-container-column-text name="Beskrivning" property="description" />
 
     <liferay-ui:search-container-column-text>

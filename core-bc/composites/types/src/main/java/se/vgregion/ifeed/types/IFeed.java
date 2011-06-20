@@ -26,7 +26,7 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 @Entity
 @Table(name = "vgr_ifeed")
-public class IFeed extends AbstractEntity<Long> implements Serializable {
+public class IFeed extends AbstractEntity<Long> implements Serializable, Comparable<IFeed> {
     private static final long serialVersionUID = -2277251806545192506L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
@@ -118,4 +118,10 @@ public class IFeed extends AbstractEntity<Long> implements Serializable {
     public Long getVersion() {
         return version;
     }
+
+    @Override
+    public int compareTo(IFeed o) {
+        return name.compareTo(o.name);
+    }
+
 }

@@ -1,8 +1,6 @@
 package se.vgregion.ifeed.service.solr;
 
 import java.net.MalformedURLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,7 +8,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -54,8 +51,8 @@ public class IFeedSolrQuery extends SolrQuery {
         return getSolrServer().query(this);
     }
 
-    public List<Map<String, Object>> doFilterQuery(String fieldName, SortOrder order) {
-        this.setSortField(fieldName, ORDER.valueOf(order.name().toLowerCase()));
+    protected List<Map<String, Object>> doFilterQuery(String sortField, SortOrder sortOrder) {
+        this.setSortField(sortField, ORDER.valueOf(sortOrder.name().toLowerCase()));
         List<Map<String, Object>> hits = Collections.emptyList();
         try {
             QueryResponse response = this.query();
@@ -69,7 +66,7 @@ public class IFeedSolrQuery extends SolrQuery {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> doFilterQuery() {
+    protected List<Map<String, Object>> doFilterQuery() {
         return doFilterQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_ORDER);
     }
 
@@ -77,21 +74,10 @@ public class IFeedSolrQuery extends SolrQuery {
         // Adding date offset to filter
         if (offset != null) {
             LOGGER.debug("Searching for new document since: {}",
-                    "processingtime:[" + getSolrDateFormat().format(offset) + " TO NOW]");
-            addFilterQuery("processingtime:[" + getSolrDateFormat().format(offset) + " TO NOW]");
+                    "processingtime:[" + SolrDateFormat.format(offset) + " TO NOW]");
+            addFilterQuery("processingtime:[" + SolrDateFormat.format(offset) + " TO NOW]");
         }
         return getIFeedResults(iFeed);
-    }
-
-    private DateFormat getSolrDateFormat() {
-        final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'";
-        final String ZULU_TIMEZONE = "Zulu";
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        TimeZone zuluTimeZoneori = TimeZone.getTimeZone(ZULU_TIMEZONE);
-        dateFormat.setTimeZone(zuluTimeZoneori);
-
-        return dateFormat;
     }
 
     public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed) {
@@ -101,7 +87,7 @@ public class IFeedSolrQuery extends SolrQuery {
 
         // Populate the query with the feed's filters
         for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
-            addFilterQuery(iFeedFilter.getFilter().getFilterField() + ":" + iFeedFilter.getFilterQuery() + "*");
+            addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter));
         }
 
         LOGGER.debug("Search filters: {}", Arrays.toString(this.getFilterQueries()));

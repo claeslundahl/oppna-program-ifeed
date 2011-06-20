@@ -99,7 +99,7 @@
           <ul>
             <c:forEach items="${filterTypes}" var="filterType" varStatus="filterRow">
               <li><span class="tree-node-wrap clearfix"> <span class="tree-node-label"><liferay-ui:message
-                      key="${filterType.keyString}" /> </span> </span>
+                      key="${filterType.keyString}.label" /> </span> </span>
                 <ul>
                   <c:forEach items="${filterType.filters}" var="filter">
                     <li><span class="tree-node-wrap clearfix"> <portlet:actionURL name="selectFilter"
@@ -110,7 +110,7 @@
                         <span class="tree-node-tooltip"
                         title="<liferay-ui:message key='${filter.keyString}.help' />">Icon</span>
                         <a href="${selectFilter}" class="tree-node-use tree-node-link"> <span
-                          class="tree-node-label"><liferay-ui:message key="${filter.keyString}" /> </span> </a> </span>
+                          class="tree-node-label"><liferay-ui:message key="${filter.keyString}.label" /> </span> </a> </span>
                     </li>
                   </c:forEach>
                 </ul>
@@ -128,22 +128,19 @@
           <aui:input name="filter" type="hidden" value="${newFilter}" />
           <div id="<portlet:namespace />filter-value-box">
             <c:choose>
-              <c:when test="${newFilter.metadataType == 'MULTI_VALUE'}">
-                <aui:select label="${newFilter.keyString}" name="filterValue">
+              <c:when test="${newFilter.metadataType == 'TEXT_FIX'}">
+                <aui:select label="${newFilter.keyString}.label" name="filterValue">
                   <c:forEach items="${vocabulary}" var="meta">
                     <aui:option label="${meta}" value="${meta}" />
                   </c:forEach>
                 </aui:select>
               </c:when>
-              <c:when test="${newFilter.metadataType == 'MULTI_VALUE_EXT'}">
-                <aui:input label="${newFilter.keyString}" name="filterValue" id="filter-value" />
-              </c:when>
               <c:when test="${newFilter.metadataType == 'DATE'}">
                 <liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
                   monthParam="validFromMonth" dayParam="validFromDay" />
               </c:when>
-              <c:when test="${newFilter.metadataType == 'TEXT'}">
-                <aui:input label="${newFilter.keyString}" name="filterValue" id="filter-value" />
+              <c:when test="${newFilter.metadataType == 'TEXT_FREE'}">
+                <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filter-value" />
               </c:when>
             </c:choose>
           </div>
@@ -165,7 +162,8 @@
               </portlet:actionURL>
               <li><span class="tree-node-wrap clearfix"> <a href="${removeFilter}"
                   class="tree-node-link tree-node-delete">Ta bort</a> <span class="tree-node-label"> <liferay-ui:message
-                      key="${iFeedFilter.filter.keyString}" />: ${iFeedFilter.filterQuery} </span> </span>
+                      key="${iFeedFilter.filter.keyString}.label" />: <fmt:formatDate value="${now}" type="both"
+              timeStyle="long" dateStyle="long" />${iFeedFilter.filterQuery} </span> </span>
               </li>
             </c:forEach>
           </ul>

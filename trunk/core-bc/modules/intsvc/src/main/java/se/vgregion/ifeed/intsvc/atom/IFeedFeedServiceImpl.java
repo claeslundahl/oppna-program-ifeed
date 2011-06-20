@@ -1,12 +1,9 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.service.solr.SolrDateFormat;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -165,22 +163,11 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return e;
     }
 
-    private DateFormat getSolrDateFormat() {
-        final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'";
-        final String ZULU_TIMEZONE = "Zulu";
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        TimeZone zuluTimeZone = TimeZone.getTimeZone(ZULU_TIMEZONE);
-        dateFormat.setTimeZone(zuluTimeZone);
-
-        return dateFormat;
-    }
-
     private void addElement(Entry e, String prefix, String fieldName, Object fieldValue) {
         // TODO Should handle the collection properly rather than just doing toString
         Element element = e.addExtension(new QName(NAMESPACES.get(prefix), fieldName.substring(prefix.length() + 1), prefix));
         if (fieldValue instanceof Date) {
-            element.setText(getSolrDateFormat().format((Date) fieldValue));
+            element.setText(SolrDateFormat.format((Date) fieldValue));
         } else if (fieldName.equalsIgnoreCase("dc.language")) {
             if (fieldValue.toString().equalsIgnoreCase("svenska")) {
                 element.setText("swe");

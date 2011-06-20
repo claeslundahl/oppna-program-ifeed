@@ -1,5 +1,5 @@
 package se.vgregion.ifeed.types;
 
 public enum MetadataType {
-    TEXT, DATE, MULTI_VALUE, MULTI_VALUE_EXT
+    TEXT_FREE, DATE, TEXT_FIX, MULTI_VALUE_EXT
 }

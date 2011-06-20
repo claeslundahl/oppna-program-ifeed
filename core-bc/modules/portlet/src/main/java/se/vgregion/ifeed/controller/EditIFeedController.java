@@ -114,6 +114,7 @@ public class EditIFeedController {
         sessionStatus.setComplete();
         response.setRenderParameter("view", "showAllIFeeds");
     }
+
     @ModelAttribute("filterTypes")
     public List<FilterType> getFilterTypes() {
         return Collections.unmodifiableList(Arrays.asList(FilterType.values()));

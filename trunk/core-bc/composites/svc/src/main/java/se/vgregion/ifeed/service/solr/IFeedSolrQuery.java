@@ -22,7 +22,7 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 public class IFeedSolrQuery extends SolrQuery {
 
-    private static final SortOrder DEFAULT_SORT_ORDER = SortOrder.DESC;
+    private static final SortOrder DEFAULT_SORT_ORDER = SortOrder.desc;
     private static final String DEFAULT_SORT_FIELD = "processingtime";
     /**
      * 
@@ -33,7 +33,11 @@ public class IFeedSolrQuery extends SolrQuery {
     private CommonsHttpSolrServer solrServer;
 
     public enum SortOrder {
-        DESC, ASC;
+        desc, asc;
+        public SortOrder reverse() {
+            return (this == asc) ? desc : asc;
+        }
+
     }
 
     public void setSolrServer(CommonsHttpSolrServer solrServer) {

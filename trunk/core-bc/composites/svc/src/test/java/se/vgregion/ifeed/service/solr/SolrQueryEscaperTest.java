@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 
-public class SolrQueryEncoderTest {
+public class SolrQueryEscaperTest {
 
     @Test
     public void shouldEscapeSpecialCharacters() throws Exception {

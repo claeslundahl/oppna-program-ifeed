@@ -69,7 +69,7 @@
       <span class="label">Id:</span><span id="<portlet:namespace />idText">${ifeed.id}</span>
     </p>
     <p class="link">
-      <span class="label">Link:</span><a href="${atomFeedLink}">${atomFeedLink}</a></span>
+      <span class="label">Link:</span><a href="${atomFeedLink}" target="_blank">${atomFeedLink}</a></span>
     </p>
     <p class="description">
       <span id="<portlet:namespace />descriptionText">${ifeed.description}</span>
@@ -99,7 +99,7 @@
           <ul>
             <c:forEach items="${filterTypes}" var="filterType" varStatus="filterRow">
               <li><span class="tree-node-wrap clearfix"> <span class="tree-node-label"><liferay-ui:message
-                      key="${filterType.keyString}.label" /> </span> </span>
+                      key="${filterType.keyString}" /> </span> </span>
                 <ul>
                   <c:forEach items="${filterType.filters}" var="filter">
                     <li><span class="tree-node-wrap clearfix"> <portlet:actionURL name="selectFilter"

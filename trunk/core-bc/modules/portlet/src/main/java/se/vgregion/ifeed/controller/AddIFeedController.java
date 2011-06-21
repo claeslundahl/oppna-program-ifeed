@@ -56,7 +56,8 @@ public class AddIFeedController {
     @ActionMapping(params = {"action=addIFeed"})
     public void addIFeed(@Valid @ModelAttribute(value = "ifeed") IFeed iFeed, BindingResult bindingResult,
             ActionRequest request, ActionResponse response, SessionStatus sessionStatus) {
-        System.out.println("AddIFeedController.addIFeed()");
+        System.out.println("AddIFeedController.addIFeed(): ");
+        System.out.println(iFeed);
         if (!bindingResult.hasErrors()) {
             iFeed.setUserId(getRemoteUserId(request));
             iFeedService.addIFeed(iFeed);
@@ -74,7 +75,6 @@ public class AddIFeedController {
         if (userInfo != null) {
             userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
         }
-        System.out.println("userId: " + userId);
         return userId;
     }
 

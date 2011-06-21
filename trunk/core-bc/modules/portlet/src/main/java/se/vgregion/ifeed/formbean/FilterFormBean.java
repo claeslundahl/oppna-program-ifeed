@@ -24,7 +24,7 @@ public class FilterFormBean {
 
     public String getFilterValue() {
         if (filter.getMetadataType() == MetadataType.DATE) {
-            filterValue = SolrDateFormat.format(String.valueOf(validFromYear), String.valueOf(validFromMonth), String.valueOf(validFromDay));
+            filterValue = SolrDateFormat.format(String.valueOf(validFromYear), String.valueOf(validFromMonth+1), String.valueOf(validFromDay));
         }
         System.out.println("Filter value: " + filterValue);
         return filterValue;

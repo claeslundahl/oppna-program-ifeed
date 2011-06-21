@@ -12,7 +12,7 @@ public class SolrQueryBuilderTest {
 
     @Test
     public void shouldHandleFreeTextSearch() throws Exception {
-        String expectedQueryString = "dc.title:A title*";
+        String expectedQueryString = "dc.title:A title";
 
         IFeedFilter filter = new IFeedFilter(Filter.TITLE, "A title");
         String queryString = SolrQueryBuilder.createQuery(filter);
@@ -31,7 +31,7 @@ public class SolrQueryBuilderTest {
     @Test
     public void shouldEnforceStartDate() throws Exception {
         String fromDate = "2011-01-01T00:00:00.000Z";
-        String expectedQueryString = "dc.date.validfrom:[" + fromDate + " TO *]";
+        String expectedQueryString = "dc.date.validto:[" + fromDate + " TO *]";
 
         IFeedFilter filter = new IFeedFilter(Filter.VALID_FROM_DATE, fromDate);
         String queryString = SolrQueryBuilder.createQuery(filter);
@@ -41,7 +41,7 @@ public class SolrQueryBuilderTest {
     @Test
     public void shouldEnforceEndDate() throws Exception {
         String toDate = "2011-01-01T00:00:00.000Z";
-        String expectedQueryString = "dc.date.validto:[* TO " + toDate + "]";
+        String expectedQueryString = "dc.date.validfrom:[* TO " + toDate + "]";
 
         IFeedFilter filter = new IFeedFilter(Filter.VALID_TO_DATE, toDate);
         String queryString = SolrQueryBuilder.createQuery(filter);

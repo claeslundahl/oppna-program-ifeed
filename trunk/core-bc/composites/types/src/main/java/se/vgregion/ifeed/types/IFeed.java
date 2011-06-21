@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -19,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +58,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     public boolean addFilter(IFeedFilter filter) {
+        if(filters == null) {
+            filters = new HashSet<IFeedFilter>();
+        }
         return filters.add(filter);
     }
 
@@ -121,7 +126,10 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     @Override
     public int compareTo(IFeed o) {
-        return name.compareTo(o.name);
+        if(o == null) {
+            return +1;
+        }
+        return new CompareToBuilder().append(name, o.name).toComparison();
     }
 
 }

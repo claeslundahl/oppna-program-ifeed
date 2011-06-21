@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.portlet.ActionResponse;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -77,7 +78,6 @@ public class EditIFeedController {
         iFeedValidator.validate(iFeed, bindingResult);
         if (!bindingResult.hasErrors()) {
             iFeedService.updateIFeed(iFeed);
-            response.setRenderParameter("view", "showAllIFeeds");
             sessionStatus.setComplete();
         } else {
             response.setRenderParameter("view", "showEditIFeedForm");
@@ -97,6 +97,7 @@ public class EditIFeedController {
     @ActionMapping(params = "action=addFilter")
     public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean,
             ActionResponse response, Model model) {
+        System.out.println(new ToStringBuilder(filterFormBean).toString());
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
         response.setRenderParameter("view", "showEditIFeedForm");
     }

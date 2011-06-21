@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
@@ -24,6 +25,7 @@ import se.vgregion.ifeed.types.IFeed;
 
 @Controller
 @RequestMapping("VIEW")
+@SessionAttributes("currentView")
 public class IFeedController {
 
     private IFeedService iFeedService;
@@ -38,39 +40,55 @@ public class IFeedController {
     }
 
     @RenderMapping
-    public String showIFeedsDefault(Model model, @RequestParam(required=false) String orderByCol, @RequestParam(required=false, defaultValue="desc") String orderByType, RenderRequest request) {
-        return showUserIFeeds(model, orderByCol, orderByType, request);
+    public String showIFeeds(Model model, @RequestParam(required=false) String orderByCol, @RequestParam(required=false, defaultValue="asc") SortOrder orderByType, RenderRequest request) {
+        String currentView = (String) model.asMap().get("currentView");
+        System.out.println("IFeedController.showIFeeds()");
+        System.out.println("currentView: " + currentView);
+        if(currentView == null || currentView.equalsIgnoreCase("viewMine")) {
+            return showUserIFeeds(model, orderByCol, orderByType, request);
+        }
+        return showAllIFeeds(model, orderByCol, orderByType);
+    }
+
+    @RenderMapping(params = { "view=showUserIFeeds" })
+    public String showUserIFeeds(Model model, @RequestParam(required=false, defaultValue="name") String orderByCol, @RequestParam(required=false, defaultValue="asc") SortOrder orderByType, RenderRequest request) {
+        System.out.println("IFeedController.showUserIFeeds()");
+        List<IFeed> userIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(getRemoteUserId(request)));
+        handleViewSort(model, userIFeeds, orderByCol, orderByType);
+        model.addAttribute("toolbarItem", "viewMine");
+        model.addAttribute("currentView", "viewMine");
+        return "index";
+    }
+
+    @RenderMapping(params = { "view=showAllIFeeds" })
+    public String showAllIFeeds(Model model, @RequestParam(required=false, defaultValue="name") String orderByCol, @RequestParam(required=false, defaultValue="asc") SortOrder orderByType) {
+        List<IFeed> userIFeeds = new ArrayList<IFeed>(iFeedService.getIFeeds());
+        handleViewSort(model, userIFeeds, orderByCol, orderByType);
+        model.addAttribute("toolbarItem", "viewAll");
+        model.addAttribute("currentView", "view-All");
+        return "index";
     }
 
     @SuppressWarnings("unchecked")
-    @RenderMapping(params = { "view=showUserIFeeds" })
-    public String showUserIFeeds(Model model, @RequestParam(required=false, defaultValue="name") String orderByCol, @RequestParam(required=false, defaultValue="desc") String orderByType, RenderRequest request) {
-        SortOrder sortOrder = SortOrder.valueOf(orderByType);
-        List<IFeed> userIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(getRemoteUserId(request)));
+    private void handleViewSort(Model model, List<IFeed> viewList, String orderByCol, SortOrder orderByType) {
 
         BeanComparator sortComparator = new BeanComparator(orderByCol);
 
         if(orderByType.equals(SortOrder.desc)) {
-            Collections.sort(userIFeeds, Collections.reverseOrder(sortComparator));
+            Collections.sort(viewList, Collections.reverseOrder(sortComparator));
         } else {
-            Collections.sort(userIFeeds, sortComparator);
+            Collections.sort(viewList, sortComparator);
         }
 
+        model.addAttribute("ifeeds", viewList);
         model.addAttribute("orderByCol", orderByCol);
-        model.addAttribute("orderByType", sortOrder.reverse());
-        model.addAttribute("ifeeds", userIFeeds);
-        return "index";
+        model.addAttribute("orderByType", orderByType);
+        model.addAttribute("ifeeds", viewList);
     }
 
     @ModelAttribute("atomFeedUrl")
     public String getIfeedAtomFeed() {
         return ifeedAtomFeed;
-    }
-
-    @RenderMapping(params = { "view=showAllIFeeds" })
-    public String showIFeeds(Model model) {
-        model.addAttribute("ifeeds", iFeedService.getIFeeds());
-        return "index";
     }
 
     private String getRemoteUserId(PortletRequest request) {

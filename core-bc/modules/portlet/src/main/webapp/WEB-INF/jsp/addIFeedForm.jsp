@@ -29,8 +29,8 @@
 			extended="true" id="feedConfigurationBlock1" persistState="false"
 			title="Feed info">
 			<aui:fieldset>
-				<aui:input name="feed-name" value="${ifeed.name}" />
-				<aui:input name="feed-description" value="${ifeed.description}" />
+				<aui:input name="name" label="feed-name" value="${ifeed.name}" />
+				<aui:input name="description" label="feed-description" value="${ifeed.description}" />
 			</aui:fieldset>
 			<aui:fieldset>
 				<c:forEach items="${ifeed.filters}" var="filter" varStatus="filtersRow">

@@ -30,7 +30,15 @@
     </jaxrs:providers>
   </jaxrs:server>
 
-  <bean id="iFeedFeedService" class="se.vgregion.ifeed.intsvc.atom.IFeedFeedServiceImpl" />
+  <bean id="iFeedFeedService" class="se.vgregion.ifeed.intsvc.atom.IFeedFeedServiceImpl">
+    <property name="pushServerEndpoint" value="${push.service}" />
+    <property name="namespaces">
+      <map>
+        <entry key="dc" value="http://purl.org/dc/elements/1.1/" />
+        <entry key="vgr" value="http://purl.org/vgregion/elements/1.0/" />
+      </map>
+    </property>
+  </bean>
 
   <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
     <property name="formattedOutput" value="true" />

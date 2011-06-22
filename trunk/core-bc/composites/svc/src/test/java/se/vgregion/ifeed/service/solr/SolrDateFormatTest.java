@@ -4,6 +4,7 @@
 package se.vgregion.ifeed.service.solr;
 
 import static org.junit.Assert.*;
+import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormats.*;
 
 import org.junit.Test;
 
@@ -14,17 +15,33 @@ import org.junit.Test;
 public class SolrDateFormatTest {
 
     @Test
-    public void shouldGenerateAZuluFormatedDateStringFromString() throws Exception {
+    public void shouldGenerateDateStringFormattedAsSolrDate() throws Exception {
         String expectedDateString = "2000-01-01T00:00:00.000Z";
-        String acutalDateString = SolrDateFormat.format("2000", "01", "01");
+        String acutalDateString = DateFormatter.format(2000, 01, 01, SOLR_DATE_FORMAT);
 
         assertEquals(expectedDateString, acutalDateString);
         expectedDateString = "2000-02-01T00:00:00.000Z";
-        acutalDateString = SolrDateFormat.format("2000", "02", "01");
+        acutalDateString = DateFormatter.format(2000, 02, 01, SOLR_DATE_FORMAT);
 
         assertEquals(expectedDateString, acutalDateString);
         expectedDateString = "2000-03-01T00:00:00.000Z";
-        acutalDateString = SolrDateFormat.format("2000", "03", "01");
+        acutalDateString = DateFormatter.format(2000, 03, 01, SOLR_DATE_FORMAT);
+
+        assertEquals(expectedDateString, acutalDateString);
+    }
+
+    @Test
+    public void shouldGenerateDateStringFormattedAsW3CDTF() throws Exception {
+        String expectedDateString = "2000-01-01T00:00:00Z";
+        String acutalDateString = DateFormatter.format(2000, 01, 01, W3CDTF);
+
+        assertEquals(expectedDateString, acutalDateString);
+        expectedDateString = "2000-02-01T00:00:00Z";
+        acutalDateString = DateFormatter.format(2000, 02, 01, W3CDTF);
+
+        assertEquals(expectedDateString, acutalDateString);
+        expectedDateString = "2000-03-01T00:00:00Z";
+        acutalDateString = DateFormatter.format(2000, 03, 01, W3CDTF);
 
         assertEquals(expectedDateString, acutalDateString);
     }

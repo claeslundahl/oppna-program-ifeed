@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.service.solr;
 
+import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormats.*;
+
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+
 
 public class IFeedSolrQuery extends SolrQuery {
 
@@ -78,8 +81,8 @@ public class IFeedSolrQuery extends SolrQuery {
         // Adding date offset to filter
         if (offset != null) {
             LOGGER.debug("Searching for new document since: {}",
-                    "processingtime:[" + SolrDateFormat.format(offset) + " TO NOW]");
-            addFilterQuery("processingtime:[" + SolrDateFormat.format(offset) + " TO NOW]");
+                    "processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
+            addFilterQuery("processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
         }
         return getIFeedResults(iFeed);
     }

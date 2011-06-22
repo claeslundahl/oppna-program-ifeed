@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.formbean;
 
-import se.vgregion.ifeed.service.solr.SolrDateFormat;
+import se.vgregion.ifeed.service.solr.DateFormatter;
+import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.MetadataType;
 
@@ -24,7 +25,7 @@ public class FilterFormBean {
 
     public String getFilterValue() {
         if (filter.getMetadataType() == MetadataType.DATE) {
-            filterValue = SolrDateFormat.format(String.valueOf(validFromYear), String.valueOf(validFromMonth+1), String.valueOf(validFromDay));
+            filterValue = DateFormatter.format(validFromYear, validFromMonth, validFromDay, DateFormats.SOLR_DATE_FORMAT);
         }
         System.out.println("Filter value: " + filterValue);
         return filterValue;

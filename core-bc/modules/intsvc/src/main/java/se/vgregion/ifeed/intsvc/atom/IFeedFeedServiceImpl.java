@@ -25,8 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.solr.DateFormatter;
+import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.SolrDateFormat;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -35,12 +36,8 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedFeedServiceImpl.class);
 
-    private static final Map<String, String> NAMESPACES = new HashMap<String, String>();
-
-    static {
-        NAMESPACES.put("dc", "http://purl.org/dc/elements/1.1/");
-        NAMESPACES.put("vgr", "http://purl.org/vgregion/elements/1.0/");
-    }
+    private Map<String, String> namespaces = new HashMap<String, String>();
+    private String pushServerEndpoint = null;
 
     private IFeedService iFeedService;
     private IFeedSolrQuery solrQuery;
@@ -53,6 +50,14 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         super();
         this.solrQuery = solrQuery;
         this.iFeedService = iFeedService;
+    }
+
+    public void setPushServerEndpoint(String pushServerEndpoint) {
+        this.pushServerEndpoint = pushServerEndpoint;
+    }
+
+    public void setNamespaces(Map<String, String> namespaces) {
+        this.namespaces = namespaces;
     }
 
     /*
@@ -80,6 +85,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         f.setUpdated(retrievedFeed.getTimestamp());
         f.setId(context.getAbsolutePath().toString());
         f.addLink(context.getAbsolutePath().toString(), "self");
+        f.addLink(pushServerEndpoint, "hub");
 
         // Populate the feed with search results
         populateFeed(f, solrQuery.getIFeedResults(retrievedFeed));
@@ -109,7 +115,8 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         StringBuilder content = new StringBuilder();
         content.append("<ul>");
         for (IFeedFilter iFeedFilter : retrievedFeed.getFilters()) {
-            content.append("<li>").append(iFeedFilter.getFilter().getFilterField()).append(":").append(iFeedFilter.getFilterQuery()).append("</li>");
+            content.append("<li>").append(iFeedFilter.getFilter().getFilterField()).append(":")
+            .append(iFeedFilter.getFilterQuery()).append("</li>");
         }
         content.append("</ul>");
 
@@ -157,7 +164,15 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         for (String fieldName : map.keySet()) {
             String[] parts = fieldName.split("\\.");
             if (parts.length > 1) {
-                addElement(e, parts[0], fieldName, map.get(fieldName));
+                Object fieldValue = map.get(fieldName);
+                if (fieldValue instanceof Collection) {
+                    Collection<?> c = (Collection<?>) fieldValue;
+                    for (Object o : c) {
+                        addElement(e, parts[0], fieldName, o);
+                    }
+                } else {
+                    addElement(e, parts[0], fieldName, fieldValue);
+                }
             }
         }
         return e;
@@ -165,19 +180,31 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     private void addElement(Entry e, String prefix, String fieldName, Object fieldValue) {
         // TODO Should handle the collection properly rather than just doing toString
-        Element element = e.addExtension(new QName(NAMESPACES.get(prefix), fieldName.substring(prefix.length() + 1), prefix));
-        if (fieldValue instanceof Date) {
-            element.setText(SolrDateFormat.format((Date) fieldValue));
-        } else if (fieldName.equalsIgnoreCase("dc.language")) {
-            if (fieldValue.toString().equalsIgnoreCase("svenska")) {
-                element.setText("swe");
-            } else if (fieldValue.toString().equalsIgnoreCase("svenska")) {
-                element.setText("eng");
+        if (namespaces.containsKey(prefix)) {
+            Element element = e.addExtension(new QName(namespaces.get(prefix),
+                    fieldName.substring(prefix.length() + 1), prefix));
+
+            if (fieldValue instanceof Date) {
+                //                AtomDate ad = new AtomDate((Date)fieldValue);
+                //                DateTime dateElement = e.addExtension(new QName(namespaces.get(prefix),
+                //                        fieldName.substring(prefix.length() + 1), prefix));
+                //                dateElement.setDate(((DateTime)fieldValue).getDate());
+                element.setText(DateFormatter.format((Date) fieldValue, DateFormats.W3CDTF));
+            } else if (fieldName.equalsIgnoreCase("dc.language")) {
+                if (fieldValue.toString().equalsIgnoreCase("svenska")) {
+                    element.setText("swe");
+                } else if (fieldValue.toString().equalsIgnoreCase("svenska")) {
+                    element.setText("eng");
+                } else if (fieldValue.toString().equalsIgnoreCase("norska")) {
+                    element.setText("nor");
+                } else {
+                    element.setText(fieldValue.toString());
+                }
             } else {
                 element.setText(fieldValue.toString());
             }
         } else {
-            element.setText(fieldValue.toString());
+            LOGGER.warn("Unknown namespace {}, field {} is ignored.", new Object[] { prefix, fieldName });
         }
     }
 

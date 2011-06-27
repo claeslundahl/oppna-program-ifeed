@@ -9,8 +9,6 @@
 
 <portlet:defineObjects/>
 
-<c:set var="toolbarItem" value="add" />
-
 <%@include file="toolbar.jspf" %>
 
 <portlet:actionURL name="addIFeed" var="addIFeedURL">

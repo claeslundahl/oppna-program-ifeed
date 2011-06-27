@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.controller;
 
+import static java.lang.Math.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,50 +42,79 @@ public class IFeedController {
     }
 
     @RenderMapping
-    public String showIFeeds(Model model, @RequestParam(required=false) String orderByCol, @RequestParam(required=false, defaultValue="asc") SortOrder orderByType, RenderRequest request) {
+    public String showIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
+            @RequestParam(required = false, defaultValue = "1") int cur,
+            @RequestParam(required = false) String orderByCol,
+            @RequestParam(required = false, defaultValue = "asc") SortOrder orderByType, RenderRequest request) {
+
         String currentView = (String) model.asMap().get("currentView");
-        System.out.println("IFeedController.showIFeeds()");
-        System.out.println("currentView: " + currentView);
-        if(currentView == null || currentView.equalsIgnoreCase("viewMine")) {
-            return showUserIFeeds(model, orderByCol, orderByType, request);
+        if (currentView == null || currentView.equalsIgnoreCase("viewMine")) {
+            return showUserIFeeds(model, delta, cur, orderByCol, orderByType, request);
         }
-        return showAllIFeeds(model, orderByCol, orderByType);
+        return showAllIFeeds(model, delta, cur, orderByCol, orderByType);
     }
 
     @RenderMapping(params = { "view=showUserIFeeds" })
-    public String showUserIFeeds(Model model, @RequestParam(required=false, defaultValue="name") String orderByCol, @RequestParam(required=false, defaultValue="asc") SortOrder orderByType, RenderRequest request) {
-        System.out.println("IFeedController.showUserIFeeds()");
-        List<IFeed> userIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(getRemoteUserId(request)));
-        handleViewSort(model, userIFeeds, orderByCol, orderByType);
-        model.addAttribute("toolbarItem", "viewMine");
-        model.addAttribute("currentView", "viewMine");
+    public String showUserIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
+            @RequestParam(required = false, defaultValue = "1") int cur,
+            @RequestParam(required = false, defaultValue = "name") String orderByCol,
+            @RequestParam(required = false, defaultValue = "asc") SortOrder orderByType, RenderRequest request) {
+
+        List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(getRemoteUserId(request)));
+        handleViewSort(allIFeeds, orderByCol, orderByType);
+        List<IFeed> truncatedIFeeds = handleViewPagination(allIFeeds, delta, cur);
+        populateModel(model, truncatedIFeeds, allIFeeds.size(), delta, orderByCol, orderByType, "viewMine");
         return "index";
     }
 
     @RenderMapping(params = { "view=showAllIFeeds" })
-    public String showAllIFeeds(Model model, @RequestParam(required=false, defaultValue="name") String orderByCol, @RequestParam(required=false, defaultValue="asc") SortOrder orderByType) {
-        List<IFeed> userIFeeds = new ArrayList<IFeed>(iFeedService.getIFeeds());
-        handleViewSort(model, userIFeeds, orderByCol, orderByType);
-        model.addAttribute("toolbarItem", "viewAll");
-        model.addAttribute("currentView", "view-All");
+    public String showAllIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
+            @RequestParam(required = false, defaultValue = "1") int cur,
+            @RequestParam(required = false, defaultValue = "name") String orderByCol,
+            @RequestParam(required = false, defaultValue = "asc") SortOrder orderByType) {
+        List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getIFeeds());
+
+        handleViewSort(allIFeeds, orderByCol, orderByType);
+        List<IFeed> truncatedIFeeds = handleViewPagination(allIFeeds, delta, cur);
+        populateModel(model, truncatedIFeeds, allIFeeds.size(), delta, orderByCol, orderByType, "viewAll");
+
         return "index";
     }
 
+    private void populateModel(Model model, List<IFeed> iFeeds, int numberOfIfeeds, int delta, String orderCol, SortOrder orderType, String viewName) {
+        model.addAttribute("numberOfIfeeds", numberOfIfeeds);
+        model.addAttribute("ifeeds", iFeeds);
+        model.addAttribute("delta", delta);
+        model.addAttribute("orderByCol", orderCol);
+        model.addAttribute("orderByType", orderType);
+        model.addAttribute("toolbarItem", viewName);
+        model.addAttribute("currentView", viewName);
+    }
+
     @SuppressWarnings("unchecked")
-    private void handleViewSort(Model model, List<IFeed> viewList, String orderByCol, SortOrder orderByType) {
+    private List<IFeed> handleViewSort(List<IFeed> viewList, String orderByCol, SortOrder orderByType) {
 
         BeanComparator sortComparator = new BeanComparator(orderByCol);
 
-        if(orderByType.equals(SortOrder.desc)) {
+        if (orderByType.equals(SortOrder.desc)) {
             Collections.sort(viewList, Collections.reverseOrder(sortComparator));
         } else {
             Collections.sort(viewList, sortComparator);
         }
 
-        model.addAttribute("ifeeds", viewList);
-        model.addAttribute("orderByCol", orderByCol);
-        model.addAttribute("orderByType", orderByType);
-        model.addAttribute("ifeeds", viewList);
+        return viewList;
+    }
+
+    private List<IFeed> handleViewPagination(List<IFeed> viewList, int delta, int pageNumber) {
+        int startIndex = delta * (pageNumber - 1);
+        int totalSize = viewList.size();
+        int endIndex = startIndex + delta;
+        List<IFeed> subList = viewList.subList(startIndex, min(totalSize, endIndex));
+
+        System.out.printf("Start: %s, End: %s, Total: %s", startIndex, endIndex, totalSize);
+        System.out.println("size: " + subList.size());
+        System.out.println("List: " + subList);
+        return subList;
     }
 
     @ModelAttribute("atomFeedUrl")
@@ -106,5 +137,4 @@ public class IFeedController {
     public String handleException() {
         return "errorPage";
     }
-
 }

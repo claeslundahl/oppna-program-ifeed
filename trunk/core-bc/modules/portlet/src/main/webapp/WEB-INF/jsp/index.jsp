@@ -7,16 +7,14 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
 <portlet:defineObjects />
 
-<c:set var="toolbarItem" value="${view}" />
+<h1><liferay-ui:message key="ifeed.title"/></h1>
+<details><p><liferay-ui:message key="ifeed.description"/></p></details>
 
 <%@include file="toolbar.jspf"%>
-
-<h1>${view}</h1>
-<liferay-ui:search-container id='<portlet:namespace/>-parent-search-container' delta="10" orderByCol="${orderByCol}" orderByType="${orderByType}">
-  <liferay-ui:search-container-results results="${ifeeds}" total="${fn:length(ifeeds)}" />
+<liferay-ui:search-container id='<portlet:namespace/>-parent-search-container' delta="${delta}" orderByCol="${orderByCol}" orderByType="${orderByType}">
+  <liferay-ui:search-container-results results="${ifeeds}" total="${numberOfIfeeds}" />
 
   <liferay-ui:search-container-row className="se.vgregion.ifeed.types.IFeed" keyProperty="id" modelVar="iFeed">
     <portlet:actionURL var="editIFeedURL">

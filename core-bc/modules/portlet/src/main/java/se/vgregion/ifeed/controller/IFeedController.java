@@ -4,6 +4,7 @@ import static java.lang.Math.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,8 @@ import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.comparators.TransformingComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
+import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.IFeed;
@@ -81,7 +85,8 @@ public class IFeedController {
         return "index";
     }
 
-    private void populateModel(Model model, List<IFeed> iFeeds, int numberOfIfeeds, int delta, String orderCol, SortDirection orderType, String viewName) {
+    private void populateModel(Model model, List<IFeed> iFeeds, int numberOfIfeeds, int delta, String orderCol,
+            SortDirection orderType, String viewName) {
         model.addAttribute("numberOfIfeeds", numberOfIfeeds);
         model.addAttribute("ifeeds", iFeeds);
         model.addAttribute("delta", delta);
@@ -91,17 +96,26 @@ public class IFeedController {
         model.addAttribute("currentView", viewName);
     }
 
+    private static final Transformer LOWER_CASE_TRANSFORMER = new Transformer() {
+        @Override
+        public Object transform(Object input) {
+            return ((String) input).toLowerCase();
+        }
+    };
+
     @SuppressWarnings("unchecked")
     private List<IFeed> handleViewSort(List<IFeed> viewList, String orderByCol, SortDirection orderByType) {
 
-        BeanComparator sortComparator = new BeanComparator(orderByCol);
+        if (!CommonUtils.isNull(orderByCol)) {
+            Comparator<IFeed> sortComparator = new BeanComparator(orderByCol, new TransformingComparator(
+                    LOWER_CASE_TRANSFORMER));
 
-        if (orderByType.equals(SortDirection.desc)) {
-            Collections.sort(viewList, Collections.reverseOrder(sortComparator));
-        } else {
-            Collections.sort(viewList, sortComparator);
+            if (orderByType.equals(SortDirection.desc)) {
+                Collections.sort(viewList, Collections.reverseOrder(sortComparator));
+            } else {
+                Collections.sort(viewList, sortComparator);
+            }
         }
-
         return viewList;
     }
 

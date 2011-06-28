@@ -11,10 +11,10 @@ public class SolrQueryBuilder {
         String filterQuery = iFeedFilter.getFilterQuery();
         switch (filter.getMetadataType()) {
             case TEXT_FREE:
-                query  = filter.getFilterField() + ":" + SolrQueryEscaper.escape(filterQuery);
+                query  = filter.getFilterField() + ":\"" + SolrQueryEscaper.escape(filterQuery) + "\"";
                 break;
             case TEXT_FIX:
-                query = filter.getFilterField() + ":" + SolrQueryEscaper.escape(filterQuery);
+                query  = filter.getFilterField() + ":" + SolrQueryEscaper.escape(filterQuery) + "";
                 break;
             case DATE:
                 if(filter.name().contains("FROM_DATE")) {

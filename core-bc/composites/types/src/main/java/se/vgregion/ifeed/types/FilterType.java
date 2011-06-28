@@ -72,7 +72,7 @@ public enum FilterType {
         KEYWORDS_AUTHORS("dc.subject.authorkeywords", TEXT_FREE, ""),
         HSA("dc.coverage.hsacode", TEXT_FIX, "Verksamhetskod"),
         LANGUAGE("dc.language", TEXT_FIX, "Språk"),
-        FILE_EXTENSION("dc.format.extent", TEXT_FREE, ""),
+        FILE_EXTENSION("dc.format.extension", TEXT_FREE, ""),
         DOCUMENT_STATUS("vgregion.status.document", TEXT_FIX, "Dokumentstatus");
 
         private String metadataField;

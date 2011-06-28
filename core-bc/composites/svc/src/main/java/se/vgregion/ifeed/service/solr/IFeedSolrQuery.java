@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.service.solr;
 
+import static org.apache.commons.lang.StringUtils.*;
+import static se.vgregion.common.utils.CommonUtils.*;
 import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormats.*;
 
 import java.net.MalformedURLException;
@@ -22,11 +24,10 @@ import org.slf4j.LoggerFactory;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-
 public class IFeedSolrQuery extends SolrQuery {
 
-    private static final SortOrder DEFAULT_SORT_ORDER = SortOrder.desc;
-    private static final String DEFAULT_SORT_FIELD = "processingtime";
+    public static final SortDirection DEFAULT_SORT_DIRECTION = SortDirection.desc;
+    public static final String DEFAULT_SORT_FIELD = "processingtime";
     /**
      * 
      */
@@ -35,12 +36,11 @@ public class IFeedSolrQuery extends SolrQuery {
 
     private CommonsHttpSolrServer solrServer;
 
-    public enum SortOrder {
+    public enum SortDirection {
         desc, asc;
-        public SortOrder reverse() {
+        public SortDirection reverse() {
             return (this == asc) ? desc : asc;
         }
-
     }
 
     public void setSolrServer(CommonsHttpSolrServer solrServer) {
@@ -58,8 +58,8 @@ public class IFeedSolrQuery extends SolrQuery {
         return getSolrServer().query(this);
     }
 
-    protected List<Map<String, Object>> doFilterQuery(String sortField, SortOrder sortOrder) {
-        this.setSortField(sortField, ORDER.valueOf(sortOrder.name().toLowerCase()));
+    protected List<Map<String, Object>> doFilterQuery(String sortField, SortDirection sortDirection) {
+        this.setSortField(sortField, ORDER.valueOf(sortDirection.name().toLowerCase()));
         List<Map<String, Object>> hits = Collections.emptyList();
         try {
             QueryResponse response = this.query();
@@ -72,11 +72,6 @@ public class IFeedSolrQuery extends SolrQuery {
         return hits;
     }
 
-    @SuppressWarnings("unchecked")
-    protected List<Map<String, Object>> doFilterQuery() {
-        return doFilterQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_ORDER);
-    }
-
     public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
         // Adding date offset to filter
         if (offset != null) {
@@ -84,12 +79,11 @@ public class IFeedSolrQuery extends SolrQuery {
                     "processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
             addFilterQuery("processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
         }
-        return getIFeedResults(iFeed);
+        return getIFeedResults(iFeed, DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
     }
 
-    public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed) {
+    public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection) {
         this.setShowDebugInfo(true);
-
         setQuery("");
 
         // Populate the query with the feed's filters
@@ -99,7 +93,10 @@ public class IFeedSolrQuery extends SolrQuery {
 
         LOGGER.debug("Search filters: {}", Arrays.toString(this.getFilterQueries()));
         // Perform query
-        List<Map<String, Object>> hits = doFilterQuery();
+        String sortBy = isBlank(sortField) ? DEFAULT_SORT_FIELD : sortField;
+        SortDirection direction = isNull(sortDirection) ? DEFAULT_SORT_DIRECTION : sortDirection;
+        LOGGER.debug("Sort by: {}, Order: {}", new Object[] { sortBy, direction });
+        List<Map<String, Object>> hits = doFilterQuery(sortBy, direction);
         LOGGER.debug("Number of search hits: {}", hits.size());
 
         // Clear filter queries for next query
@@ -108,4 +105,7 @@ public class IFeedSolrQuery extends SolrQuery {
         return hits;
     }
 
+    public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed) {
+        return getIFeedResults(iFeed, DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
+    }
 }

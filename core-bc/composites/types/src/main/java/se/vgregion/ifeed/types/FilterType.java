@@ -73,7 +73,7 @@ public enum FilterType {
         HSA("dc.coverage.hsacode", TEXT_FIX, "Verksamhetskod"),
         LANGUAGE("dc.language", TEXT_FIX, "Språk"),
         FILE_EXTENSION("dc.format.extent", TEXT_FREE, ""),
-        DOCUMENT_STATUS("vgr.status.document", TEXT_FIX, "Dokumentstatus");
+        DOCUMENT_STATUS("vgregion.status.document", TEXT_FIX, "Dokumentstatus");
 
         private String metadataField;
         private String keyString;

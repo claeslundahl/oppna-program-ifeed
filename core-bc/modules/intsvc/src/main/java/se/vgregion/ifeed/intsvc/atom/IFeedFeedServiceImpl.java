@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.intsvc.atom;
 
+import static se.vgregion.common.utils.CommonUtils.*;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -28,6 +31,7 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -69,7 +73,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=feed;charset=UTF-8" })
     @Path("/{id}/feed")
-    public Feed getIFeed(@PathParam("id") Long id) {
+    public Feed getIFeed(@PathParam("id") Long id, @QueryParam("by") String sortField, @QueryParam("dir") String sortDirection) {
         Feed f = Abdera.getInstance().newFeed();
 
         // Retrieve feed from store
@@ -88,7 +92,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         f.addLink(pushServerEndpoint, "hub");
 
         // Populate the feed with search results
-        populateFeed(f, solrQuery.getIFeedResults(retrievedFeed));
+        populateFeed(f, solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection)));
 
         return f;
     }
@@ -185,10 +189,6 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
                     fieldName.substring(prefix.length() + 1), prefix));
 
             if (fieldValue instanceof Date) {
-                //                AtomDate ad = new AtomDate((Date)fieldValue);
-                //                DateTime dateElement = e.addExtension(new QName(namespaces.get(prefix),
-                //                        fieldName.substring(prefix.length() + 1), prefix));
-                //                dateElement.setDate(((DateTime)fieldValue).getDate());
                 element.setText(DateFormatter.format((Date) fieldValue, DateFormats.W3CDTF));
             } else if (fieldName.equalsIgnoreCase("dc.language")) {
                 if (fieldValue.toString().equalsIgnoreCase("svenska")) {

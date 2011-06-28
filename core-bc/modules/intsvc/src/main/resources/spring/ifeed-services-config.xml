@@ -35,7 +35,7 @@
     <property name="namespaces">
       <map>
         <entry key="dc" value="http://purl.org/dc/elements/1.1/" />
-        <entry key="vgr" value="http://purl.org/vgregion/elements/1.0/" />
+        <entry key="vgregion" value="http://purl.org/vgregion/elements/1.0/" />
       </map>
     </property>
   </bean>

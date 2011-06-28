@@ -113,7 +113,6 @@ public class EditIFeedController {
     @ActionMapping(params = "action=cancel")
     public void cancel(ActionResponse response, SessionStatus sessionStatus, Model model) {
         sessionStatus.setComplete();
-        response.setRenderParameter("view", "showAllIFeeds");
     }
 
     @ModelAttribute("filterTypes")

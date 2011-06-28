@@ -12,7 +12,7 @@ public class SolrQueryBuilderTest {
 
     @Test
     public void shouldHandleFreeTextSearch() throws Exception {
-        String expectedQueryString = "dc.title:A title";
+        String expectedQueryString = "dc.title:\"A title\"";
 
         IFeedFilter filter = new IFeedFilter(Filter.TITLE, "A title");
         String queryString = SolrQueryBuilder.createQuery(filter);

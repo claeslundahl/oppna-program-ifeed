@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortOrder;
+import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.IFeed;
 
 @Controller
@@ -45,7 +45,7 @@ public class IFeedController {
     public String showIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
             @RequestParam(required = false, defaultValue = "1") int cur,
             @RequestParam(required = false) String orderByCol,
-            @RequestParam(required = false, defaultValue = "asc") SortOrder orderByType, RenderRequest request) {
+            @RequestParam(required = false, defaultValue = "asc") SortDirection orderByType, RenderRequest request) {
 
         String currentView = (String) model.asMap().get("currentView");
         if (currentView == null || currentView.equalsIgnoreCase("viewMine")) {
@@ -58,7 +58,7 @@ public class IFeedController {
     public String showUserIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
             @RequestParam(required = false, defaultValue = "1") int cur,
             @RequestParam(required = false, defaultValue = "name") String orderByCol,
-            @RequestParam(required = false, defaultValue = "asc") SortOrder orderByType, RenderRequest request) {
+            @RequestParam(required = false, defaultValue = "asc") SortDirection orderByType, RenderRequest request) {
 
         List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(getRemoteUserId(request)));
         handleViewSort(allIFeeds, orderByCol, orderByType);
@@ -71,7 +71,7 @@ public class IFeedController {
     public String showAllIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
             @RequestParam(required = false, defaultValue = "1") int cur,
             @RequestParam(required = false, defaultValue = "name") String orderByCol,
-            @RequestParam(required = false, defaultValue = "asc") SortOrder orderByType) {
+            @RequestParam(required = false, defaultValue = "asc") SortDirection orderByType) {
         List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getIFeeds());
 
         handleViewSort(allIFeeds, orderByCol, orderByType);
@@ -81,7 +81,7 @@ public class IFeedController {
         return "index";
     }
 
-    private void populateModel(Model model, List<IFeed> iFeeds, int numberOfIfeeds, int delta, String orderCol, SortOrder orderType, String viewName) {
+    private void populateModel(Model model, List<IFeed> iFeeds, int numberOfIfeeds, int delta, String orderCol, SortDirection orderType, String viewName) {
         model.addAttribute("numberOfIfeeds", numberOfIfeeds);
         model.addAttribute("ifeeds", iFeeds);
         model.addAttribute("delta", delta);
@@ -92,11 +92,11 @@ public class IFeedController {
     }
 
     @SuppressWarnings("unchecked")
-    private List<IFeed> handleViewSort(List<IFeed> viewList, String orderByCol, SortOrder orderByType) {
+    private List<IFeed> handleViewSort(List<IFeed> viewList, String orderByCol, SortDirection orderByType) {
 
         BeanComparator sortComparator = new BeanComparator(orderByCol);
 
-        if (orderByType.equals(SortOrder.desc)) {
+        if (orderByType.equals(SortDirection.desc)) {
             Collections.sort(viewList, Collections.reverseOrder(sortComparator));
         } else {
             Collections.sort(viewList, sortComparator);

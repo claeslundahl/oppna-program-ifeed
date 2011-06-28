@@ -7,13 +7,14 @@ import javax.ws.rs.Produces;
 
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface IFeedFeedService {
 
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=feed" })
     @Path("/{id}/feed")
-    Feed getIFeed(@PathParam("id") Long id);
+    Feed getIFeed(@PathParam("id") Long id, @RequestParam(value="by", required=false) String sortField, @RequestParam(value="dir", required=false) String sortDirection);
 
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=entry" })

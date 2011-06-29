@@ -1,5 +1,8 @@
 package se.vgregion.ifeed.formbean;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
 import se.vgregion.ifeed.types.FilterType.Filter;
@@ -13,6 +16,7 @@ public class FilterFormBean {
     private int validFromDay;
 
     public FilterFormBean() {
+        setFilterValue(new Date());
     }
 
     public Filter getFilter() {
@@ -27,12 +31,19 @@ public class FilterFormBean {
         if (filter.getMetadataType() == MetadataType.DATE) {
             filterValue = DateFormatter.format(validFromYear, validFromMonth, validFromDay, DateFormats.SOLR_DATE_FORMAT);
         }
-        System.out.println("Filter value: " + filterValue);
         return filterValue;
     }
 
     public void setFilterValue(String filterValue) {
         this.filterValue = filterValue;
+    }
+
+    public void setFilterValue(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        validFromYear = c.get(Calendar.YEAR);
+        validFromMonth = c.get(Calendar.MONTH);
+        validFromDay = c.get(Calendar.DATE);
     }
 
     public void setValidFromYear(int validFromYear) {
@@ -46,5 +57,15 @@ public class FilterFormBean {
 
     public void setValidFromDay(int validFromDay) {
         this.validFromDay = validFromDay;
+    }
+
+    public int getValidFromDay() {
+        return validFromDay;
+    }
+    public int getValidFromMonth() {
+        return validFromMonth;
+    }
+    public int getValidFromYear() {
+        return validFromYear;
     }
 }

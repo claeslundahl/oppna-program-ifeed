@@ -125,9 +125,6 @@ public class IFeedController {
         int endIndex = startIndex + delta;
         List<IFeed> subList = viewList.subList(startIndex, min(totalSize, endIndex));
 
-        System.out.printf("Start: %s, End: %s, Total: %s", startIndex, endIndex, totalSize);
-        System.out.println("size: " + subList.size());
-        System.out.println("List: " + subList);
         return subList;
     }
 
@@ -143,7 +140,6 @@ public class IFeedController {
         if (userInfo != null) {
             userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
         }
-        System.out.println("userId: " + userId);
         return userId;
     }
 

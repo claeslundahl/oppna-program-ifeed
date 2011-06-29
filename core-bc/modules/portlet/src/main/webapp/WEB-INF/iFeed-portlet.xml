@@ -22,7 +22,7 @@
 
   <bean id="iFeedValidator" class="se.vgregion.ifeed.controller.IFeedValidator" />
 
-  <mvc:resources mapping="/resources/**" location="classpath:/resources/" />
+  <mvc:resources location="classpath:/META-INF/" mapping="/resources/**" />
 
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="basename" value="classpath:i18n/ifeed-messages" />

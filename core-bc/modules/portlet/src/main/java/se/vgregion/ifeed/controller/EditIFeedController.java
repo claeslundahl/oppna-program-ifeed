@@ -8,9 +8,6 @@ import java.util.List;
 
 import javax.portlet.ActionResponse;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +37,7 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 @Controller
 @RequestMapping("VIEW")
-@SessionAttributes({"ifeed", "hits"})
+@SessionAttributes({ "ifeed", "hits" })
 @Transactional
 public class EditIFeedController {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditIFeedController.class);
@@ -85,20 +82,38 @@ public class EditIFeedController {
     }
 
     @ActionMapping(params = "action=selectFilter")
-    public void selectNewFilter(@RequestParam(required=false, value="filter") Filter filter, Model model, ActionResponse response) throws JsonGenerationException, JsonMappingException, IOException {
+    public void selectNewFilter(@RequestParam(required = false, value = "filter") Filter filter, Model model,
+            ActionResponse response) throws IOException {
         model.addAttribute("newFilter", filter);
         Collection<String> vocabulary = metadataService.getVocabulary(filter.getMetadataKey());
         model.addAttribute("vocabulary", vocabulary);
         String vocabularyJson = new ObjectMapper().writeValueAsString(vocabulary);
         model.addAttribute("vocabularyJson", vocabularyJson);
+        model.addAttribute("filterFormBean", new FilterFormBean());
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=addFilter")
     public void addFilter(@ModelAttribute("ifeed") IFeed iFeed, @ModelAttribute FilterFormBean filterFormBean,
             ActionResponse response, Model model) {
-        System.out.println(new ToStringBuilder(filterFormBean).toString());
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
+        response.setRenderParameter("view", "showEditIFeedForm");
+    }
+
+    @ActionMapping(params = "action=editFilter")
+    public void editFilter(ActionResponse response, @ModelAttribute("ifeed") IFeed iFeed,
+            @RequestParam("filter") FilterType.Filter filter, @RequestParam("filterQuery") String filterQuery,
+            Model model) throws IOException {
+
+        model.addAttribute("newFilter", filter);
+        model.addAttribute("filterValue", filterQuery);
+
+        Collection<String> vocabulary = metadataService.getVocabulary(filter.getMetadataKey());
+        model.addAttribute("vocabulary", vocabulary);
+        String vocabularyJson = new ObjectMapper().writeValueAsString(vocabulary);
+        model.addAttribute("vocabularyJson", vocabularyJson);
+
+        iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
@@ -121,7 +136,7 @@ public class EditIFeedController {
     }
 
     // @ExceptionHandler({ Exception.class })
-    //    public String handleException() {
-    //        return "errorPage";
-    //    }
+    // public String handleException() {
+    // return "errorPage";
+    // }
 }

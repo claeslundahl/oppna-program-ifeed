@@ -14,6 +14,9 @@ AUI().add('vgr-ifeed-config',function(A) {
 
 		BOUNDING_BOX = 'boundingBox',
 		CONTENT_BOX = 'contentBox',
+		CSS_CLASS_EDIT_TRIGGER = 'ifeed-edit-trigger',
+		CSS_CLASS_EDIT_TRIGGER_HEADING = 'ifeed-edit-trigger-heading',
+		CSS_CLASS_EDIT_TRIGGER_DESCRIPTION = 'ifeed-edit-trigger-description',
 		CSS_CLASS_TREE_NODE_TOOLTIP = 'tree-node-tooltip',
 		DESCRIPTION_NODE = 'descriptionNode',
 		EXISTING_FILTERS_TREE_BOUNDING_BOX = 'existingFiltersTreeBoundingBox',
@@ -62,6 +65,7 @@ AUI().add('vgr-ifeed-config',function(A) {
 				EXTENDS: A.Component,
 				NAME: NAME,
 				NS: NS,
+				editInlineTooltip: null,
 				existingFiltersTree: null,
 				headingEditable: null,
 				treeNodeTooltip: null,
@@ -117,20 +121,19 @@ AUI().add('vgr-ifeed-config',function(A) {
 						instance.treeNodeTooltip =  new A.Tooltip({
 							trigger: '#' + instance.get(PORTLET_WRAP).get(ID) + ' .' + CSS_CLASS_TREE_NODE_TOOLTIP,
 							align: { points: [ 'bc', 'tc' ] },
-							hideDelay: 200,
+							hideDelay: 50,
 							title: true							
 						})
 						.render();
 					},
-	
+					
 					bindUI: function() {
 						var instance = this;
 						
-						var contentBox = instance.get(CONTENT_BOX);
-					},
-					
-					_aFunction: function() {
-						var instance = this;
+						// Bind edit triggers
+						var portletWrap = instance.get(PORTLET_WRAP);
+						var editTriggers = portletWrap.all('.' + CSS_CLASS_EDIT_TRIGGER);
+						editTriggers.on('click', instance._onEditTriggersClick, instance);
 					},
 					
 					_initConsole: function() {
@@ -143,7 +146,27 @@ AUI().add('vgr-ifeed-config',function(A) {
 							visible: true//,
 							//width: '600px'
 						}).render();
+					},
+					
+					_onEditTriggersClick: function(e) {
+						var instance = this;
+						e.halt();
+						
+						var editableNode = false;
+						var currentTarget = e.currentTarget;
+						
+						if(currentTarget.hasClass(CSS_CLASS_EDIT_TRIGGER_HEADING)) {
+							editableNode = instance.headingEditable.get('node');
+						}
+						else if(currentTarget.hasClass(CSS_CLASS_EDIT_TRIGGER_DESCRIPTION)) {
+							editableNode = instance.descriptionEditable.get('node');
+						}
+						
+						if(editableNode) {
+							editableNode.simulate('click');	
+						}
 					}
+					
 				}
 			}
 	);

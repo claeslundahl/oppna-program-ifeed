@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -41,7 +40,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
-    private Set<IFeedFilter> filters;
+    private List<IFeedFilter> filters;
 
     private String name;
 
@@ -54,14 +53,26 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         if (filters == null) {
             return Collections.emptyList();
         }
-        return Collections.unmodifiableList(new ArrayList<IFeedFilter>(filters));
+        return Collections.unmodifiableCollection(filters);
     }
 
     public boolean addFilter(IFeedFilter filter) {
         if(filters == null) {
-            filters = new HashSet<IFeedFilter>();
+            filters = new ArrayList<IFeedFilter>();
+        } else if(filters.contains(filter)) {
+            return false;
         }
-        return filters.add(filter);
+        filters.add(filter);
+        return true;
+    }
+
+    public IFeedFilter getFilter(IFeedFilter filter) {
+        IFeedFilter f = null;
+        int index = filters.indexOf(filter);
+        if(index >= 0) {
+            f = filters.get(index);
+        }
+        return f;
     }
 
     public void removeFilter(IFeedFilter filter) {

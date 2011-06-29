@@ -60,38 +60,90 @@
   <portlet:param name="action" value="saveIFeed" />
 </portlet:actionURL>
 
-<aui:layout>
-  <aui:column columnWidth="100" first="true" last="true">
-    <h1 class="heading">
-      <span id="<portlet:namespace />headingText">${ifeed.name}</span>
-    </h1>
-    <p class="id">
-      <span class="label">Id:</span><span id="<portlet:namespace />idText">${ifeed.id}</span>
-    </p>
-    <p class="link">
-      <span class="label">Link:</span><a href="${atomFeedLink}" target="_blank">${atomFeedLink}</a></span>
-    </p>
-    <p class="description">
-      <span id="<portlet:namespace />descriptionText">${ifeed.description}</span>
-    </p>
-    <a href="${saveIFeedURL}" class="tree-node-save tree-node-link">Spara</a>
-    <a href="${cancelURL}" class="tree-node-cancel tree-node-link">Avbryt</a>
-  </aui:column>
-  <aui:column columnWidth="33" first="true">
-    <div class="ifeed-step">
-      <span>1. Välj filter</span>
-    </div>
-  </aui:column>
-  <aui:column columnWidth="33">
-    <div class="ifeed-step">
-      <span>2. Mata in data</span>
-    </div>
-  </aui:column>
-  <aui:column columnWidth="33" last="true">
-    <div class="ifeed-step">
-      <span>3. Din träfflista</span>
-    </div>
-  </aui:column>
+
+<aui:layout cssClass="ifeed-block ifeed-header">
+    <aui:column columnWidth="50" first="true">
+        <h1 class="heading">
+            <span id="<portlet:namespace />headingText" class="heading-text">${ifeed.name}</span>
+            <span class="ifeed-edit-trigger ifeed-edit-trigger-heading">Redigera text</span>
+        </h1>
+    </aui:column>
+    <aui:column columnWidth="50" last="true">
+        <ul class="button-toolbar clearfix">
+            <li>
+                <a href="${saveIFeedURL}" class="link-button link-button-icon link-button-save">
+                    <span class="link-button-content">Spara</span>
+                </a>
+            </li>
+            <li>
+                <a href="${cancelURL}" class="link-button link-button-icon link-button-cancel">
+                    <span class="link-button-content">Avbryt</span>
+                </a>
+            </li>
+<!--             Enable when there is a help section written -->
+<!--             <li> -->
+<!--                 <a href="" class="link-button link-button-icon link-button-help"> -->
+<!--                     <span class="link-button-content">Hjälp</span> -->
+<!--                 </a> -->
+<!--             </li> -->
+        </ul>
+    </aui:column>
+</aui:layout>
+
+<aui:layout cssClass="ifeed-block ifeed-meta-info">
+    <aui:column columnWidth="33" first="true">
+        <div class="ifeed-meta-item ifeed-meta-block">
+            <div class="ifeed-meta-label">Beskrivning:</div>
+            <div class="ifeed-meta-content">
+                <span id="<portlet:namespace />descriptionText" class="description">${ifeed.description}</span>
+                <span class="ifeed-edit-trigger ifeed-edit-trigger-description">Redigera text</span>
+            </div>
+        </div>
+    </aui:column>
+    <aui:column columnWidth="33">
+        <div class="ifeed-meta-item ifeed-meta-inline">
+            <div class="ifeed-meta-label">Id: </div>
+            <div class="ifeed-meta-content">${ifeed.id}</div>
+        </div>
+        <div class="ifeed-meta-item ifeed-meta-inline">
+            <div class="ifeed-meta-label">Skapat:</div>
+            <div class="ifeed-meta-content">2011-06-17*</div>
+        </div>
+        <div class="ifeed-meta-item ifeed-meta-inline">
+            <div class="ifeed-meta-label">Senast ändrat:</div>
+            <div class="ifeed-meta-content">2011-06-17*</div>
+        </div>
+    </aui:column>
+    <aui:column columnWidth="33" last="true">
+        <div class="ifeed-meta-item ifeed-meta-block">
+            <div class="ifeed-meta-label">Länk till feed:</div>
+            <div class="ifeed-meta-content">
+                <a href="${atomFeedLink}" target="_blank">${atomFeedLink}</a>
+            </div>
+        </div>
+    </aui:column>
+</aui:layout>
+
+<aui:layout cssClass="ifeed-block">
+    <aui:column columnWidth="33" first="true">
+        <div class="ifeed-step">
+            <span>1. Välj filter</span>
+        </div>
+    </aui:column>
+    <aui:column columnWidth="33">
+        <div class="ifeed-step">
+            <span>2. Mata in data</span>
+        </div>
+    </aui:column>
+    <aui:column columnWidth="33" last="true">
+        <div class="ifeed-step">
+            <span>3. Din träfflista</span>
+        </div>
+    </aui:column>
+</aui:layout>
+
+
+<aui:layout cssClass="ifeed-block">
   <aui:column columnWidth="33" first="true">
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Tillgängliga filter" collapsible="true" extended="true">
@@ -102,15 +154,19 @@
                       key="${filterType.keyString}" /> </span> </span>
                 <ul>
                   <c:forEach items="${filterType.filters}" var="filter">
-                    <li><span class="tree-node-wrap clearfix"> <portlet:actionURL name="selectFilter"
-                          var="selectFilter">
-                          <portlet:param name="action" value="selectFilter" />
-                          <portlet:param name="filter" value="${filter}" />
-                        </portlet:actionURL>
-                        <span class="tree-node-tooltip"
-                        title="<liferay-ui:message key='${filter.keyString}.help' />">Icon</span>
-                        <a href="${selectFilter}" class="tree-node-use tree-node-link"> <span
-                          class="tree-node-label"><liferay-ui:message key="${filter.keyString}.label" /> </span> </a> </span>
+                    <li>
+                        <span class="tree-node-wrap clearfix">
+                            <portlet:actionURL name="selectFilter" var="selectFilter">
+                                <portlet:param name="action" value="selectFilter" />
+                                <portlet:param name="filter" value="${filter}" />
+                            </portlet:actionURL>
+                            <span class="tree-node-tooltip" title="<liferay-ui:message key='${filter.keyString}.help' />">Icon</span>
+                            <a href="${selectFilter}" class="tree-node-use tree-node-link tree-node-link-label">
+                                <span class="tree-node-label">
+                                    <liferay-ui:message key="${filter.keyString}.label" />
+                                </span>
+                            </a>
+                        </span>
                     </li>
                   </c:forEach>
                 </ul>
@@ -121,6 +177,7 @@
       </liferay-ui:panel>
     </liferay-ui:panel-container>
   </aui:column>
+  
   <aui:column columnWidth="33">
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Nytt filter" collapsible="true" extended="true">
@@ -131,16 +188,16 @@
               <c:when test="${newFilter.metadataType == 'TEXT_FIX'}">
                 <aui:select label="${newFilter.keyString}.label" name="filterValue">
                   <c:forEach items="${vocabulary}" var="meta">
-                    <aui:option label="${meta}" value="${meta}" />
+                    <aui:option label="${meta}" value="${meta}" selected="${filterValue eq meta}"/>
                   </c:forEach>
                 </aui:select>
               </c:when>
               <c:when test="${newFilter.metadataType == 'DATE'}">
                 <liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
-                  monthParam="validFromMonth" dayParam="validFromDay" />
+                  monthParam="validFromMonth" dayParam="validFromDay" firstDayOfWeek="1" yearValue="${filterFormBean.validFromYear}" monthValue="${filterFormBean.validFromMonth }" dayValue="${filterFormBean.validFromDay }"/>
               </c:when>
               <c:when test="${newFilter.metadataType == 'TEXT_FREE'}">
-                <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filter-value" />
+                <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filter-value" value="${filterValue}"/>
               </c:when>
             </c:choose>
           </div>
@@ -160,10 +217,19 @@
                 <portlet:param name="filter" value="${iFeedFilter.filter}" />
                 <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
               </portlet:actionURL>
-              <li><span class="tree-node-wrap clearfix"> <a href="${removeFilter}"
-                  class="tree-node-link tree-node-delete">Ta bort</a> <span class="tree-node-label"> <liferay-ui:message
-                      key="${iFeedFilter.filter.keyString}.label" />: <fmt:formatDate value="${now}" type="both"
-              timeStyle="long" dateStyle="long" />${iFeedFilter.filterQuery} </span> </span>
+              <portlet:actionURL name="editFilter" var="editFilter">
+                <portlet:param name="action" value="editFilter" />
+                <portlet:param name="filter" value="${iFeedFilter.filter}" />
+                <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
+              </portlet:actionURL>
+              <li>
+                <span class="tree-node-wrap clearfix">
+                    <a href="${editFilter}" class="tree-node-link tree-node-edit">Redigera</a>
+                    <a href="${removeFilter}" class="tree-node-link tree-node-delete">Ta bort</a>
+                    <span class="tree-node-label">
+                        <liferay-ui:message key="${iFeedFilter.filter.keyString}.label" />: <fmt:formatDate value="${now}" type="both" timeStyle="long" dateStyle="long" />${iFeedFilter.filterQuery}
+                    </span>
+                </span>
               </li>
             </c:forEach>
           </ul>
@@ -194,17 +260,17 @@
 </liferay-util:html-top>
 <aui:script use="vgr-ifeed-config">
 
-	var vgrIfeedConfig = new A.VgrIfeedConfig({
-		existingFiltersTreeBoundingBox: '#<portlet:namespace />existingFiltersWrap',
-		existingFiltersTreeContentBox: '#<portlet:namespace />existingFiltersWrap > ul',
-		descriptionNode: '#<portlet:namespace />descriptionText',
-		headingNode: '#<portlet:namespace />headingText',
-		portletNamespace: '<portlet:namespace />',
-		portletWrap: '#p_p_id<portlet:namespace />',
-		usedFiltersTreeBoundingBox: '#<portlet:namespace />usedFiltersWrap',
-		usedFiltersTreeContentBox: '#<portlet:namespace />usedFiltersWrap > ul'
-	})
-	.render();
+    var vgrIfeedConfig = new A.VgrIfeedConfig({
+        existingFiltersTreeBoundingBox: '#<portlet:namespace />existingFiltersWrap',
+        existingFiltersTreeContentBox: '#<portlet:namespace />existingFiltersWrap > ul',
+        descriptionNode: '#<portlet:namespace />descriptionText',
+        headingNode: '#<portlet:namespace />headingText',
+        portletNamespace: '<portlet:namespace />',
+        portletWrap: '#p_p_id<portlet:namespace />',
+        usedFiltersTreeBoundingBox: '#<portlet:namespace />usedFiltersWrap',
+        usedFiltersTreeContentBox: '#<portlet:namespace />usedFiltersWrap > ul'
+    })
+    .render();
 
 <!--     AUI().ready('aui-autocomplete', function(A) { -->
   <!--       var instance = new A.AutoComplete({ -->

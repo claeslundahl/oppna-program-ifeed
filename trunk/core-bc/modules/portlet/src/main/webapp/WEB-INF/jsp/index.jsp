@@ -9,8 +9,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <portlet:defineObjects />
 
-<h1><liferay-ui:message key="ifeed.title"/></h1>
-<details><p><liferay-ui:message key="ifeed.description"/></p></details>
+<aui:layout>
+    <aui:column columnWidth="60" first="true">
+        <h1><liferay-ui:message key="ifeed.title"/></h1>
+        <p><liferay-ui:message key="ifeed.description"/><!-- Enable when there is a help section written ...<a href="">Läs mer</a>--></p>
+    </aui:column>
+    <aui:column columnWidth="40" last="true">
+        <%-- Keep &nbsp; until column contains content --%>
+        &nbsp;
+    </aui:column>
+</aui:layout>
+
 
 <%@include file="toolbar.jspf"%>
 <liferay-ui:search-container id='<portlet:namespace/>-parent-search-container' delta="${delta}" orderByCol="${orderByCol}" orderByType="${orderByType}">
@@ -22,12 +31,8 @@
       <portlet:param name="feedId" value="${iFeed.id}" />
     </portlet:actionURL>
 
-    <portlet:resourceURL var="atomLinkUrl">
-      <portlet:param name="feedId" value="${iFeed.id}" />
-    </portlet:resourceURL>
-
     <liferay-ui:search-container-column-text>
-      <liferay-ui:icon image="rss" url="${fn:replace(atomFeedUrl, '%s', iFeed.id)}" />
+      <liferay-ui:icon method="get" image="rss" url="${fn:replace(atomFeedUrl, '%s', iFeed.id)}" />
     </liferay-ui:search-container-column-text>
     <liferay-ui:search-container-column-text name="Namn" property="name" orderableProperty="name" orderable="true" href="${editIFeedURL}" />
     <liferay-ui:search-container-column-text name="Ägare" property="userId" orderableProperty="userId" orderable="true" />

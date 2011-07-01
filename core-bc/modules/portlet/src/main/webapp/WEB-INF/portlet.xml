@@ -22,7 +22,7 @@
     <supported-locale>sv</supported-locale>
     <resource-bundle>i18n.ifeed-messages</resource-bundle>
     <portlet-info>
-      <title>iFeed Manager - administrera dokumentflöden</title>
+      <title>iFeed Manager - Administrera dokumentflöden</title>
       <short-title>iFeed Manager</short-title>
       <keywords></keywords>
     </portlet-info>

@@ -69,11 +69,15 @@
         </h1>
     </aui:column>
     <aui:column columnWidth="50" last="true">
+      <aui:form method="post" action="${saveIFeedURL}" >
+        <aui:input id="headingTextInput" name="name" type="hidden" value="${ifeed.name}" />
+        <aui:input id="descriptionTextInput" name="description" type="hidden" value="${ifeed.description}"/>
         <ul class="button-toolbar clearfix">
             <li>
-                <a href="${saveIFeedURL}" class="link-button link-button-icon link-button-save">
-                    <span class="link-button-content">Spara</span>
-                </a>
+            <aui:button type="submit" class="link-button link-button-icon link-button-save" value="Spara" />
+<%--                 <a href="${saveIFeedURL}" class="link-button link-button-icon link-button-save"> --%>
+<!--                     <span class="link-button-content">Spara</span> -->
+<!--                 </a> -->
             </li>
             <li>
                 <a href="${cancelURL}" class="link-button link-button-icon link-button-cancel">
@@ -87,6 +91,7 @@
 <!--                 </a> -->
 <!--             </li> -->
         </ul>
+      </aui:form>
     </aui:column>
 </aui:layout>
 
@@ -105,14 +110,15 @@
             <div class="ifeed-meta-label">Id: </div>
             <div class="ifeed-meta-content">${ifeed.id}</div>
         </div>
-        <div class="ifeed-meta-item ifeed-meta-inline">
-            <div class="ifeed-meta-label">Skapat:</div>
-            <div class="ifeed-meta-content">2011-06-17*</div>
-        </div>
-        <div class="ifeed-meta-item ifeed-meta-inline">
-            <div class="ifeed-meta-label">Senast ändrat:</div>
-            <div class="ifeed-meta-content">2011-06-17*</div>
-        </div>
+<!--         Enable when we have valid dates -->
+<!--         <div class="ifeed-meta-item ifeed-meta-inline"> -->
+<!--             <div class="ifeed-meta-label">Skapat:</div> -->
+<!--             <div class="ifeed-meta-content">2011-06-17*</div> -->
+<!--         </div> -->
+<!--         <div class="ifeed-meta-item ifeed-meta-inline"> -->
+<!--             <div class="ifeed-meta-label">Senast ändrat:</div> -->
+<!--             <div class="ifeed-meta-content">2011-06-17*</div> -->
+<!--         </div> -->
     </aui:column>
     <aui:column columnWidth="33" last="true">
         <div class="ifeed-meta-item ifeed-meta-block">
@@ -256,7 +262,7 @@
 
 <liferay-util:html-top>
   <%@ include file="ifeed_css.jsp"%>
-  <script type="text/javascript" src="${renderRequest.contextPath}/js/vgr-ifeed-config.js"></script>
+  <script type="text/javascript" src="${renderRequest.contextPath}/js/vgr-ifeed-config.js?y"></script>
 </liferay-util:html-top>
 <aui:script use="vgr-ifeed-config">
 
@@ -264,7 +270,9 @@
         existingFiltersTreeBoundingBox: '#<portlet:namespace />existingFiltersWrap',
         existingFiltersTreeContentBox: '#<portlet:namespace />existingFiltersWrap > ul',
         descriptionNode: '#<portlet:namespace />descriptionText',
+        descriptionInput: '#<portlet:namespace />descriptionTextInput',
         headingNode: '#<portlet:namespace />headingText',
+        headingInput: '#<portlet:namespace />headingTextInput',
         portletNamespace: '<portlet:namespace />',
         portletWrap: '#p_p_id<portlet:namespace />',
         usedFiltersTreeBoundingBox: '#<portlet:namespace />usedFiltersWrap',

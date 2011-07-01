@@ -29,7 +29,7 @@ public class FilterFormBean {
 
     public String getFilterValue() {
         if (filter.getMetadataType() == MetadataType.DATE) {
-            filterValue = DateFormatter.format(validFromYear, validFromMonth, validFromDay, DateFormats.SOLR_DATE_FORMAT);
+            filterValue = DateFormatter.format(validFromYear, validFromMonth+1, validFromDay, DateFormats.SOLR_DATE_FORMAT);
         }
         return filterValue;
     }

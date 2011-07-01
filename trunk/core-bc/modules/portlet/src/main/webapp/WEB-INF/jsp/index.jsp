@@ -32,7 +32,7 @@
     </portlet:actionURL>
 
     <liferay-ui:search-container-column-text>
-      <liferay-ui:icon method="get" image="rss" url="${fn:replace(atomFeedUrl, '%s', iFeed.id)}" />
+      <liferay-ui:icon method="get" image="rss" target="_blank" url="${fn:replace(atomFeedUrl, '%s', iFeed.id)}" />
     </liferay-ui:search-container-column-text>
     <liferay-ui:search-container-column-text name="Namn" property="name" orderableProperty="name" orderable="true" href="${editIFeedURL}" />
     <liferay-ui:search-container-column-text name="Ägare" property="userId" orderableProperty="userId" orderable="true" />

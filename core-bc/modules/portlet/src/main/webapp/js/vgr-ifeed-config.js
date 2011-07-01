@@ -19,9 +19,11 @@ AUI().add('vgr-ifeed-config',function(A) {
 		CSS_CLASS_EDIT_TRIGGER_DESCRIPTION = 'ifeed-edit-trigger-description',
 		CSS_CLASS_TREE_NODE_TOOLTIP = 'tree-node-tooltip',
 		DESCRIPTION_NODE = 'descriptionNode',
+		DESCRIPTION_INPUT = 'descriptionInput',
 		EXISTING_FILTERS_TREE_BOUNDING_BOX = 'existingFiltersTreeBoundingBox',
 		EXISTING_FILTERS_TREE_CONTENT_BOX = 'existingFiltersTreeContentBox',
 		HEADING_NODE = 'headingNode',
+		HEADING_INPUT = 'headingInput',
 		HREF = 'href',
 		ID = 'id',
 		NAME = 'vgr-ifeed-config',
@@ -43,12 +45,18 @@ AUI().add('vgr-ifeed-config',function(A) {
 					existingFiltersTreeContentBox: {
 						setter: A.one
 					},
+          descriptionInput: {
+            setter: A.one
+          },
 					descriptionNode: {
 						setter: A.one
 					},
+          headingInput: {
+            setter: A.one
+          },					
 					headingNode: {
 						setter: A.one
-					},
+					},				
 					portletNamespace: {
 						value: ''
 					},
@@ -110,12 +118,34 @@ AUI().add('vgr-ifeed-config',function(A) {
 							node: instance.get(HEADING_NODE)
 						});
 						
+            instance.headingEditable.after('save', function(e){
+              var instance = this;
+              
+              var node = instance.headingEditable.get('node');
+              var nodeValue = node.html();
+              var nodeInput = instance.get(HEADING_INPUT);
+              
+              nodeInput.set('value', nodeValue);
+              
+            }, instance);						
+
 						// Init editable for description node
 						instance.descriptionEditable = new A.Editable({
 							inputType: 'textarea',
 							node: instance.get(DESCRIPTION_NODE)
 						});
 						
+            instance.descriptionEditable.after('save', function(e){
+              var instance = this;
+              
+              var node = instance.descriptionEditable.get('node');
+              var nodeValue = node.html();
+              var nodeInput = instance.get(DESCRIPTION_INPUT);
+              
+              nodeInput.set('value', nodeValue);
+              
+            }, instance);   
+            
 						// Setup tree node tooltips
 						// 
 						instance.treeNodeTooltip =  new A.Tooltip({
@@ -180,7 +210,6 @@ AUI().add('vgr-ifeed-config',function(A) {
 			'aui-io',
 			'aui-tooltip',
 			'aui-tree-view'
-			//'console'
       ]
 	}
 );

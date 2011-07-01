@@ -39,6 +39,10 @@ public class DateFormatter {
         }
     }
 
+    public static Date parse(String dateString, DateFormats format) {
+        return format.formatter.parseDateTime(dateString).toDate();
+    }
+
     public static String format(Date date, DateFormats dateFormat) {
         DateTime dt = new DateTime(date.getTime());
         return dt.toString(dateFormat.formatter);

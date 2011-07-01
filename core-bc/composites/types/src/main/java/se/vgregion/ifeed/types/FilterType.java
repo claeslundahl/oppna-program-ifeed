@@ -42,7 +42,7 @@ public enum FilterType {
         CREATED_FOR_UNIT("dc.creator.forunit", TEXT_FREE, ""),
         PUBLISHED_FOR_UNIT("dc.publisher.forunit", TEXT_FREE, ""),
         CREATED_FOR_PROJECT("dc.creator.project-assignment", TEXT_FREE, ""),
-        PUBLISHED_FOR_PROJECT("dc.publisher.projects-assignment", TEXT_FREE, ""),
+        PUBLISHED_FOR_PROJECT("dc.publisher.project-assignment", TEXT_FREE, ""),
         //        RECORD_TYPE("dc.type.record", TEXT_FIX, "Handlingstyp"),
         DOC_TYPE("dc.type.document", TEXT_FIX, "Dokumenttyp VGR"),
         ARCHIVE_CREATOR("dc.creator.recordscreator", TEXT_FREE, ""),

@@ -1,0 +1,7 @@
+#summary iFeed system sketch
+
+= iFeed system sketch =
+
+A description of the different parts of the system sketch below will be added later.
+
+[http://oppna-program-ifeed.googlecode.com/svn/wiki/iFeed%20Sketch.png]

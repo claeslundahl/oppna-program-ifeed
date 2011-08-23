@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.portlet.ActionResponse;
 
@@ -35,6 +37,9 @@ import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portlet.calendar.model.CalEvent;
+
 @Controller
 @RequestMapping("VIEW")
 @SessionAttributes({ "ifeed", "hits" })
@@ -55,8 +60,7 @@ public class EditIFeedController {
     private String ifeedAtomFeed;
 
     @ActionMapping(params = "action=editIFeed")
-    public void editIFeed(@RequestParam(required = true) Long feedId, Model model, ActionResponse response) {
-        LOGGER.debug("Edit IFeed with id: {}", feedId);
+    public void editIFeed(@RequestParam(required = true) Long feedId, Model model, ActionResponse response, SessionStatus sessionStatus) {
         IFeed iFeed = iFeedService.getIFeed(feedId);
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
@@ -71,14 +75,12 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") IFeed iFeed, BindingResult bindingResult,
-            ActionResponse response, SessionStatus sessionStatus, Model model) {
+            ActionResponse response, Model model) {
         iFeedValidator.validate(iFeed, bindingResult);
         if (!bindingResult.hasErrors()) {
             iFeedService.updateIFeed(iFeed);
-            sessionStatus.setComplete();
-        } else {
-            response.setRenderParameter("view", "showEditIFeedForm");
         }
+        response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=selectFilter")

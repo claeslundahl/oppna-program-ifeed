@@ -10,12 +10,13 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
@@ -24,6 +25,7 @@ import se.vgregion.ifeed.types.IFeed;
 
 @Controller
 @RequestMapping("VIEW")
+@SessionAttributes({ "ifeed"})
 public class AddIFeedController {
     private IFeedService iFeedService;
 
@@ -54,15 +56,13 @@ public class AddIFeedController {
     }
 
     @ActionMapping(params = {"action=addIFeed"})
-    public void addIFeed(@Valid @ModelAttribute(value = "ifeed") IFeed iFeed, BindingResult bindingResult,
-            ActionRequest request, ActionResponse response, SessionStatus sessionStatus) {
-        System.out.println("AddIFeedController.addIFeed(): ");
-        System.out.println(iFeed);
+    public void addIFeed(Model model, @Valid @ModelAttribute(value = "ifeed") IFeed iFeed, BindingResult bindingResult,
+            ActionRequest request, ActionResponse response) {
         if (!bindingResult.hasErrors()) {
             iFeed.setUserId(getRemoteUserId(request));
             iFeedService.addIFeed(iFeed);
+            model.addAttribute("ifeed", iFeed);
             response.setRenderParameter("view", "showEditIFeedForm");
-            sessionStatus.setComplete();
         } else {
             response.setRenderParameter("view", "showAddIFeedForm");
         }

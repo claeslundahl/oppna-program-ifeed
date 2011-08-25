@@ -1,6 +1,10 @@
 package se.vgregion.common.utils;
 
+import java.util.Locale;
+
 public final class CommonUtils {
+    public static final Locale SWEDISH_LOCALE = new Locale("sv_SE");
+
     private CommonUtils() {
     }
 

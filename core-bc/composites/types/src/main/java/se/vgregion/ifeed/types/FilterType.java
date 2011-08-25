@@ -4,6 +4,7 @@ import static se.vgregion.ifeed.types.FilterType.Filter.*;
 import static se.vgregion.ifeed.types.MetadataType.*;
 
 import java.util.EnumSet;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -21,6 +22,7 @@ public enum FilterType {
 
     private EnumSet<Filter> filters;
     private String keyString;
+    private static final Locale SV_SE = new Locale("sv_SE");
 
     private FilterType(EnumSet<Filter> filters) {
         this.filters = filters;
@@ -32,7 +34,7 @@ public enum FilterType {
 
     public String getKeyString() {
         if (StringUtils.isBlank(keyString)) {
-            keyString = name().replace('_', '-').toLowerCase();
+            keyString = name().replace('_', '-').toLowerCase(SV_SE);
         }
         return keyString;
     }
@@ -100,7 +102,7 @@ public enum FilterType {
 
         public String getKeyString() {
             if (StringUtils.isBlank(keyString)) {
-                keyString = name().replace('_', '-').toLowerCase();
+                keyString = name().replace('_', '-').toLowerCase(SV_SE);
             }
             return keyString;
         }

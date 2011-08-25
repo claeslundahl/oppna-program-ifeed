@@ -103,12 +103,21 @@ public class IFeedPublisher {
         conn.setDoOutput(true);
         conn.setDoInput(true);
         conn.setConnectTimeout(this.timeout);
-
-        DataOutputStream out = new DataOutputStream(conn.getOutputStream());
-        out.writeBytes(content.toString());
-        LOGGER.debug("Posting request to push server with the following body: {}", content);
-        out.flush();
-        out.close();
+        DataOutputStream out = null;
+        try {
+            out = new DataOutputStream(conn.getOutputStream());
+            out.writeBytes(content.toString());
+            LOGGER.debug("Posting request to push server with the following body: {}", content);
+        } finally {
+            if (out != null) {
+                try {
+                    out.flush();
+                    out.close();
+                } catch (Exception e) {
+                    LOGGER.warn("Unable to close output stream");
+                }
+            }
+        }
         return isSuccessfulPost();
     }
 
@@ -124,7 +133,7 @@ public class IFeedPublisher {
             }
         } finally {
             try {
-                if(rd != null) {
+                if (rd != null) {
                     rd.close();
                 }
             } catch (Exception e) {

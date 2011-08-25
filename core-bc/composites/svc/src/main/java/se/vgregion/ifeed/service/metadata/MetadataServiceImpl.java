@@ -30,8 +30,8 @@ public class MetadataServiceImpl implements MetadataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataService.class);
     private static Map<String, CachedVocabulary> vocabularyCache = new HashMap<String, CachedVocabulary>();
 
-    private VocabularyService port;
-    private JpaRepository<Metadata, Long, Long> repo;
+    private VocabularyService port = null;
+    private JpaRepository<Metadata, Long, Long> repo = null;
 
     private Collection<String> metadataRoots;
 
@@ -128,7 +128,7 @@ public class MetadataServiceImpl implements MetadataService {
             if (!vocabularyNodes.isEmpty()) {
                 vocabulary = new ArrayList<String>(vocabularyNodes.size());
                 List<Metadata> metadataChildNodes = (List<Metadata>) vocabularyNodes.iterator().next()
-                .getChildren();
+                        .getChildren();
                 for (Metadata metadata : metadataChildNodes) {
                     vocabulary.add(metadata.getName());
                 }

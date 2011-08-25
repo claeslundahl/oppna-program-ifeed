@@ -35,8 +35,6 @@ import se.vgregion.ifeed.types.IFeed;
 public class IFeedController {
 
     private IFeedService iFeedService;
-
-    @Value("${ifeed.feed}")
     private String ifeedAtomFeed;
 
     @Autowired
@@ -99,7 +97,7 @@ public class IFeedController {
     private static final Transformer LOWER_CASE_TRANSFORMER = new Transformer() {
         @Override
         public Object transform(Object input) {
-            return ((String) input).toLowerCase();
+            return ((String) input).toLowerCase(CommonUtils.SWEDISH_LOCALE);
         }
     };
 
@@ -141,6 +139,11 @@ public class IFeedController {
             userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
         }
         return userId;
+    }
+
+    @Value("${ifeed.feed}")
+    public void setIfeedAtomFeed(String ifeedAtomFeed) {
+        this.ifeedAtomFeed = ifeedAtomFeed;
     }
 
     // @ExceptionHandler({ Exception.class })

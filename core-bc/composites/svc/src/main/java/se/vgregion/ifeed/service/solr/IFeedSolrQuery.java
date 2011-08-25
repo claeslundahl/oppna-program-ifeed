@@ -21,6 +21,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -59,7 +60,7 @@ public class IFeedSolrQuery extends SolrQuery {
     }
 
     protected List<Map<String, Object>> doFilterQuery(String sortField, SortDirection sortDirection) {
-        this.setSortField(sortField, ORDER.valueOf(sortDirection.name().toLowerCase()));
+        this.setSortField(sortField, ORDER.valueOf(sortDirection.name().toLowerCase(CommonUtils.SWEDISH_LOCALE)));
         List<Map<String, Object>> hits = Collections.emptyList();
         try {
             QueryResponse response = this.query();

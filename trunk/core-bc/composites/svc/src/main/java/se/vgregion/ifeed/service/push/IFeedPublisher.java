@@ -107,11 +107,11 @@ public class IFeedPublisher {
         try {
             out = new DataOutputStream(conn.getOutputStream());
             out.writeBytes(content.toString());
+            out.flush();
             LOGGER.debug("Posting request to push server with the following body: {}", content);
         } finally {
             if (out != null) {
                 try {
-                    out.flush();
                     out.close();
                 } catch (Exception e) {
                     LOGGER.warn("Unable to close output stream");

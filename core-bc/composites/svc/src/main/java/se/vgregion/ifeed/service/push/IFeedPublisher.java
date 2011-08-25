@@ -114,13 +114,23 @@ public class IFeedPublisher {
 
     private String getResponseBody() throws IOException {
         int size = conn.getHeaderFieldInt(CONTENT_LENGTH, 0);
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line;
         StringBuilder responseBody = new StringBuilder(size);
-        while ((line = rd.readLine()) != null) {
-            responseBody.append(line);
+        BufferedReader rd = null;
+        try {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = rd.readLine()) != null) {
+                responseBody.append(line);
+            }
+        } finally {
+            try {
+                if(rd != null) {
+                    rd.close();
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Unable to close input stream.");
+            }
         }
         return responseBody.toString();
     }
-
 }

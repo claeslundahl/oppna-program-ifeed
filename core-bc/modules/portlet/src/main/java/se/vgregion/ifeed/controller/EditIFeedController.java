@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.portlet.ActionResponse;
 
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,9 +34,6 @@ import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import com.liferay.portal.kernel.util.CalendarFactoryUtil;
-import com.liferay.portlet.calendar.model.CalEvent;
-
 @Controller
 @RequestMapping("VIEW")
 @SessionAttributes({ "ifeed", "hits" })
@@ -52,15 +46,14 @@ public class EditIFeedController {
     @Autowired
     private IFeedSolrQuery iFeedSolrQuery;
     @Autowired
-    private Validator iFeedValidator;
-    @Autowired
     private MetadataService metadataService;
 
     @Value("${ifeed.feed}")
     private String ifeedAtomFeed;
 
     @ActionMapping(params = "action=editIFeed")
-    public void editIFeed(@RequestParam(required = true) Long feedId, Model model, ActionResponse response, SessionStatus sessionStatus) {
+    public void editIFeed(@RequestParam(required = true) Long feedId, Model model, ActionResponse response,
+            SessionStatus sessionStatus) {
         IFeed iFeed = iFeedService.getIFeed(feedId);
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
@@ -76,10 +69,7 @@ public class EditIFeedController {
     @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") IFeed iFeed, BindingResult bindingResult,
             ActionResponse response, Model model) {
-        iFeedValidator.validate(iFeed, bindingResult);
-        if (!bindingResult.hasErrors()) {
-            iFeedService.updateIFeed(iFeed);
-        }
+        iFeedService.updateIFeed(iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 

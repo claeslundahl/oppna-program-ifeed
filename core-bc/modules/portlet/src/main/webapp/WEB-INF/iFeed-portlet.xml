@@ -20,8 +20,6 @@
   <bean class="se.vgregion.ifeed.controller.IFeedController" />
   <bean class="se.vgregion.ifeed.controller.RemoveIFeedController" />
 
-  <bean id="iFeedValidator" class="se.vgregion.ifeed.controller.IFeedValidator" />
-
   <mvc:resources location="classpath:/META-INF/" mapping="/resources/**" />
 
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

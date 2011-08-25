@@ -165,10 +165,11 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
             e.setSummary(map.get("dc.description").toString());
         }
 
-        for (String fieldName : map.keySet()) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String fieldName = entry.getKey();
             String[] parts = fieldName.split("\\.");
             if (parts.length > 1) {
-                Object fieldValue = map.get(fieldName);
+                Object fieldValue = entry.getValue();
                 if (fieldValue instanceof Collection) {
                     Collection<?> c = (Collection<?>) fieldValue;
                     for (Object o : c) {

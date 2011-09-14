@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.controller;
 
-import static java.lang.Math.*;
+import static java.lang.Math.min;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,47 +44,72 @@ public class IFeedController {
     }
 
     @RenderMapping
-    public String showIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
-            @RequestParam(required = false, defaultValue = "1") int cur,
-            @RequestParam(required = false) String orderByCol,
-            @RequestParam(required = false, defaultValue = "asc") SortDirection orderByType, RenderRequest request) {
+    public String showIFeeds(final Model model,
+            @RequestParam(required =
+                false, defaultValue = "10") final int delta,
+            @RequestParam(required =
+                false, defaultValue = "1") final int cur,
+            @RequestParam(required =
+                false) final String orderByCol,
+            @RequestParam(required =
+                false, defaultValue = "asc") final SortDirection orderByType,
+            final RenderRequest request) {
 
         String currentView = (String) model.asMap().get("currentView");
         if (currentView == null || currentView.equalsIgnoreCase("viewMine")) {
-            return showUserIFeeds(model, delta, cur, orderByCol, orderByType, request);
+            return showUserIFeeds(model, delta, cur, orderByCol,
+                  orderByType, request);
         }
         return showAllIFeeds(model, delta, cur, orderByCol, orderByType);
     }
 
     @RenderMapping(params = { "view=showUserIFeeds" })
-    public String showUserIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
-            @RequestParam(required = false, defaultValue = "1") int cur,
-            @RequestParam(required = false, defaultValue = "name") String orderByCol,
-            @RequestParam(required = false, defaultValue = "asc") SortDirection orderByType, RenderRequest request) {
+    public String showUserIFeeds(final Model model,
+            @RequestParam(required =
+                false, defaultValue = "10") final int delta,
+            @RequestParam(required =
+                false, defaultValue = "1") final int cur,
+            @RequestParam(required =
+                false, defaultValue = "name") final String orderByCol,
+            @RequestParam(required =
+                false, defaultValue = "asc") final SortDirection orderByType,
+            final RenderRequest request) {
 
-        List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(getRemoteUserId(request)));
+        List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(
+                getRemoteUserId(request)));
         handleViewSort(allIFeeds, orderByCol, orderByType);
-        List<IFeed> truncatedIFeeds = handleViewPagination(allIFeeds, delta, cur);
-        populateModel(model, truncatedIFeeds, allIFeeds.size(), delta, orderByCol, orderByType, "viewMine");
+        List<IFeed> truncatedIFeeds = handleViewPagination(
+                allIFeeds, delta, cur);
+        populateModel(model, truncatedIFeeds, allIFeeds.size(),
+                delta, orderByCol, orderByType, "viewMine");
         return "index";
     }
 
     @RenderMapping(params = { "view=showAllIFeeds" })
-    public String showAllIFeeds(Model model, @RequestParam(required = false, defaultValue = "10") int delta,
-            @RequestParam(required = false, defaultValue = "1") int cur,
-            @RequestParam(required = false, defaultValue = "name") String orderByCol,
-            @RequestParam(required = false, defaultValue = "asc") SortDirection orderByType) {
+    public String showAllIFeeds(final Model model,
+            @RequestParam(required =
+                false, defaultValue = "10") final int delta,
+            @RequestParam(required =
+                false, defaultValue = "1") final int cur,
+            @RequestParam(required =
+                false, defaultValue = "name") final String orderByCol,
+            @RequestParam(required =
+                false, defaultValue = "asc") final SortDirection orderByType) {
+
         List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getIFeeds());
 
         handleViewSort(allIFeeds, orderByCol, orderByType);
-        List<IFeed> truncatedIFeeds = handleViewPagination(allIFeeds, delta, cur);
-        populateModel(model, truncatedIFeeds, allIFeeds.size(), delta, orderByCol, orderByType, "viewAll");
+        List<IFeed> truncatedIFeeds = handleViewPagination(
+                allIFeeds, delta, cur);
+        populateModel(model, truncatedIFeeds, allIFeeds.size(),
+                delta, orderByCol, orderByType, "viewAll");
 
         return "index";
     }
 
-    private void populateModel(Model model, List<IFeed> iFeeds, int numberOfIfeeds, int delta, String orderCol,
-            SortDirection orderType, String viewName) {
+    private void populateModel(final Model model, final List<IFeed> iFeeds,
+            final int numberOfIfeeds, final int delta, final String orderCol,
+                final SortDirection orderType, final String viewName) {
         model.addAttribute("numberOfIfeeds", numberOfIfeeds);
         model.addAttribute("ifeeds", iFeeds);
         model.addAttribute("delta", delta);
@@ -96,20 +121,23 @@ public class IFeedController {
 
     private static final Transformer LOWER_CASE_TRANSFORMER = new Transformer() {
         @Override
-        public Object transform(Object input) {
+        public Object transform(final Object input) {
             return ((String) input).toLowerCase(CommonUtils.SWEDISH_LOCALE);
         }
     };
 
     @SuppressWarnings("unchecked")
-    private List<IFeed> handleViewSort(List<IFeed> viewList, String orderByCol, SortDirection orderByType) {
+    private List<IFeed> handleViewSort(final List<IFeed> viewList,
+            final String orderByCol, final SortDirection orderByType) {
 
         if (!CommonUtils.isNull(orderByCol)) {
-            Comparator<IFeed> sortComparator = new BeanComparator(orderByCol, new TransformingComparator(
+            Comparator<IFeed> sortComparator = new BeanComparator(
+                orderByCol, new TransformingComparator(
                     LOWER_CASE_TRANSFORMER));
 
             if (orderByType.equals(SortDirection.desc)) {
-                Collections.sort(viewList, Collections.reverseOrder(sortComparator));
+                Collections.sort(viewList, Collections.reverseOrder(
+                        sortComparator));
             } else {
                 Collections.sort(viewList, sortComparator);
             }
@@ -117,11 +145,14 @@ public class IFeedController {
         return viewList;
     }
 
-    private List<IFeed> handleViewPagination(List<IFeed> viewList, int delta, int pageNumber) {
+    private List<IFeed> handleViewPagination(List<IFeed> viewList,
+            final int delta, final int pageNumber) {
+
         int startIndex = delta * (pageNumber - 1);
         int totalSize = viewList.size();
         int endIndex = startIndex + delta;
-        List<IFeed> subList = viewList.subList(startIndex, min(totalSize, endIndex));
+        List<IFeed> subList = viewList.subList(
+                startIndex, min(totalSize, endIndex));
 
         return subList;
     }
@@ -133,10 +164,12 @@ public class IFeedController {
 
     private String getRemoteUserId(PortletRequest request) {
         @SuppressWarnings("unchecked")
-        Map<String, ?> userInfo = (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
+        Map<String, ?> userInfo =
+                (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
         String userId = "";
         if (userInfo != null) {
-            userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
+            userId = (String) userInfo.get(
+                    PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
         }
         return userId;
     }

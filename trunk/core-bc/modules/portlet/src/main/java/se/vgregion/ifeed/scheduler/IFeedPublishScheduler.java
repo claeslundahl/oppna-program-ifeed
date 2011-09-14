@@ -1,6 +1,3 @@
-/**
- * 
- */
 package se.vgregion.ifeed.scheduler;
 
 import java.util.Collection;
@@ -25,20 +22,38 @@ import com.liferay.portal.kernel.messaging.MessageListener;
 
 /**
  * @author Anders Asplund - Callista Enterprise
- * 
+ *
  */
 public class IFeedPublishScheduler implements MessageListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IFeedPublishScheduler.class);
+    /**
+     *
+     */
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(IFeedPublishScheduler.class);
 
+    /**
+     *
+     */
     private ApplicationContext context;
+    /**
+     *
+     */
     private IFeedPublisher iFeedPublisher;
+    /**
+     *
+     */
     private IFeedService iFeedService;
+    /**
+     *
+     */
     private IFeedSolrQuery iFeedSolrQuery;
+
 
     @Override
     @Transactional
-    public void receive(Message message) {
-        LOGGER.debug("Schedule task is started {}", ToStringBuilder.reflectionToString(message));
+    public final void receive(final Message message) {
+        LOGGER.debug("Schedule task is started {}",
+                ToStringBuilder.reflectionToString(message));
 
         loadContext("classpath*:spring/ifeed-*.xml");
         initBeans();
@@ -47,15 +62,18 @@ public class IFeedPublishScheduler implements MessageListener {
 
         Collection<IFeed> ifeeds = iFeedService.getIFeeds();
         for (IFeed iFeed : ifeeds) {
-            LOGGER.debug("Checking for updates since {} in feed {} (id: {})", new Object[] { iFeed.getTimestamp(),
+            LOGGER.debug("Checking for updates since {} in feed {} (id: {})",
+                new Object[] {iFeed.getTimestamp(),
                     iFeed.getName(), iFeed.getId() });
-            Collection<Map<String, Object>> iFeedResults = iFeedSolrQuery.getIFeedResults(iFeed,
-                    iFeed.getTimestamp());
+            Collection<Map<String, Object>> iFeedResults =
+                iFeedSolrQuery.getIFeedResults(iFeed, iFeed.getTimestamp());
+
             if (!isEmpty(iFeedResults) || iFeed.getTimestamp() == null) {
-                LOGGER.debug("{} new documents found in feed {} (id: {})", new Object[] { iFeedResults.size(),
+                LOGGER.debug("{} new documents found in feed {} (id: {})",
+                        new Object[] {iFeedResults.size(),
                         iFeed.getName(), iFeed.getId() });
                 LOGGER.debug("Sending feed {} (id: {}) to PuSH server.",
-                        new Object[] { iFeed.getName(), iFeed.getId() });
+                        new Object[] {iFeed.getName(), iFeed.getId()});
                 iFeedPublisher.addIFeed(iFeed);
                 modifiedIFeeds.add(iFeed);
             }
@@ -69,31 +87,46 @@ public class IFeedPublishScheduler implements MessageListener {
         }
     }
 
+    /**
+     *
+     */
     private void initBeans() {
         iFeedPublisher = context.getBean(IFeedPublisher.class);
         iFeedService = context.getBean(IFeedService.class);
         iFeedSolrQuery = context.getBean(IFeedSolrQuery.class);
     }
 
+    /**
+     * @param configLocation
+     */
     private void loadContext(String configLocation) {
         LOGGER.debug("Loading spring context");
         if (context == null) {
             try {
-                LOGGER.debug("Creating new application context using config location: {}", configLocation);
+                LOGGER.debug("Creating new application context using config "
+                        + "location: {}", configLocation);
                 context = new ClassPathXmlApplicationContext(configLocation);
                 LOGGER.debug("Context created: {}", context);
             } catch (BeansException e) {
                 e.printStackTrace();
-                LOGGER.error("Context is null, failed to inialize: {}", e.getCause());
+                LOGGER.error("Context is null, failed to inialize: {}",
+                        e.getCause());
             }
         }
     }
 
-    private boolean isEmpty(Collection<?> c) {
+    /**
+     * @param c
+     * @return
+     */
+    private boolean isEmpty(final Collection<?> c) {
         return (c == null || c.size() == 0);
     }
 
-    public static void main(String[] args) {
+    /**
+     * @param args
+     */
+    public static void main(final String[] args) {
         IFeedPublishScheduler scheduler = new IFeedPublishScheduler();
         scheduler.receive(null);
     }

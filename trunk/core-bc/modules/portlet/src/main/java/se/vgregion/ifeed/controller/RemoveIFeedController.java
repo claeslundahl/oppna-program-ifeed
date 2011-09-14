@@ -14,12 +14,12 @@ public class RemoveIFeedController {
     private IFeedService iFeedService;
 
     @Autowired
-    public RemoveIFeedController(IFeedService iFeedService) {
+    public RemoveIFeedController(final IFeedService iFeedService) {
         this.iFeedService = iFeedService;
     }
 
     @ActionMapping(params = "action=removeIFeed")
-    public void removeBook(@RequestParam Long feedId) {
+    public void removeBook(@RequestParam final Long feedId) {
         iFeedService.removeIFeed(feedId);
     }
 

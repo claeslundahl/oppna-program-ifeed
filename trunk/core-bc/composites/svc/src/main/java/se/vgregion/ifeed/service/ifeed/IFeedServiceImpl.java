@@ -14,48 +14,51 @@ public class IFeedServiceImpl implements IFeedService {
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
 
-    public IFeedServiceImpl(JpaRepository<IFeed, Long, Long> iFeedRepo) {
-        this.iFeedRepo = iFeedRepo;
+    public IFeedServiceImpl(
+            final JpaRepository<IFeed, Long, Long> iFeedRepoParam) {
+        iFeedRepo = iFeedRepoParam;
     }
 
     @Override
-    public Collection<IFeed> getIFeeds() {
+    public final Collection<IFeed> getIFeeds() {
         return new ArrayList<IFeed>(iFeedRepo.findAll());
     }
 
     @Override
-    public Collection<IFeed> getUserIFeeds(String userId) {
-        return new ArrayList<IFeed>(iFeedRepo.findByQuery("SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1", new Object[] { userId }));
+    public final Collection<IFeed> getUserIFeeds(final String userId) {
+        return new ArrayList<IFeed>(iFeedRepo.findByQuery(
+            "SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1",
+                new Object[] {userId}));
     }
 
     @Override
-    public IFeed getIFeed(Long id) {
+    public final IFeed getIFeed(final Long id) {
         return iFeedRepo.find(id);
     }
 
     @Override
     @Transactional
-    public void addIFeed(IFeed iFeed) {
+    public final void addIFeed(final IFeed iFeed) {
         iFeedRepo.store(iFeed);
     }
 
     @Override
     @Transactional
-    public void removeIFeed(Long id) {
+    public final void removeIFeed(final Long id) {
         iFeedRepo.remove(id);
     }
 
     @Override
     @Transactional
-    public void updateIFeed(IFeed iFeed) {
+    public final void updateIFeed(final IFeed iFeed) {
         IFeed oldIFeed = iFeedRepo.find(iFeed.getId());
-        if(oldIFeed == null || filterChanged(oldIFeed, iFeed)) {
+        if (oldIFeed == null || filterChanged(oldIFeed, iFeed)) {
             iFeed.clearTimestamp();
         }
         iFeedRepo.merge(iFeed);
     }
 
-    private boolean filterChanged(IFeed oldIFeed, IFeed iFeed) {
+    private boolean filterChanged(final IFeed oldIFeed, final IFeed iFeed) {
         Collection<IFeedFilter> oldFilters = oldIFeed.getFilters();
         Collection<IFeedFilter> newFilters = iFeed.getFilters();
 

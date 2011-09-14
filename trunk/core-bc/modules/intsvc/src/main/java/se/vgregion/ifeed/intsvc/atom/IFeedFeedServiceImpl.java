@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import static se.vgregion.common.utils.CommonUtils.*;
+import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 import java.util.Collection;
 import java.util.Date;
@@ -82,7 +82,8 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         // Throw 404 if the feed does not exist
         if (retrievedFeed == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
-            // TODO create a html view of the error to enhance the browser experience
+            // TODO create a html view of the error to
+            //      enhance the browser experience
         }
 
         f.setTitle(retrievedFeed.getName());
@@ -92,21 +93,24 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         f.addLink(pushServerEndpoint, "hub");
 
         // Populate the feed with search results
-        populateFeed(f, solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection)));
+        populateFeed(f, solrQuery.getIFeedResults(retrievedFeed, sortField,
+                getEnum(SortDirection.class, sortDirection)));
 
         return f;
     }
 
     @GET
-    @Produces({ "application/xml", "application/atom+xml;type=entry;charset=UTF-8" })
+    @Produces({ "application/xml",
+        "application/atom+xml;type=entry;charset=UTF-8" })
     @Path("/{id}")
-    public Entry getIFeedEntry(@PathParam("id") Long id) {
+    public Entry getIFeedEntry(@PathParam("id") final Long id) {
         Entry e = Abdera.getInstance().newEntry();
         IFeed retrievedFeed = iFeedService.getIFeed(id);
 
         if (retrievedFeed == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
-            // TODO create a html view of the error to enhance the browser experience
+            // TODO create a html view of the error to
+            //      enhance the browser experience
         }
 
         e.setTitle(retrievedFeed.getName());
@@ -119,8 +123,10 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         StringBuilder content = new StringBuilder();
         content.append("<ul>");
         for (IFeedFilter iFeedFilter : retrievedFeed.getFilters()) {
-            content.append("<li>").append(iFeedFilter.getFilter().getFilterField()).append(":")
-            .append(iFeedFilter.getFilterQuery()).append("</li>");
+            content.append("<li>").append(iFeedFilter.getFilter()
+                .getFilterField()).append(":")
+                    .append(iFeedFilter.getFilterQuery())
+                        .append("</li>");
         }
         content.append("</ul>");
 
@@ -128,7 +134,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return e;
     }
 
-    private Entry populateEntry(Entry e, Map<String, Object> map) {
+    private Entry populateEntry(final Entry e, final Map<String, Object> map) {
 
         if (map.containsKey("dc.creator")) {
             e.addAuthor(map.get("dc.creator").toString());
@@ -183,14 +189,19 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return e;
     }
 
-    private void addElement(Entry e, String prefix, String fieldName, Object fieldValue) {
-        // TODO Should handle the collection properly rather than just doing toString
+    private void addElement(final Entry e, final String prefix,
+            final String fieldName, final Object fieldValue) {
+
+        // TODO Should handle the collection properly
+        //      rather than just doing toString
+
         if (namespaces.containsKey(prefix)) {
             Element element = e.addExtension(new QName(namespaces.get(prefix),
                     fieldName.substring(prefix.length() + 1), prefix));
 
             if (fieldValue instanceof Date) {
-                element.setText(DateFormatter.format((Date) fieldValue, DateFormats.W3CDTF));
+                element.setText(DateFormatter.format((Date) fieldValue,
+                        DateFormats.W3CDTF));
             } else if (fieldName.equalsIgnoreCase("dc.language")) {
                 if (fieldValue.toString().equalsIgnoreCase("svenska")) {
                     element.setText("swe");
@@ -205,11 +216,12 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
                 element.setText(fieldValue.toString());
             }
         } else {
-            LOGGER.warn("Unknown namespace {}, field {} is ignored.", new Object[] { prefix, fieldName });
+            LOGGER.warn("Unknown namespace {}, field {} is ignored.",
+                    new Object[] {prefix, fieldName});
         }
     }
 
-    private Feed populateFeed(Feed f, Collection<Map<String, Object>> hits) {
+    private Feed populateFeed(final Feed f, final Collection<Map<String, Object>> hits) {
         for (Map<String, Object> map : hits) {
             Entry e = f.addEntry();
             populateEntry(e, map);

@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.service.solr;
 
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -18,6 +19,5 @@ public class SolrQueryEscaperTest {
         excpectedStr = "a\\&&b";
         actualStr = SolrQueryEscaper.escape(strToEscape);
         assertEquals(excpectedStr, actualStr);
-
     }
 }

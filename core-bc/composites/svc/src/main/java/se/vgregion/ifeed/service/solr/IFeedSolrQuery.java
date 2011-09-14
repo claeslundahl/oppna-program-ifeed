@@ -27,13 +27,16 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 public class IFeedSolrQuery extends SolrQuery {
 
-    public static final SortDirection DEFAULT_SORT_DIRECTION = SortDirection.desc;
-    public static final String DEFAULT_SORT_FIELD = "processingtime";
+    public static final SortDirection DEFAULT_SORT_DIRECTION =
+        SortDirection.desc;
+    public static final String DEFAULT_SORT_FIELD =
+        "processingtime";
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(IFeedSolrQuery.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            IFeedSolrQuery.class);
 
     private CommonsHttpSolrServer solrServer;
 
@@ -49,22 +52,27 @@ public class IFeedSolrQuery extends SolrQuery {
         this.solrServer.setRequestWriter(new BinaryRequestWriter());
     }
 
-    public CommonsHttpSolrServer getSolrServer() {
+    public final CommonsHttpSolrServer getSolrServer() {
         return solrServer;
     }
 
-    protected QueryResponse query() throws MalformedURLException, SolrServerException {
+    protected final QueryResponse query() throws
+            MalformedURLException, SolrServerException {
         this.setFields("*");
         this.setRows(100);
         return getSolrServer().query(this);
     }
 
-    protected List<Map<String, Object>> doFilterQuery(String sortField, SortDirection sortDirection) {
-        this.setSortField(sortField, ORDER.valueOf(sortDirection.name().toLowerCase(CommonUtils.SWEDISH_LOCALE)));
+    @SuppressWarnings("unchecked")
+    protected List<Map<String, Object>> doFilterQuery(final String sortField,
+            final SortDirection sortDirection) {
+        this.setSortField(sortField, ORDER.valueOf(sortDirection.name().
+                toLowerCase(CommonUtils.SWEDISH_LOCALE)));
         List<Map<String, Object>> hits = Collections.emptyList();
         try {
             QueryResponse response = this.query();
-            hits = (ArrayList<Map<String, Object>>) response.getResults().clone();
+            hits = (ArrayList<Map<String, Object>>)
+                    response.getResults().clone();
         } catch (MalformedURLException e) {
             LOGGER.error("Felaktigt url till sökserver: {}", e.getCause());
         } catch (SolrServerException e) {
@@ -73,14 +81,19 @@ public class IFeedSolrQuery extends SolrQuery {
         return hits;
     }
 
-    public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
+    public Collection<Map<String, Object>> getIFeedResults(
+            final IFeed iFeed, final Date offset) {
+
         // Adding date offset to filter
         if (offset != null) {
             LOGGER.debug("Searching for new document since: {}",
-                    "processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
-            addFilterQuery("processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
+                    "processingtime:[" + DateFormatter.format(
+                            offset, SOLR_DATE_FORMAT) + " TO NOW]");
+            addFilterQuery("processingtime:[" + DateFormatter.format(
+                    offset, SOLR_DATE_FORMAT) + " TO NOW]");
         }
-        return getIFeedResults(iFeed, DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
+        return getIFeedResults(iFeed, DEFAULT_SORT_FIELD,
+                DEFAULT_SORT_DIRECTION);
     }
 
     public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection) {

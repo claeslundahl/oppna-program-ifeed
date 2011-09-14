@@ -30,7 +30,7 @@ public class AddIFeedController {
     private IFeedService iFeedService;
 
     @Autowired
-    public AddIFeedController(IFeedService iFeedService) {
+    public AddIFeedController(final IFeedService iFeedService) {
         super();
         this.iFeedService = iFeedService;
     }
@@ -41,12 +41,12 @@ public class AddIFeedController {
     }
 
     @RenderMapping(params = {"view=showAddIFeedForm"})
-    public String showAddIFeedForm(RenderResponse response) {
+    public String showAddIFeedForm(final RenderResponse response) {
         return "addIFeedForm";
     }
 
     @InitBinder("ifeed")
-    public void initBinder(WebDataBinder binder) {
+    public void initBinder(final WebDataBinder binder) {
         //TODO Add validators
     }
 
@@ -56,8 +56,10 @@ public class AddIFeedController {
     }
 
     @ActionMapping(params = {"action=addIFeed"})
-    public void addIFeed(Model model, @Valid @ModelAttribute(value = "ifeed") IFeed iFeed, BindingResult bindingResult,
-            ActionRequest request, ActionResponse response) {
+    public void addIFeed(final Model model,
+            @Valid @ModelAttribute(value = "ifeed") final IFeed iFeed,
+                final BindingResult bindingResult, final ActionRequest request,
+                    final ActionResponse response) {
         if (!bindingResult.hasErrors()) {
             iFeed.setUserId(getRemoteUserId(request));
             iFeedService.addIFeed(iFeed);
@@ -70,12 +72,13 @@ public class AddIFeedController {
 
     private String getRemoteUserId(PortletRequest request) {
         @SuppressWarnings("unchecked")
-        Map<String, ?> userInfo = (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
+        Map<String, ?> userInfo = (Map<String, ?>) request.getAttribute(
+                PortletRequest.USER_INFO);
         String userId = "";
         if (userInfo != null) {
-            userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
+            userId = (String) userInfo.get(
+                    PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
         }
         return userId;
     }
-
 }

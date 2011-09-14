@@ -8,37 +8,76 @@ import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.MetadataType;
 
+/**
+ * @author bjornryding
+ *
+ */
 public class FilterFormBean {
+    /**
+     * 
+     */
     private Filter filter;
+    /**
+     * 
+     */
     private String filterValue;
+    /**
+     * 
+     */
     private int validFromYear;
+    /**
+     * 
+     */
     private int validFromMonth;
+    /**
+     * 
+     */
     private int validFromDay;
 
+    /**
+     * 
+     */
     public FilterFormBean() {
         setFilterValue(new Date());
     }
 
+    /**
+     * @return
+     */
     public Filter getFilter() {
         return filter;
     }
 
+    /**
+     * @param filter
+     */
     public void setFilter(Filter filter) {
         this.filter = filter;
     }
 
+    /**
+     * @return
+     */
     public String getFilterValue() {
         if (filter.getMetadataType() == MetadataType.DATE) {
-            filterValue = DateFormatter.format(validFromYear, validFromMonth+1, validFromDay, DateFormats.SOLR_DATE_FORMAT);
+            filterValue = DateFormatter.format(validFromYear,
+                        validFromMonth + 1, validFromDay,
+                        DateFormats.SOLR_DATE_FORMAT);
         }
         return filterValue;
     }
 
-    public void setFilterValue(String filterValue) {
+    /**
+     * @param filterValue
+     */
+    public final void setFilterValue(String filterValue) {
         this.filterValue = filterValue;
     }
 
-    public void setFilterValue(Date d) {
+    /**
+     * @param d
+     */
+    public final void setFilterValue(Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         validFromYear = c.get(Calendar.YEAR);
@@ -46,26 +85,46 @@ public class FilterFormBean {
         validFromDay = c.get(Calendar.DATE);
     }
 
-    public void setValidFromYear(int validFromYear) {
+    /**
+     * @param validFromYear
+     */
+    public final void setValidFromYear(int validFromYear) {
         this.validFromYear = validFromYear;
     }
 
-    public void setValidFromMonth(int validFromMonth) {
+    /**
+     * @param validFromMonth
+     */
+    public final void setValidFromMonth(int validFromMonth) {
         //In Java Calendar January = 0, December = 11
         this.validFromMonth = validFromMonth;
     }
 
-    public void setValidFromDay(int validFromDay) {
+    /**
+     * @param validFromDay
+     */
+    public final void setValidFromDay(int validFromDay) {
         this.validFromDay = validFromDay;
     }
 
-    public int getValidFromDay() {
+    /**
+     * @return
+     */
+    public final int getValidFromDay() {
         return validFromDay;
     }
-    public int getValidFromMonth() {
+
+    /**
+     * @return
+     */
+    public final int getValidFromMonth() {
         return validFromMonth;
     }
-    public int getValidFromYear() {
+
+    /**
+     * @return
+     */
+     public final int getValidFromYear() {
         return validFromYear;
     }
 }

@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.service.solr;
 
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -47,5 +48,4 @@ public class SolrQueryBuilderTest {
         String queryString = SolrQueryBuilder.createQuery(filter);
         assertEquals(expectedQueryString, queryString);
     }
-
 }

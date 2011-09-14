@@ -9,7 +9,7 @@ public final class CommonUtils {
     }
 
     public static <E extends Enum<E>> E getEnum(Class<E> enumClass, String enumName) {
-        if(isNull(enumClass)) {
+        if (isNull(enumClass)) {
             throw new IllegalArgumentException("enumClass must not be null.");
         }
         try {
@@ -22,6 +22,4 @@ public final class CommonUtils {
     public static boolean isNull(Object o) {
         return o == null;
     }
-
-
 }

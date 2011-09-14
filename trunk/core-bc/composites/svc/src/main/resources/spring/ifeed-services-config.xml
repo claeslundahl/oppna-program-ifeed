@@ -16,11 +16,18 @@
 
   <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer">
     <constructor-arg type="java.lang.String" value="${solr.service}" />
+    <property name="requestWriter">
+      <bean class="org.apache.solr.client.solrj.impl.BinaryRequestWriter" />
+    </property>
   </bean>
 
   <bean id="iFeedSolrQuery" class="se.vgregion.ifeed.service.solr.IFeedSolrQuery">
     <property name="solrServer" ref="solrServer" />
+    <property name="rows" value="100" />
+    <property name="fields" value="*" />
+    <property name="showDebugInfo" value="true" />
   </bean>
+
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
     <constructor-arg ref="iFeedRepo" />
   </bean>

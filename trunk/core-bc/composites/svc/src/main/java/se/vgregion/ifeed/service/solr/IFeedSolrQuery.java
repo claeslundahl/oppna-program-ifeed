@@ -35,6 +35,7 @@ public class IFeedSolrQuery extends SolrQuery {
 
     public IFeedSolrQuery(SolrServer solrServer) {
         this.solrServer = solrServer;
+        this.setFields("*");
     }
 
     public enum SortDirection {

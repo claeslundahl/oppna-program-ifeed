@@ -11,6 +11,7 @@
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
+<portlet:resourceURL var="findPeople" />
 
 <portlet:actionURL name="editIFeed" var="editIFeedURL">
   <portlet:param name="action" value="editIFeed" />
@@ -167,6 +168,13 @@
                 <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filter-value"
                   value="${filterValue}" />
               </c:when>
+              <c:when test="${newFilter.metadataType == 'LDAP_VALUE'}">
+              <div id="<portlet:namespace />ldapPeople">
+                        <aui:input id="filter-value" type="text" label="${newFilter.keyString}.label"
+                                   cssClass="mandatory-label structure" name="filterValue"
+                                   value="${filterValue}"/>
+                    </div>
+              </c:when>
             </c:choose>
           </div>
           <c:if test="${not empty newFilter}">
@@ -228,6 +236,7 @@
   <%@ include file="ifeed_css.jsp"%>
   <script type="text/javascript" src="${renderRequest.contextPath}/js/vgr-ifeed-config.js"></script>
 </liferay-util:html-top>
+
 <aui:script use="vgr-ifeed-config">
 
     var vgrIfeedConfig = new A.VgrIfeedConfig({
@@ -244,13 +253,44 @@
     })
     .render();
 
-<!--     AUI().ready('aui-autocomplete', function(A) { -->
-  <!--       var instance = new A.AutoComplete({ -->
-  <%--           dataSource: ${vocabularyJson}, --%>
-  <!--           typeAhead: false, -->
-  <%--           contentBox: '#<portlet:namespace />filter-value-box', --%>
-  <%--           input: '#<portlet:namespace />filter-value' --%>
-  <!--       }).render(); -->
-  <!--     }); -->
-
+    AUI().ready('aui-autocomplete', function(A) {
+        var instance = new A.AutoComplete({
+            dataSource: ${vocabularyJson},
+            typeAhead: false,
+            contentBox: '#<portlet:namespace />filter-value-box',
+            input: '#<portlet:namespace />filter-value'
+        }).render();
+      });
+      
+    var datasource = function(request) {
+      var items = null;
+      A.io.request(${findPeople}, {
+          cache: false,
+          sync: true,
+          timeout: 1000,
+          dataType: 'json',
+          method: 'get',
+          on: {
+              success: function() {
+                alert("Success")
+                //  items = this.get('responseData');
+              },
+              failure: function() {
+                alert("Fail")
+              }
+          }
+      });
+  
+      return items;
+    }
+    AUI().ready('aui-autocomplete', function(A) {
+        var autoComplete = new A.AutoComplete({
+            dataSource: datasource,
+            dataSourceType: 'Function',
+            schemaType: 'json',
+            typeAhead: true,
+            contentBox: '#<portlet:namespace />externStructurePersonDnDiv',
+            input: '#<portlet:namespace />externStructurePersonDn'
+        }).render();
+     });
 </aui:script>

@@ -1,12 +1,14 @@
 package se.vgregion.ifeed.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import javax.portlet.ActionResponse;
+import javax.portlet.ResourceResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
@@ -33,6 +36,8 @@ import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ldap.person.LdapPersonService;
+import se.vgregion.ldap.person.Person;
 
 @Controller
 @RequestMapping("VIEW")
@@ -48,6 +53,9 @@ public class EditIFeedController {
     private IFeedSolrQuery iFeedSolrQuery;
     @Autowired
     private MetadataService metadataService;
+    @Autowired
+    private LdapPersonService ldapPersonService;
+
 
     @Value("${ifeed.feed}")
     private String ifeedAtomFeed;
@@ -55,7 +63,7 @@ public class EditIFeedController {
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId,
             final Model model, final ActionResponse response,
-                final SessionStatus sessionStatus) {
+            final SessionStatus sessionStatus) {
         IFeed iFeed = iFeedService.getIFeed(feedId);
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
@@ -81,16 +89,16 @@ public class EditIFeedController {
     @ActionMapping(params = "action=selectFilter")
     public void selectNewFilter(
             @RequestParam(required = false, value = "filter")
-                final Filter filter, final Model model,
-                    final ActionResponse response)
-                        throws IOException {
+            final Filter filter, final Model model,
+            final ActionResponse response)
+                    throws IOException {
 
         model.addAttribute("newFilter", filter);
         Collection<String> vocabulary = metadataService.getVocabulary(
                 filter.getMetadataKey());
         model.addAttribute("vocabulary", vocabulary);
         String vocabularyJson =
-            new ObjectMapper().writeValueAsString(vocabulary);
+                new ObjectMapper().writeValueAsString(vocabulary);
         model.addAttribute("vocabularyJson", vocabularyJson);
         model.addAttribute("filterFormBean", new FilterFormBean());
         response.setRenderParameter("view", "showEditIFeedForm");
@@ -99,7 +107,7 @@ public class EditIFeedController {
     @ActionMapping(params = "action=addFilter")
     public void addFilter(@ModelAttribute("ifeed") final IFeed iFeed,
             @ModelAttribute final FilterFormBean filterFormBean,
-                final ActionResponse response, final Model model) {
+            final ActionResponse response, final Model model) {
 
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(),
                 filterFormBean.getFilterValue()));
@@ -109,9 +117,9 @@ public class EditIFeedController {
     @ActionMapping(params = "action=editFilter")
     public void editFilter(final ActionResponse response,
             @ModelAttribute("ifeed") final IFeed iFeed,
-                @RequestParam("filter") final FilterType.Filter filter,
-                    @RequestParam("filterQuery") final String filterQuery,
-                        final Model model) throws IOException {
+            @RequestParam("filter") final FilterType.Filter filter,
+            @RequestParam("filterQuery") final String filterQuery,
+            final Model model) throws IOException {
 
         model.addAttribute("newFilter", filter);
         model.addAttribute("filterValue", filterQuery);
@@ -120,7 +128,7 @@ public class EditIFeedController {
                 filter.getMetadataKey());
         model.addAttribute("vocabulary", vocabulary);
         String vocabularyJson =
-            new ObjectMapper().writeValueAsString(vocabulary);
+                new ObjectMapper().writeValueAsString(vocabulary);
         model.addAttribute("vocabularyJson", vocabularyJson);
 
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
@@ -130,9 +138,9 @@ public class EditIFeedController {
     @ActionMapping(params = "action=removeFilter")
     public void removeFilter(final ActionResponse response,
             @ModelAttribute("ifeed") final IFeed iFeed,
-                @RequestParam("filter") final FilterType.Filter filter,
-                    @RequestParam("filterQuery") final String filterQuery,
-                        final Model model) {
+            @RequestParam("filter") final FilterType.Filter filter,
+            @RequestParam("filterQuery") final String filterQuery,
+            final Model model) {
 
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
         response.setRenderParameter("view", "showEditIFeedForm");
@@ -143,6 +151,18 @@ public class EditIFeedController {
             final SessionStatus sessionStatus, final Model model) {
 
         sessionStatus.setComplete();
+    }
+
+    @ResourceMapping
+    public void searchPeople(@RequestParam String filter, ResourceResponse response) {
+        List<Person> people = ldapPersonService.getPeople(filter, 10);
+        try {
+            final OutputStream out = response.getPortletOutputStream();
+            response.setContentType("application/json");
+            new ObjectMapper().writeValue(out, people);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @ModelAttribute("filterTypes")

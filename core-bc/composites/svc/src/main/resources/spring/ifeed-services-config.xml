@@ -22,9 +22,8 @@
   </bean>
 
   <bean id="iFeedSolrQuery" class="se.vgregion.ifeed.service.solr.IFeedSolrQuery">
-    <property name="solrServer" ref="solrServer" />
+    <constructor-arg ref="solrServer" />
     <property name="rows" value="100" />
-    <property name="fields" value="*" />
     <property name="showDebugInfo" value="true" />
   </bean>
 

@@ -154,8 +154,8 @@ public class EditIFeedController {
     }
 
     @ResourceMapping
-    public void searchPeople(@RequestParam String filter, ResourceResponse response) {
-        List<Person> people = ldapPersonService.getPeople(filter, 10);
+    public void searchPeople(@RequestParam final String filterValue, ResourceResponse response) {
+        List<Person> people = ldapPersonService.getPeople(filterValue, 10);
         try {
             final OutputStream out = response.getPortletOutputStream();
             response.setContentType("application/json");

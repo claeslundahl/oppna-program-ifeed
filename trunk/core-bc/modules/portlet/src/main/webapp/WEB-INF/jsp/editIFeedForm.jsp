@@ -165,15 +165,12 @@
                 </aui:field-wrapper>
               </c:when>
               <c:when test="${newFilter.metadataType == 'TEXT_FREE'}">
-                <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filter-value"
-                  value="${filterValue}" />
+                <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filter-value" value="${filterValue}" />
               </c:when>
               <c:when test="${newFilter.metadataType == 'LDAP_VALUE'}">
-              <div id="<portlet:namespace />ldapPeople">
-                        <aui:input id="filter-value" type="text" label="${newFilter.keyString}.label"
-                                   cssClass="mandatory-label structure" name="filterValue"
-                                   value="${filterValue}"/>
-                    </div>
+                <div id="<portlet:namespace />ldapPeople">
+                  <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filterValue" value="${filterValue}" />
+                </div>
               </c:when>
             </c:choose>
           </div>
@@ -254,43 +251,49 @@
     .render();
 
     AUI().ready('aui-autocomplete', function(A) {
-        var instance = new A.AutoComplete({
-            dataSource: ${vocabularyJson},
-            typeAhead: false,
-            contentBox: '#<portlet:namespace />filter-value-box',
-            input: '#<portlet:namespace />filter-value'
-        }).render();
-      });
-      
-    var datasource = function(request) {
-      var items = null;
-      A.io.request(${findPeople}, {
+      var datasource = function(request) {
+        var items = null;
+        A.io.request('${findPeople}&filterValue=' + A.one('#<portlet:namespace />filterValue').get('value') + "*", {
           cache: false,
           sync: true,
           timeout: 1000,
           dataType: 'json',
           method: 'get',
           on: {
-              success: function() {
-                alert("Success")
-                //  items = this.get('responseData');
-              },
-              failure: function() {
-                alert("Fail")
-              }
+            success: function(param) {
+              items = {};
+              items.list = eval(this.get('responseData'));
+            },
+            failure: function() {
+              alert("Fail")
+            }
           }
+        });
+        return items;
+      }
+      var autoComplete = new A.AutoComplete({
+          dataSource: datasource,
+          schema: {
+            resultListLocator: 'list',
+            resultFields: ['firstName', 'lastName', 'userName', 'organisation', 'email']
+          },
+          forceSelection: true,
+          queryDelay: 0.5,
+          matchKey: 'userName',
+          dataSourceType: 'Function',
+          schemaType: 'json',
+          autoHiglight: true,
+          typeAhead: false,
+          minQueryLength: 3,
+          contentBox: '#<portlet:namespace />ldapPeople',
+          input: '#<portlet:namespace />filterValue'
       });
-  
-      return items;
-    }
-    AUI().ready('aui-autocomplete', function(A) {
-        var autoComplete = new A.AutoComplete({
-            dataSource: datasource,
-            dataSourceType: 'Function',
-            schemaType: 'json',
-            typeAhead: true,
-            contentBox: '#<portlet:namespace />externStructurePersonDnDiv',
-            input: '#<portlet:namespace />externStructurePersonDn'
-        }).render();
-     });
+
+      autoComplete.formatResult = function(result, request, resultMatch) {
+        var resultFormat = "<div><ul><li>" + result.userName + "</li><li>" + result.firstName + " " + result.lastName + "</li><li>" + result.organisation + "</ul></div>";
+        return resultFormat;
+      };
+    
+      autoComplete.render();
+    });
 </aui:script>

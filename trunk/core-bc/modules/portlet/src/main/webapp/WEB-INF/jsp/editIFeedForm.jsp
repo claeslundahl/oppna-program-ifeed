@@ -168,8 +168,8 @@
                 <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filter-value" value="${filterValue}" />
               </c:when>
               <c:when test="${newFilter.metadataType == 'LDAP_VALUE'}">
-                <div id="<portlet:namespace />ldapPeople">
-                  <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filterValue" value="${filterValue}" />
+                <div id="<portlet:namespace />ldap-people" class="ifeed-portlet-ldap-people">
+                  <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filterValue" value="${filterValue}" cssClass="ifeed-portlet-filter-input"/>
                 </div>
               </c:when>
             </c:choose>
@@ -235,6 +235,39 @@
 </liferay-util:html-top>
 
 <aui:script use="vgr-ifeed-config">
+            /**
+             * Monky patched function - issue AUI-416
+             * http://issues.liferay.com/browse/AUI-416
+             */
+            var _onContainerClick = function(event) {
+                var instance = this;
+
+                var target = event.target;
+                var tagName = target.get('nodeName').toLowerCase();
+
+                event.halt();
+
+                while (target && (tagName != 'table')) {
+                    switch (tagName) {
+                        case 'body':
+                        return;
+
+                        case 'li':
+                            instance._toggleHighlight(target, 'to');
+                            instance._selectItem(target);
+                        return;
+
+                        default:
+                        break;
+                    }
+
+                    target = target.get('parentNode');
+
+                    if (target) {
+                        tagName = target.get('nodeName').toLowerCase();
+                    }
+                }
+            };
 
     var vgrIfeedConfig = new A.VgrIfeedConfig({
         existingFiltersTreeBoundingBox: '#<portlet:namespace />existingFiltersWrap',
@@ -270,7 +303,7 @@
           }
         });
         return items;
-      }
+    };
       var autoComplete = new A.AutoComplete({
           dataSource: datasource,
           schema: {
@@ -285,12 +318,14 @@
           autoHiglight: true,
           typeAhead: false,
           minQueryLength: 3,
-          contentBox: '#<portlet:namespace />ldapPeople',
+          contentBox: '#<portlet:namespace />ldap-people',
           input: '#<portlet:namespace />filterValue'
       });
-
+autoComplete._onContainerClick = _onContainerClick;
+      var count = 0;
       autoComplete.formatResult = function(result, request, resultMatch) {
-        var resultFormat = "<div><ul><li>" + result.userName + "</li><li>" + result.firstName + " " + result.lastName + "</li><li>" + result.organisation + "</ul></div>";
+      var resultFormat = '<div class="ifeed-portlet-filter-result ifeed-portlet-filter-result-' + (count++%2==0?'even':'odd') + '"><div><strong>' + result.firstName + " " + result.lastName + '</strong> (' + result.userName + ')</div><div>' + result.organisation + '</div>';
+      //var resultFormat = '<ul class="ifeed-portlet-filter-result ifeed-portlet-filter-result-' + (count++%2==0?'even':'odd') + '"><li><strong>' + result.firstName + " " + result.lastName + '</strong> (' + result.userName + ')</li><li>' + result.organisation + '</ul>';
         return resultFormat;
       };
     

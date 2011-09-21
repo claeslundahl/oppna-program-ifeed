@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import static se.vgregion.common.utils.CommonUtils.getEnum;
+import static se.vgregion.common.utils.CommonUtils.*;
 
 import java.util.Collection;
 import java.util.Date;
@@ -79,7 +79,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         // Retrieve feed from store
         IFeed retrievedFeed = iFeedService.getIFeed(id);
 
-        // Throw 404 if the feed does not exist
+        // Throw 404 if the feed doesn't exist
         if (retrievedFeed == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
             // TODO create a html view of the error to
@@ -101,7 +101,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     @GET
     @Produces({ "application/xml",
-        "application/atom+xml;type=entry;charset=UTF-8" })
+    "application/atom+xml;type=entry;charset=UTF-8" })
     @Path("/{id}")
     public Entry getIFeedEntry(@PathParam("id") final Long id) {
         Entry e = Abdera.getInstance().newEntry();
@@ -124,9 +124,9 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         content.append("<ul>");
         for (IFeedFilter iFeedFilter : retrievedFeed.getFilters()) {
             content.append("<li>").append(iFeedFilter.getFilter()
-                .getFilterField()).append(":")
+                    .getFilterField()).append(":")
                     .append(iFeedFilter.getFilterQuery())
-                        .append("</li>");
+                    .append("</li>");
         }
         content.append("</ul>");
 

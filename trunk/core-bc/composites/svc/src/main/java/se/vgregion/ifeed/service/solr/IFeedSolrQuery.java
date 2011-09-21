@@ -63,12 +63,14 @@ public class IFeedSolrQuery extends SolrQuery {
             LOGGER.debug("Searching for new document since: {}",
                     "processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
             addFilterQuery("processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
+            LOGGER.debug("Add offset filter {}", Arrays.toString(getFilterQueries()));
+
         }
     }
 
     private void addUnPublishedFilter() {
-        LOGGER.debug("Add unpublished filter");
         addFilterQuery("published:true");
+        LOGGER.debug("Add unpublished filter {}", Arrays.toString(getFilterQueries()));
     }
 
     private void addFeedFilters(IFeed iFeed) {
@@ -76,6 +78,7 @@ public class IFeedSolrQuery extends SolrQuery {
         for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
             addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter));
         }
+        LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
     }
 
     public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed) {

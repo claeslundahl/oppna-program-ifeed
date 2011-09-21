@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.formbean;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -12,31 +13,14 @@ import se.vgregion.ifeed.types.MetadataType;
  * @author bjornryding
  *
  */
-public class FilterFormBean {
-    /**
-     * 
-     */
+public class FilterFormBean implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Filter filter;
-    /**
-     * 
-     */
     private String filterValue;
-    /**
-     * 
-     */
     private int validFromYear;
-    /**
-     * 
-     */
     private int validFromMonth;
-    /**
-     * 
-     */
     private int validFromDay;
 
-    /**
-     * 
-     */
     public FilterFormBean() {
         setFilterValue(new Date());
     }
@@ -61,8 +45,8 @@ public class FilterFormBean {
     public String getFilterValue() {
         if (filter.getMetadataType() == MetadataType.DATE) {
             filterValue = DateFormatter.format(validFromYear,
-                        validFromMonth + 1, validFromDay,
-                        DateFormats.SOLR_DATE_FORMAT);
+                    validFromMonth + 1, validFromDay,
+                    DateFormats.SOLR_DATE_FORMAT);
         }
         return filterValue;
     }
@@ -124,7 +108,7 @@ public class FilterFormBean {
     /**
      * @return
      */
-     public final int getValidFromYear() {
+    public final int getValidFromYear() {
         return validFromYear;
     }
 }

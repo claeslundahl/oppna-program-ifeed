@@ -10,6 +10,7 @@ import java.util.List;
 import javax.portlet.ActionResponse;
 import javax.portlet.ResourceResponse;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +109,8 @@ public class EditIFeedController {
     public void addFilter(@ModelAttribute("ifeed") final IFeed iFeed,
             @ModelAttribute final FilterFormBean filterFormBean,
             final ActionResponse response, final Model model) {
+
+        LOGGER.debug("FilterFormBean: {}", ToStringBuilder.reflectionToString(filterFormBean));
 
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(),
                 filterFormBean.getFilterValue()));

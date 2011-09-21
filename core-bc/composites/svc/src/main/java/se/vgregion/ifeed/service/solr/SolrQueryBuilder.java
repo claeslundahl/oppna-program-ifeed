@@ -12,27 +12,33 @@ public class SolrQueryBuilder {
         switch (filter.getMetadataType()) {
             case TEXT_FREE:
                 query  = filter.getFilterField() + ":\""
-                    + SolrQueryEscaper.escape(filterQuery) + "\"";
+                        + SolrQueryEscaper.escape(filterQuery) + "\"";
                 break;
             case TEXT_FIX:
                 query  = filter.getFilterField() + ":"
-                    + SolrQueryEscaper.escape(filterQuery) + "";
+                        + SolrQueryEscaper.escape(filterQuery) + "";
+                break;
+            case LDAP_VALUE:
+                query  = filter.getFilterField() + ":"
+                        + SolrQueryEscaper.escape(filterQuery) + "";
                 break;
             case DATE:
                 if (filter.name().contains("FROM_DATE")) {
                     query = filter.getFilterField()
-                        + ":[" + filterQuery + " TO *]";
+                            + ":[" + filterQuery + " TO *]";
                 } else if (filter.name().contains("TO_DATE")) {
                     query = filter.getFilterField()
-                        + ":[* TO " + filterQuery + "]";
+                            + ":[* TO " + filterQuery + "]";
                 } else {
                     throw new RuntimeException(
-                        "Unable to build query. "
-                            + "Unknown filter date type found: "
-                                + filter.name());
+                            "Unable to build query. "
+                                    + "Unknown filter date type found: "
+                                    + filter.name());
                 }
                 break;
             default:
+                query  = filter.getFilterField() + ":\""
+                        + SolrQueryEscaper.escape(filterQuery) + "\"";
                 break;
         }
         return query;

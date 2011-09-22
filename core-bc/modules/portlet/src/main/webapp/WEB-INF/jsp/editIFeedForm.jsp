@@ -38,7 +38,7 @@
     </h1>
   </aui:column>
   <aui:column columnWidth="50" last="true">
-    <aui:form method="post" action="${saveIFeedURL}">
+    <aui:form method="post" action="${saveIFeedURL2}">
       <aui:input id="headingTextInput" name="name" type="hidden" value="${ifeed.name}" />
       <aui:input id="descriptionTextInput" name="description" type="hidden" value="${ifeed.description}" />
       <ul class="button-toolbar clearfix">
@@ -146,6 +146,7 @@
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Nytt filter" collapsible="true" extended="true">
         <aui:form action="${addFilterURL}" method="post">
+<%--         <form id="<portlet:namespace/>fm" name="<portlet:namespace/>fm" action="${addFilterURL}" method="post" class="aui-form"> --%>
           <aui:input name="filter" type="hidden" value="${newFilter}" />
           <div id="<portlet:namespace />filter-value-box">
             <c:choose>
@@ -218,8 +219,9 @@
         <c:if test="${not empty ifeed.filters}">
           <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100">
             <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
-            <liferay-ui:search-container-row className="java.util.Map" modelVar="hit" stringKey="true">
+            <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">
               <liferay-ui:search-container-column-text name="Title" property="title" />
+              <liferay-ui:search-container-column-text name="Senast ändrad" property="updated" />
             </liferay-ui:search-container-row>
             <liferay-ui:search-iterator />
           </liferay-ui:search-container>

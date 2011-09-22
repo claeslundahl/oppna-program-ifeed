@@ -30,6 +30,7 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
 import se.vgregion.ifeed.formbean.FilterFormBean;
+import se.vgregion.ifeed.formbean.SearchResultList;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
@@ -73,7 +74,7 @@ public class EditIFeedController {
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(
             @ModelAttribute("ifeed") final IFeed iFeed, final Model model) {
-        model.addAttribute("hits", iFeedSolrQuery.getIFeedResults(iFeed));
+        model.addAttribute("hits", new SearchResultList(iFeedSolrQuery.getIFeedResults(iFeed)));
         model.addAttribute("atomFeedLink", String.format(
                 ifeedAtomFeed, iFeed.getId()));
         return "editIFeedForm";
@@ -166,6 +167,11 @@ public class EditIFeedController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @ModelAttribute("filters")
+    public List<Filter> getFilters() {
+        return Collections.unmodifiableList(Arrays.asList(Filter.values()));
     }
 
     @ModelAttribute("filterTypes")

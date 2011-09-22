@@ -6,7 +6,6 @@ import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormats.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -81,21 +80,21 @@ public class IFeedSolrQuery extends SolrQuery {
         LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
     }
 
-    public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed) {
+    public List<Map<String, Object>> getIFeedResults(IFeed iFeed) {
         addFeedFilters(iFeed);
         addUnPublishedFilter();
 
         return perpareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
     }
 
-    public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
+    public List<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
         addFeedFilters(iFeed);
         addOffsetFilter(offset);
 
         return perpareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
     }
 
-    public Collection<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection) {
+    public List<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection) {
         addFeedFilters(iFeed);
         addUnPublishedFilter();
 

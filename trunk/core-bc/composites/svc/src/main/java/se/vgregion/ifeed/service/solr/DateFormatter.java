@@ -15,7 +15,7 @@ public class DateFormatter {
 
     public enum DateFormats {
         SOLR_DATE_FORMAT(ISODateTimeFormat.dateTime()), W3CDTF(
-                ISODateTimeFormat.dateTimeNoMillis());
+                ISODateTimeFormat.dateTimeNoMillis()), TIME_ONLY(ISODateTimeFormat.hourMinuteSecond()), DATE_ONLY(ISODateTimeFormat.yearMonthDay());
         DateTimeFormatter formatter;
 
         DateFormats(DateTimeFormatter formatter) {

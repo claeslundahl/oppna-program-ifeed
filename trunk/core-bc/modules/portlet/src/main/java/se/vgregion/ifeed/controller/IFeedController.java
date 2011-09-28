@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.controller;
 
-import static java.lang.Math.min;
+import static java.lang.Math.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,33 +46,29 @@ public class IFeedController {
     @RenderMapping
     public String showIFeeds(final Model model,
             @RequestParam(required =
-                false, defaultValue = "10") final int delta,
+            false, defaultValue = "10") final int delta,
             @RequestParam(required =
-                false, defaultValue = "1") final int cur,
+            false, defaultValue = "1") final int cur,
             @RequestParam(required =
-                false) final String orderByCol,
+            false) final String orderByCol,
             @RequestParam(required =
-                false, defaultValue = "asc") final SortDirection orderByType,
+            false, defaultValue = "asc") final SortDirection orderByType,
             final RenderRequest request) {
 
         String currentView = (String) model.asMap().get("currentView");
         if (currentView == null || currentView.equalsIgnoreCase("viewMine")) {
             return showUserIFeeds(model, delta, cur, orderByCol,
-                  orderByType, request);
+                    orderByType, request);
         }
         return showAllIFeeds(model, delta, cur, orderByCol, orderByType);
     }
 
     @RenderMapping(params = { "view=showUserIFeeds" })
     public String showUserIFeeds(final Model model,
-            @RequestParam(required =
-                false, defaultValue = "10") final int delta,
-            @RequestParam(required =
-                false, defaultValue = "1") final int cur,
-            @RequestParam(required =
-                false, defaultValue = "name") final String orderByCol,
-            @RequestParam(required =
-                false, defaultValue = "asc") final SortDirection orderByType,
+            @RequestParam(required = false, defaultValue = "10") final int delta,
+            @RequestParam(required = false, defaultValue = "1") final int cur,
+            @RequestParam(required = false, defaultValue = "name") final String orderByCol,
+            @RequestParam(required = false, defaultValue = "asc") final SortDirection orderByType,
             final RenderRequest request) {
 
         List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(
@@ -88,13 +84,13 @@ public class IFeedController {
     @RenderMapping(params = { "view=showAllIFeeds" })
     public String showAllIFeeds(final Model model,
             @RequestParam(required =
-                false, defaultValue = "10") final int delta,
+            false, defaultValue = "10") final int delta,
             @RequestParam(required =
-                false, defaultValue = "1") final int cur,
+            false, defaultValue = "1") final int cur,
             @RequestParam(required =
-                false, defaultValue = "name") final String orderByCol,
+            false, defaultValue = "name") final String orderByCol,
             @RequestParam(required =
-                false, defaultValue = "asc") final SortDirection orderByType) {
+            false, defaultValue = "asc") final SortDirection orderByType) {
 
         List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getIFeeds());
 
@@ -109,7 +105,7 @@ public class IFeedController {
 
     private void populateModel(final Model model, final List<IFeed> iFeeds,
             final int numberOfIfeeds, final int delta, final String orderCol,
-                final SortDirection orderType, final String viewName) {
+            final SortDirection orderType, final String viewName) {
         model.addAttribute("numberOfIfeeds", numberOfIfeeds);
         model.addAttribute("ifeeds", iFeeds);
         model.addAttribute("delta", delta);
@@ -132,8 +128,8 @@ public class IFeedController {
 
         if (!CommonUtils.isNull(orderByCol)) {
             Comparator<IFeed> sortComparator = new BeanComparator(
-                orderByCol, new TransformingComparator(
-                    LOWER_CASE_TRANSFORMER));
+                    orderByCol, new TransformingComparator(
+                            LOWER_CASE_TRANSFORMER));
 
             if (orderByType.equals(SortDirection.desc)) {
                 Collections.sort(viewList, Collections.reverseOrder(
@@ -165,7 +161,7 @@ public class IFeedController {
     private String getRemoteUserId(PortletRequest request) {
         @SuppressWarnings("unchecked")
         Map<String, ?> userInfo =
-                (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
+        (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
         String userId = "";
         if (userInfo != null) {
             userId = (String) userInfo.get(

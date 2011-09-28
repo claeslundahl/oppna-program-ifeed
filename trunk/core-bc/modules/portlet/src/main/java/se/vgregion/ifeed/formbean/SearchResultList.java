@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.formbean;
 
+import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Date;
 import java.util.Iterator;
@@ -10,7 +11,8 @@ import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
 import se.vgregion.ifeed.service.solr.DateUtils;
 
-public class SearchResultList extends AbstractList<SearchResultList.SearchResult> {
+public class SearchResultList extends AbstractList<SearchResultList.SearchResult> implements Serializable {
+    private static final long serialVersionUID = 1L;
     private List<Map<String, Object>> iFeedResults = null;
     private Iterator<Map<String, Object>> iterator = null;
 
@@ -20,19 +22,19 @@ public class SearchResultList extends AbstractList<SearchResultList.SearchResult
     }
 
     public static class SearchResult {
-        private Date updated;
+        private Date processingTime;
         private String title;
 
-        public SearchResult(Date updated, String title) {
-            this.updated = updated;
+        public SearchResult(Date processingTime, String title) {
+            this.processingTime = processingTime;
             this.title = title;
         }
 
-        public String getUpdated() {
-            if(DateUtils.isToday(updated)) {
-                return DateFormatter.format(updated, DateFormats.TIME_ONLY);
+        public String getProcessingTime() {
+            if(DateUtils.isToday(processingTime)) {
+                return DateFormatter.format(processingTime, DateFormats.TIME_ONLY);
             } else {
-                return DateFormatter.format(updated, DateFormats.DATE_ONLY);
+                return DateFormatter.format(processingTime, DateFormats.DATE_ONLY);
             }
         }
 

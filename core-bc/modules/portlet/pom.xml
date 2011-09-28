@@ -96,29 +96,25 @@
     <dependency>
       <groupId>com.liferay.portal</groupId>
       <artifactId>util-taglib</artifactId>
-      <version>6.0.5</version>
-      <classifier>ee</classifier>
+      <version>6.0.11</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.liferay.portal</groupId>
       <artifactId>portal-impl</artifactId>
-      <version>6.0.5</version>
-      <classifier>ee</classifier>
+      <version>6.0.11</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.liferay.portal</groupId>
       <artifactId>portal-service</artifactId>
-      <version>6.0.5</version>
-      <classifier>ee</classifier>
+      <version>6.0.11</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.liferay.portal</groupId>
       <artifactId>util-bridges</artifactId>
-      <version>6.0.5</version>
-      <classifier>ee</classifier>
+      <version>6.0.11</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

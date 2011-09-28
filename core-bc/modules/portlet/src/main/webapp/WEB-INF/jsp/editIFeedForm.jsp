@@ -30,15 +30,19 @@
   <portlet:param name="action" value="saveIFeed" />
 </portlet:actionURL>
 
+<portlet:renderURL var="showEditIFeedFormURL">
+    <portlet:param name="view" value="showEditIFeedForm"/>
+</portlet:renderURL>
+
 <aui:layout cssClass="ifeed-block ifeed-header">
-  <aui:column columnWidth="50" first="true">
+  <aui:column columnWidth="85" first="true">
     <h1 class="heading">
       <span id="<portlet:namespace />headingText" class="heading-text">${ifeed.name}</span> <span
         class="ifeed-edit-trigger ifeed-edit-trigger-heading">Redigera text</span>
     </h1>
   </aui:column>
-  <aui:column columnWidth="50" last="true">
-    <aui:form method="post" action="${saveIFeedURL2}">
+  <aui:column columnWidth="15" last="true">
+    <aui:form method="post" action="${saveIFeedURL}">
       <aui:input id="headingTextInput" name="name" type="hidden" value="${ifeed.name}" />
       <aui:input id="descriptionTextInput" name="description" type="hidden" value="${ifeed.description}" />
       <ul class="button-toolbar clearfix">
@@ -217,11 +221,11 @@
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Träfflista" collapsible="true" extended="true">
         <c:if test="${not empty ifeed.filters}">
-          <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100">
+          <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100"  orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${showEditIFeedFormURL}">
             <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
             <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">
-              <liferay-ui:search-container-column-text name="Title" property="title" />
-              <liferay-ui:search-container-column-text name="Senast ändrad" property="updated" />
+              <liferay-ui:search-container-column-text name="Title" property="title" orderableProperty="title" orderable="true" />
+              <liferay-ui:search-container-column-text name="Ändrad" property="processingTime" orderableProperty="processingTime" orderable="true" />
             </liferay-ui:search-container-row>
             <liferay-ui:search-iterator />
           </liferay-ui:search-container>
@@ -230,7 +234,6 @@
     </liferay-ui:panel-container>
   </aui:column>
 </aui:layout>
-
 <liferay-util:html-top>
   <%@ include file="ifeed_css.jsp"%>
   <script type="text/javascript" src="${renderRequest.contextPath}/js/vgr-ifeed-config.js"></script>

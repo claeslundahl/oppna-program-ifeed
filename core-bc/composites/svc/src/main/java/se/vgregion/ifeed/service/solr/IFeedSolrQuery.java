@@ -103,6 +103,8 @@ public class IFeedSolrQuery extends SolrQuery {
 
     private List<Map<String, Object>> perpareAndPerformQuery(String sortField, SortDirection sortDirection) {
         LOGGER.debug("Search filters: {}", Arrays.toString(this.getFilterQueries()));
+        LOGGER.debug("Custom sort direction: " + sortDirection.toString());
+        LOGGER.debug("Custom sort field: " + sortField);
 
         String sortBy = isBlank(sortField) ? DEFAULT_SORT_FIELD : sortField;
         SortDirection direction = isNull(sortDirection) ? DEFAULT_SORT_DIRECTION : sortDirection;

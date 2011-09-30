@@ -57,12 +57,12 @@ public class AddIFeedController {
 
     @ActionMapping(params = {"action=addIFeed"})
     public void addIFeed(final Model model,
-            @Valid @ModelAttribute(value = "ifeed") final IFeed iFeed,
-                final BindingResult bindingResult, final ActionRequest request,
-                    final ActionResponse response) {
+            @Valid @ModelAttribute(value = "ifeed") IFeed iFeed,
+            final BindingResult bindingResult, final ActionRequest request,
+            final ActionResponse response) {
         if (!bindingResult.hasErrors()) {
             iFeed.setUserId(getRemoteUserId(request));
-            iFeedService.addIFeed(iFeed);
+            iFeed = iFeedService.addIFeed(iFeed);
             model.addAttribute("ifeed", iFeed);
             response.setRenderParameter("view", "showEditIFeedForm");
         } else {

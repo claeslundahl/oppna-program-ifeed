@@ -11,9 +11,9 @@ public interface IFeedService {
 
     IFeed getIFeed(Long id);
 
-    void addIFeed(IFeed iFeed);
+    IFeed addIFeed(IFeed iFeed);
 
-    void updateIFeed(IFeed iFeed);
+    IFeed updateIFeed(IFeed iFeed);
 
     void removeIFeed(Long id);
 

@@ -84,34 +84,30 @@ public class IFeedSolrQuery extends SolrQuery {
         addFeedFilters(iFeed);
         addUnPublishedFilter();
 
-        return perpareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
+        return prepareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
     }
 
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
         addFeedFilters(iFeed);
         addOffsetFilter(offset);
 
-        return perpareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
+        return prepareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
     }
 
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection) {
         addFeedFilters(iFeed);
         addUnPublishedFilter();
 
-        return perpareAndPerformQuery(sortField, sortDirection);
+        return prepareAndPerformQuery(sortField, sortDirection);
     }
 
-    private List<Map<String, Object>> perpareAndPerformQuery(String sortField, SortDirection sortDirection) {
+    private List<Map<String, Object>> prepareAndPerformQuery(String sortField, SortDirection sortDirection) {
         LOGGER.debug("Search filters: {}", Arrays.toString(this.getFilterQueries()));
-        LOGGER.debug("Custom sort direction: " + sortDirection.toString());
-        LOGGER.debug("Custom sort field: " + sortField);
-
         String sortBy = isBlank(sortField) ? DEFAULT_SORT_FIELD : sortField;
         SortDirection direction = isNull(sortDirection) ? DEFAULT_SORT_DIRECTION : sortDirection;
+        LOGGER.debug("Sort by: {}, Order: {}", new Object[] { sortBy, direction });
 
         setQuery("");
-
-        LOGGER.debug("Sort by: {}, Order: {}", new Object[] { sortBy, direction });
 
         // Perform query
         List<Map<String, Object>> hits = doFilterQuery(sortBy, direction);

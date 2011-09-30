@@ -4,7 +4,7 @@
 <liferay-portlet-app>
   <portlet>
     <portlet-name>iFeed</portlet-name>
-    <instanceable>true</instanceable>
+    <instanceable>false</instanceable>
     <css-class-wrapper>ifeed-portlet</css-class-wrapper>
   </portlet>
 

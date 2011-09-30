@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.portlet.ActionResponse;
+import javax.portlet.RenderResponse;
 import javax.portlet.ResourceResponse;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -73,10 +74,11 @@ public class EditIFeedController {
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(
-            @ModelAttribute("ifeed") final IFeed iFeed, final Model model) {
+            @ModelAttribute("ifeed") final IFeed iFeed, final Model model, RenderResponse repsonse) {
         model.addAttribute("hits", new SearchResultList(iFeedSolrQuery.getIFeedResults(iFeed)));
         model.addAttribute("atomFeedLink", String.format(
                 ifeedAtomFeed, iFeed.getId()));
+        model.addAttribute("portletUrl", repsonse.createRenderURL());
         return "editIFeedForm";
     }
 
@@ -84,7 +86,8 @@ public class EditIFeedController {
     public void editIFeed(@ModelAttribute("ifeed") final IFeed iFeed,
             final BindingResult bindingResult,
             final ActionResponse response, final Model model) {
-        iFeedService.updateIFeed(iFeed);
+        IFeed ifeed = iFeedService.updateIFeed(iFeed);
+        model.addAttribute("ifeed", ifeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 

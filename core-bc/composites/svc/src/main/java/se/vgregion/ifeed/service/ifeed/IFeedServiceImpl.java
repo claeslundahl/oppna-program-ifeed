@@ -14,8 +14,7 @@ public class IFeedServiceImpl implements IFeedService {
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
 
-    public IFeedServiceImpl(
-            final JpaRepository<IFeed, Long, Long> iFeedRepoParam) {
+    public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam) {
         iFeedRepo = iFeedRepoParam;
     }
 
@@ -26,9 +25,8 @@ public class IFeedServiceImpl implements IFeedService {
 
     @Override
     public final Collection<IFeed> getUserIFeeds(final String userId) {
-        return new ArrayList<IFeed>(iFeedRepo.findByQuery(
-            "SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1",
-                new Object[] {userId}));
+        return new ArrayList<IFeed>(iFeedRepo.findByQuery("SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1",
+                new Object[] { userId }));
     }
 
     @Override
@@ -38,8 +36,8 @@ public class IFeedServiceImpl implements IFeedService {
 
     @Override
     @Transactional
-    public final void addIFeed(final IFeed iFeed) {
-        iFeedRepo.store(iFeed);
+    public final IFeed addIFeed(final IFeed iFeed) {
+        return iFeedRepo.store(iFeed);
     }
 
     @Override
@@ -50,12 +48,12 @@ public class IFeedServiceImpl implements IFeedService {
 
     @Override
     @Transactional
-    public final void updateIFeed(final IFeed iFeed) {
+    public final IFeed updateIFeed(final IFeed iFeed) {
         IFeed oldIFeed = iFeedRepo.find(iFeed.getId());
         if (oldIFeed == null || filterChanged(oldIFeed, iFeed)) {
             iFeed.clearTimestamp();
         }
-        iFeedRepo.merge(iFeed);
+        return iFeedRepo.merge(iFeed);
     }
 
     private boolean filterChanged(final IFeed oldIFeed, final IFeed iFeed) {

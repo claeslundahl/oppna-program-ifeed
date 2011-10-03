@@ -24,10 +24,12 @@ public class SearchResultList extends AbstractList<SearchResultList.SearchResult
     public static class SearchResult {
         private Date processingTime;
         private String title;
+        private String link;
 
-        public SearchResult(Date processingTime, String title) {
+        public SearchResult(Date processingTime, String title, String link) {
             this.processingTime = processingTime;
             this.title = title;
+            this.link = link;
         }
 
         public String getProcessingTime() {
@@ -41,6 +43,10 @@ public class SearchResultList extends AbstractList<SearchResultList.SearchResult
         public String getTitle() {
             return title;
         }
+
+        public String getLink() {
+            return link;
+        }
     }
 
     @Override
@@ -48,7 +54,8 @@ public class SearchResultList extends AbstractList<SearchResultList.SearchResult
         final Map<String, Object> resultEntry = iFeedResults.get(index);
         final Date date = (Date)resultEntry.get("processingtime");
         final String title = (String)resultEntry.get("title");
-        return new SearchResult(new Date(date.getTime()), title);
+        final String link = (String)resultEntry.get("url");
+        return new SearchResult(new Date(date.getTime()), title, link);
     }
 
     @Override

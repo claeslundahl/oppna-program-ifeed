@@ -42,11 +42,9 @@
       <aui:input id="headingTextInput" name="name" type="hidden" value="${ifeed.name}" />
       <aui:input id="descriptionTextInput" name="description" type="hidden" value="${ifeed.description}" />
       <ul class="button-toolbar clearfix">
-        <li><aui:button type="submit" class="link-button link-button-icon link-button-save" value="Spara" />
-          <%--                 <a href="${saveIFeedURL}" class="link-button link-button-icon link-button-save"> --%>
-          <!--                     <span class="link-button-content">Spara</span> --> <!--                 </a> -->
-        </li>
-        <li><a href="${cancelURL}" class="link-button link-button-icon link-button-cancel"> <span
+        <li><aui:button type="submit" cssClass="link-button link-button-icon link-button-save" value="Spara" /></li>
+        <li>
+        <a href="${cancelURL}" class="link-button link-button-icon link-button-cancel"> <span
             class="link-button-content">Avbryt</span> </a></li>
         <!--             Enable when there is a help section written -->
         <!--             <li> -->
@@ -69,10 +67,16 @@
       </div>
     </div>
   </aui:column>
-  <aui:column columnWidth="33">
+  <aui:column columnWidth="67">
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Id:</div>
       <div class="ifeed-meta-content">${ifeed.id}</div>
+    </div>
+    <div class="ifeed-meta-item ifeed-meta-block">
+      <div class="ifeed-meta-label">Länk till feed:</div>
+      <div class="ifeed-meta-content">
+        <a href="${atomFeedLink}" target="_blank">${atomFeedLink}</a>
+      </div>
     </div>
     <!--         Enable when we have valid dates -->
     <!--         <div class="ifeed-meta-item ifeed-meta-inline"> -->
@@ -83,14 +87,6 @@
     <!--             <div class="ifeed-meta-label">Senast ändrat:</div> -->
     <!--             <div class="ifeed-meta-content">2011-06-17*</div> -->
     <!--         </div> -->
-  </aui:column>
-  <aui:column columnWidth="33" last="true">
-    <div class="ifeed-meta-item ifeed-meta-block">
-      <div class="ifeed-meta-label">Länk till feed:</div>
-      <div class="ifeed-meta-content">
-        <a href="${atomFeedLink}" target="_blank">${atomFeedLink}</a>
-      </div>
-    </div>
   </aui:column>
 </aui:layout>
 
@@ -150,7 +146,7 @@
           <div id="<portlet:namespace />filter-value-box">
             <c:choose>
               <c:when test="${newFilter.metadataType == 'TEXT_FIX'}">
-                <aui:select label="${newFilter.keyString}.label" name="filterValue">
+                <aui:select label="${newFilter.keyString}.label" name="filterValue" id="text-fix">
                   <c:forEach items="${vocabulary}" var="meta">
                     <aui:option label="${meta}" value="${meta}" selected="${filterValue eq meta}" />
                   </c:forEach>
@@ -161,15 +157,15 @@
                   <liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
                     monthParam="validFromMonth" dayParam="validFromDay" firstDayOfWeek="1"
                     yearValue="${filterFormBean.validFromYear}" monthValue="${filterFormBean.validFromMonth }"
-                    dayValue="${filterFormBean.validFromDay }" />
+                    dayValue="${filterFormBean.validFromDay }"/>
                 </aui:field-wrapper>
               </c:when>
               <c:when test="${newFilter.metadataType == 'TEXT_FREE'}">
-                <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filter-value" value="${filterValue}" />
+                <aui:input label="${newFilter.keyString}.label" name="filterValue" id="text-free" value="${filterValue}" />
               </c:when>
               <c:when test="${newFilter.metadataType == 'LDAP_VALUE'}">
                 <div id="<portlet:namespace />ldap-people" class="ifeed-portlet-ldap-people">
-                  <aui:input label="${newFilter.keyString}.label" name="filterValue" id="filterValue" value="${filterValue}" cssClass="ifeed-portlet-filter-input"/>
+                  <aui:input label="${newFilter.keyString}.label" name="filterValue" id="ldap-value" value="${filterValue}" cssClass="ifeed-portlet-filter-input"/>
                 </div>
               </c:when>
             </c:choose>
@@ -216,11 +212,11 @@
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Träfflista" collapsible="true" extended="true">
         <c:if test="${not empty ifeed.filters}">
-          <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100">
+          <liferay-ui:search-container id="<portlet:namespace/>-search-result-container" delta="100">
 <%--           <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100" orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${portletUrl}"> --%>
             <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
             <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">
-              <liferay-ui:search-container-column-text name="Title" property="title"/>
+              <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}"/>
               <liferay-ui:search-container-column-text name="Ändrad" property="processingTime" />
             </liferay-ui:search-container-row>
             <liferay-ui:search-iterator />
@@ -236,55 +232,57 @@
 </liferay-util:html-top>
 
 <aui:script use="vgr-ifeed-config">
-            /**
-             * Monky patched function - issue AUI-416
-             * http://issues.liferay.com/browse/AUI-416
-             */
-            var _onContainerClick = function(event) {
-                var instance = this;
 
-                var target = event.target;
-                var tagName = target.get('nodeName').toLowerCase();
-
-                event.halt();
-
-                while (target && (tagName != 'table')) {
-                    switch (tagName) {
-                        case 'body':
-                        return;
-
-                        case 'li':
-                            instance._toggleHighlight(target, 'to');
-                            instance._selectItem(target);
-                        return;
-
-                        default:
-                        break;
-                    }
-
-                    target = target.get('parentNode');
-
-                    if (target) {
-                        tagName = target.get('nodeName').toLowerCase();
-                    }
-                }
-            };
-
-    var vgrIfeedConfig = new A.VgrIfeedConfig({
-        existingFiltersTreeBoundingBox: '#<portlet:namespace />existingFiltersWrap',
-        existingFiltersTreeContentBox: '#<portlet:namespace />existingFiltersWrap > ul',
-        descriptionNode: '#<portlet:namespace />descriptionText',
-        descriptionInput: '#<portlet:namespace />descriptionTextInput',
-        headingNode: '#<portlet:namespace />headingText',
-        headingInput: '#<portlet:namespace />headingTextInput',
-        portletNamespace: '<portlet:namespace />',
-        portletWrap: '#p_p_id<portlet:namespace />',
-        usedFiltersTreeBoundingBox: '#<portlet:namespace />usedFiltersWrap',
-        usedFiltersTreeContentBox: '#<portlet:namespace />usedFiltersWrap > ul'
-    })
-    .render();
-
-    AUI().ready('aui-autocomplete', function(A) {
+  /**
+   * Monky patched function - issue AUI-416
+   * http://issues.liferay.com/browse/AUI-416
+   */
+  var _onContainerClick = function(event) {
+      var instance = this;
+  
+      var target = event.target;
+      var tagName = target.get('nodeName').toLowerCase();
+  
+      event.halt();
+  
+      while (target && (tagName != 'table')) {
+          switch (tagName) {
+              case 'body':
+              return;
+  
+              case 'li':
+                  instance._toggleHighlight(target, 'to');
+                  instance._selectItem(target);
+              return;
+  
+              default:
+              break;
+          }
+  
+          target = target.get('parentNode');
+  
+          if (target) {
+              tagName = target.get('nodeName').toLowerCase();
+          }
+      }
+  };
+  
+  var vgrIfeedConfig = new A.VgrIfeedConfig({
+      existingFiltersTreeBoundingBox: '#<portlet:namespace />existingFiltersWrap',
+      existingFiltersTreeContentBox: '#<portlet:namespace />existingFiltersWrap > ul',
+      descriptionNode: '#<portlet:namespace />descriptionText',
+      descriptionInput: '#<portlet:namespace />descriptionTextInput',
+      headingNode: '#<portlet:namespace />headingText',
+      headingInput: '#<portlet:namespace />headingTextInput',
+      portletNamespace: '<portlet:namespace />',
+      portletWrap: '#p_p_id<portlet:namespace />',
+      usedFiltersTreeBoundingBox: '#<portlet:namespace />usedFiltersWrap',
+      usedFiltersTreeContentBox: '#<portlet:namespace />usedFiltersWrap > ul'
+  })
+  .render();
+  
+  AUI().ready('aui-autocomplete', function(A) {
+    if(A.one("#<portlet:namespace />filterValue") != null) {
       var datasource = function(request) {
         var items = null;
         A.io.request('${findPeople}&filterValue=' + A.one('#<portlet:namespace />filterValue').get('value') + "*", {
@@ -304,7 +302,7 @@
           }
         });
         return items;
-    };
+      };
       var autoComplete = new A.AutoComplete({
           dataSource: datasource,
           schema: {
@@ -320,9 +318,9 @@
           typeAhead: false,
           minQueryLength: 3,
           contentBox: '#<portlet:namespace />ldap-people',
-          input: '#<portlet:namespace />filterValue'
+          input: '#<portlet:namespace />ldap-value'
       });
-autoComplete._onContainerClick = _onContainerClick;
+      autoComplete._onContainerClick = _onContainerClick;
       var count = 0;
       autoComplete.formatResult = function(result, request, resultMatch) {
       var resultFormat = '<div class="ifeed-portlet-filter-result ifeed-portlet-filter-result-' + (count++%2==0?'even':'odd') + '"><div><strong>' + result.firstName + " " + result.lastName + '</strong> (' + result.userName + ')</div><div>' + result.organisation + '</div>';
@@ -331,5 +329,6 @@ autoComplete._onContainerClick = _onContainerClick;
       };
     
       autoComplete.render();
-    });
+    }
+  });
 </aui:script>

@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -45,7 +44,7 @@ import se.vgregion.ldap.person.Person;
 @Controller
 @RequestMapping("VIEW")
 @SessionAttributes({ "ifeed", "hits" })
-@Transactional
+//@Transactional
 public class EditIFeedController {
     private static final Logger LOGGER = LoggerFactory.getLogger(
             EditIFeedController.class);
@@ -118,6 +117,7 @@ public class EditIFeedController {
 
         iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(),
                 filterFormBean.getFilterValue()));
+        model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 

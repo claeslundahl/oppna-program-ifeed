@@ -29,6 +29,7 @@
 
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
     <constructor-arg ref="iFeedRepo" />
+    <constructor-arg ref="iFeedPublisher" />
   </bean>
 
   <bean id="iFeedRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
@@ -60,7 +61,7 @@
     </property>
   </bean>
 
-  <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher">
+  <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher" scope="prototype">
     <constructor-arg value="${push.service}" />
   </bean>
 

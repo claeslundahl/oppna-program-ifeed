@@ -2,7 +2,6 @@ package se.vgregion.ifeed.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -49,11 +48,11 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     private String description;
     private String userId;
 
-    public Collection<IFeedFilter> getFilters() {
+    public List<IFeedFilter> getFilters() {
         if (filters == null) {
             return Collections.emptyList();
         }
-        return Collections.unmodifiableCollection(filters);
+        return Collections.unmodifiableList(filters);
     }
 
     public boolean addFilter(IFeedFilter filter) {
@@ -73,6 +72,11 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             f = filters.get(index);
         }
         return f;
+    }
+
+    public void setFilters(List<IFeedFilter> filters) {
+        this.filters.clear();
+        this.filters.addAll(filters);
     }
 
     public void removeFilter(IFeedFilter filter) {

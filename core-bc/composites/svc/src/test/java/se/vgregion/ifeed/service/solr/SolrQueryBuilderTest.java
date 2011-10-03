@@ -1,7 +1,7 @@
 package se.vgregion.ifeed.service.solr;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class SolrQueryBuilderTest {
 
     @Test
     public void shouldHandleFixedTextSearch() throws Exception {
-        String expectedQueryString = "dc.language:Svenska";
+        String expectedQueryString = "dc.language:\"Svenska\"";
 
         IFeedFilter filter = new IFeedFilter(Filter.LANGUAGE, "Svenska");
         String queryString = SolrQueryBuilder.createQuery(filter);

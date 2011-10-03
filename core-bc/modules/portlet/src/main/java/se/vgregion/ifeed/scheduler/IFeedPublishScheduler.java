@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.push.IFeedPublisher;
@@ -50,7 +49,6 @@ public class IFeedPublishScheduler implements MessageListener {
 
 
     @Override
-    @Transactional
     public final void receive(final Message message) {
         LOGGER.debug("Schedule task is started {}",
                 ToStringBuilder.reflectionToString(message));
@@ -62,18 +60,12 @@ public class IFeedPublishScheduler implements MessageListener {
 
         Collection<IFeed> ifeeds = iFeedService.getIFeeds();
         for (IFeed iFeed : ifeeds) {
-            LOGGER.debug("Checking for updates since {} in feed {} (id: {})",
-                new Object[] {iFeed.getTimestamp(),
-                    iFeed.getName(), iFeed.getId() });
-            Collection<Map<String, Object>> iFeedResults =
-                iFeedSolrQuery.getIFeedResults(iFeed, iFeed.getTimestamp());
+            LOGGER.debug("Checking for updates since {} in feed {} (id: {})", new Object[] { iFeed.getTimestamp(), iFeed.getName(), iFeed.getId() });
+            Collection<Map<String, Object>> iFeedResults = iFeedSolrQuery.getIFeedResults(iFeed, iFeed.getTimestamp());
 
             if (!isEmpty(iFeedResults) || iFeed.getTimestamp() == null) {
-                LOGGER.debug("{} new documents found in feed {} (id: {})",
-                        new Object[] {iFeedResults.size(),
-                        iFeed.getName(), iFeed.getId() });
-                LOGGER.debug("Sending feed {} (id: {}) to PuSH server.",
-                        new Object[] {iFeed.getName(), iFeed.getId()});
+                LOGGER.debug("{} new documents found in feed {} (id: {})", new Object[] {iFeedResults.size(), iFeed.getName(), iFeed.getId() });
+                LOGGER.debug("Sending feed {} (id: {}) to PuSH server.", new Object[] {iFeed.getName(), iFeed.getId()});
                 iFeedPublisher.addIFeed(iFeed);
                 modifiedIFeeds.add(iFeed);
             }
@@ -81,7 +73,6 @@ public class IFeedPublishScheduler implements MessageListener {
 
         if (modifiedIFeeds.size() > 0 && iFeedPublisher.publish()) {
             for (IFeed iFeed : modifiedIFeeds) {
-                iFeed.setTimestamp();
                 iFeedService.updateIFeed(iFeed);
             }
         }

@@ -15,8 +15,8 @@ public class SolrQueryBuilder {
                         + SolrQueryEscaper.escape(filterQuery) + "\"";
                 break;
             case TEXT_FIX:
-                query  = filter.getFilterField() + ":"
-                        + SolrQueryEscaper.escape(filterQuery) + "";
+                query  = filter.getFilterField() + ":\""
+                        + SolrQueryEscaper.escape(filterQuery) + "\"";
                 break;
             case LDAP_VALUE:
                 query  = filter.getFilterField() + ":"

@@ -7,15 +7,19 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
+import se.vgregion.ifeed.service.push.IFeedPublisher;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
 public class IFeedServiceImpl implements IFeedService {
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
+    private IFeedPublisher iFeedPublisher;
 
-    public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam) {
+
+    public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam, IFeedPublisher iFeedPublisher) {
         iFeedRepo = iFeedRepoParam;
+        this.iFeedPublisher = iFeedPublisher;
     }
 
     @Override
@@ -51,9 +55,22 @@ public class IFeedServiceImpl implements IFeedService {
     public final IFeed updateIFeed(final IFeed iFeed) {
         IFeed oldIFeed = iFeedRepo.find(iFeed.getId());
         if (oldIFeed == null || filterChanged(oldIFeed, iFeed)) {
-            iFeed.clearTimestamp();
+            oldIFeed.clearTimestamp();
+        } else {
+            oldIFeed.setTimestamp();
         }
-        return iFeedRepo.merge(iFeed);
+
+        oldIFeed.setName(iFeed.getName());
+        oldIFeed.setDescription(iFeed.getDescription());
+        oldIFeed.setFilters(iFeed.getFilters());
+
+        IFeed mergedIfeed = iFeedRepo.merge(oldIFeed);
+        iFeedPublisher.addIFeed(mergedIfeed);
+        iFeedPublisher.publish();
+        mergedIfeed.setTimestamp();
+        mergedIfeed = iFeedRepo.merge(mergedIfeed);
+        return mergedIfeed;
+
     }
 
     private boolean filterChanged(final IFeed oldIFeed, final IFeed iFeed) {

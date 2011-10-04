@@ -25,7 +25,7 @@ import se.vgregion.ifeed.types.IFeed;
 
 @Controller
 @RequestMapping("VIEW")
-@SessionAttributes({ "ifeed"})
+@SessionAttributes({"ifeed"})
 public class AddIFeedController {
     private IFeedService iFeedService;
 

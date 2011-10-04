@@ -21,7 +21,7 @@ public class IFeedScheduledJob implements MessageListener {
      *
      */
     private static final Logger LOGGER =
-        LoggerFactory.getLogger(IFeedScheduledJob.class);
+            LoggerFactory.getLogger(IFeedScheduledJob.class);
     /**
      *
      */

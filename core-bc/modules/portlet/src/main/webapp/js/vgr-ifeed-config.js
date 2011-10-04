@@ -22,7 +22,8 @@ AUI().add('vgr-ifeed-config',function(A) {
 		DESCRIPTION_INPUT = 'descriptionInput',
 		EXISTING_FILTERS_TREE_BOUNDING_BOX = 'existingFiltersTreeBoundingBox',
 		EXISTING_FILTERS_TREE_CONTENT_BOX = 'existingFiltersTreeContentBox',
-		HEADING_NODE = 'headingNode',
+    META_DATA_FORM = 'metaDataForm',
+    HEADING_NODE = 'headingNode',
 		HEADING_INPUT = 'headingInput',
 		HREF = 'href',
 		ID = 'id',
@@ -54,9 +55,12 @@ AUI().add('vgr-ifeed-config',function(A) {
           headingInput: {
             setter: A.one
           },					
-					headingNode: {
-						setter: A.one
-					},				
+          headingNode: {
+            setter: A.one
+          },        
+          metaDataForm: {
+            setter: A.one
+          },        
 					portletNamespace: {
 						value: ''
 					},
@@ -105,7 +109,7 @@ AUI().add('vgr-ifeed-config',function(A) {
 						// Create existing filter tree view
 						instance.usedFiltersTree = new A.TreeView({
 							boundingBox: instance.get(USED_FILTERS_TREE_BOUNDING_BOX),
-							contentBox: instance.get(USED_FILTERS_TREE_CONTENT_BOX),
+              contentBox: instance.get(USED_FILTERS_TREE_CONTENT_BOX),
 							type: 'normal'
 						})
 						.render();
@@ -124,8 +128,10 @@ AUI().add('vgr-ifeed-config',function(A) {
               var node = instance.headingEditable.get('node');
               var nodeValue = node.html();
               var nodeInput = instance.get(HEADING_INPUT);
+              var form = instance.get(META_DATA_FORM);
               
               nodeInput.set('value', nodeValue);
+              form.submit();
               
             }, instance);						
 
@@ -141,8 +147,10 @@ AUI().add('vgr-ifeed-config',function(A) {
               var node = instance.descriptionEditable.get('node');
               var nodeValue = node.html();
               var nodeInput = instance.get(DESCRIPTION_INPUT);
+              var form = instance.get(META_DATA_FORM);
               
               nodeInput.set('value', nodeValue);
+              form.submit();
               
             }, instance);   
             

@@ -8,9 +8,11 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -19,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -73,20 +74,49 @@ public class EditIFeedController {
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(
-            @ModelAttribute("ifeed") final IFeed iFeed, final Model model, RenderResponse repsonse) {
+            @ModelAttribute("ifeed") final IFeed iFeed,
+            @RequestParam(defaultValue="") final String orderByCol,
+            @RequestParam(defaultValue="") final String orderByType,
+            final Model model, RenderResponse repsonse) {
+
+        // Priority of sort field is:
+        // 1. Request parameter - orderByCol/orderByType.
+        // 2. Stored value in iFeed.
+        // 3. A default value set by the application.
+
+        String sortField = IFeedSolrQuery.DEFAULT_SORT_FIELD;
+        sortField = StringUtils.defaultIfEmpty(iFeed.getSortField(), sortField);
+        sortField = StringUtils.defaultIfEmpty(orderByCol, sortField);
+
+        String sortDirection = IFeedSolrQuery.DEFAULT_SORT_DIRECTION.name();
+        sortDirection = StringUtils.defaultIfEmpty(iFeed.getSortDirection(), sortDirection);
+        sortDirection = StringUtils.defaultIfEmpty(orderByType, sortDirection);
+
+        iFeed.setSortField(sortField);
+        iFeed.setSortDirection(sortDirection);
+
         model.addAttribute("hits", new SearchResultList(iFeedSolrQuery.getIFeedResults(iFeed)));
-        model.addAttribute("atomFeedLink", String.format(
-                ifeedAtomFeed, iFeed.getId()));
-        model.addAttribute("portletUrl", repsonse.createRenderURL());
+        model.addAttribute("atomFeedLink", String.format(ifeedAtomFeed, iFeed.getId()));
+        final PortletURL portletUrl = repsonse.createRenderURL();
+        portletUrl.setParameter("view", "showEditIFeedForm");
+        model.addAttribute("portletUrl", portletUrl);
+        model.addAttribute("orderByCol", iFeed.getSortField());
+        model.addAttribute("orderByType", iFeed.getSortDirection());
         return "editIFeedForm";
     }
 
     @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") final IFeed iFeed,
-            final BindingResult bindingResult,
             final ActionResponse response, final Model model) {
         IFeed ifeed = iFeedService.updateIFeed(iFeed);
         model.addAttribute("ifeed", ifeed);
+        response.setRenderParameter("view", "showEditIFeedForm");
+    }
+
+    @ActionMapping(params = "action=updateIFeed")
+    public void updateIFeed(@ModelAttribute("ifeed") final IFeed iFeed,
+            final ActionResponse response, final Model model) {
+        model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 

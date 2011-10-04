@@ -84,7 +84,8 @@ public class IFeedSolrQuery extends SolrQuery {
         addFeedFilters(iFeed);
         addUnPublishedFilter();
 
-        return prepareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
+        SortDirection direction = isBlank(iFeed.getSortDirection()) ? DEFAULT_SORT_DIRECTION : SortDirection.valueOf(iFeed.getSortDirection());
+        return prepareAndPerformQuery(iFeed.getSortField(), direction);
     }
 
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
@@ -103,6 +104,7 @@ public class IFeedSolrQuery extends SolrQuery {
 
     private List<Map<String, Object>> prepareAndPerformQuery(String sortField, SortDirection sortDirection) {
         LOGGER.debug("Search filters: {}", Arrays.toString(this.getFilterQueries()));
+
         String sortBy = isBlank(sortField) ? DEFAULT_SORT_FIELD : sortField;
         SortDirection direction = isNull(sortDirection) ? DEFAULT_SORT_DIRECTION : sortDirection;
         LOGGER.debug("Sort by: {}, Order: {}", new Object[] { sortBy, direction });

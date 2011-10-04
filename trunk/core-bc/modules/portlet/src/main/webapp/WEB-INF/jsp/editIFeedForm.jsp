@@ -30,6 +30,10 @@
   <portlet:param name="action" value="saveIFeed" />
 </portlet:actionURL>
 
+<portlet:actionURL name="updateIFeed" var="updateIFeedURL">
+  <portlet:param name="action" value="updateIFeed" />
+</portlet:actionURL>
+
 <aui:layout cssClass="ifeed-block ifeed-header">
   <aui:column columnWidth="85" first="true">
     <h1 class="heading">
@@ -38,9 +42,11 @@
     </h1>
   </aui:column>
   <aui:column columnWidth="15" last="true">
-    <aui:form method="post" action="<%=saveIFeedURL%>">
+    <aui:form id="metaDataForm" name="metaDataForm" method="post" action="<%=updateIFeedURL%>">
       <aui:input id="headingTextInput" name="name" type="hidden" value="${ifeed.name}" />
       <aui:input id="descriptionTextInput" name="description" type="hidden" value="${ifeed.description}" />
+   </aui:form>
+    <aui:form method="post" action="<%=saveIFeedURL%>">
       <ul class="button-toolbar clearfix">
         <li><aui:button type="submit" cssClass="link-button link-button-icon link-button-save" value="Spara" /></li>
         <li>
@@ -172,7 +178,7 @@
           </div>
           <c:if test="${not empty newFilter}">
             <aui:button-row>
-              <aui:button type="submit" value="Add" name="add" />
+              <aui:button type="submit" value="Lägg Till" name="add" />
             </aui:button-row>
           </c:if>
         </aui:form>
@@ -212,12 +218,11 @@
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Träfflista" collapsible="true" extended="true">
         <c:if test="${not empty ifeed.filters}">
-          <liferay-ui:search-container id="<portlet:namespace/>-search-result-container" delta="100">
-<%--           <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100" orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${portletUrl}"> --%>
+          <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100" orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${portletUrl}">
             <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
             <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">
-              <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}"/>
-              <liferay-ui:search-container-column-text name="Ändrad" property="processingTime" />
+              <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}" orderable="true" orderableProperty="dc:title"/>
+              <liferay-ui:search-container-column-text name="Ändrad" property="processingTime" orderable="true" orderableProperty="processingtime"/>
             </liferay-ui:search-container-row>
             <liferay-ui:search-iterator />
           </liferay-ui:search-container>
@@ -272,6 +277,7 @@
       existingFiltersTreeContentBox: '#<portlet:namespace />existingFiltersWrap > ul',
       descriptionNode: '#<portlet:namespace />descriptionText',
       descriptionInput: '#<portlet:namespace />descriptionTextInput',
+      metaDataForm: '#<portlet:namespace />metaDataForm',
       headingNode: '#<portlet:namespace />headingText',
       headingInput: '#<portlet:namespace />headingTextInput',
       portletNamespace: '<portlet:namespace />',

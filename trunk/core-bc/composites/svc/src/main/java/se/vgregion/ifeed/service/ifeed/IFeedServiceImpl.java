@@ -63,6 +63,8 @@ public class IFeedServiceImpl implements IFeedService {
         oldIFeed.setName(iFeed.getName());
         oldIFeed.setDescription(iFeed.getDescription());
         oldIFeed.setFilters(iFeed.getFilters());
+        oldIFeed.setSortDirection(iFeed.getSortDirection());
+        oldIFeed.setSortField(iFeed.getSortField());
 
         IFeed mergedIfeed = iFeedRepo.merge(oldIFeed);
         iFeedPublisher.addIFeed(mergedIfeed);

@@ -48,6 +48,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     private String description;
     private String userId;
 
+    private String sortField;
+    private String sortDirection;
+
     public List<IFeedFilter> getFilters() {
         if (filters == null) {
             return Collections.emptyList();
@@ -129,6 +132,22 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     public Long getId() {
         return id;
+    }
+
+    public String getSortDirection() {
+        return sortDirection;
+    }
+
+    public String getSortField() {
+        return sortField;
+    }
+
+    public void setSortDirection(String sortDirection) {
+        this.sortDirection = sortDirection;
+    }
+
+    public void setSortField(String sortField) {
+        this.sortField = sortField;
     }
 
     public void setVersion(Long version) {

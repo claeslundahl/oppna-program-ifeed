@@ -18,22 +18,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import se.vgr.metaservice.schema.node.v2.NodeListType;
+import se.vgr.metaservice.schema.node.v2.NodeType;
 import se.vgr.metaservice.schema.response.v1.NodeListResponseObjectType;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.types.Metadata;
 import vocabularyservices.wsdl.metaservice_vgr_se.v2.GetVocabularyRequest;
+import vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService;
 
 public class MetadataServiceImpl implements MetadataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataService.class);
     private static Map<String, CachedVocabulary> vocabularyCache = new HashMap<String, CachedVocabulary>();
 
-    //    private VocabularyService port = null;
+    private VocabularyService port = null;
     private JpaRepository<Metadata, Long, Long> repo = null;
 
     private Collection<String> metadataRoots;
 
-    public MetadataServiceImpl(/*VocabularyService port, */JpaRepository<Metadata, Long, Long> repo) {
-        //        this.port = port;
+    public MetadataServiceImpl(VocabularyService port, JpaRepository<Metadata, Long, Long> repo) {
+        this.port = port;
         this.repo = repo;
     }
 
@@ -70,15 +73,15 @@ public class MetadataServiceImpl implements MetadataService {
         String fullPath = path + (isBlank(path) ? "" : "/") + parent.getName();
         req.setPath(fullPath);
 
-        //        result = port.getVocabulary(req);
-        //
-        //        NodeListType nodes = result.getNodeList();
-        //        for (NodeType node : nodes.getNode()) {
-        //            LOGGER.info("Importing: {}/{}", new Object[] { fullPath, node.getName() });
-        //            Metadata child = new Metadata(node.getName());
-        //            parent.addChild(child);
-        //            updateCacheTree(child, fullPath);
-        //        }
+        result = port.getVocabulary(req);
+
+        NodeListType nodes = result.getNodeList();
+        for (NodeType node : nodes.getNode()) {
+            LOGGER.info("Importing: {}/{}", new Object[] { fullPath, node.getName() });
+            Metadata child = new Metadata(node.getName());
+            parent.addChild(child);
+            updateCacheTree(child, fullPath);
+        }
     }
 
     private static class CachedVocabulary {

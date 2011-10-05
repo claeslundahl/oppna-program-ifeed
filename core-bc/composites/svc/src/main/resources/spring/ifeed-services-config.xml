@@ -9,10 +9,12 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:jaxws="http://cxf.apache.org/jaxws"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         	http://www.springframework.org/schema/context
-        	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+        	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
   <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer">
     <constructor-arg type="java.lang.String" value="${solr.service}" />
@@ -39,15 +41,13 @@
   <bean id="metadataRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.Metadata" />
   </bean>
-
-  <bean id="apelonService" class="se.vgregion.metaservice.vocabularyservice.intsvc.VocabularyServiceIntServiceImplService">
-    <constructor-arg value="${apelon.service}" />
-  </bean>
+  
+<jaxws:client id="vocabularyService"
+              serviceClass="vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService"
+              address="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService"/>
 
   <bean name="metadataService" class="se.vgregion.ifeed.service.metadata.MetadataServiceImpl">
-    <constructor-arg>
-      <bean factory-bean="apelonService" factory-method="getVocabularyServiceIntServiceImplPort" />
-    </constructor-arg>
+    <constructor-arg ref="vocabularyService" />
     <constructor-arg ref="metadataRepo" />
     <property name="metadataRoots">
       <set>
@@ -61,7 +61,7 @@
     </property>
   </bean>
 
-  <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher" scope="prototype">
+  <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher">
     <constructor-arg value="${push.service}" />
   </bean>
 

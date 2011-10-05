@@ -15,16 +15,16 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.comparators.TransformingComparator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import org.springframework.web.util.UriTemplate;
 
 import se.vgregion.common.utils.CommonUtils;
+import se.vgregion.ifeed.formbean.IFeedFormBeanList;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.IFeed;
@@ -35,12 +35,13 @@ import se.vgregion.ifeed.types.IFeed;
 public class IFeedController {
 
     private IFeedService iFeedService;
-    private String ifeedAtomFeed;
+    private UriTemplate iFeedAtomFeed;
 
     @Autowired
-    public IFeedController(IFeedService iFeedService) {
+    public IFeedController(IFeedService iFeedService, UriTemplate iFeedAtomFeed) {
         super();
         this.iFeedService = iFeedService;
+        this.iFeedAtomFeed = iFeedAtomFeed;
     }
 
     @RenderMapping
@@ -84,7 +85,7 @@ public class IFeedController {
             @RequestParam(defaultValue = "name") final String orderByCol,
             @RequestParam(defaultValue = "asc") final SortDirection orderByType) {
 
-        List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getIFeeds());
+        List<IFeed> allIFeeds = iFeedService.getIFeeds();
 
         handleViewSort(allIFeeds, orderByCol, orderByType);
         List<IFeed> truncatedIFeeds = handleViewPagination(
@@ -99,7 +100,7 @@ public class IFeedController {
             final int numberOfIfeeds, final int delta, final String orderCol,
             final SortDirection orderType, final String viewName) {
         model.addAttribute("numberOfIfeeds", numberOfIfeeds);
-        model.addAttribute("ifeeds", iFeeds);
+        model.addAttribute("ifeeds", new IFeedFormBeanList(iFeeds, iFeedAtomFeed));
         model.addAttribute("delta", delta);
         model.addAttribute("orderByCol", orderCol);
         model.addAttribute("orderByType", orderType);
@@ -145,11 +146,6 @@ public class IFeedController {
         return subList;
     }
 
-    @ModelAttribute("atomFeedUrl")
-    public String getIfeedAtomFeed() {
-        return ifeedAtomFeed;
-    }
-
     private String getRemoteUserId(PortletRequest request) {
         @SuppressWarnings("unchecked")
         Map<String, ?> userInfo =
@@ -160,11 +156,6 @@ public class IFeedController {
                     PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
         }
         return userId;
-    }
-
-    @Value("${ifeed.feed}")
-    public void setIfeedAtomFeed(String ifeedAtomFeed) {
-        this.ifeedAtomFeed = ifeedAtomFeed;
     }
 
     // @ExceptionHandler({ Exception.class })

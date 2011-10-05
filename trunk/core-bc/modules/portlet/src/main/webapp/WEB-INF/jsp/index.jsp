@@ -29,24 +29,24 @@
   <liferay-ui:search-container id='<portlet:namespace/>-parent-search-container' delta="${delta}" orderByCol="${orderByCol}" orderByType="${orderByType}">
     <liferay-ui:search-container-results results="${ifeeds}" total="${numberOfIfeeds}" />
   
-    <liferay-ui:search-container-row className="se.vgregion.ifeed.types.IFeed" keyProperty="id" modelVar="iFeed">
+    <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.IFeedFormBeanList.IFeedFormBean" keyProperty="iFeed.id" modelVar="iFeedEntry">
       <portlet:actionURL var="editIFeedURL">
         <portlet:param name="action" value="editIFeed" />
-        <portlet:param name="feedId" value="${iFeed.id}" />
+        <portlet:param name="feedId" value="${iFeedEntry.iFeed.id}" />
       </portlet:actionURL>
   
       <liferay-ui:search-container-column-text>
-        <liferay-ui:icon method="get" image="rss" target="_blank" url="${fn:replace(atomFeedUrl, '%s', iFeed.id)}" />
+        <liferay-ui:icon method="get" image="rss" target="_blank" url="${iFeedEntry.atomLink}" />
       </liferay-ui:search-container-column-text>
-      <liferay-ui:search-container-column-text name="Namn" property="name" orderableProperty="name" orderable="true" href="${editIFeedURL}" />
-      <liferay-ui:search-container-column-text name="Ägare" property="userId" orderableProperty="userId" orderable="true" />
-      <liferay-ui:search-container-column-text name="Beskrivning" property="description" />
+      <liferay-ui:search-container-column-text name="Namn" property="iFeed.name" orderableProperty="name" orderable="true" href="${editIFeedURL}" />
+      <liferay-ui:search-container-column-text name="Ägare" property="iFeed.userId" orderableProperty="userId" orderable="true" />
+      <liferay-ui:search-container-column-text name="Beskrivning" property="iFeed.description" />
   
       <liferay-ui:search-container-column-text>
         <liferay-ui:icon-menu cssClass="">
           <portlet:actionURL name="removeIFeed" var="removeIFeedURL">
             <portlet:param name="action" value="removeIFeed" />
-            <portlet:param name="feedId" value="${iFeed.id}" />
+            <portlet:param name="feedId" value="${iFeedEntry.iFeed.id}" />
           </portlet:actionURL>
           <liferay-ui:icon image="delete" url="${removeIFeedURL}" />
         </liferay-ui:icon-menu>

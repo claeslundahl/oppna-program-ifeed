@@ -1,13 +1,14 @@
 package se.vgregion.ifeed.push;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.net.URL;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.web.util.UriTemplate;
 
 import se.vgregion.ifeed.service.push.IFeedPublisher;
 import se.vgregion.ifeed.types.IFeed;
@@ -19,8 +20,7 @@ public class IFeedPublisherTest {
     @Before
     public void doSetup() throws Exception {
         publisher = new IFeedPublisher(new URL("http://example.com"));
-        publisher.setIfeedAtomFeed(
-            "http://localhost:8080/iFeed-core-bc-module-intsvc/ifeeds/%s/feed");
+        publisher.setIfeedAtomFeed(new UriTemplate("/iFeed-core-bc-module-intsvc/ifeeds/{id}/feed?by={sortField}&dir={sortDirection}"));
     }
 
     @Test

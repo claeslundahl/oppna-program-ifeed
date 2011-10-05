@@ -18,7 +18,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,6 +28,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
+import org.springframework.web.util.UriTemplate;
 
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.formbean.SearchResultList;
@@ -58,10 +58,8 @@ public class EditIFeedController {
     private MetadataService metadataService;
     @Autowired
     private LdapPersonService ldapPersonService;
-
-
-    @Value("${ifeed.feed}")
-    private String ifeedAtomFeed;
+    @Autowired
+    private UriTemplate iFeedAtomFeed;
 
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId,
@@ -95,7 +93,8 @@ public class EditIFeedController {
         iFeed.setSortDirection(sortDirection);
 
         model.addAttribute("hits", new SearchResultList(iFeedSolrQuery.getIFeedResults(iFeed)));
-        model.addAttribute("atomFeedLink", String.format(ifeedAtomFeed, iFeed.getId()));
+        model.addAttribute("atomFeedLink", iFeedAtomFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
+        //        model.addAttribute("atomFeedLink", String.format(ifeedAtomFeed, iFeed.getId()));
         final PortletURL portletUrl = repsonse.createRenderURL();
         portletUrl.setParameter("view", "showEditIFeedForm");
         model.addAttribute("portletUrl", portletUrl);

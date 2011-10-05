@@ -2,6 +2,7 @@ package se.vgregion.ifeed.service.ifeed;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +24,12 @@ public class IFeedServiceImpl implements IFeedService {
     }
 
     @Override
-    public final Collection<IFeed> getIFeeds() {
+    public final List<IFeed> getIFeeds() {
         return new ArrayList<IFeed>(iFeedRepo.findAll());
     }
 
     @Override
-    public final Collection<IFeed> getUserIFeeds(final String userId) {
+    public final List<IFeed> getUserIFeeds(final String userId) {
         return new ArrayList<IFeed>(iFeedRepo.findByQuery("SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1",
                 new Object[] { userId }));
     }

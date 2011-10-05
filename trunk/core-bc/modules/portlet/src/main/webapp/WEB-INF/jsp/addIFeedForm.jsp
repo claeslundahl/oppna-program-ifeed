@@ -23,11 +23,6 @@
       <aui:input name="name" label="feed-name" value="${ifeed.name}" />
       <aui:input name="description" label="feed-description" value="${ifeed.description}" />
     </aui:fieldset>
-<%--     <aui:fieldset> --%>
-<%--       <c:forEach items="${ifeed.filters}" var="filter" varStatus="filtersRow"> --%>
-<%--         <aui:input name="filters[${filtersRow.index}]" value="${filter}" type="text" /> --%>
-<%--       </c:forEach> --%>
-<%--     </aui:fieldset> --%>
   </liferay-ui:panel-container>
   <aui:button-row>
     <aui:button type="submit" value="save" />

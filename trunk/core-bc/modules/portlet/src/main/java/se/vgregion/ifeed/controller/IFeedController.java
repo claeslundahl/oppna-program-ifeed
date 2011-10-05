@@ -45,14 +45,10 @@ public class IFeedController {
 
     @RenderMapping
     public String showIFeeds(final Model model,
-            @RequestParam(required =
-            false, defaultValue = "10") final int delta,
-            @RequestParam(required =
-            false, defaultValue = "1") final int cur,
-            @RequestParam(required =
-            false) final String orderByCol,
-            @RequestParam(required =
-            false, defaultValue = "asc") final SortDirection orderByType,
+            @RequestParam(defaultValue = "10") final int delta,
+            @RequestParam(defaultValue = "1") final int cur,
+            @RequestParam(defaultValue = "name") final String orderByCol,
+            @RequestParam(defaultValue = "asc") final SortDirection orderByType,
             final RenderRequest request) {
 
         String currentView = (String) model.asMap().get("currentView");
@@ -65,10 +61,10 @@ public class IFeedController {
 
     @RenderMapping(params = { "view=showUserIFeeds" })
     public String showUserIFeeds(final Model model,
-            @RequestParam(required = false, defaultValue = "10") final int delta,
-            @RequestParam(required = false, defaultValue = "1") final int cur,
-            @RequestParam(required = false, defaultValue = "name") final String orderByCol,
-            @RequestParam(required = false, defaultValue = "asc") final SortDirection orderByType,
+            @RequestParam(defaultValue = "10") final int delta,
+            @RequestParam(defaultValue = "1") final int cur,
+            @RequestParam(defaultValue = "name") final String orderByCol,
+            @RequestParam(defaultValue = "asc") final SortDirection orderByType,
             final RenderRequest request) {
 
         List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getUserIFeeds(
@@ -83,14 +79,10 @@ public class IFeedController {
 
     @RenderMapping(params = { "view=showAllIFeeds" })
     public String showAllIFeeds(final Model model,
-            @RequestParam(required =
-            false, defaultValue = "10") final int delta,
-            @RequestParam(required =
-            false, defaultValue = "1") final int cur,
-            @RequestParam(required =
-            false, defaultValue = "name") final String orderByCol,
-            @RequestParam(required =
-            false, defaultValue = "asc") final SortDirection orderByType) {
+            @RequestParam(defaultValue = "10") final int delta,
+            @RequestParam(defaultValue = "1") final int cur,
+            @RequestParam(defaultValue = "name") final String orderByCol,
+            @RequestParam(defaultValue = "asc") final SortDirection orderByType) {
 
         List<IFeed> allIFeeds = new ArrayList<IFeed>(iFeedService.getIFeeds());
 

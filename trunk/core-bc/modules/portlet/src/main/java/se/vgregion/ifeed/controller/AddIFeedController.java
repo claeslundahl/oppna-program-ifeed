@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
@@ -53,6 +54,14 @@ public class AddIFeedController {
     // @ExceptionHandler({ Exception.class })
     public String handleException() {
         return "errorPage";
+    }
+
+    @ActionMapping(params = {"action=createNewIFeed"})
+    public void createNewIFeed(final ActionResponse response,
+            final SessionStatus sessionStatus, final Model model) {
+        sessionStatus.setComplete();
+        model.addAttribute("ifeed", new IFeed());
+        response.setRenderParameter("view", "showAddIFeedForm");
     }
 
     @ActionMapping(params = {"action=addIFeed"})

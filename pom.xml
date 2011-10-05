@@ -29,4 +29,8 @@
     <url>http://oppna-program-ifeed.googlecode.com/svn/trunk</url>
   </scm>
 
+  <properties>
+	  <apache.cxf.version>2.3.2</apache.cxf.version>
+  </properties>
+
 </project>

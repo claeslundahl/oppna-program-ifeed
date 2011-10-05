@@ -16,11 +16,7 @@
   <build>
     <finalName>${project.artifactId}</finalName>
   </build>
-
-  <properties>
-    <cxf.version>2.3.2</cxf.version>
-  </properties>
-
+  
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -88,7 +84,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>${cxf.version}</version>
+      <version>${apache.cxf.version}</version>
       <scope>runtime</scope>
       <exclusions>
         <exclusion>

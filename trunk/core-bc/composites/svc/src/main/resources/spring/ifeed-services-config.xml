@@ -8,13 +8,16 @@
   Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA -->
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:jaxws="http://cxf.apache.org/jaxws"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:jaxws="http://cxf.apache.org/jaxws"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         	http://www.springframework.org/schema/context
         	http://www.springframework.org/schema/context/spring-context-3.0.xsd
             http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+  <import resource="classpath:META-INF/cxf/cxf.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
   <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer">
     <constructor-arg type="java.lang.String" value="${solr.service}" />
@@ -41,10 +44,9 @@
   <bean id="metadataRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.Metadata" />
   </bean>
-  
-<jaxws:client id="vocabularyService"
-              serviceClass="vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService"
-              address="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService"/>
+
+  <jaxws:client id="vocabularyService" serviceClass="vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService"
+    address="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService" />
 
   <bean name="metadataService" class="se.vgregion.ifeed.service.metadata.MetadataServiceImpl">
     <constructor-arg ref="vocabularyService" />

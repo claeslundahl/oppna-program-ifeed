@@ -19,10 +19,6 @@ Generation time : 2011-01-14 11:17:18 CET
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
 
-  <properties>
-    <apache.cxf.version>2.3.0</apache.cxf.version>
-  </properties>
-
   <build>
     <plugins>
       <plugin>

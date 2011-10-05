@@ -24,27 +24,12 @@ import com.liferay.portal.kernel.messaging.MessageListener;
  *
  */
 public class IFeedPublishScheduler implements MessageListener {
-    /**
-     *
-     */
     private static final Logger LOGGER =
             LoggerFactory.getLogger(IFeedPublishScheduler.class);
 
-    /**
-     *
-     */
     private ApplicationContext context;
-    /**
-     *
-     */
     private IFeedPublisher iFeedPublisher;
-    /**
-     *
-     */
     private IFeedService iFeedService;
-    /**
-     *
-     */
     private IFeedSolrQuery iFeedSolrQuery;
 
 

@@ -15,11 +15,11 @@
 		<a href="${viewAllURL}"><liferay-ui:message key="view-all" /></a>
 	</span>
 
-	<portlet:renderURL var="addIFeedFormURL">
-		<portlet:param name="view" value="showAddIFeedForm" />
-	</portlet:renderURL>
+	<portlet:actionURL var="addIFeedFormURL">
+            <portlet:param name="action" value="createNewIFeed" />
+	</portlet:actionURL>
 	<span class="lfr-toolbar-button add-button <c:if test='${toolbarItem eq "add"}'>current</c:if>">
-		<a href="${addIFeedFormURL}"><liferay-ui:message key="add" /></a>
+		<a href="<%=addIFeedFormURL%>"><liferay-ui:message key="add" /></a>
 	</span>
 	
 </div>

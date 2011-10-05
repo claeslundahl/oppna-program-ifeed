@@ -65,8 +65,7 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId,
-            final Model model, final ActionResponse response,
-            final SessionStatus sessionStatus) {
+            final Model model, final ActionResponse response) {
         IFeed iFeed = iFeedService.getIFeed(feedId);
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
@@ -184,9 +183,7 @@ public class EditIFeedController {
     }
 
     @ActionMapping(params = "action=cancel")
-    public void cancel(final ActionResponse response,
-            final SessionStatus sessionStatus, final Model model) {
-
+    public void cancel(final SessionStatus sessionStatus) {
         sessionStatus.setComplete();
     }
 

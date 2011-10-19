@@ -319,4 +319,8 @@ a.link-button-help .link-button-content {
     text-align: right;
 }
 
+/* Search result block */
+.ifeed-search-result-list .col-3 {
+    width: 6em;
+}
 </style>

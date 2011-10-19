@@ -217,7 +217,7 @@
   </aui:column>
   <aui:column columnWidth="33" last="true">
     <liferay-ui:panel-container>
-      <liferay-ui:panel title="Träfflista" collapsible="true" extended="true">
+      <liferay-ui:panel title="Träfflista" collapsible="true" extended="true" cssClass="ifeed-search-result-list">
         <c:if test="${not empty ifeed.filters}">
           <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100" orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${portletUrl}">
             <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />

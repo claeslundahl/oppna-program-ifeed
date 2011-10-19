@@ -23,14 +23,14 @@
     <constructor-arg value="${ifeed.feed}" />
   </bean>
 
-  <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer">
+  <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer" scope="prototype">
     <constructor-arg type="java.lang.String" value="${solr.service}" />
     <property name="requestWriter">
       <bean class="org.apache.solr.client.solrj.impl.BinaryRequestWriter" />
     </property>
   </bean>
 
-  <bean id="iFeedSolrQuery" class="se.vgregion.ifeed.service.solr.IFeedSolrQuery">
+  <bean id="iFeedSolrQuery" class="se.vgregion.ifeed.service.solr.IFeedSolrQuery" scope="prototype">
     <constructor-arg ref="solrServer" />
     <property name="rows" value="100" />
     <property name="showDebugInfo" value="true" />
@@ -82,7 +82,7 @@
     </property>
   </bean>
 
-  <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher">
+  <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher" scope="prototype">
     <constructor-arg value="${push.service}" />
     <property name="ifeedAtomFeed" ref="ifeedAtomFeed" />
   </bean>

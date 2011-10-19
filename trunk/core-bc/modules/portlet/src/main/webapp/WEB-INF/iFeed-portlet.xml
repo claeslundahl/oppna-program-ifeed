@@ -19,9 +19,19 @@
   <bean class="se.vgregion.ifeed.controller.EditIFeedController" />
   <bean class="se.vgregion.ifeed.controller.IFeedController" />
   <bean class="se.vgregion.ifeed.controller.RemoveIFeedController" />
+  <bean class="se.vgregion.ifeed.controller.ShowDocumentMetadataController">
+    <constructor-arg ref="alfrescoDocumentService" />
+    <constructor-arg>
+      <list>
+        <value>dc.type</value>
+        <value>dc.identifier.version</value>
+        <value>dc.format.extent.mimetype</value>
+      </list>
+    </constructor-arg>
+  </bean>
 
   <mvc:resources location="classpath:/META-INF/" mapping="/resources/**" />
-
+  
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="basename" value="classpath:i18n/ifeed-messages" />
     <property name="fileEncodings" value="UTF-8" />

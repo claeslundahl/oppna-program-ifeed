@@ -21,6 +21,10 @@
     </repository>
   </repositories>
 
+  <properties>
+    <liferay.version>6.0.11</liferay.version>
+  </properties>
+
   <build>
     <finalName>${project.artifactId}</finalName>
   </build>
@@ -96,25 +100,25 @@
     <dependency>
       <groupId>com.liferay.portal</groupId>
       <artifactId>util-taglib</artifactId>
-      <version>6.0.11</version>
+      <version>${liferay.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.liferay.portal</groupId>
       <artifactId>portal-impl</artifactId>
-      <version>6.0.11</version>
+      <version>${liferay.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.liferay.portal</groupId>
       <artifactId>portal-service</artifactId>
-      <version>6.0.11</version>
+      <version>${liferay.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.liferay.portal</groupId>
       <artifactId>util-bridges</artifactId>
-      <version>6.0.11</version>
+      <version>${liferay.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -146,27 +150,12 @@
       <artifactId>postgresql</artifactId>
       <version>8.4-702.jdbc4</version>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
-  <profiles>
-    <profile>
-      <id>prod</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-              <webResources>
-                <resource>
-                  <directory>src/main/webapp/WEB-INF/prod</directory>
-                  <targetPath>WEB-INF</targetPath>
-                </resource>
-              </webResources>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

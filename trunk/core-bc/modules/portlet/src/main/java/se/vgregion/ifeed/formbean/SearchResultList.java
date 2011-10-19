@@ -25,11 +25,13 @@ public class SearchResultList extends AbstractList<SearchResultList.SearchResult
         private Date processingTime;
         private String title;
         private String link;
+        private String documentId;
 
-        public SearchResult(Date processingTime, String title, String link) {
+        public SearchResult(Date processingTime, String title, String link, String documentId) {
             this.processingTime = processingTime;
             this.title = title;
             this.link = link;
+            this.documentId = documentId;
         }
 
         public String getProcessingTime() {
@@ -47,15 +49,20 @@ public class SearchResultList extends AbstractList<SearchResultList.SearchResult
         public String getLink() {
             return link;
         }
+
+        public String getDocumentId() {
+            return documentId;
+        }
     }
 
     @Override
     public SearchResult get(int index) {
         final Map<String, Object> resultEntry = iFeedResults.get(index);
+        final String documentId = (String)resultEntry.get("dc.identifier.documentid");
         final Date date = (Date)resultEntry.get("processingtime");
         final String title = (String)resultEntry.get("title");
         final String link = (String)resultEntry.get("url");
-        return new SearchResult(new Date(date.getTime()), title, link);
+        return new SearchResult(new Date(date.getTime()), title, link, documentId);
     }
 
     @Override

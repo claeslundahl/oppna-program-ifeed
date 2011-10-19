@@ -49,6 +49,21 @@
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.Metadata" />
   </bean>
 
+  <bean id="alfrescoDocumentService" class="se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService">
+    <constructor-arg value="${alfresco.metadata.service}" />
+    <constructor-arg>
+      <bean class="org.springframework.web.client.RestTemplate">
+        <property name="messageConverters">
+          <list>
+            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+          </list>
+        </property>
+      </bean>
+    </constructor-arg>
+  </bean>
+
+
+
   <jaxws:client id="vocabularyService" serviceClass="vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService"
     address="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService" />
 
@@ -70,6 +85,15 @@
   <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher">
     <constructor-arg value="${push.service}" />
     <property name="ifeedAtomFeed" ref="ifeedAtomFeed" />
+  </bean>
+
+  <bean class="org.springframework.web.client.RestTemplate">
+    <property name="messageConverters">
+      <list>
+        <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+        </bean>
+      </list>
+    </property>
   </bean>
 
 </beans>

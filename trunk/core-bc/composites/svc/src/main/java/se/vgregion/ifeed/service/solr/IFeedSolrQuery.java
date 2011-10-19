@@ -2,7 +2,7 @@ package se.vgregion.ifeed.service.solr;
 
 import static org.apache.commons.lang.StringUtils.*;
 import static se.vgregion.common.utils.CommonUtils.*;
-import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormats.*;
+import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

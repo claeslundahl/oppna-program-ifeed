@@ -2,8 +2,8 @@ package se.vgregion.ifeed.service.solr;
 
 import static org.junit.Assert.assertEquals;
 import static
-    se.vgregion.ifeed.service.solr.DateFormatter.DateFormats.SOLR_DATE_FORMAT;
-import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormats.W3CDTF;
+    se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.SOLR_DATE_FORMAT;
+import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.W3CDTF;
 
 import org.junit.Test;
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import se.vgregion.ifeed.service.solr.DateFormatter;
-import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
+import se.vgregion.ifeed.service.solr.DateFormatter.DateFormat;
 import se.vgregion.ifeed.service.solr.DateUtils;
 
 public class SearchResultList extends AbstractList<SearchResultList.SearchResult> implements Serializable {
@@ -36,9 +36,9 @@ public class SearchResultList extends AbstractList<SearchResultList.SearchResult
 
         public String getProcessingTime() {
             if(DateUtils.isToday(processingTime)) {
-                return DateFormatter.format(processingTime, DateFormats.TIME_ONLY);
+                return DateFormatter.format(processingTime, DateFormat.TIME_ONLY);
             } else {
-                return DateFormatter.format(processingTime, DateFormats.DATE_ONLY);
+                return DateFormatter.format(processingTime, DateFormat.DATE_ONLY);
             }
         }
 

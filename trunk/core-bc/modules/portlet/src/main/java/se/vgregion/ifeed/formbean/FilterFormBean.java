@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import se.vgregion.ifeed.service.solr.DateFormatter;
-import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
+import se.vgregion.ifeed.service.solr.DateFormatter.DateFormat;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.MetadataType;
 
@@ -64,7 +64,7 @@ public class FilterFormBean implements Serializable {
         if (filter.getMetadataType() == MetadataType.DATE) {
             filterValue = DateFormatter.format(validFromYear,
                     validFromMonth + 1, validFromDay,
-                    DateFormats.SOLR_DATE_FORMAT);
+                    DateFormat.SOLR_DATE_FORMAT);
         }
         return filterValue;
     }

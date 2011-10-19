@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
-import se.vgregion.ifeed.service.solr.DateFormatter.DateFormats;
+import se.vgregion.ifeed.service.solr.DateFormatter.DateFormat;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.IFeed;
@@ -201,7 +201,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
             if (fieldValue instanceof Date) {
                 element.setText(DateFormatter.format((Date) fieldValue,
-                        DateFormats.W3CDTF));
+                        DateFormat.W3CDTF));
             } else if (fieldName.equalsIgnoreCase("dc.language")) {
                 if (fieldValue.toString().equalsIgnoreCase("svenska")) {
                     element.setText("swe");

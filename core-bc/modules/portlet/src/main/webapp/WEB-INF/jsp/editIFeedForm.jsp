@@ -12,6 +12,7 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <portlet:resourceURL var="findPeople" />
+<portlet:resourceURL var="metdataTooltipURL" id="metadata"  />
 
 <portlet:actionURL name="editIFeed" var="editIFeedURL">
   <portlet:param name="action" value="editIFeed" />
@@ -131,9 +132,9 @@
                           <portlet:param name="action" value="selectFilter" />
                           <portlet:param name="filter" value="${filter}" />
                         </portlet:actionURL> <span class="tree-node-tooltip"
-                        title="<liferay-ui:message key='${filter.keyString}.help' />">Icon</span> <a
+                        title="<liferay-ui:message key='${filter.helpKey}' />">Icon</span> <a
                         href="${selectFilter}" class="tree-node-use tree-node-link tree-node-link-label"> <span
-                          class="tree-node-label"> <liferay-ui:message key="${filter.keyString}.label" /> </span>
+                          class="tree-node-label"> <liferay-ui:message key="${filter.labelKey}" /> </span>
                       </a> </span></li>
                   </c:forEach>
                 </ul></li>
@@ -152,14 +153,14 @@
           <div id="<portlet:namespace />filter-value-box">
             <c:choose>
               <c:when test="${newFilter.metadataType == 'TEXT_FIX'}">
-                <aui:select label="${newFilter.keyString}.label" name="filterValue" id="text-fix">
+                <aui:select label="${newFilter.labelKey}" name="filterValue" id="text-fix">
                   <c:forEach items="${vocabulary}" var="meta">
                     <aui:option label="${meta}" value="${meta}" selected="${filterValue eq meta}" />
                   </c:forEach>
                 </aui:select>
               </c:when>
               <c:when test="${newFilter.metadataType == 'DATE'}">
-                <aui:field-wrapper label="${newFilter.keyString}.label">
+                <aui:field-wrapper label="${newFilter.labelKey}">
                   <liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
                     monthParam="validFromMonth" dayParam="validFromDay" firstDayOfWeek="1"
                     yearValue="${filterFormBean.validFromYear}" monthValue="${filterFormBean.validFromMonth }"
@@ -167,11 +168,11 @@
                 </aui:field-wrapper>
               </c:when>
               <c:when test="${newFilter.metadataType == 'TEXT_FREE'}">
-                <aui:input label="${newFilter.keyString}.label" name="filterValue" id="text-free" value="${filterValue}" />
+                <aui:input label="${newFilter.labelKey}" name="filterValue" id="text-free" value="${filterValue}" />
               </c:when>
               <c:when test="${newFilter.metadataType == 'LDAP_VALUE'}">
                 <div id="<portlet:namespace />ldap-people" class="ifeed-portlet-ldap-people">
-                  <aui:input label="${newFilter.keyString}.label" name="filterValue" id="ldap-value" value="${filterValue}" cssClass="ifeed-portlet-filter-input"/>
+                  <aui:input label="${newFilter.labelKey}" name="filterValue" id="ldap-value" value="${filterValue}" cssClass="ifeed-portlet-filter-input"/>
                 </div>
               </c:when>
             </c:choose>
@@ -201,7 +202,7 @@
               <li><span class="tree-node-wrap clearfix"> <a href="${editFilter}"
                   class="tree-node-link tree-node-edit">Redigera</a> <a href="${removeFilter}"
                   class="tree-node-link tree-node-delete">Ta bort</a> <span class="tree-node-label"> <liferay-ui:message
-                      key="${iFeedFilter.filter.keyString}.label" />: 
+                      key="${iFeedFilter.filter.labelKey}" />: 
                       <c:choose>
                         <c:when test="${iFeedFilter.filter.metadataType == 'DATE'}">
                           ${fn:substringBefore(iFeedFilter.filterQuery, 'T')}
@@ -221,6 +222,15 @@
           <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100" orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${portletUrl}">
             <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
             <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">
+              <liferay-ui:search-container-column-text>
+                <liferay-ui:icon-menu>
+                  <portlet:renderURL var="metadataURL">
+                    <portlet:param name="view" value="documentMetadata" />
+                    <portlet:param name="documentId" value="${hit.documentId}" />
+                  </portlet:renderURL>
+                  <liferay-ui:icon cssClass="metadata-icon-tooltip" image="" method="get" url="${metadataURL}" src="/vgr-theme/i/icons/information.png"/>
+                </liferay-ui:icon-menu>
+              </liferay-ui:search-container-column-text>
               <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}" orderable="true" orderableProperty="dc:title"/>
               <liferay-ui:search-container-column-text name="Ändrad" property="processingTime" orderable="true" orderableProperty="processingtime"/>
             </liferay-ui:search-container-row>
@@ -237,7 +247,6 @@
 </liferay-util:html-top>
 
 <aui:script use="vgr-ifeed-config">
-
   /**
    * Monky patched function - issue AUI-416
    * http://issues.liferay.com/browse/AUI-416
@@ -283,7 +292,8 @@
       portletNamespace: '<portlet:namespace />',
       portletWrap: '#p_p_id<portlet:namespace />',
       usedFiltersTreeBoundingBox: '#<portlet:namespace />usedFiltersWrap',
-      usedFiltersTreeContentBox: '#<portlet:namespace />usedFiltersWrap > ul'
+      usedFiltersTreeContentBox: '#<portlet:namespace />usedFiltersWrap > ul',
+      metadataTooltipURL: '${metdataTooltipURL}'
   })
   .render();
   

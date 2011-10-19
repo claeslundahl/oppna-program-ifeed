@@ -18,6 +18,7 @@ AUI().add('vgr-ifeed-config',function(A) {
 		CSS_CLASS_EDIT_TRIGGER_HEADING = 'ifeed-edit-trigger-heading',
 		CSS_CLASS_EDIT_TRIGGER_DESCRIPTION = 'ifeed-edit-trigger-description',
 		CSS_CLASS_TREE_NODE_TOOLTIP = 'tree-node-tooltip',
+		CSS_CLASS_METADATA_NODE_TOOLTIP = 'metadata-icon-tooltip',
 		DESCRIPTION_NODE = 'descriptionNode',
 		DESCRIPTION_INPUT = 'descriptionInput',
 		EXISTING_FILTERS_TREE_BOUNDING_BOX = 'existingFiltersTreeBoundingBox',
@@ -33,7 +34,8 @@ AUI().add('vgr-ifeed-config',function(A) {
 		PORTLET_NAMESPACE = 'portletNamespace',
 		PORTLET_WRAP = 'portletWrap',
 		USED_FILTERS_TREE_BOUNDING_BOX = 'usedFiltersTreeBoundingBox',
-		USED_FILTERS_TREE_CONTENT_BOX = 'usedFiltersTreeContentBox'
+		USED_FILTERS_TREE_CONTENT_BOX = 'usedFiltersTreeContentBox',
+		METADATA_TOOLTIP_URL =  'metadataTooltipURL'
 
 	;
 
@@ -72,6 +74,9 @@ AUI().add('vgr-ifeed-config',function(A) {
 					},
 					usedFiltersTreeContentBox: {
 						setter: A.one
+					},
+					metadataTooltipURL: {
+					  value: ''
 					}
 				},
 				EXTENDS: A.Component,
@@ -81,6 +86,7 @@ AUI().add('vgr-ifeed-config',function(A) {
 				existingFiltersTree: null,
 				headingEditable: null,
 				treeNodeTooltip: null,
+				metadataTooltip: null,
 				usedFiltersTree: null,
 				prototype: {
 					initializer: function(config) {
@@ -163,6 +169,52 @@ AUI().add('vgr-ifeed-config',function(A) {
 							title: true							
 						})
 						.render();
+						
+						//Tooltip for metadata
+						instance.tooltipMetadata = new A.Tooltip({
+					    trigger: '#' + instance.get(PORTLET_WRAP).get(ID) + ' .' + CSS_CLASS_METADATA_NODE_TOOLTIP,
+					    bodyContent: 'Laddar...',
+					    //width: 400,
+					    //height: 300,
+					    after: {
+					      show: function(event) {
+					        var me = this;
+					        var href = this.get('currentNode').one('a').attr('href');
+					        var match = href.match(/.+documentId=(workspace[^&]+).*$/);
+					        var documentId = match && match.length > 1?match[1]:''; 
+					        
+					        setTimeout(
+					          function() {
+					                
+                        A.io.request(instance.get(METADATA_TOOLTIP_URL)+'&documentId='+documentId, {
+                              method: 'GET',
+                              dataType: 'json',
+                              on: {
+                                  success: function (event,id,xhr) {
+                                      var res = this.get('responseData');
+                                      
+                                      var html = ['<dl class="metadata-tooltip">'];
+                                      for (attr in res) { 
+                                          html.push('<dt>');
+                                          html.push(attr);
+                                          html.push('</dt>');
+                                          html.push('<dd>');
+                                          html.push(res[attr]?res[attr]:'&ndash;');
+                                          html.push('</dd>')
+                                      }
+                                      html.push('</dl>');
+                                      html.push('<a class="metadata-tooltip-more" href="'+href+'">mer...</a>');
+                                      me.bodyNode.setContent(html.join(''));
+                                  }
+                              }
+                        });
+					          },
+					        1);
+					      }
+					    }
+					  })
+					  .render();
+
 					},
 					
 					bindUI: function() {

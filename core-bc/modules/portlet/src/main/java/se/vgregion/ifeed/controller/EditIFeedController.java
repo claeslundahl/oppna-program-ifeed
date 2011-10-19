@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 import org.springframework.web.util.UriTemplate;
 
 import se.vgregion.ifeed.formbean.FilterFormBean;
@@ -45,7 +44,6 @@ import se.vgregion.ldap.person.Person;
 @Controller
 @RequestMapping("VIEW")
 @SessionAttributes({ "ifeed", "hits" })
-//@Transactional
 public class EditIFeedController {
     private static final Logger LOGGER = LoggerFactory.getLogger(
             EditIFeedController.class);
@@ -186,8 +184,9 @@ public class EditIFeedController {
         sessionStatus.setComplete();
     }
 
-    @ResourceMapping
+    //    @ResourceMapping
     public void searchPeople(@RequestParam final String filterValue, ResourceResponse response) {
+        System.out.println("EditIFeedController.searchPeople()");
         List<Person> people = ldapPersonService.getPeople(filterValue, 10);
         try {
             final OutputStream out = response.getPortletOutputStream();

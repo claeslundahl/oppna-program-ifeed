@@ -20,24 +20,25 @@
 }
 
 .ifeed-portlet .lfr-panel .aui-toolbar {
-    display: none;
+  display: none;
 }
 
 .ifeed-portlet .lfr-panel .aui-field-content {
-    display: block;
-    padding-right: 4px;
+  display: block;
+  padding-right: 4px;
 }
 
 .ifeed-portlet .lfr-panel .aui-field-select .aui-field-content {
-    padding-right: 0px;
+  padding-right: 0px;
 }
 
-.ifeed-portlet .lfr-panel .aui-combobox-content .aui-field-content select, .ifeed-portlet .lfr-panel .aui-field-content input {
-    width: 100%;
+.ifeed-portlet .lfr-panel .aui-combobox-content .aui-field-content select,.ifeed-portlet .lfr-panel .aui-field-content input
+  {
+  width: 100%;
 }
 
 .ifeed-portlet a.taglib-icon:link {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .ifeed-portlet .aui-tree-view {
@@ -63,9 +64,7 @@
   padding-left: 20px;
 }
 
-.ifeed-portlet .tree-node-delete,
-.ifeed-portlet .tree-node-tooltip,
-.ifeed-portlet .tree-node-edit {
+.ifeed-portlet .tree-node-delete,.ifeed-portlet .tree-node-tooltip,.ifeed-portlet .tree-node-edit {
   font-size: 0;
   height: 16px;
   text-align: -9999em;
@@ -217,8 +216,8 @@ a.link-button-help .link-button-content {
 }
 
 .ifeed-portlet .description {
-    display: block;
-    width: 100%;
+  display: block;
+  width: 100%;
 }
 
 /* Clearfix style clearing */
@@ -274,14 +273,50 @@ a.link-button-help .link-button-content {
 
 /* Search container style */
 .ifeed-portlet .parent-search-container .col-1 {
-    width: 22px;
+  width: 22px;
 }
 
 .ifeed-portlet .parent-search-container .col-4 {
-    width: 60%;
+  width: 60%;
 }
 
 .ifeed-portlet .parent-search-container .col-5 {
-    width: 68px;
+  width: 68px;
 }
+
+/* Document metadata block */
+.ifeed-metadata {
+  font-size: 14px;
+}
+
+.ifeed-metadata dt {
+  font-weight: bold;
+  color: black;
+  float: left;
+  margin-bottom: 0.5em;
+  padding-right: 6px;
+  width: 20em;
+  text-align: right;
+}
+
+.ifeed-metadata dd {
+  font-style: italic;
+  margin-bottom: 0.5em;
+  color: #333;
+  margin-left: 0px;
+}
+
+.metadata-tooltip dt {
+    font-weight: bold;
+}
+
+.metadata-tooltip dd {
+    font-style: italic;
+}
+
+.metadata-tooltip-more {
+    display: block;
+    text-align: right;
+}
+
 </style>

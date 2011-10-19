@@ -103,6 +103,24 @@ public enum FilterType {
             return metadataKey;
         }
 
+        public String getLabelKey() {
+            return metadataField + getSuffix() + ".label";
+        }
+
+        public String getHelpKey() {
+            return metadataField + getSuffix() + ".help";
+        }
+
+        private String getSuffix() {
+            String suffix = "";
+            if(PUBLISHING_TO_DATE.equals(this)) {
+                suffix = ".to";
+            } else if(PUBLISHING_FROM_DATE.equals(this)) {
+                suffix = ".from";
+            }
+            return suffix;
+        }
+
         public String getKeyString() {
             if (StringUtils.isBlank(keyString)) {
                 keyString = name().replace('_', '-').toLowerCase(SV_SE);

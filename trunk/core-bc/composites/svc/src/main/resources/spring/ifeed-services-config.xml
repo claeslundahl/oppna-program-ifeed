@@ -62,10 +62,8 @@
     </constructor-arg>
   </bean>
 
-
-
   <jaxws:client id="vocabularyService" serviceClass="vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService"
-    address="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService" />
+    address="${apelon.metadata.service}" />
 
   <bean name="metadataService" class="se.vgregion.ifeed.service.metadata.MetadataServiceImpl">
     <constructor-arg ref="vocabularyService" />

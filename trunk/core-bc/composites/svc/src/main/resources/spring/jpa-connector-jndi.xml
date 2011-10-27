@@ -3,6 +3,8 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+<!-- The purpose of this file is to use a jndi connection to a database -->
+
   <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
     <property name="jndiName" value="${datasource.connector.jndi.jndiName}" />
   </bean>

@@ -41,11 +41,17 @@
   </portlet>
   <portlet>
     <portlet-name>apelon-scheduler</portlet-name>
-    <portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
-    <supports>
+    <display-name>iFeed Apelon Scheduler</display-name>
+	<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+	<supports>
       <mime-type>text/html</mime-type>
       <portlet-mode>VIEW</portlet-mode>
-    </supports>
+	</supports>
+    <portlet-info>
+      <title>iFeed Apelon Scheduler</title>
+      <short-title>iFeed Apelon Scheduler</short-title>
+      <keywords></keywords>
+    </portlet-info>
   </portlet>
   <portlet>
     <portlet-name>publish-scheduler</portlet-name>
@@ -54,6 +60,11 @@
       <mime-type>text/html</mime-type>
       <portlet-mode>VIEW</portlet-mode>
     </supports>
+    <portlet-info>
+      <title>iFeed Publish Scheduler</title>
+      <short-title>iFeed Publish Scheduler</short-title>
+      <keywords></keywords>
+    </portlet-info>
   </portlet>
 
   <!-- Used to get remote user. See more info in JSR-286 Section 21.1. -->

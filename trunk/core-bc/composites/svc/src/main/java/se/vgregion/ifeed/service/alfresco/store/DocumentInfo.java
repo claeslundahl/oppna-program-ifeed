@@ -21,7 +21,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DocumentInfo {
 
-    private static final String VGR_DC_NAMESPACE = "vgr:dc.";
+    private static final String VGR_NAMESPACE = "vgr:";
+    private static final String DC_NAMESPACE = "dc.";
     private String nodeRef;
     @JsonProperty("mimetype")
     private String mimeType;
@@ -44,7 +45,7 @@ public class DocumentInfo {
     }
 
     public String getType() {
-        return StringUtils.substringAfter(type, VGR_DC_NAMESPACE);
+        return StringUtils.substringAfter(type, VGR_NAMESPACE);
     }
 
     public boolean getPublished() {
@@ -69,12 +70,16 @@ public class DocumentInfo {
     void setMetadata(Map<String, Object> metadata) {
         Map<String, Object> vgrMetadata = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : metadata.entrySet()) {
-            if (entry.getKey().contains(VGR_DC_NAMESPACE)) {
-                String keyNoNamespace = StringUtils.substringAfter(entry.getKey(), VGR_DC_NAMESPACE);
+            if (isValidMetadata(entry)) {
+                String keyNoNamespace = StringUtils.substringAfter(entry.getKey(), VGR_NAMESPACE);
                 vgrMetadata.put(keyNoNamespace, entry.getValue());
             }
         }
         this.metadata = vgrMetadata;
+    }
+
+    private boolean isValidMetadata(Map.Entry<String, Object> entry) {
+        return entry.getKey().contains(VGR_NAMESPACE + DC_NAMESPACE);
     }
 
     public Set<String> getMetadataNames() {

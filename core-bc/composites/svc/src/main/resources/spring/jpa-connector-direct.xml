@@ -6,6 +6,9 @@
   http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+  <!-- The purpose of this file is to use a direct connection to a database. Can be used for development puropse for 
+    example. Use this configuration by setting system property datasource.connector=direct -->
+
   <context:property-placeholder location="classpath:security.properties"
     ignore-resource-not-found="true" ignore-unresolvable="true" />
 

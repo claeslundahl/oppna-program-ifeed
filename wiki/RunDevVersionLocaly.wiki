@@ -2,7 +2,7 @@
 
 = Configure local dev. version of application =
 
-Check out hidden material from internal svn. Look at the config.properties.dev file. Rename it to config.properties and place it at your [home-dir]/.iFeed/config.properties. 
+Check out hidden material from internal svn. Look at the config.properties.dev file. Rename it to config.properties and place it at your (home-dir)/.iFeed/config.properties. 
 
 Change the hard coded ip-numbers to your own computer number. Try using 'localhost', this has been reported as being a source of error though. 
 

@@ -1,10 +1,10 @@
 #summary How to run project software on a development computer.
 
-= Configurations =
+= Configure local dev. version of application =
 
 Check out hidden material from internal svn. Look at the config.properties.dev file. Rename it to config.properties and place it at your [home-dir]/.iFeed/config.properties. 
 
-Change the hard coded ip-numbers to your own computers number. Try using 'localhost', this has been reported as being a source of error though. 
+Change the hard coded ip-numbers to your own computer number. Try using 'localhost', this has been reported as being a source of error though. 
 
 Also change the 'hibernate.vendor.generateDdl=false' setting to 'hibernate.vendor.generateDdl=true' initially at least - since the application would lack its tables otherwise. 
 

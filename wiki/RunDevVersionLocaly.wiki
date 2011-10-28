@@ -10,7 +10,7 @@ Also change the 'hibernate.vendor.generateDdl=false' setting to 'hibernate.vendo
 
 Set the environment property 'datasoure.connector' to either 'jndi' or 'direct' depending on desired method of accessing the db.
 
-One way of setting the env-prop is to edit the file [LIFE_RAY_HOME]/[TOMCAT_HOME]/bin/setenv.bat (or .sh-file).
+One way of setting the env-prop is to edit the file (LIFE_RAY_HOME)/(TOMCAT_HOME)/bin/setenv.bat (or .sh-file).
 
 <code>
 if exist "%CATALINA_HOME%/jre1.6.0_21/win" (

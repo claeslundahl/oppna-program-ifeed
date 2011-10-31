@@ -12,10 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
+import static se.vgregion.common.utils.CommonUtils.*;
 
 @Controller
 public class IFeedViewerController {
@@ -33,7 +36,7 @@ public class IFeedViewerController {
 	}
 
 	@RequestMapping(value = "/feed/{id}")
-	public String getIFeed(@PathVariable("id") Long id, Model model) {
+	public String getIFeed(@PathVariable("id") Long id, Model model, @RequestParam("by") String sortField, @RequestParam("dir") String sortDirection) {
 		System.out.println("IFeedViewerController.getIFeed()");
 		// Retrieve feed from store
 		IFeed retrievedFeed = iFeedService.getIFeed(id);
@@ -45,7 +48,7 @@ public class IFeedViewerController {
 			// enhance the browser experience
 		}
 		System.out.println(iFeedService);
-		List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed);
+		List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection));
 
 		System.out.println(result);
 		model.addAttribute("result", result);
@@ -58,5 +61,4 @@ public class IFeedViewerController {
 		System.out.println("Hej " + decodedId);
 		return "documentDetails";
 	}
-
 }

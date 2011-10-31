@@ -1,7 +1,7 @@
 package se.vgregion.ifeed.viewer;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 
@@ -48,16 +48,15 @@ public class IFeedViewerController {
 		List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed);
 
 		System.out.println(result);
-
 		model.addAttribute("result", result);
-
 		return "documentList";
 	}
 
-	@RequestMapping(value = "/hej", method = GET)
-	public String main() {
-
-		return "documentList";
+	@RequestMapping(value = "/{id}/details")
+	public String details(@PathVariable String id) throws UnsupportedEncodingException {
+		String decodedId = URLDecoder.decode(id, "UTF-8");
+		System.out.println("Hej " + decodedId);
+		return "documentDetails";
 	}
 
 }

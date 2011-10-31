@@ -32,7 +32,7 @@ public class IFeedViewerController {
 		this.iFeedService = iFeedService;
 	}
 
-	@RequestMapping(value = "/{id}/feed")
+	@RequestMapping(value = "/feed/{id}")
 	public String getIFeed(@PathVariable("id") Long id, Model model) {
 		System.out.println("IFeedViewerController.getIFeed()");
 		// Retrieve feed from store
@@ -52,7 +52,7 @@ public class IFeedViewerController {
 		return "documentList";
 	}
 
-	@RequestMapping(value = "/{id}/details")
+	@RequestMapping(value = "/document/{id}/details")
 	public String details(@PathVariable String id) throws UnsupportedEncodingException {
 		String decodedId = URLDecoder.decode(id, "UTF-8");
 		System.out.println("Hej " + decodedId);

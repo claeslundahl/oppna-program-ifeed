@@ -1,3 +1,14 @@
 .doc-list {
-   list-style-type: none;
+  list-style-type: none;
+}
+
+a {
+  PADDING-RIGHT: 0px;
+  PADDING-LEFT: 0px;
+  PADDING-BOTTOM: 0px;
+  MARGIN: 0px;
+  COLOR: #005baa;
+  PADDING-TOP: 0px;
+  TEXT-DECORATION: underline;
+  margin: 0px;
 }

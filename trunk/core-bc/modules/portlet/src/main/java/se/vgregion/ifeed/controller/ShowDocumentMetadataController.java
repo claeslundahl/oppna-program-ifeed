@@ -52,7 +52,7 @@ public class ShowDocumentMetadataController {
     }
 
     @ResourceMapping
-    public void showTopFiveDocumentMetadata(@RequestParam(required=true) final String documentId, ResourceResponse response) {
+    public void showTopDocumentMetadata(@RequestParam(required=true) final String documentId, ResourceResponse response) {
         Map<String, String> metadataPair = new HashMap<String, String>(topListMetadata.size());
         final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(documentId);
         String metaValue = "";

@@ -10,8 +10,8 @@
     <description>Encodes to url-friendly text.</description>
     <display-name>urlEncode</display-name>
     <name>urlEncode</name>
-    <function-class>se.vgregion.ifeed.viewer.Util</function-class>
-    <function-signature>java.lang.String urlEncode(java.lang.String)</function-signature>
+    <function-class>java.net.URLEncoder</function-class>
+    <function-signature>java.lang.String encode(java.lang.String, java.lang.String)</function-signature>
   </function>
   
 </taglib>

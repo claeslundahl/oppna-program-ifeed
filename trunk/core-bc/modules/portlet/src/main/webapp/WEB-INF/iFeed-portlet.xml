@@ -38,5 +38,10 @@
     <property name="suffix" value=".jsp" />
     <property name="contentType" value="text/html;charset=UTF-8" />
   </bean>
-
+  
+  <!-- 
+    Declaration of bean that is injected into beans with the Autowire annotation. Security.
+  -->
+  <bean id="resourceLocalService" class="com.liferay.portal.service.ResourceLocalServiceUtil" factory-method="getService" />
+  
 </beans>

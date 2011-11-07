@@ -43,7 +43,7 @@
 
   <servlet-mapping>
     <servlet-name>iFeed</servlet-name>
-    <url-pattern>/ifeed/*</url-pattern>
+    <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

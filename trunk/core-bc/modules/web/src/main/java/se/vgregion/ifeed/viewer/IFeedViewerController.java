@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.viewer;
 
-import static se.vgregion.common.utils.CommonUtils.*;
+import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -27,50 +27,52 @@ import se.vgregion.ifeed.types.IFeed;
 @Controller
 public class IFeedViewerController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IFeedViewerController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(IFeedViewerController.class);
 
-    private IFeedService iFeedService;
-    private IFeedSolrQuery solrQuery;
-    private AlfrescoDocumentService alfrescoMetadataService;
+	private IFeedService iFeedService;
+	private IFeedSolrQuery solrQuery;
+	private AlfrescoDocumentService alfrescoMetadataService;
 
+	@Autowired
+	public IFeedViewerController(IFeedSolrQuery solrQuery, IFeedService iFeedService,
+	        AlfrescoDocumentService documentService) {
+		this.solrQuery = solrQuery;
+		this.iFeedService = iFeedService;
+		this.alfrescoMetadataService = documentService;
+	}
 
-    @Autowired
-    public IFeedViewerController(IFeedSolrQuery solrQuery, IFeedService iFeedService, AlfrescoDocumentService documentService) {
-        this.solrQuery = solrQuery;
-        this.iFeedService = iFeedService;
-        this.alfrescoMetadataService = documentService;
-    }
+	// http://localhost:9080/iFeed-core-bc-module-intsvc/ifeeds/92203/feed?by=processingtime&dir=desc
 
-    @RequestMapping(value = "/feed/{id}")
-    public String getIFeed(@PathVariable Long id, Model model,
-            @RequestParam(value = "by", required=false) String sortField,
-            @RequestParam(value="dir", required=false) String sortDirection) {
+	@RequestMapping(value = "/ifeeds/{id}/feed")
+	public String getIFeed(@PathVariable Long id, Model model,
+	        @RequestParam(value = "by", required = false) String sortField,
+	        @RequestParam(value = "dir", required = false) String sortDirection) {
 
-        // Retrieve feed from store
-        IFeed retrievedFeed = iFeedService.getIFeed(id);
+		// Retrieve feed from store
+		IFeed retrievedFeed = iFeedService.getIFeed(id);
 
-        if (retrievedFeed == null) {
-            // Throw 404 if the feed doesn't exist
-            throw new ResourceNotFoundException();
-        }
-        List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField,
-                getEnum(SortDirection.class, sortDirection));
+		if (retrievedFeed == null) {
+			// Throw 404 if the feed doesn't exist
+			throw new ResourceNotFoundException();
+		}
+		List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField,
+		        getEnum(SortDirection.class, sortDirection));
 
-        model.addAttribute("result", result);
-        return "documentList";
-    }
+		model.addAttribute("result", result);
+		return "documentList";
+	}
 
-    @RequestMapping(value = "/document/{documentId}/details")
-    public String details(@PathVariable String documentId, Model model) throws UnsupportedEncodingException {
-        String fullId = "workspace://SpacesStore/" + documentId;
-        final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
-        model.addAttribute("documentInfo", documentInfo);
+	@RequestMapping(value = "/document/{documentId}/details")
+	public String details(@PathVariable String documentId, Model model) throws UnsupportedEncodingException {
+		String fullId = "workspace://SpacesStore/" + documentId;
+		final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
+		model.addAttribute("documentInfo", documentInfo);
 
-        return "documentDetails";
-    }
+		return "documentDetails";
+	}
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public class ResourceNotFoundException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
-    }
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public class ResourceNotFoundException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+	}
 }

@@ -6,14 +6,14 @@
 
 <html>
 <head>
-<link href="${pageContext.request.contextPath}/style.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath}/resources/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
   <ul class="doc-list">
     <c:forEach items="${result}" var="item">
       <li><a
-        href="${pageContext.request.contextPath}/ifeed/document/${fn:replace(item['dc.identifier.documentid'], 'workspace://SpacesStore/', '')}/details?host=vgdb0207.vgregion.se">
-          <img src="${pageContext.request.contextPath}/information.png" /></a> 
+        href="${pageContext.request.contextPath}/document/${fn:replace(item['dc.identifier.documentid'], 'workspace://SpacesStore/', '')}/details?host=vgdb0207.vgregion.se">
+          <img src="${pageContext.request.contextPath}/resources/information.png" /></a> 
           <a target="_blank" href="${item.url}">${item['dc.title']}</a>
       </li>
     </c:forEach>

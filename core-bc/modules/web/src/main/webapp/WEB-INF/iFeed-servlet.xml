@@ -11,7 +11,7 @@
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-  <mvc:resources location="classpath:/META-INF/" mapping="/resources/**" />
+  <mvc:resources location="/" mapping="/resources/**" />
   <mvc:annotation-driven/>
   
   <context:component-scan base-package="se.vgregion.ifeed.viewer"></context:component-scan>

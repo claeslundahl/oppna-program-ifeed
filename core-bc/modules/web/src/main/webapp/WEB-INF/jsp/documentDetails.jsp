@@ -8,13 +8,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Dokumentegenskaper</title>
-<link href="${pageContext.request.contextPath}/style.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath}/resources/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
 <dl class="ifeed-metadata">
 <c:forEach items="${documentInfo.metadata}" var="item">
-    <dt><spring:message code="${item.key}.label" />:</dt>
+    <dt><spring:message code="${item.key}.label" text="${item.key}" />:</dt>
     <dd>
       <c:choose>
         <c:when test="${item.value != ''}">${item.value}</c:when>

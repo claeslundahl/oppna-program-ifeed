@@ -11,6 +11,8 @@
 <%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
+
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <portlet:resourceURL var="findPeople" />
@@ -40,18 +42,26 @@
 <aui:layout cssClass="ifeed-block ifeed-header">
   <aui:column columnWidth="85" first="true">
     <h1 class="heading">
-      <span id="<portlet:namespace />headingText" class="heading-text">${ifeed.name}</span> <span
-        class="ifeed-edit-trigger ifeed-edit-trigger-heading">Redigera text</span>
+      <span id="<portlet:namespace />headingText" class="heading-text">${ifeed.name}</span> 
+          <c:if test="${guard:mayEditFeed(user, ifeed)}">
+            <span class="ifeed-edit-trigger ifeed-edit-trigger-heading">Redigera text</span>
+          </c:if>
     </h1>
+    <c:if test="${not guard:mayEditFeed(user, ifeed)}">
+      <div>(Eftersom du inte är ägare till dokumentflödet kan inga ändringar göras)</div>
+    </c:if>
   </aui:column>
   <aui:column columnWidth="15" last="true">
-    <aui:form id="metaDataForm" name="metaDataForm" method="post" action="<%=updateIFeedURL%>">
-      <aui:input id="headingTextInput" name="name" type="hidden" value="${ifeed.name}" />
-      <aui:input id="descriptionTextInput" name="description" type="hidden" value="${ifeed.description}" />
-   </aui:form>
+    <c:if test="${guard:mayEditFeed(user, ifeed)}">
+     <aui:form id="metaDataForm" name="metaDataForm" method="post" action="<%=updateIFeedURL%>">
+        <aui:input id="headingTextInput" name="name" type="hidden" value="${ifeed.name}" />
+        <aui:input id="descriptionTextInput" name="description" type="hidden" value="${ifeed.description}" />
+     </aui:form>
+   </c:if>
     <aui:form method="post" action="<%=saveIFeedURL%>">
       <ul class="button-toolbar clearfix">
-        <li><aui:button type="submit" cssClass="link-button link-button-icon link-button-save" value="Spara" /></li>
+        <li>
+        <aui:button type="submit" cssClass="link-button link-button-icon link-button-save" value="Spara" disabled="${not guard:mayEditFeed(user, ifeed)}" /></li>
         <li>
         <a href="${cancelURL}" class="link-button link-button-icon link-button-cancel"> <span
             class="link-button-content">Avbryt</span> </a></li>
@@ -71,8 +81,16 @@
     <div class="ifeed-meta-item ifeed-meta-block">
       <div class="ifeed-meta-label">Beskrivning:</div>
       <div class="ifeed-meta-content">
-        <span id="<portlet:namespace />descriptionText" class="description">${ifeed.description}</span> <span
+        <c:choose>
+                <c:when test="${guard:mayEditFeed(user, ifeed)}">
+        <span id="<portlet:namespace />descriptionText" class="description">${ifeed.description}</span>
+         <span
           class="ifeed-edit-trigger ifeed-edit-trigger-description">Redigera text</span>
+                </c:when>
+        <c:otherwise>
+          <span class="description">${ifeed.description}</span>
+        </c:otherwise>
+        </c:choose>
       </div>
     </div>
   </aui:column>
@@ -122,7 +140,7 @@
   <aui:column columnWidth="33" first="true">
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Tillgängliga filter" collapsible="true" extended="true">
-        <div id="<portlet:namespace />existingFiltersWrap">
+        <div id="<portlet:namespace />existingFiltersWrap" class="clear-fix">
           <ul>
             <c:forEach items="${filterTypes}" var="filterType" varStatus="filterRow">
               <li><span class="tree-node-wrap clearfix"> <span class="tree-node-label"><liferay-ui:message
@@ -134,10 +152,20 @@
                           <portlet:param name="action" value="selectFilter" />
                           <portlet:param name="filter" value="${filter}" />
                         </portlet:actionURL> <span class="tree-node-tooltip"
-                        title="<liferay-ui:message key='${filter.helpKey}' />">Icon</span> <a
-                        href="${selectFilter}" class="tree-node-use tree-node-link tree-node-link-label"> <span
-                          class="tree-node-label"> <liferay-ui:message key="${filter.labelKey}" /> </span>
-                      </a> </span></li>
+                        title="<liferay-ui:message key='${filter.helpKey}' />">Icon</span>
+                        <c:choose>
+                          <c:when test="${guard:mayEditFeed(user, ifeed)}">
+                            <a href="${selectFilter}" class="tree-node-use tree-node-link tree-node-link-label"> <span
+                              class="tree-node-label"> <liferay-ui:message key="${filter.labelKey}" /> </span>
+                            </a>
+                          </c:when>
+                          <c:otherwise>
+                            <a class="tree-node-use tree-node-link tree-node-link-label"> <span
+                              class="tree-node-label"> <liferay-ui:message key="${filter.labelKey}" /> </span>
+                            </a>
+                          </c:otherwise>
+                        </c:choose> 
+                      </span></li>
                   </c:forEach>
                 </ul></li>
             </c:forEach>
@@ -201,9 +229,18 @@
                 <portlet:param name="filter" value="${iFeedFilter.filter}" />
                 <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
               </portlet:actionURL>
-              <li><span class="tree-node-wrap clearfix"> <a href="${editFilter}"
-                  class="tree-node-link tree-node-edit">Redigera</a> <a href="${removeFilter}"
-                  class="tree-node-link tree-node-delete">Ta bort</a> <span class="tree-node-label"> <liferay-ui:message
+              <li><span class="tree-node-wrap clearfix"> 
+                <c:choose>
+                  <c:when test="${guard:mayEditFeed(user, ifeed)}">
+                    <a href="${editFilter}" class="tree-node-link tree-node-edit">Redigera</a> 
+                    <a href="${removeFilter}" class="tree-node-link tree-node-delete">Ta bort</a>
+                  </c:when>
+                  <c:otherwise>
+                    <span class="tree-node-link tree-node-edit">Redigera</span> 
+                    <span class="tree-node-link tree-node-delete">Ta bort</span>
+                  </c:otherwise>
+                </c:choose>
+                  <span class="tree-node-label"> <liferay-ui:message
                       key="${iFeedFilter.filter.labelKey}" />: 
                       <c:choose>
                         <c:when test="${iFeedFilter.filter.metadataType == 'DATE'}">
@@ -256,9 +293,12 @@
 </aui:layout>
 <liferay-util:html-top>
   <%@ include file="ifeed_css.jsp"%>
-  <script type="text/javascript" src="${renderRequest.contextPath}/js/vgr-ifeed-config.js"></script>
+  <c:if test="${guard:mayEditFeed(user, ifeed)}">
+    <script type="text/javascript" src="${renderRequest.contextPath}/js/vgr-ifeed-config.js"></script>
+  </c:if>
 </liferay-util:html-top>
 
+<c:if test="${guard:mayEditFeed(user, ifeed)}">
 <aui:script use="vgr-ifeed-config">
   /**
    * Monky patched function - issue AUI-416
@@ -361,3 +401,4 @@
     }
   });
 </aui:script>
+</c:if>

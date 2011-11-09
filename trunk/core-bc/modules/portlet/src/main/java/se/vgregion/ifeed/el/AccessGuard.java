@@ -21,17 +21,17 @@ public class AccessGuard {
 		return haveRole(user, "iFeed-admin");
 	}
 
-	public static boolean mayEditFeed(User user, IFeed feed) throws SystemException {
-		if (user == null) {
-			System.out.println("User är null!");
-			return false;
+	public static boolean mayEditFeed(User user, IFeed feed) {
+		try {
+			if (user == null) {
+				return false;
+			}
+			if (mayEditAllFeeds(user)) {
+				return true;
+			}
+		} catch (SystemException se) {
+			throw new RuntimeException(se);
 		}
-		if (mayEditAllFeeds(user)) {
-			System.out.println("Får ändra allt!");
-			return true;
-		}
-		System.out.println("user.getScreenName() " + user.getScreenName() + " \n feed.getUserId() "
-		        + feed.getUserId());
 		return user.getScreenName().equals(feed.getUserId());
 	}
 

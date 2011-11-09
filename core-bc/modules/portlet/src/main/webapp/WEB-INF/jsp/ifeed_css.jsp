@@ -90,6 +90,7 @@
 
 .ifeed-portlet .tree-node-tooltip {
   background: transparent url(${themeDisplay.pathThemeImages}/common/help.png) 0 0 no-repeat;
+  clear: both; /* Claes */
 }
 
 /*-- Layout blocks ------*/
@@ -218,6 +219,10 @@ a.link-button-help .link-button-content {
 .ifeed-portlet .description {
   display: block;
   width: 100%;
+}
+
+.ifeed-portlet ul {
+  list-style-type: none; /* Claes */
 }
 
 /* Clearfix style clearing */

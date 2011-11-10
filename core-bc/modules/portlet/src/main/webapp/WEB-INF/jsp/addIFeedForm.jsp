@@ -20,8 +20,8 @@
   </aui:fieldset>
   <liferay-ui:panel-container extended="true" id="feedConfiguration" persistState="false">
     <aui:fieldset>
-      <aui:input name="name" label="feed-name" value="${ifeed.name}" />
-      <aui:input name="description" label="feed-description" value="${ifeed.description}" />
+      <aui:input name="name" label="feed-name" value="" />
+      <aui:input name="description" label="feed-description" value="" />
     </aui:fieldset>
   </liferay-ui:panel-container>
   <aui:button-row>

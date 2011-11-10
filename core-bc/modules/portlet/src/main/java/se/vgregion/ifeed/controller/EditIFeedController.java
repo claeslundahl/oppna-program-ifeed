@@ -115,6 +115,7 @@ public class EditIFeedController {
 		}
 		IFeed ifeed = iFeedService.updateIFeed(iFeed);
 		model.addAttribute("ifeed", ifeed);
+		model.addAttribute("saveAction", Boolean.TRUE);
 		response.setRenderParameter("view", "showEditIFeedForm");
 	}
 

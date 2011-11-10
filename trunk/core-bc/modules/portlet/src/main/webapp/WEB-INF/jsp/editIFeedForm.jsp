@@ -40,6 +40,10 @@
 </portlet:actionURL>
 
 <aui:layout cssClass="ifeed-block ifeed-header">
+    <c:if test="${saveAction}">
+      <div class="portlet-msg-success">Ändringarna har sparats.</div>
+    </c:if>
+
   <aui:column columnWidth="85" first="true">
     <h1 class="heading">
       <span id="<portlet:namespace />headingText" class="heading-text">${ifeed.name}</span> 

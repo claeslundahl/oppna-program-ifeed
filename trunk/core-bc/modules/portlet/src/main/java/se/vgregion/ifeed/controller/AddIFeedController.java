@@ -72,9 +72,12 @@ public class AddIFeedController {
 	}
 
 	@ActionMapping(params = { "action=addIFeed" })
-	public void addIFeed(final Model model, @Valid @ModelAttribute(value = "ifeed") IFeed iFeed,
+	public void addIFeed(final Model model, @Valid @ModelAttribute(value = "ifeed") IFeed iFeedIn,
 	        final BindingResult bindingResult, final ActionRequest request, final ActionResponse response) {
 		if (!bindingResult.hasErrors()) {
+			IFeed iFeed = new IFeed();
+			iFeed.setName(iFeedIn.getName());
+			iFeed.setDescription(iFeedIn.getDescription());
 			iFeed.setUserId(getRemoteUserId(request));
 			iFeed = iFeedService.addIFeed(iFeed);
 			try {

@@ -12,6 +12,10 @@
   <artifactId>iFeed-core-bc-composite-svc</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
+  
+  <properties>
+    <liferay.version>6.0.11</liferay.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -106,6 +110,12 @@
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-lgpl</artifactId>
       <version>1.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.liferay.portal</groupId>
+      <artifactId>portal-service</artifactId>
+      <version>${liferay.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

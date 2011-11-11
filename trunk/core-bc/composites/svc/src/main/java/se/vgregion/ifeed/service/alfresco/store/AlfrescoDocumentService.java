@@ -1,6 +1,3 @@
-/**
- * 
- */
 package se.vgregion.ifeed.service.alfresco.store;
 
 import org.springframework.web.client.RestTemplate;
@@ -13,12 +10,14 @@ public class AlfrescoDocumentService {
     private String serviceLocation;
     private RestTemplate restTemplate;
 
-    public AlfrescoDocumentService(RestTemplate restTemplate, String serviceLocation) {
+    public AlfrescoDocumentService(final RestTemplate restTemplate,
+            final String serviceLocation) {
         this.serviceLocation = serviceLocation;
         this.restTemplate = restTemplate;
     }
 
     public DocumentInfo getDocumentInfo(String documentId) {
-        return restTemplate.getForObject(serviceLocation, DocumentInfo.class, documentId);
+        return restTemplate.getForObject(serviceLocation,
+                DocumentInfo.class, documentId);
     }
 }

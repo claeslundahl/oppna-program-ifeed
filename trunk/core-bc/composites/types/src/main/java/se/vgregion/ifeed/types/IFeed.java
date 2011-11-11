@@ -26,9 +26,10 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 @Entity
 @Table(name = "vgr_ifeed")
-public class IFeed extends AbstractEntity<Long> implements Serializable, Comparable<IFeed> {
-    private static final long serialVersionUID = -2277251806545192506L;
+public class IFeed extends AbstractEntity<Long> implements Serializable,
+        Comparable<IFeed> {
 
+    private static final long serialVersionUID = -2277251806545192506L;
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
 
     @Id
@@ -36,18 +37,15 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     private Long id;
     @Version
     private Long version;
-
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
+    @CollectionTable(name = "vgr_ifeed_filter",
+            joinColumns = @JoinColumn(name = "ifeed_id"))
     private List<IFeedFilter> filters;
-
     private String name;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp = null;
     private String description;
     private String userId;
-
     private String sortField;
     private String sortDirection;
 
@@ -59,9 +57,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     public boolean addFilter(IFeedFilter filter) {
-        if(filters == null) {
+        if (filters == null) {
             filters = new ArrayList<IFeedFilter>();
-        } else if(filters.contains(filter)) {
+        } else if (filters.contains(filter)) {
             return false;
         }
         filters.add(filter);
@@ -71,7 +69,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     public IFeedFilter getFilter(IFeedFilter filter) {
         IFeedFilter f = null;
         int index = filters.indexOf(filter);
-        if(index >= 0) {
+        if (index >= 0) {
             f = filters.get(index);
         }
         return f;
@@ -159,8 +157,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     @Override
-    public int compareTo(IFeed o) {
-        if(o == null) {
+    public final int compareTo(final IFeed o) {
+        if (o == null) {
             return +1;
         }
         return new CompareToBuilder().append(name, o.name).toComparison();

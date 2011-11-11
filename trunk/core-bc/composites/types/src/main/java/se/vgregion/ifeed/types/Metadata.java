@@ -20,11 +20,12 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 /**
  * @author Anders Asplund - Callista Enterprise
- * 
+ *
  */
 @Entity
 @Table(name = "vgr_apelon_metadata")
-public class Metadata extends AbstractEntity<Long> implements Comparable<Metadata> {
+public class Metadata extends AbstractEntity<Long>
+        implements Comparable<Metadata> {
 
     @Id
     @GeneratedValue
@@ -34,7 +35,8 @@ public class Metadata extends AbstractEntity<Long> implements Comparable<Metadat
 
     private String name;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     private Collection<Metadata> children = new HashSet<Metadata>();
 
     Metadata() {
@@ -76,7 +78,8 @@ public class Metadata extends AbstractEntity<Long> implements Comparable<Metadat
 
     @Override
     public int compareTo(Metadata other) {
-        return new CompareToBuilder().append(this.name, other.name).toComparison();
+        return new CompareToBuilder().
+            append(this.name, other.name).toComparison();
     }
 
     @Override

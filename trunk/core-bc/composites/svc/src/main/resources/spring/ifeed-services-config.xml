@@ -39,6 +39,7 @@
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
     <constructor-arg ref="iFeedRepo" />
     <constructor-arg ref="iFeedPublisher" />
+    <constructor-arg ref="resourceLocalService" />
   </bean>
 
   <bean id="iFeedRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
@@ -93,6 +94,8 @@
       </list>
     </property>
   </bean>
+  
+  <bean id="resourceLocalService" class="com.liferay.portal.service.ResourceLocalServiceUtil" factory-method="getService" />
 
 </beans>
         

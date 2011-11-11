@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import static se.vgregion.common.utils.CommonUtils.*;
+import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 import java.util.Collection;
 import java.util.Date;
@@ -197,7 +197,8 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
                     fieldName.substring(prefix.length() + 1), prefix));
 
             if (fieldValue instanceof Date) {
-                element.setText(DateFormatter.format((Date) fieldValue, DateFormat.W3CDTF));
+                element.setText(DateFormatter.format((Date) fieldValue,
+                        DateFormat.W3CDTF));
             } else if (fieldName.equalsIgnoreCase("dc.language")) {
                 if (fieldValue.toString().equalsIgnoreCase("svenska")) {
                     element.setText("swe");
@@ -212,11 +213,13 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
                 element.setText(fieldValue.toString());
             }
         } else {
-            LOGGER.warn("Unknown namespace {}, field {} is ignored.", new Object[] { prefix, fieldName });
+            LOGGER.warn("Unknown namespace {}, field {} is ignored.",
+                   new Object[] { prefix, fieldName });
         }
     }
 
-    private Feed populateFeed(final Feed f, final Collection<Map<String, Object>> hits) {
+    private Feed populateFeed(final Feed f,
+            final Collection<Map<String, Object>> hits) {
         for (Map<String, Object> map : hits) {
             Entry e = f.addEntry();
             populateEntry(e, map);

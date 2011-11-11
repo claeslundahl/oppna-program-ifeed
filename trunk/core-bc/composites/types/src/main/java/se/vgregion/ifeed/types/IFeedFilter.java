@@ -39,6 +39,7 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append(filter).append(filterQuery).toString();
+        return new ToStringBuilder(this).append(filter).append(filterQuery).
+            toString();
     }
 }

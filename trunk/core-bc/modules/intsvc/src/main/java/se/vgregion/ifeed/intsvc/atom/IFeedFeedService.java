@@ -15,8 +15,8 @@ public interface IFeedFeedService {
     @Produces({ "application/xml", "application/atom+xml;type=feed" })
     @Path("/{id}/feed")
     Feed getIFeed(@PathParam("id") Long id, @RequestParam(
-            value="by", required = false) String sortField, @RequestParam(
-                    value="dir", required = false) String sortDirection);
+            value = "by", required = false) String sortField, @RequestParam(
+                    value = "dir", required = false) String sortDirection);
 
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=entry" })

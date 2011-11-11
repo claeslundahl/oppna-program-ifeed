@@ -113,9 +113,9 @@ public enum FilterType {
 
         private String getSuffix() {
             String suffix = "";
-            if(PUBLISHING_TO_DATE.equals(this)) {
+            if (PUBLISHING_TO_DATE.equals(this)) {
                 suffix = ".to";
-            } else if(PUBLISHING_FROM_DATE.equals(this)) {
+            } else if (PUBLISHING_FROM_DATE.equals(this)) {
                 suffix = ".from";
             }
             return suffix;

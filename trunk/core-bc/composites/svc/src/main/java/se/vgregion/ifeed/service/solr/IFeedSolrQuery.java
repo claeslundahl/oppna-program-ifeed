@@ -28,7 +28,7 @@ public class IFeedSolrQuery extends SolrQuery {
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedSolrQuery.class);
 
     public static final SortDirection DEFAULT_SORT_DIRECTION = SortDirection.desc;
-    public static final String DEFAULT_SORT_FIELD = "processingtime";
+    public static final String DEFAULT_SORT_FIELD = "dc.title";
 
     private SolrServer solrServer;
 

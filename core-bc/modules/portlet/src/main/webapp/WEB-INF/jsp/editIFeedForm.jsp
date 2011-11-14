@@ -99,14 +99,17 @@
     </div>
   </aui:column>
   <aui:column columnWidth="67">
+    
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Id:</div>
       <div class="ifeed-meta-content">${ifeed.id}</div>
     </div>
-    <div class="ifeed-meta-item ifeed-meta-block">
-      <div class="ifeed-meta-label">Länk till feed:</div>
+    
+    <div class="ifeed-meta-item ifeed-meta-inline">
+      <div class="ifeed-meta-label">Länk till dokumentlistas:</div>
       <div class="ifeed-meta-content">
-        <a href="${atomFeedLink}" target="_blank">${atomFeedLink}</a>
+        <a href="${atomFeedLink}" target="_blank"><img src="/vgr-theme/i/icons/rss.png" alt="atom"></a> 
+        <a href="${fn:replace(atomFeedLink, 'intsvc', 'web')}" target="_blank"><img src="/vgr-theme/i/icons/html.png" alt="html"></a>
       </div>
     </div>
     <!--         Enable when we have valid dates -->
@@ -285,7 +288,7 @@
                   <liferay-ui:icon cssClass="metadata-icon-tooltip" image="" method="get" url="${metadataURL}" src="/vgr-theme/i/icons/information.png"/>
                 </liferay-ui:icon-menu>
               </liferay-ui:search-container-column-text>
-              <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}" orderable="true" orderableProperty="dc:title"/>
+              <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}" orderable="true" orderableProperty="dc.title"/>
               <liferay-ui:search-container-column-text name="Ändrad" property="processingTime" orderable="true" orderableProperty="processingtime"/>
             </liferay-ui:search-container-row>
             <liferay-ui:search-iterator />

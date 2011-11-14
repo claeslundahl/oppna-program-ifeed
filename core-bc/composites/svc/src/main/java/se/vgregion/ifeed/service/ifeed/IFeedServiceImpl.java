@@ -12,25 +12,17 @@ import se.vgregion.ifeed.service.push.IFeedPublisher;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.service.ResourceLocalService;
-
-
 public class IFeedServiceImpl implements IFeedService {
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
     private IFeedPublisher iFeedPublisher;
-    private ResourceLocalService resourceService;
 
 
     public IFeedServiceImpl(
             final JpaRepository<IFeed, Long, Long> iFeedRepoParam,
-                IFeedPublisher iFeedPublisher,
-                    ResourceLocalService resourceService) {
+            IFeedPublisher iFeedPublisher) {
         iFeedRepo = iFeedRepoParam;
         this.iFeedPublisher = iFeedPublisher;
-        this.resourceService = resourceService;
     }
 
     @Override
@@ -41,9 +33,9 @@ public class IFeedServiceImpl implements IFeedService {
     @Override
     public final List<IFeed> getUserIFeeds(final String userId) {
         return new ArrayList<IFeed>(
-            iFeedRepo.findByQuery(
-                "SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1",
-                    new Object[] { userId }));
+                iFeedRepo.findByQuery(
+                        "SELECT ifeed FROM IFeed ifeed WHERE ifeed.userId=?1",
+                        new Object[] { userId }));
     }
 
     @Override
@@ -54,16 +46,6 @@ public class IFeedServiceImpl implements IFeedService {
     @Override
     @Transactional
     public final IFeed addIFeed(final IFeed iFeed) {
-    	try {
-			resourceService.addResources(0, 0, 0, "se.vgregion.ifeed.types.IFeed",
-			        iFeed.getId().longValue(), false, false, true);
-		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
         return iFeedRepo.store(iFeed);
     }
 

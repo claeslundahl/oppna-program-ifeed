@@ -98,7 +98,7 @@
       </div>
     </div>
   </aui:column>
-  <aui:column columnWidth="67">
+  <aui:column columnWidth="66">
     
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Id:</div>
@@ -106,7 +106,7 @@
     </div>
     
     <div class="ifeed-meta-item ifeed-meta-inline">
-      <div class="ifeed-meta-label">Länk till dokumentlistas:</div>
+      <div class="ifeed-meta-label">Länkar till dokumentlista:</div>
       <div class="ifeed-meta-content">
         <a href="${atomFeedLink}" target="_blank"><img src="/vgr-theme/i/icons/rss.png" alt="atom"></a> 
         <a href="${fn:replace(atomFeedLink, 'intsvc', 'web')}" target="_blank"><img src="/vgr-theme/i/icons/html.png" alt="html"></a>

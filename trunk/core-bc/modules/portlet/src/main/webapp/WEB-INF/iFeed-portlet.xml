@@ -19,15 +19,16 @@
   <bean class="se.vgregion.ifeed.controller.EditIFeedController" />
   <bean class="se.vgregion.ifeed.controller.IFeedController" />
   <bean class="se.vgregion.ifeed.controller.RemoveIFeedController" />
+  
   <bean class="se.vgregion.ifeed.controller.ShowDocumentMetadataController">
     <constructor-arg ref="alfrescoDocumentService" />
-    <constructor-arg>
+    <property name="topListMetadata">
       <list>
         <value>dc.type.document</value>
         <value>dc.identifier.version</value>
         <value>dc.format.extent.mimetype</value>
       </list>
-    </constructor-arg>
+    </property>
   </bean>
 
   <mvc:resources location="classpath:/META-INF/" mapping="/resources/**" />

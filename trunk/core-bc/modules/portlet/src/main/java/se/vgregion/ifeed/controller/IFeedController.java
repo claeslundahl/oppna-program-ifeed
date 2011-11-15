@@ -158,8 +158,4 @@ public class IFeedController {
         return userId;
     }
 
-    // @ExceptionHandler({ Exception.class })
-    public String handleException() {
-        return "errorPage";
-    }
 }

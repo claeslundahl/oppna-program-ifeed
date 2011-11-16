@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.PortletResponse;
 import javax.portlet.ResourceResponse;
 
 import org.apache.commons.lang.StringUtils;
@@ -99,7 +98,7 @@ public class ShowDocumentMetadataController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ModelAndView handleAlfrescoDocumentServiceException(Exception e, PortletResponse response) {
+    public ModelAndView handleAlfrescoDocumentServiceException(Exception e) {
         if (!(e instanceof IFeedServiceException)) {
             LOGGER.error("IFeed Excption: {}", e);
             e = new IFeedServiceException("error.unhandled", "Internal IFeed Error", e);

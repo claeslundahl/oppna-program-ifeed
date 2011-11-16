@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.portlet.PortletResponse;
 import javax.portlet.ResourceResponse;
 
 import org.junit.Before;
@@ -111,8 +110,7 @@ public class ShowDocumentMetadataControllerTest {
 	}
 
 	public void handleAlfrescoDocumentServiceException(Exception e, Exception expexted) {
-		PortletResponse response = mock(PortletResponse.class);
-		ModelAndView result = sdmc.handleAlfrescoDocumentServiceException(e, response);
+		ModelAndView result = sdmc.handleAlfrescoDocumentServiceException(e);
 		assertEquals(expexted.getMessage(), ((Exception) result.getModel().get("exception")).getMessage());
 		assertEquals("ExceptionHandler", result.getViewName());
 	}

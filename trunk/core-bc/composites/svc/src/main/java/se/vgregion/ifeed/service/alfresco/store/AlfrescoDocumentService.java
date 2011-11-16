@@ -35,7 +35,7 @@ public class AlfrescoDocumentService {
         DocumentInfo documentInfo = null;
         try {
             final ResponseEntity<DocumentInfo> responeEntity = restTemplate.getForEntity(serviceLocation, DocumentInfo.class, documentId);
-            if(responeEntity.getStatusCode().equals(HttpStatus.ACCEPTED)) {
+            if(responeEntity.getStatusCode().equals(HttpStatus.OK)) {
                 documentInfo = responeEntity.getBody();
             } else {
                 final String msg = "No metadata found for document id: " + documentId;

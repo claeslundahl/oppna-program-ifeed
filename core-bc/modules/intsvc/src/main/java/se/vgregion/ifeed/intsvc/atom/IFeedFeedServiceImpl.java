@@ -213,7 +213,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
                 element.setText(fieldValue.toString());
             }
         } else {
-            LOGGER.warn("Unknown namespace {}, field {} is ignored.",
+            LOGGER.debug("Unknown namespace {}, field {} is ignored.",
                     new Object[] { prefix, fieldName });
         }
     }

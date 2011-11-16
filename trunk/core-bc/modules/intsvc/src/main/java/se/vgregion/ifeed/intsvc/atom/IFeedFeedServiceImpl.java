@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import static se.vgregion.common.utils.CommonUtils.getEnum;
+import static se.vgregion.common.utils.CommonUtils.*;
 
 import java.util.Collection;
 import java.util.Date;
@@ -35,7 +35,7 @@ import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-@Path("ifeeds")
+@Path("documentlists")
 public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedFeedServiceImpl.class);
@@ -72,7 +72,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     @Override
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=feed;charset=UTF-8" })
-    @Path("/{id}/feed")
+    @Path("/{id}")
     public Feed getIFeed(@PathParam("id") Long id, @QueryParam("by") String sortField,
             @QueryParam("dir") String sortDirection) {
         Feed f = Abdera.getInstance().newFeed();
@@ -102,7 +102,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=entry;charset=UTF-8" })
-    @Path("/{id}")
+    @Path("/{id}/metadata")
     public Entry getIFeedEntry(@PathParam("id") final Long id) {
         Entry e = Abdera.getInstance().newEntry();
         IFeed retrievedFeed = iFeedService.getIFeed(id);
@@ -214,7 +214,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
             }
         } else {
             LOGGER.warn("Unknown namespace {}, field {} is ignored.",
-                   new Object[] { prefix, fieldName });
+                    new Object[] { prefix, fieldName });
         }
     }
 

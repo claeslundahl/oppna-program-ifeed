@@ -12,7 +12,7 @@
   <ul class="doc-list">
     <c:forEach items="${result}" var="item">
       <li><a
-        href="${pageContext.request.contextPath}/document/${fn:replace(item['dc.identifier.documentid'], 'workspace://SpacesStore/', '')}/details?host=vgdb0207.vgregion.se">
+        href="${pageContext.request.contextPath}/documents/${fn:replace(item['dc.identifier.documentid'], 'workspace://SpacesStore/', '')}">
           <img src="${pageContext.request.contextPath}/resources/information.png" /></a> 
           <a target="_blank" href="${item.url}">${item['dc.title']}</a>
       </li>

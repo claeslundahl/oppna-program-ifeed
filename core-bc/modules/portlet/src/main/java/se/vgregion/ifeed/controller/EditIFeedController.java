@@ -77,6 +77,7 @@ public class EditIFeedController {
     public String showEditIFeedForm(@ModelAttribute("ifeed") final IFeed iFeed,
             @RequestParam(defaultValue = "") final String orderByCol,
             @RequestParam(defaultValue = "") final String orderByType, final Model model, RenderResponse repsonse) {
+        model.asMap().get("ifeed");
 
         // Priority of sort field is:
         // 1. Request parameter - orderByCol/orderByType.
@@ -127,7 +128,7 @@ public class EditIFeedController {
     }
 
     @ActionMapping(params = "action=selectFilter")
-    public void selectNewFilter(@RequestParam(required = false, value = "filter") final Filter filter,
+    public void selectNewFilter(@ModelAttribute("ifeed") final IFeed iFeed, @RequestParam(required = false, value = "filter") final Filter filter,
             final Model model, final ActionResponse response) throws IOException {
 
         model.addAttribute("newFilter", filter);
@@ -136,6 +137,7 @@ public class EditIFeedController {
         String vocabularyJson = new ObjectMapper().writeValueAsString(vocabulary);
         model.addAttribute("vocabularyJson", vocabularyJson);
         model.addAttribute("filterFormBean", new FilterFormBean());
+        model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
@@ -164,6 +166,7 @@ public class EditIFeedController {
         model.addAttribute("vocabularyJson", vocabularyJson);
 
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
+        model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
@@ -173,6 +176,7 @@ public class EditIFeedController {
             @RequestParam("filterQuery") final String filterQuery, final Model model) {
 
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
+        model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 

@@ -309,6 +309,7 @@ a.link-button-help .link-button-content {
   margin-bottom: 0.5em;
   color: #333;
   margin-left: 0px;
+  #display: inline-block;
 }
 
 .metadata-tooltip dt {

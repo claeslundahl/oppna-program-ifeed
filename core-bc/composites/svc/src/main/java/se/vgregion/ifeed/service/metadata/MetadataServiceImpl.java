@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.service.metadata;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,13 +44,16 @@ public class MetadataServiceImpl implements MetadataService {
         this.metadataRoots = metadataRoots;
     }
 
+    @Override
     @Transactional
     public void importMetadata() {
         for (String metadataRoot : metadataRoots) {
             importMetdata(metadataRoot);
+            repo.flush();
         }
     }
 
+    @Override
     @Transactional
     public void importMetdata(String rootMetadataName) {
         Collection<Metadata> roots = repo.findByAttribute("name", rootMetadataName);
@@ -113,6 +116,7 @@ public class MetadataServiceImpl implements MetadataService {
         }
     }
 
+    @Override
     public Collection<String> getVocabulary(String metadataNodeName) {
         LOGGER.debug("Get vocabulary for metadata: {}", metadataNodeName);
         List<String> vocabulary = Collections.emptyList();

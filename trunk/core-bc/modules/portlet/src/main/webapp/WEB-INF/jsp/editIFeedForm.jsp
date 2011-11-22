@@ -276,7 +276,7 @@
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Träfflista" collapsible="true" extended="true" cssClass="ifeed-search-result-list">
         <c:if test="${not empty ifeed.filters}">
-          <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="100" orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${portletUrl}">
+          <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="500" orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${portletUrl}">
             <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
             <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">
               <liferay-ui:search-container-column-text>

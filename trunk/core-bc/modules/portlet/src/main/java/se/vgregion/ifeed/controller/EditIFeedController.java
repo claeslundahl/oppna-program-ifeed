@@ -207,4 +207,12 @@ public class EditIFeedController {
     public List<FilterType> getFilterTypes() {
         return Collections.unmodifiableList(Arrays.asList(FilterType.values()));
     }
+
+    IFeedService getiFeedService() {
+        return iFeedService;
+    }
+
+    void setiFeedService(IFeedService iFeedService) {
+        this.iFeedService = iFeedService;
+    }
 }

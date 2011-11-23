@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
@@ -95,7 +96,16 @@ public class EditIFeedController {
         iFeed.setSortField(sortField);
         iFeed.setSortDirection(sortDirection);
 
-        model.addAttribute("hits", new SearchResultList(iFeedSolrQuery.getIFeedResults(iFeed)));
+        List<Map<String, Object>> result = iFeedSolrQuery.getIFeedResults(iFeed);
+        if (result.size() == iFeedSolrQuery.getRows()) {
+            result.remove(result.size() - 1);
+            model.addAttribute("hitsOverflow", true);
+        } else {
+            model.addAttribute("hitsOverflow", false);
+        }
+        model.addAttribute("hits", new SearchResultList(result));
+        model.addAttribute("maxHits", iFeedSolrQuery.getRows() - 1);
+
         model.addAttribute("atomFeedLink",
                 iFeedAtomFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
         // model.addAttribute("atomFeedLink", String.format(ifeedAtomFeed, iFeed.getId()));
@@ -128,8 +138,9 @@ public class EditIFeedController {
     }
 
     @ActionMapping(params = "action=selectFilter")
-    public void selectNewFilter(@ModelAttribute("ifeed") final IFeed iFeed, @RequestParam(required = false, value = "filter") final Filter filter,
-            final Model model, final ActionResponse response) throws IOException {
+    public void selectNewFilter(@ModelAttribute("ifeed") final IFeed iFeed,
+            @RequestParam(required = false, value = "filter") final Filter filter, final Model model,
+            final ActionResponse response) throws IOException {
 
         model.addAttribute("newFilter", filter);
         Collection<String> vocabulary = metadataService.getVocabulary(filter.getMetadataKey());
@@ -208,11 +219,28 @@ public class EditIFeedController {
         return Collections.unmodifiableList(Arrays.asList(FilterType.values()));
     }
 
-    IFeedService getiFeedService() {
+    IFeedService getIFeedService() {
         return iFeedService;
     }
 
-    void setiFeedService(IFeedService iFeedService) {
+    void setIFeedService(IFeedService iFeedService) {
         this.iFeedService = iFeedService;
     }
+
+    public IFeedSolrQuery getIFeedSolrQuery() {
+        return iFeedSolrQuery;
+    }
+
+    public void setIFeedSolrQuery(IFeedSolrQuery iFeedSolrQuery) {
+        this.iFeedSolrQuery = iFeedSolrQuery;
+    }
+
+    public void setIFeedAtomFeed(UriTemplate iFeedAtomFeed) {
+        this.iFeedAtomFeed = iFeedAtomFeed;
+    }
+
+    public UriTemplate getIFeedAtomFeed() {
+        return iFeedAtomFeed;
+    }
+
 }

@@ -32,7 +32,7 @@
 
   <bean id="iFeedSolrQuery" class="se.vgregion.ifeed.service.solr.IFeedSolrQuery" scope="prototype">
     <constructor-arg ref="solrServer" />
-    <property name="rows" value="100" />
+    <property name="rows" value="501" />
     <property name="showDebugInfo" value="true" />
   </bean>
 

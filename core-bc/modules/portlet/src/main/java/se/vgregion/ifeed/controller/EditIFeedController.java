@@ -117,10 +117,14 @@ public class EditIFeedController {
         return "editIFeedForm";
     }
 
+    protected User fetchUser(PortletRequest request) throws PortalException, SystemException {
+        return PortalUtil.getUser(request);
+    }
+
     @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") final IFeed iFeed, final ActionResponse response,
             final Model model, PortletRequest request) throws SystemException, PortalException {
-        User user = PortalUtil.getUser(request);
+        User user = fetchUser(request);
         if (!AccessGuard.mayEditFeed(user, iFeed)) {
             throw new RuntimeException();
         }
@@ -241,6 +245,14 @@ public class EditIFeedController {
 
     public UriTemplate getIFeedAtomFeed() {
         return iFeedAtomFeed;
+    }
+
+    public MetadataService getMetadataService() {
+        return metadataService;
+    }
+
+    public void setMetadataService(MetadataService metadataService) {
+        this.metadataService = metadataService;
     }
 
 }

@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,19 +20,24 @@ import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceResponse;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.util.UriTemplate;
 
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ldap.person.LdapPersonService;
+import se.vgregion.ldap.person.Person;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -202,11 +209,37 @@ public class EditIFeedControllerTest {
         verify(iFeed).removeFilter(any(IFeedFilter.class));
     }
 
-    /* @Test public void testCancel() { fail("Not yet implemented"); }
-     * 
-     * @Test public void testSearchPeople() { fail("Not yet implemented"); }
-     * 
-     * @Test public void testGetFilters() { fail("Not yet implemented"); }
-     * 
-     * @Test public void testGetFilterTypes() { fail("Not yet implemented"); } */
+    @Test
+    public void cancel() {
+        SessionStatus sessionStatus = mock(SessionStatus.class);
+        controller.cancel(sessionStatus);
+        verify(sessionStatus).setComplete();
+    }
+
+    @Test
+    public void searchPeople() throws IOException {
+        String filterValue = "filterValue";
+        ResourceResponse actionResponse = mock(ResourceResponse.class);
+        LdapPersonService ldapPersonService = mock(LdapPersonService.class);
+        when(ldapPersonService.getPeople(filterValue, 10)).thenReturn(new ArrayList<Person>());
+
+        final OutputStream os = mock(OutputStream.class);
+        when(actionResponse.getPortletOutputStream()).thenReturn(os);
+
+        controller.setLdapPersonService(ldapPersonService);
+        controller.searchPeople(filterValue, actionResponse);
+
+    }
+
+    @Test
+    public void getFilters() {
+        List<Filter> result = controller.getFilters();
+        assertNotNull(result);
+    }
+
+    @Test
+    public void getFilterTypes() {
+        List<FilterType> result = controller.getFilterTypes();
+        assertNotNull(result);
+    }
 }

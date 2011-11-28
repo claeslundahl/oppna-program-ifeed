@@ -202,7 +202,6 @@ public class EditIFeedController {
 
     // @ResourceMapping
     public void searchPeople(@RequestParam final String filterValue, ResourceResponse response) {
-        System.out.println("EditIFeedController.searchPeople()");
         List<Person> people = ldapPersonService.getPeople(filterValue, 10);
         try {
             final OutputStream out = response.getPortletOutputStream();
@@ -253,6 +252,14 @@ public class EditIFeedController {
 
     public void setMetadataService(MetadataService metadataService) {
         this.metadataService = metadataService;
+    }
+
+    public LdapPersonService getLdapPersonService() {
+        return ldapPersonService;
+    }
+
+    public void setLdapPersonService(LdapPersonService ldapPersonService) {
+        this.ldapPersonService = ldapPersonService;
     }
 
 }

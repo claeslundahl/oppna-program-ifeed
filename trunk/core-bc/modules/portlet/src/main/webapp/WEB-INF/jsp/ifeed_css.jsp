@@ -289,6 +289,15 @@ a.link-button-help .link-button-content {
   width: 68px;
 }
 
+.ifeed-search-result-list .search-pages .page-links {
+  white-space: nowrap;
+  clear: both;
+}
+
+.ifeed-search-result-list .taglib-page-iterator .search-pages {
+    float: left;
+}
+
 /* Document metadata block */
 .ifeed-metadata {
   font-size: 14px;

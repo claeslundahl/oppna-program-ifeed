@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import static se.vgregion.common.utils.CommonUtils.*;
+import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 import java.util.Collection;
 import java.util.Date;
@@ -64,11 +64,9 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         this.namespaces = namespaces;
     }
 
-    /*
-     * (non-Javadoc)
+    /* (non-Javadoc)
      * 
-     * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getIFeed(java.lang.Long)
-     */
+     * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getIFeed(java.lang.Long) */
     @Override
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=feed;charset=UTF-8" })
@@ -100,6 +98,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return f;
     }
 
+    @Override
     @GET
     @Produces({ "application/xml", "application/atom+xml;type=entry;charset=UTF-8" })
     @Path("/{id}/metadata")
@@ -124,7 +123,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         content.append("<ul>");
         for (IFeedFilter iFeedFilter : retrievedFeed.getFilters()) {
             content.append("<li>").append(iFeedFilter.getFilter().getFilterField()).append(":")
-            .append(iFeedFilter.getFilterQuery()).append("</li>");
+                    .append(iFeedFilter.getFilterQuery()).append("</li>");
         }
         content.append("</ul>");
 
@@ -132,7 +131,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return e;
     }
 
-    private Entry populateEntry(final Entry e, final Map<String, Object> map) {
+    Entry populateEntry(final Entry e, final Map<String, Object> map) {
 
         if (map.containsKey("dc.creator")) {
             e.addAuthor(map.get("dc.creator").toString());
@@ -187,7 +186,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return e;
     }
 
-    private void addElement(final Entry e, final String prefix, final String fieldName, final Object fieldValue) {
+    void addElement(final Entry e, final String prefix, final String fieldName, final Object fieldValue) {
 
         // TODO Should handle the collection properly
         // rather than just doing toString
@@ -197,8 +196,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
                     fieldName.substring(prefix.length() + 1), prefix));
 
             if (fieldValue instanceof Date) {
-                element.setText(DateFormatter.format((Date) fieldValue,
-                        DateFormat.W3CDTF));
+                element.setText(DateFormatter.format((Date) fieldValue, DateFormat.W3CDTF));
             } else if (fieldName.equalsIgnoreCase("dc.language")) {
                 if (fieldValue.toString().equalsIgnoreCase("svenska")) {
                     element.setText("swe");
@@ -213,13 +211,11 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
                 element.setText(fieldValue.toString());
             }
         } else {
-            LOGGER.debug("Unknown namespace {}, field {} is ignored.",
-                    new Object[] { prefix, fieldName });
+            LOGGER.debug("Unknown namespace {}, field {} is ignored.", new Object[] { prefix, fieldName });
         }
     }
 
-    private Feed populateFeed(final Feed f,
-            final Collection<Map<String, Object>> hits) {
+    Feed populateFeed(final Feed f, final Collection<Map<String, Object>> hits) {
         for (Map<String, Object> map : hits) {
             Entry e = f.addEntry();
             populateEntry(e, map);

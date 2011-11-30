@@ -296,6 +296,7 @@ a.link-button-help .link-button-content {
 
 .ifeed-search-result-list .taglib-page-iterator .search-pages {
     float: left;
+    clear: both;
 }
 
 /* Document metadata block */

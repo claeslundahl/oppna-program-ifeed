@@ -23,7 +23,7 @@ public class AccessGuardTest {
     List<Role> roles;
 
     private void addAdminRoleToUser() throws SystemException {
-        addSomeRoleToUser("Admin-iFeed");
+        addSomeRoleToUser("iFeed-admin");
     }
 
     private void addSomeRoleToUser() throws SystemException {
@@ -74,12 +74,12 @@ public class AccessGuardTest {
         assertFalse(result);
     }
 
-    // @Test
-    // public void mayEditAllFeeds_yes() throws SystemException {
-    // addAdminRoleToUser();
-    // boolean result = AccessGuard.mayEditAllFeeds(user);
-    // assertTrue(result);
-    // }
+    @Test
+    public void mayEditAllFeeds_yes() throws SystemException {
+        addAdminRoleToUser();
+        boolean result = AccessGuard.mayEditAllFeeds(user);
+        assertTrue(result);
+    }
 
     @Test
     public void mayEditFeed() {

@@ -222,4 +222,12 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         }
         return f;
     }
+
+    UriInfo getContext() {
+        return context;
+    }
+
+    void setContext(UriInfo context) {
+        this.context = context;
+    }
 }

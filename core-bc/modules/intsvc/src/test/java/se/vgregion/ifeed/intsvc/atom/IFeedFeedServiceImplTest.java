@@ -11,8 +11,10 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
@@ -93,7 +95,7 @@ public class IFeedFeedServiceImplTest {
     }
 
     @Test
-    public void testPopulateEntry_checked_default_values() {
+    public void populateEntry_checked_default_values() {
         Entry entry = mock(Entry.class);
         Map<String, Object> map = new HashMap<String, Object>();
         Entry result = serv.populateEntry(entry, map);
@@ -104,22 +106,30 @@ public class IFeedFeedServiceImplTest {
     }
 
     @Test
-    public void testPopulateEntry_non_default_values() {
+    public void populateEntry_non_default_values() {
         Entry entry = mock(Entry.class);
         Map<String, Object> map = new HashMap<String, Object>();
 
-        String title = "t", author = "a";
+        String title = "t", author = "a", summary = "s";
         Date updated = new Date(1000l);
 
         map.put("dc.creator", author);
         map.put("processingtime", updated);
         map.put("dc.title", title);
+        map.put("dc.description", summary);
 
         Entry result = serv.populateEntry(entry, map);
+
+        map.put("url", "http://acme.com");
+        map.put("dc.format", "html");
+
+        List<Integer> ints = Arrays.asList(1, 2, 3);
+        map.put("ints.0", ints);
 
         verify(entry).setTitle(eq(title));
         verify(entry).addAuthor(eq(author));
         verify(entry).setUpdated(eq(updated));
+        verify(entry).setSummary(eq(summary));
 
         assertEquals(result, entry);
     }

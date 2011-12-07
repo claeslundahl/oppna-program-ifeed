@@ -200,7 +200,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
             } else if (fieldName.equalsIgnoreCase("dc.language")) {
                 if (fieldValue.toString().equalsIgnoreCase("svenska")) {
                     element.setText("swe");
-                } else if (fieldValue.toString().equalsIgnoreCase("svenska")) {
+                } else if (fieldValue.toString().equalsIgnoreCase("engelska")) {
                     element.setText("eng");
                 } else if (fieldValue.toString().equalsIgnoreCase("norska")) {
                     element.setText("nor");

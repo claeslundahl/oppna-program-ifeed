@@ -11,7 +11,9 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +21,9 @@ import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 
+import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.junit.Before;
@@ -133,14 +137,58 @@ public class IFeedFeedServiceImplTest {
 
         assertEquals(result, entry);
     }
-    // @Test
-    // public void testAddElement() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testPopulateFeed() {
-    // fail("Not yet implemented");
-    // }
+
+    @Test
+    public void addElementDate() {
+        String prefix = "prefix";
+        String fieldName = "fieldName";
+        Map<String, String> ns = new HashMap<String, String>();
+        ns.put("prefix", "prefix0");
+        addElement(prefix, fieldName, ns, new Date(0l));
+    }
+
+    @Test
+    public void addElementLanguages() {
+        String fieldName = "dc.language";
+        // Map<String, String> ns = new HashMap<String, String>();
+        // ns.put("prefix", "prefix0");
+
+        Map<String, String> prefixes = new HashMap<String, String>();
+        prefixes.put("svenska", "swe");
+        prefixes.put("norska", "nor");
+        prefixes.put("engelska", "eng");
+        serv.setNamespaces(prefixes);
+
+        for (Map.Entry<String, String> prefix : prefixes.entrySet()) {
+            Element element = addElement(prefix.getKey(), fieldName, prefixes, prefix.getKey());
+            verify(element).setText(eq(prefix.getValue()));
+        }
+    }
+
+    public Element addElement(String prefix, String fieldName, Map<String, String> ns, Object value) {
+        Entry e = mock(Entry.class);
+        Element element = mock(Element.class);
+
+        when(e.addExtension(new QName(ns.get(prefix), fieldName.substring(prefix.length() + 1), prefix)))
+                .thenReturn(element);
+
+        serv.setNamespaces(ns);
+        serv.addElement(e, prefix, fieldName, value);
+
+        return element;
+    }
+
+    @Test
+    public void populateFeed() {
+        Feed f = mock(Feed.class);
+        Entry entry = mock(Entry.class);
+        when(f.addEntry()).thenReturn(entry);
+        Collection<Map<String, Object>> hits = new ArrayList<Map<String, Object>>();
+        Map<String, Object> item = new HashMap<String, Object>();
+        item.put("key", "value");
+        hits.add(item);
+
+        serv.populateFeed(f, hits);
+    }
 
 }

@@ -1,0 +1,17 @@
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" version="2.0">
+
+  <tlib-version>1.0</tlib-version>
+
+  <short-name>vgr-util</short-name>
+
+  <uri>http://se.vgregion.ifeed.el/1.0</uri>
+
+  <function>
+    <description>Checks if a given user have the right to edit a specific IFeed.</description>
+    <display-name>mayEditFeed</display-name>
+    <name>mayEditFeed</name>
+    <function-class>se.vgregion.ifeed.el.AccessGuard</function-class>
+    <function-signature>java.lang.Boolean mayEditFeed(com.liferay.portal.model.User, se.vgregion.ifeed.types.IFeed)</function-signature>
+  </function>
+  
+</taglib>

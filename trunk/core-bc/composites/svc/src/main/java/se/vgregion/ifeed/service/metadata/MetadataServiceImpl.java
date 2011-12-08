@@ -68,7 +68,7 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Transactional
-    private void updateCacheTree(Metadata parent, String path) {
+    void updateCacheTree(Metadata parent, String path) {
 
         NodeListResponseObjectType result = null;
         GetVocabularyRequest req = new GetVocabularyRequest();

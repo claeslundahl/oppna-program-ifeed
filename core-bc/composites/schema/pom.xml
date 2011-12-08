@@ -12,7 +12,7 @@ Generation time : 2011-01-14 11:17:18 CET
   <parent>
     <groupId>se.vgregion.iFeed</groupId>
     <artifactId>iFeed-core-bc</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
   </parent>
   <groupId>se.vgregion.iFeed</groupId>
   <artifactId>iFeed-core-bc-composite-schema</artifactId>

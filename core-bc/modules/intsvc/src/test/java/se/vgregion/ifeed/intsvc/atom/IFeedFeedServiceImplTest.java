@@ -52,17 +52,6 @@ public class IFeedFeedServiceImplTest {
         serv.setContext(context);
     }
 
-    // @Test
-    // public void setPushServerEndpoint() {
-    // String pushServerEndpoint;
-    // serv.setPushServerEndpoint(pushServerEndpoint);
-    // }
-    //
-    // @Test
-    // public void testSetNamespaces() {
-    // fail("Not yet implemented");
-    // }
-    //
     @Test
     public void getIFeed() throws URISyntaxException {
         Long id = 100l;

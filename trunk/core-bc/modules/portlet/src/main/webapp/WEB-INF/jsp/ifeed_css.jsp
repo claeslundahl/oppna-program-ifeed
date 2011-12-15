@@ -77,19 +77,19 @@
 }
 
 .ifeed-portlet .tree-node-edit {
-  background: transparent url(${themeDisplay.pathThemeImages}/common/edit.png) 0 0 no-repeat;
+  background: transparent url(/regionportalen-theme/images/common/edit.png) 0 0 no-repeat;
 }
 
 .ifeed-portlet .tree-node-delete {
-  background: transparent url(${themeDisplay.pathThemeImages}/common/delete.png) 0 0 no-repeat;
+  background: transparent url(/regionportalen-theme/images/common/delete.png) 0 0 no-repeat;
 }
 
 .ifeed-portlet .tree-node-use {
-  background: transparent url(${themeDisplay.pathThemeImages}/common/add.png) 0 0 no-repeat;
+  background: transparent url(/regionportalen-theme/images/common/add.png) 0 0 no-repeat;
 }
 
 .ifeed-portlet .tree-node-tooltip {
-  background: transparent url(${themeDisplay.pathThemeImages}/common/help.png) 0 0 no-repeat;
+  background: transparent url(/regionportalen-theme/images/common/help.png) 0 0 no-repeat;
   clear: both; /* Claes */
 }
 
@@ -100,7 +100,7 @@
 
 /*-- Edit triggers ------*/
 .ifeed-edit-trigger {
-  background: transparent url(${themeDisplay.pathThemeImages}/common/edit.png) right center no-repeat;
+  background: transparent url(/regionportalen-theme/images/common/edit.png) right center no-repeat;
   cursor: pointer;
   display: block;
   font-size: 0;
@@ -149,7 +149,7 @@
 }
 
 a.link-button {
-  background: #d4d4d4 url(${themeDisplay.pathThemeImages}/portlet/header_bg.png) 0 0 repeat-x;
+  background: #d4d4d4 url(/regionportalen-theme/images/portlet/header_bg.png) 0 0 repeat-x;
   border: 1px solid #dedede;
   border-color: #c8c9ca #9e9e9e #9e9e9e #c8c9ca;
   -moz-border-radius: 4px;
@@ -170,7 +170,7 @@ a.link-button {
 }
 
 a.link-button:hover {
-  background: #b9ced9 url(${themeDisplay.pathThemeImages}/application/state_hover_bg.png) 0 0 repeat-x;
+  background: #b9ced9 url(/regionportalen-theme/images/application/state_hover_bg.png) 0 0 repeat-x;
   border-color: #627782;
   color: #336699;
 }
@@ -188,11 +188,11 @@ a.link-button-icon .link-button-content {
 }
 
 a.link-button-cancel .link-button-content {
-  background: transparent url(${themeDisplay.pathThemeImages}/common/close.png) 0 0 no-repeat;
+  background: transparent url(/regionportalen-theme/images/common/close.png) 0 0 no-repeat;
 }
 
 a.link-button-help .link-button-content {
-  background: transparent url(${themeDisplay.pathThemeImages}/common/help.png) 0 0 no-repeat;
+  background: transparent url(/regionportalen-theme/images/common/help.png) 0 0 no-repeat;
 }
 
 /*-- Meta info block ------*/

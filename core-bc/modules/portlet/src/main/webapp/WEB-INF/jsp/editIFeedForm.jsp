@@ -108,8 +108,8 @@
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Länkar till dokumentlista:</div>
       <div class="ifeed-meta-content">
-        <a href="${atomFeedLink}" target="_blank"><img src="/vgr-theme/i/icons/rss.png" alt="atom"></a> 
-        <a href="${fn:replace(atomFeedLink, 'intsvc', 'web')}" target="_blank"><img src="/vgr-theme/i/icons/html.png" alt="html"></a>
+        <a href="${atomFeedLink}" target="_blank"><img src="/iFeed-portlet/img/rss.png" alt="atom"></a> 
+        <a href="${fn:replace(atomFeedLink, 'intsvc', 'web')}" target="_blank"><img src="/iFeed-portlet/img/html.png" alt="html"></a>
       </div>
     </div>
     <!--         Enable when we have valid dates -->
@@ -290,7 +290,7 @@
                     <portlet:param name="view" value="documentMetadata" />
                     <portlet:param name="documentId" value="${hit.documentId}" />
                   </portlet:renderURL>
-                  <liferay-ui:icon cssClass="metadata-icon-tooltip" image="" method="get" url="${metadataURL}" src="/vgr-theme/i/icons/information.png"/>
+                  <liferay-ui:icon cssClass="metadata-icon-tooltip" image="" method="get" url="${metadataURL}" src="/iFeed-portlet/img/information.png"/>
                 </liferay-ui:icon-menu>
               </liferay-ui:search-container-column-text>
               <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}" orderable="true" orderableProperty="dc.title"/>

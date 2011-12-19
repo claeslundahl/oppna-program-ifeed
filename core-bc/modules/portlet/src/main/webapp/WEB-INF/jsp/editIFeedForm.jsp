@@ -275,12 +275,12 @@
   <aui:column columnWidth="33" last="true">
     <liferay-ui:panel-container>
       <liferay-ui:panel title="Träfflista" collapsible="true" extended="true" cssClass="ifeed-search-result-list">
-        <c:if test="${hitsOverflow}">
-          <div class="portlet-msg-success">
-            Sökningen gav mer än ${maxHits} träffar. Resterande resultat kastas.
-          </div> 
-        </c:if>
         <c:if test="${not empty ifeed.filters}">
+          <c:if test="${hitsOverflow}">
+            <div class="portlet-msg-success">
+              Sökningen gav mer än ${maxHits} träffar. Resterande resultat kastas.
+            </div> 
+          </c:if>
           <liferay-ui:search-container id="<portlet:namespace/>-parent-search-container" delta="50" orderByCol="${orderByCol}" orderByType="${orderByType}" iteratorURL="${portletUrl}">
             <liferay-ui:search-container-results results="${hits}" total="${fn:length(hits)}" />
             <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">

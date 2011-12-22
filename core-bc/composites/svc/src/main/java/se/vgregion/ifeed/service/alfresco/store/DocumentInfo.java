@@ -21,8 +21,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DocumentInfo {
 
-    private static final String VGR_NAMESPACE = "vgr:";
-    private static final String DC_NAMESPACE = "dc.";
+    static final String VGR_NAMESPACE = "vgr:";
+    static final String DC_NAMESPACE = "dc.";
     private String nodeRef;
     @JsonProperty("mimetype")
     private String mimeType;
@@ -78,7 +78,7 @@ public class DocumentInfo {
         this.metadata = vgrMetadata;
     }
 
-    private boolean isValidMetadata(Map.Entry<String, Object> entry) {
+    protected boolean isValidMetadata(Map.Entry<String, Object> entry) {
         return entry.getKey().contains(VGR_NAMESPACE + DC_NAMESPACE);
     }
 
@@ -89,9 +89,9 @@ public class DocumentInfo {
     @Override
     public String toString() {
         final ToStringBuilder stringBuilder = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-        .append("NodeRef: " + getNodeRef()).append("MimeType: " + getMimeType())
-        .append("Type: " + getType()).append("Published: " + getPublished())
-        .append("Available From: " + getAvailableFrom());
+                .append("NodeRef: " + getNodeRef()).append("MimeType: " + getMimeType())
+                .append("Type: " + getType()).append("Published: " + getPublished())
+                .append("Available From: " + getAvailableFrom());
 
         for (Map.Entry<String, Object> entry : metadata.entrySet()) {
             final Class<? extends Object> typeOfClass = entry.getValue().getClass();

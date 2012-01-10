@@ -11,7 +11,7 @@ import se.vgregion.ifeed.types.MetadataType;
 
 /**
  * @author bjornryding
- *
+ * 
  */
 public class FilterFormBean implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -61,9 +61,8 @@ public class FilterFormBean implements Serializable {
      * @return
      */
     public String getFilterValue() {
-        if (filter.getMetadataType() == MetadataType.DATE) {
-            filterValue = DateFormatter.format(validFromYear,
-                    validFromMonth + 1, validFromDay,
+        if (filter != null && filter.getMetadataType() == MetadataType.DATE) {
+            filterValue = DateFormatter.format(validFromYear, validFromMonth + 1, validFromDay,
                     DateFormat.SOLR_DATE_FORMAT);
         }
         return filterValue;
@@ -98,7 +97,7 @@ public class FilterFormBean implements Serializable {
      * @param validFromMonth
      */
     public final void setValidFromMonth(int validFromMonth) {
-        //In Java Calendar January = 0, December = 11
+        // In Java Calendar January = 0, December = 11
         this.validFromMonth = validFromMonth;
     }
 

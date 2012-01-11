@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 import org.springframework.web.util.UriTemplate;
 
 import se.vgregion.ifeed.el.AccessGuard;
@@ -200,7 +201,7 @@ public class EditIFeedController {
         sessionStatus.setComplete();
     }
 
-    // @ResourceMapping
+    @ResourceMapping
     public void searchPeople(@RequestParam final String filterValue, ResourceResponse response) {
         List<Person> people = ldapPersonService.getPeople(filterValue, 10);
         try {

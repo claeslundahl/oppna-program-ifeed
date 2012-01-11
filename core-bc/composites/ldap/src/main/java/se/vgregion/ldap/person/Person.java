@@ -7,7 +7,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * @author anders
- *
+ * 
  */
 public class Person {
     private String firstName;
@@ -15,6 +15,10 @@ public class Person {
     private String userName;
     private String organisation;
     private String email;
+
+    public Person() {
+
+    }
 
     public Person(String firstName, String lastName, String userName, String organisation, String email) {
         this.firstName = firstName;

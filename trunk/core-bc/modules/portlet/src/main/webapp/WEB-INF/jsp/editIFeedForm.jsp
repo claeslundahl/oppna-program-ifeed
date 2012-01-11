@@ -363,10 +363,12 @@
   .render();
   
   AUI().ready('aui-autocomplete', function(A) {
-    if(A.one("#<portlet:namespace />filterValue") != null) {
+    //var inputFindExpression = "#<portlet:namespace />filterValue";
+    var inputFindExpression = "#<portlet:namespace />ldap-value";
+    if(A.one(inputFindExpression) != null) {
       var datasource = function(request) {
         var items = null;
-        A.io.request('${findPeople}&filterValue=' + A.one('#<portlet:namespace />filterValue').get('value') + "*", {
+        A.io.request('${findPeople}&filterValue=' + A.one(inputFindExpression).get('value') + "*", {
           cache: false,
           sync: true,
           timeout: 1000,
@@ -378,7 +380,7 @@
               items.list = eval(this.get('responseData'));
             },
             failure: function() {
-              alert("Fail")
+              alert("Fail");
             }
           }
         });

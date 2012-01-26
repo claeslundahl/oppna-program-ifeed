@@ -15,7 +15,8 @@
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
-<portlet:resourceURL var="findPeople" />
+<portlet:resourceURL id="findPeople" var="findPeople" />
+<portlet:resourceURL id="findOrgs" var="findOrgs" />
 <portlet:resourceURL var="metdataTooltipURL" id="metadata"  />
 
 <portlet:actionURL name="editIFeed" var="editIFeedURL">
@@ -109,7 +110,7 @@
       <div class="ifeed-meta-label">Länkar till dokumentlista:</div>
       <div class="ifeed-meta-content">
         <a href="${atomFeedLink}" target="_blank"><img src="/iFeed-portlet/img/rss.png" alt="atom"></a> 
-        <a href="${fn:replace(atomFeedLink, 'intsvc', 'web')}" target="_blank"><img src="/iFeed-portlet/img/html.png" alt="html"></a>
+        <a href="${webFeedLink}" target="_blank"><img src="/iFeed-portlet/img/html.png" alt="html"></a>
       </div>
     </div>
     <!--         Enable when we have valid dates -->
@@ -368,22 +369,22 @@
     if(A.one(inputFindExpression) != null) {
       var datasource = function(request) {
         var items = null;
-        A.io.request('${findPeople}&filterValue=' + A.one(inputFindExpression).get('value') + "*", {
-          cache: false,
-          sync: true,
-          timeout: 1000,
-          dataType: 'json',
-          method: 'get',
-          on: {
-            success: function(param) {
-              items = {};
-              items.list = eval(this.get('responseData'));
-            },
-            failure: function() {
-              alert("Fail");
+          A.io.request('${findPeople}&filterValue=' + A.one(inputFindExpression).get('value') + "*", {
+            cache: false,
+            sync: true,
+            timeout: 1000,
+            dataType: 'json',
+            method: 'get',
+            on: {
+              success: function(param) {
+                items = {};
+                items.list = eval(this.get('responseData'));
+              },
+              failure: function() {
+                alert("Fail");
+              }
             }
-          }
-        });
+          });
         return items;
       };
       var autoComplete = new A.AutoComplete({
@@ -414,5 +415,31 @@
       autoComplete.render();
     }
   });
+/*  
+    function show_page_detail(e){
+    console.log(e.newVal);
+    console.log(e.newVal._originalConfig);
+    
+    A.io.request('${findOrgs}&parentOrg=' + escape(e.newVal._originalConfig.id) , {   
+          on: {   success: function() {
+              alert(this.get('responseData'));
+              }   
+          }   
+        });
+    }
+    
+    
+    var tree2 = new A.TreeView({
+      width: 200,
+      type: 'normal',
+      boundingBox: '#tree',
+      after : { lastSelectedChange : function(e){ show_page_detail(e);}},
+      children: ${vgrOrganizationJson} 
+    }).render();
+*/
 </aui:script>
 </c:if>
+
+
+
+<div id="tree"></div>

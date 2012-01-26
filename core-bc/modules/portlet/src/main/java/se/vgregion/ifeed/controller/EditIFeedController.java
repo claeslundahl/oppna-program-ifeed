@@ -1,15 +1,21 @@
 package se.vgregion.ifeed.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceResponse;
@@ -35,6 +41,7 @@ import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.formbean.SearchResultList;
+import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
@@ -42,6 +49,7 @@ import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
@@ -52,7 +60,7 @@ import com.liferay.portal.util.PortalUtil;
 
 @Controller
 @RequestMapping("VIEW")
-@SessionAttributes({ "ifeed", "hits" })
+@SessionAttributes({ "ifeed", "hits", "vgrOrganizationJson" })
 public class EditIFeedController {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditIFeedController.class);
 
@@ -64,8 +72,12 @@ public class EditIFeedController {
     private MetadataService metadataService;
     @Autowired
     private LdapPersonService ldapPersonService;
-    @Autowired
+    @Resource(name = "iFeedAtomFeed")
     private UriTemplate iFeedAtomFeed;
+    @Resource(name = "iFeedWebFeed")
+    private UriTemplate iFeedWebFeed;
+    @Autowired
+    private LdapSupportService ldapOrganizationService;
 
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId, final Model model,
@@ -106,10 +118,14 @@ public class EditIFeedController {
         }
         model.addAttribute("hits", new SearchResultList(result));
         model.addAttribute("maxHits", iFeedSolrQuery.getRows() - 1);
+        model.addAttribute("vgrOrganizationJson", getVgrOrganizationJson());
 
         model.addAttribute("atomFeedLink",
                 iFeedAtomFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
-        // model.addAttribute("atomFeedLink", String.format(ifeedAtomFeed, iFeed.getId()));
+
+        model.addAttribute("webFeedLink",
+                iFeedWebFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
+
         final PortletURL portletUrl = repsonse.createRenderURL();
         portletUrl.setParameter("view", "showEditIFeedForm");
         model.addAttribute("portletUrl", portletUrl);
@@ -201,10 +217,11 @@ public class EditIFeedController {
         sessionStatus.setComplete();
     }
 
-    @ResourceMapping
+    @ResourceMapping("findPeople")
     public void searchPeople(@RequestParam final String filterValue, ResourceResponse response) {
         List<Person> people = ldapPersonService.getPeople(filterValue, 10);
         try {
+            System.out.println("Nu körs searchPeople " + filterValue);
             final OutputStream out = response.getPortletOutputStream();
             response.setContentType("application/json");
             new ObjectMapper().writeValue(out, people);
@@ -212,6 +229,41 @@ public class EditIFeedController {
             e.printStackTrace();
         }
     }
+
+    @ResourceMapping("findOrgs")
+    public void searchOrg(@RequestParam final String parentOrg, ResourceResponse response, PortletResponse pr)
+            throws UnsupportedEncodingException {
+
+        String ns = pr.getNamespace() + "findOrgs?parentOrg=";
+
+        System.out.println("Nu körs searchOrg " + parentOrg);
+        VgrOrganization org = new VgrOrganization();
+        org.setDn(parentOrg);
+        List<VgrOrganization> orgs = ldapOrganizationService.findChildNodes(org);
+        for (VgrOrganization vo : orgs) {
+            vo.setIo(ns + URLEncoder.encode(vo.getDn(), "UTF-8"));
+        }
+        try {
+            final OutputStream out = response.getPortletOutputStream();
+            response.setContentType("application/json");
+            new ObjectMapper().writeValue(out, orgs);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // { http://alloy.liferay.com/demos.php?demo=treeview
+    // type: 'task',
+    // checkName: 'customSelectName',
+    // label: 'TaskNodeRoot',
+    // leaf: false,
+    // checked: true,
+    // io: 'deploy/demos/tree-view/assets/tasks.html',
+    // on: {
+    // check: defCallback,
+    // uncheck: defCallback
+    // }
+    // },
 
     @ModelAttribute("filters")
     public List<Filter> getFilters() {
@@ -261,6 +313,57 @@ public class EditIFeedController {
 
     public void setLdapPersonService(LdapPersonService ldapPersonService) {
         this.ldapPersonService = ldapPersonService;
+    }
+
+    private WeakReference<String> vgrOrganizationJsonCache = new WeakReference<String>(null);
+
+    public String getVgrOrganizationJson() {
+        if (vgrOrganizationJsonCache.get() == null) {
+            VgrOrganization org = new VgrOrganization();
+            org.setDn("Ou=org");
+            vgrOrganizationJsonCache = new WeakReference<String>(getVgrOrganizationJsonPart(org));
+        }
+        return vgrOrganizationJsonCache.get();
+    }
+
+    private String getVgrOrganizationJsonPart(VgrOrganization org) {
+        VgrOrganization vgr = new VgrOrganization();
+        vgr.setDn("Ou=org");
+
+        List<VgrOrganization> orgs = getLdapOrganizationService().findChildNodes(vgr);
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            new ObjectMapper().writeValue(baos, orgs);
+            baos.flush();
+            baos.close();
+            return new String(baos.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        throw new RuntimeException();
+    }
+
+    /* [ { label: 'Folder 1', children: [ { label: 'file' }, { label: 'file' }, { label: 'file' } ] }, { label:
+     * 'Folder 2', expanded: true, children: [ { label: 'file' }, { label: 'file' } ] }, { label: 'Folder 3',
+     * children: [ { label: 'file' } ] }, { label: 'Folder 4', expanded: true, children: [ { label: 'Folder 4-1',
+     * expanded: true, children: [ { label: 'file' } ] } ] } ] */
+
+    public LdapSupportService getLdapOrganizationService() {
+        return ldapOrganizationService;
+    }
+
+    public void setLdapOrganizationService(LdapSupportService ldapOrganizationService) {
+        this.ldapOrganizationService = ldapOrganizationService;
+    }
+
+    public UriTemplate getIFeedWebFeed() {
+        return iFeedWebFeed;
+    }
+
+    public void setIFeedWebFeed(UriTemplate iFeedWebFeed) {
+        this.iFeedWebFeed = iFeedWebFeed;
     }
 
 }

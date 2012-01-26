@@ -1,11 +1,8 @@
 package se.vgregion.ifeed.controller;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,7 +38,6 @@ import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.formbean.SearchResultList;
-import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
@@ -49,7 +45,6 @@ import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
-import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
@@ -76,9 +71,9 @@ public class EditIFeedController {
     private UriTemplate iFeedAtomFeed;
     @Resource(name = "iFeedWebFeed")
     private UriTemplate iFeedWebFeed;
-    @Autowired
-    private LdapSupportService ldapOrganizationService;
 
+    @Autowired
+    // private LdapSupportService ldapOrganizationService;
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId, final Model model,
             final ActionResponse response) {
@@ -118,7 +113,7 @@ public class EditIFeedController {
         }
         model.addAttribute("hits", new SearchResultList(result));
         model.addAttribute("maxHits", iFeedSolrQuery.getRows() - 1);
-        model.addAttribute("vgrOrganizationJson", getVgrOrganizationJson());
+        // model.addAttribute("vgrOrganizationJson", getVgrOrganizationJson());
 
         model.addAttribute("atomFeedLink",
                 iFeedAtomFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
@@ -234,22 +229,22 @@ public class EditIFeedController {
     public void searchOrg(@RequestParam final String parentOrg, ResourceResponse response, PortletResponse pr)
             throws UnsupportedEncodingException {
 
-        String ns = pr.getNamespace() + "findOrgs?parentOrg=";
-
-        System.out.println("Nu körs searchOrg " + parentOrg);
-        VgrOrganization org = new VgrOrganization();
-        org.setDn(parentOrg);
-        List<VgrOrganization> orgs = ldapOrganizationService.findChildNodes(org);
-        for (VgrOrganization vo : orgs) {
-            vo.setIo(ns + URLEncoder.encode(vo.getDn(), "UTF-8"));
-        }
-        try {
-            final OutputStream out = response.getPortletOutputStream();
-            response.setContentType("application/json");
-            new ObjectMapper().writeValue(out, orgs);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // String ns = pr.getNamespace() + "findOrgs?parentOrg=";
+        //
+        // System.out.println("Nu körs searchOrg " + parentOrg);
+        // VgrOrganization org = new VgrOrganization();
+        // org.setDn(parentOrg);
+        // List<VgrOrganization> orgs = ldapOrganizationService.findChildNodes(org);
+        // for (VgrOrganization vo : orgs) {
+        // vo.setIo(ns + URLEncoder.encode(vo.getDn(), "UTF-8"));
+        // }
+        // try {
+        // final OutputStream out = response.getPortletOutputStream();
+        // response.setContentType("application/json");
+        // new ObjectMapper().writeValue(out, orgs);
+        // } catch (IOException e) {
+        // e.printStackTrace();
+        // }
     }
 
     // { http://alloy.liferay.com/demos.php?demo=treeview
@@ -315,48 +310,48 @@ public class EditIFeedController {
         this.ldapPersonService = ldapPersonService;
     }
 
-    private WeakReference<String> vgrOrganizationJsonCache = new WeakReference<String>(null);
+    // private WeakReference<String> vgrOrganizationJsonCache = new WeakReference<String>(null);
+    //
+    // public String getVgrOrganizationJson() {
+    // if (vgrOrganizationJsonCache.get() == null) {
+    // VgrOrganization org = new VgrOrganization();
+    // org.setDn("Ou=org");
+    // vgrOrganizationJsonCache = new WeakReference<String>(getVgrOrganizationJsonPart(org));
+    // }
+    // return vgrOrganizationJsonCache.get();
+    // }
+    //
+    // private String getVgrOrganizationJsonPart(VgrOrganization org) {
+    // VgrOrganization vgr = new VgrOrganization();
+    // vgr.setDn("Ou=org");
+    //
+    // List<VgrOrganization> orgs = getLdapOrganizationService().findChildNodes(vgr);
+    //
+    // try {
+    // ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    // new ObjectMapper().writeValue(baos, orgs);
+    // baos.flush();
+    // baos.close();
+    // return new String(baos.toByteArray());
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+    //
+    // throw new RuntimeException();
+    // }
+    //
+    // /* [ { label: 'Folder 1', children: [ { label: 'file' }, { label: 'file' }, { label: 'file' } ] }, { label:
+    // * 'Folder 2', expanded: true, children: [ { label: 'file' }, { label: 'file' } ] }, { label: 'Folder 3',
+    // * children: [ { label: 'file' } ] }, { label: 'Folder 4', expanded: true, children: [ { label: 'Folder 4-1',
+    // * expanded: true, children: [ { label: 'file' } ] } ] } ] */
+    //
+    // public LdapSupportService getLdapOrganizationService() {
+    // return ldapOrganizationService;
+    // }
 
-    public String getVgrOrganizationJson() {
-        if (vgrOrganizationJsonCache.get() == null) {
-            VgrOrganization org = new VgrOrganization();
-            org.setDn("Ou=org");
-            vgrOrganizationJsonCache = new WeakReference<String>(getVgrOrganizationJsonPart(org));
-        }
-        return vgrOrganizationJsonCache.get();
-    }
-
-    private String getVgrOrganizationJsonPart(VgrOrganization org) {
-        VgrOrganization vgr = new VgrOrganization();
-        vgr.setDn("Ou=org");
-
-        List<VgrOrganization> orgs = getLdapOrganizationService().findChildNodes(vgr);
-
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new ObjectMapper().writeValue(baos, orgs);
-            baos.flush();
-            baos.close();
-            return new String(baos.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        throw new RuntimeException();
-    }
-
-    /* [ { label: 'Folder 1', children: [ { label: 'file' }, { label: 'file' }, { label: 'file' } ] }, { label:
-     * 'Folder 2', expanded: true, children: [ { label: 'file' }, { label: 'file' } ] }, { label: 'Folder 3',
-     * children: [ { label: 'file' } ] }, { label: 'Folder 4', expanded: true, children: [ { label: 'Folder 4-1',
-     * expanded: true, children: [ { label: 'file' } ] } ] } ] */
-
-    public LdapSupportService getLdapOrganizationService() {
-        return ldapOrganizationService;
-    }
-
-    public void setLdapOrganizationService(LdapSupportService ldapOrganizationService) {
-        this.ldapOrganizationService = ldapOrganizationService;
-    }
+    // public void setLdapOrganizationService(LdapSupportService ldapOrganizationService) {
+    // this.ldapOrganizationService = ldapOrganizationService;
+    // }
 
     public UriTemplate getIFeedWebFeed() {
         return iFeedWebFeed;

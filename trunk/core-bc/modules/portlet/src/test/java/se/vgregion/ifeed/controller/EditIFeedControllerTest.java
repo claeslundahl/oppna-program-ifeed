@@ -63,6 +63,11 @@ public class EditIFeedControllerTest {
                 when(user.getRoles()).thenReturn(roles);
                 return user;
             }
+
+            @Override
+            public String getVgrOrganizationJson() {
+                return "[]";
+            }
         };
         model = mock(Model.class);
         response = mock(ActionResponse.class);
@@ -98,6 +103,9 @@ public class EditIFeedControllerTest {
 
         UriTemplate iFeedAtomFeed = mock(UriTemplate.class);
         controller.setIFeedAtomFeed(iFeedAtomFeed);
+
+        UriTemplate iFeedWebFeed = mock(UriTemplate.class);
+        controller.setIFeedWebFeed(iFeedWebFeed);
 
         PortletURL purl = mock(PortletURL.class);
         when(response.createRenderURL()).thenReturn(purl);
@@ -228,7 +236,6 @@ public class EditIFeedControllerTest {
 
         controller.setLdapPersonService(ldapPersonService);
         controller.searchPeople(filterValue, actionResponse);
-
     }
 
     @Test

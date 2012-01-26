@@ -19,8 +19,12 @@
   <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
-  <bean id="ifeedAtomFeed" class="org.springframework.web.util.UriTemplate">
+  <bean id="iFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
     <constructor-arg value="${ifeed.feed}" />
+  </bean>
+  
+  <bean id="iFeedWebFeed" class="org.springframework.web.util.UriTemplate">
+    <constructor-arg value="${ifeed.web}" />
   </bean>
 
   <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer" scope="prototype">
@@ -82,7 +86,7 @@
 
   <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher" scope="prototype">
     <constructor-arg value="${push.service}" />
-    <property name="ifeedAtomFeed" ref="ifeedAtomFeed" />
+    <property name="ifeedAtomFeed" ref="iFeedAtomFeed" />
   </bean>
 
   <bean class="org.springframework.web.client.RestTemplate">

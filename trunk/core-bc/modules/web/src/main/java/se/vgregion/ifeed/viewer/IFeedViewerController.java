@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.viewer;
 
-import static se.vgregion.common.utils.CommonUtils.*;
+import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +44,7 @@ public class IFeedViewerController {
         this.alfrescoMetadataService = documentService;
     }
 
-    @RequestMapping(value = "/documentlists/{listId}")
+    @RequestMapping(value = "/documentlists/{listId}/metadata")
     public String getIFeed(@PathVariable Long listId, Model model,
             @RequestParam(value = "by", required = false) String sortField,
             @RequestParam(value = "dir", required = false) String sortDirection) {
@@ -63,7 +63,7 @@ public class IFeedViewerController {
         return "documentList";
     }
 
-    @RequestMapping(value = "/documents/{documentId}")
+    @RequestMapping(value = "/documents/{documentId}/metadata")
     public String details(@PathVariable String documentId, Model model) {
         String fullId = "workspace://SpacesStore/" + documentId;
         final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
@@ -85,4 +85,5 @@ public class IFeedViewerController {
         }
         return new ModelAndView("ExceptionHandler", Collections.singletonMap("exception", e));
     }
+
 }

@@ -64,10 +64,10 @@ public class EditIFeedControllerTest {
                 return user;
             }
 
-            @Override
-            public String getVgrOrganizationJson() {
-                return "[]";
-            }
+            // @Override
+            // public String getVgrOrganizationJson() {
+            // return "[]";
+            // }
         };
         model = mock(Model.class);
         response = mock(ActionResponse.class);

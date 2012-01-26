@@ -2,16 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 <!-- *********************************** -->
   <!-- LDAP search in the Portal Directory -->
   <!-- *********************************** -->
-
-
-  <context:property-placeholder
-    location="classpath:datasource.properties, file:${user.home}/.ifeed/config.properties, ${IFEED_CONFIG}"
-    ignore-resource-not-found="true" ignore-unresolvable="true" />
 
   <bean id="vgr.contextSource" class="org.springframework.ldap.pool.factory.PoolingContextSource">
     <property name="contextSource" ref="vgr.contextSourceTarget" />
@@ -42,30 +37,4 @@
     <property name="organisationAttribute" value="${ldap.synchronization.userOrganizationalIdAttributeName}" />
     <property name="emailAttribute" value="${ldap.synchronization.userEmailAttributeName}" />
   </bean>
-
-  <!-- Connection to ldap for Organizations -->
-
-  <bean id="vgr.org.contextSourceTarget" class="org.springframework.ldap.core.support.LdapContextSource">
-    <property name="url" value="${ldap.org.authentication.java.naming.provider.url}" />
-    <property name="userDn" value="${ldap.org.synchronization.java.naming.security.principal}" />
-    <property name="password" value="${ldap.org.synchronization.java.naming.security.credentials}" />
-    <property name="base" value="${ldap.org.synchronization.userSearchBase}" />
-    <property name="pooled" value="false" />
-  </bean>
-
-  <bean id="vgr.org.contextSource" class="org.springframework.ldap.pool.factory.PoolingContextSource">
-    <property name="contextSource" ref="vgr.org.contextSourceTarget" />
-    <property name="dirContextValidator" ref="vgr.dirContextValidator" />
-    <property name="testOnBorrow" value="true" />
-    <property name="testWhileIdle" value="true" />
-  </bean>
-
-  <bean id="vgr.org.ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
-    <property name="contextSource" ref="vgr.org.contextSource" />
-  </bean>
-  
-<!--   <bean name="ldapOrganizationService" class="se.vgregion.ldap.LdapSupportServiceImp"> -->
-<!--     <property name="ldapTemplate" ref="vgr.org.ldapTemplate" /> -->
-<!--   </bean> -->
-
 </beans>

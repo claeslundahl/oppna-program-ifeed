@@ -64,8 +64,8 @@
     <property name="contextSource" ref="vgr.org.contextSource" />
   </bean>
   
-  <bean name="ldapOrganizationService" class="se.vgregion.ldap.LdapSupportServiceImp">
-    <property name="ldapTemplate" ref="vgr.org.ldapTemplate" />
-  </bean>
+<!--   <bean name="ldapOrganizationService" class="se.vgregion.ldap.LdapSupportServiceImp"> -->
+<!--     <property name="ldapTemplate" ref="vgr.org.ldapTemplate" /> -->
+<!--   </bean> -->
 
 </beans>

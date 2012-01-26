@@ -72,7 +72,7 @@ public class EditIFeedController {
     @Resource(name = "iFeedWebFeed")
     private UriTemplate iFeedWebFeed;
 
-    @Autowired
+    // @Autowired
     // private LdapSupportService ldapOrganizationService;
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId, final Model model,

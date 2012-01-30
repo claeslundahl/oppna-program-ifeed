@@ -415,6 +415,7 @@
       autoComplete.render();
     }
   });
+
 /*  
     function show_page_detail(e){
     console.log(e.newVal);

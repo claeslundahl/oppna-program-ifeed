@@ -417,6 +417,7 @@
   });
 
 /*  
+    // this is a svn-test.
     function show_page_detail(e){
     console.log(e.newVal);
     console.log(e.newVal._originalConfig);

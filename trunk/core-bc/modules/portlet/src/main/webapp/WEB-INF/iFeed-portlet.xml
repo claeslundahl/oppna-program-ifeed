@@ -32,7 +32,6 @@
       <list>
         <value>dc.type.document</value>
         <value>dc.identifier.version</value>
-        <value>dc.format.extent.mimetype</value>
       </list>
     </property>
   </bean>

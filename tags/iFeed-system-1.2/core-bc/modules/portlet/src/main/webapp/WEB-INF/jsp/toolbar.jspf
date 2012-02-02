@@ -1,0 +1,25 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<div class="lfr-portlet-toolbar">
+    <portlet:renderURL var="viewOwnedURL">
+		<portlet:param name="view" value="showUserIFeeds" />
+	</portlet:renderURL>
+	<span class="lfr-toolbar-button view-button <c:if test='${toolbarItem eq "viewMine"}'>current</c:if>">
+		<a href="${viewOwnedURL}"><liferay-ui:message key="view" /></a>
+	</span>
+
+	<portlet:renderURL var="viewAllURL">
+		<portlet:param name="view" value="showAllIFeeds" />
+	</portlet:renderURL>
+	<span class="lfr-toolbar-button view-button <c:if test='${toolbarItem eq "viewAll"}'>current</c:if>">
+		<a href="${viewAllURL}"><liferay-ui:message key="view-all" /></a>
+	</span>
+
+	<portlet:actionURL var="addIFeedFormURL">
+            <portlet:param name="action" value="createNewIFeed" />
+	</portlet:actionURL>
+	<span class="lfr-toolbar-button add-button <c:if test='${toolbarItem eq "add"}'>current</c:if>">
+		<a href="<%=addIFeedFormURL%>"><liferay-ui:message key="add" /></a>
+	</span>
+	
+</div>

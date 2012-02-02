@@ -312,7 +312,7 @@
 </liferay-util:html-top>
 
 <c:if test="${guard:mayEditFeed(user, ifeed)}">
-<aui:script use="vgr-ifeed-config">
+<aui:script use="aui-base,aui-tree,json-parse,vgr-ifeed-config">
   /**
    * Monky patched function - issue AUI-416
    * http://issues.liferay.com/browse/AUI-416
@@ -335,7 +335,7 @@
                   instance._selectItem(target);
               return;
   
-              default:
+              default:  
               break;
           }
   
@@ -415,30 +415,8 @@
       autoComplete.render();
     }
   });
+  
 
-/*  
-    // this is a svn-test.
-    function show_page_detail(e){
-    console.log(e.newVal);
-    console.log(e.newVal._originalConfig);
-    
-    A.io.request('${findOrgs}&parentOrg=' + escape(e.newVal._originalConfig.id) , {   
-          on: {   success: function() {
-              alert(this.get('responseData'));
-              }   
-          }   
-        });
-    }
-    
-    
-    var tree2 = new A.TreeView({
-      width: 200,
-      type: 'normal',
-      boundingBox: '#tree',
-      after : { lastSelectedChange : function(e){ show_page_detail(e);}},
-      children: ${vgrOrganizationJson} 
-    }).render();
-*/
 </aui:script>
 </c:if>
 

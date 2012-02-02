@@ -12,12 +12,14 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceResponse;
@@ -64,10 +66,10 @@ public class EditIFeedControllerTest {
                 return user;
             }
 
-            // @Override
-            // public String getVgrOrganizationJson() {
-            // return "[]";
-            // }
+            @Override
+            public String getVgrOrganizationJson(String ns) {
+                return "[]";
+            }
         };
         model = mock(Model.class);
         response = mock(ActionResponse.class);
@@ -86,7 +88,7 @@ public class EditIFeedControllerTest {
     }
 
     @Test
-    public void showEditIFeedForm() {
+    public void showEditIFeedForm() throws UnsupportedEncodingException {
         IFeed iFeed = new IFeed();
         iFeed.setId(200l);
         iFeed.setSortField("id");
@@ -110,7 +112,9 @@ public class EditIFeedControllerTest {
         PortletURL purl = mock(PortletURL.class);
         when(response.createRenderURL()).thenReturn(purl);
 
-        String result = controller.showEditIFeedForm(iFeed, orderByCol, orderByType, model, response);
+        PortletResponse pr = mock(PortletResponse.class);
+
+        String result = controller.showEditIFeedForm(iFeed, orderByCol, orderByType, model, response, pr);
         assertEquals("editIFeedForm", result);
     }
 

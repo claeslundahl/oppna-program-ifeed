@@ -44,6 +44,13 @@ public class IFeedViewerController {
         this.alfrescoMetadataService = documentService;
     }
 
+    @RequestMapping(value = "/documentlists/{listId}")
+    public String getIFeedHtml(@PathVariable Long listId, Model model,
+            @RequestParam(value = "by", required = false) String sortField,
+            @RequestParam(value = "dir", required = false) String sortDirection) {
+        return getIFeed(listId, model, sortField, sortDirection);
+    }
+
     @RequestMapping(value = "/documentlists/{listId}/metadata")
     public String getIFeed(@PathVariable Long listId, Model model,
             @RequestParam(value = "by", required = false) String sortField,
@@ -61,6 +68,11 @@ public class IFeedViewerController {
 
         model.addAttribute("result", result);
         return "documentList";
+    }
+
+    @RequestMapping(value = "/documents/{documentId}")
+    public String detailsHtml(@PathVariable String documentId, Model model) {
+        return details(documentId, model);
     }
 
     @RequestMapping(value = "/documents/{documentId}/metadata")

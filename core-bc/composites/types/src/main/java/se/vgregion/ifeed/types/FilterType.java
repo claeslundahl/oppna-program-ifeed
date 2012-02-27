@@ -153,4 +153,14 @@ public enum FilterType {
             return keyString;
         }
     }
+
+    public static void main(String[] args) {
+        for (FilterType ft : FilterType.values()) {
+            for (Filter f : ft.filters) {
+                System.out.println("update vgr_ifeed_filter set filterkey='" + f.metadataField
+                        + "' where filter ='" + f + "';");
+            }
+        }
+
+    }
 }

@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.push.IFeedPublisher;
+import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -22,6 +23,7 @@ public class IFeedServiceImplTest {
 
     IFeedServiceImpl service;
     private JpaRepository<IFeed, Long, Long> iFeedRepoParam;
+    private JpaRepository<FieldsInf, Long, Long> fieldsInfParam;
     private IFeedPublisher iFeedPublisher;
 
     @Before
@@ -29,7 +31,7 @@ public class IFeedServiceImplTest {
         iFeedRepoParam = mock(JpaRepository.class);
         iFeedPublisher = mock(IFeedPublisher.class);
 
-        service = new IFeedServiceImpl(iFeedRepoParam, iFeedPublisher);
+        service = new IFeedServiceImpl(iFeedRepoParam, iFeedPublisher, fieldsInfParam);
     }
 
     @Test

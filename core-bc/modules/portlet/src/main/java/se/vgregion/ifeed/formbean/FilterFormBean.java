@@ -6,8 +6,6 @@ import java.util.Date;
 
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.DateFormatter.DateFormat;
-import se.vgregion.ifeed.types.FilterType.Filter;
-import se.vgregion.ifeed.types.MetadataType;
 
 /**
  * @author bjornryding
@@ -15,13 +13,14 @@ import se.vgregion.ifeed.types.MetadataType;
  */
 public class FilterFormBean implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Filter filter;
+    // private Filter filter;
     private String filterValue;
     private int validFromYear;
     private int validFromMonth;
     private int validFromDay;
     private String direction;
     private String sortField;
+    private String filterTypeId;
 
     public FilterFormBean() {
         setFilterValue(new Date());
@@ -43,25 +42,20 @@ public class FilterFormBean implements Serializable {
         this.sortField = sortField;
     }
 
-    /**
-     * @return
-     */
-    public Filter getFilter() {
-        return filter;
-    }
+    // public Filter getFilter() {
+    // return filter;
+    // }
 
-    /**
-     * @param filter
-     */
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
+    // public void setFilter(Filter filter) {
+    // this.filter = filter;
+    // }
 
     /**
      * @return
      */
     public String getFilterValue() {
-        if (filter != null && filter.getMetadataType() == MetadataType.DATE) {
+        // if (filter != null && filter.getMetadataType() == MetadataType.DATE) {
+        if (filterValue == null && validFromYear > 0) {
             filterValue = DateFormatter.format(validFromYear, validFromMonth + 1, validFromDay,
                     DateFormat.SOLR_DATE_FORMAT);
         }
@@ -127,5 +121,13 @@ public class FilterFormBean implements Serializable {
      */
     public final int getValidFromYear() {
         return validFromYear;
+    }
+
+    public String getFilterTypeId() {
+        return filterTypeId;
+    }
+
+    public void setFilterTypeId(String filterTypeId) {
+        this.filterTypeId = filterTypeId;
     }
 }

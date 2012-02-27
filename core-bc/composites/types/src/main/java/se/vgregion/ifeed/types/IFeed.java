@@ -26,8 +26,7 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 @Entity
 @Table(name = "vgr_ifeed")
-public class IFeed extends AbstractEntity<Long> implements Serializable,
-        Comparable<IFeed> {
+public class IFeed extends AbstractEntity<Long> implements Serializable, Comparable<IFeed> {
 
     private static final long serialVersionUID = -2277251806545192506L;
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
@@ -38,8 +37,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable,
     @Version
     private Long version;
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "vgr_ifeed_filter",
-            joinColumns = @JoinColumn(name = "ifeed_id"))
+    @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
     private List<IFeedFilter> filters;
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
@@ -57,6 +55,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable,
     }
 
     public boolean addFilter(IFeedFilter filter) {
+        if (filter == null) {
+            throw new IllegalArgumentException();
+        }
         if (filters == null) {
             filters = new ArrayList<IFeedFilter>();
         } else if (filters.contains(filter)) {
@@ -128,6 +129,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable,
         this.id = id;
     }
 
+    @Override
     public Long getId() {
         return id;
     }

@@ -1,6 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="VocabularyServiceIntServiceImplService" targetNamespace="http://intsvc.vocabularyservice.metaservice.vgregion.se/" xmlns:ns1="urn:VocabularyServices:wsdl:metaservice.vgr.se:v2" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://intsvc.vocabularyservice.metaservice.vgregion.se/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
   <wsdl:import location="http://metadataservice.vgregion.se/vocabularyservice/VocabularyService?wsdl=VocabularyService.wsdl" namespace="urn:VocabularyServices:wsdl:metaservice.vgr.se:v2">
     </wsdl:import>
+  <!--  
+     <wsdl:import location="core-bc/composites/schema/src/main/wsdl/VocabularyService.wsdl" namespace="urn:VocabularyServices:wsdl:metaservice.vgr.se:v2">
+    </wsdl:import>
+    -->
   <wsdl:binding name="VocabularyServiceIntServiceImplServiceSoapBinding" type="ns1:VocabularyService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="AddVocabularyNode">

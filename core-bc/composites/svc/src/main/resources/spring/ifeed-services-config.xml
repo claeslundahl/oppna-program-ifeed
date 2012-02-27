@@ -41,12 +41,17 @@
   </bean>
 
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
-    <constructor-arg ref="iFeedRepo" />
-    <constructor-arg ref="iFeedPublisher" />
+    <property name="iFeedRepo" ref="iFeedRepo" />
+    <property  name="iFeedPublisher" ref="iFeedPublisher" />
+    <property name="fieldsInfRepo" ref="fieldsInfRepo" />
   </bean>
 
   <bean id="iFeedRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.IFeed" />
+  </bean>
+  
+  <bean id="fieldsInfRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
+    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.FieldsInf" />
   </bean>
 
   <bean id="metadataRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">

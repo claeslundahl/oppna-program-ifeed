@@ -46,6 +46,8 @@ import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.types.FieldInf;
+import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeed;
@@ -61,9 +63,11 @@ import com.liferay.portal.util.PortalUtil;
 
 @Controller
 @RequestMapping("VIEW")
-@SessionAttributes({ "ifeed", "hits", "vgrOrganizationJson" })
+@SessionAttributes({ "ifeed", "hits", "vgrOrganizationJson", "fields" })
 public class EditIFeedController {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditIFeedController.class);
+
+    private static List<FieldInf> fieldInfs;
 
     @Autowired
     private IFeedService iFeedService;
@@ -96,7 +100,7 @@ public class EditIFeedController {
             @RequestParam(defaultValue = "") final String orderByCol,
             @RequestParam(defaultValue = "") final String orderByType, final Model model, RenderResponse repsonse,
             PortletResponse pr) throws UnsupportedEncodingException {
-        model.asMap().get("ifeed");
+        // model.asMap().get("ifeed");
 
         // Priority of sort field is:
         // 1. Request parameter - orderByCol/orderByType.
@@ -124,6 +128,8 @@ public class EditIFeedController {
         model.addAttribute("hits", new SearchResultList(result));
         model.addAttribute("maxHits", iFeedSolrQuery.getRows() - 1);
         model.addAttribute("vgrOrganizationJson", getVgrOrganizationJson(pr.getNamespace()));
+        model.addAttribute("fields", getFieldInfs());
+        model.addAttribute("fieldsMap", mapFieldInfToId());
 
         model.addAttribute("atomFeedLink",
                 iFeedAtomFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
@@ -146,13 +152,18 @@ public class EditIFeedController {
     @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") final IFeed iFeed, final ActionResponse response,
             final Model model, PortletRequest request) throws SystemException, PortalException {
+        System.out.println("\n\neditIFeed\n");
         User user = fetchUser(request);
         if (!AccessGuard.mayEditFeed(user, iFeed)) {
             throw new RuntimeException();
         }
+        System.out.println("\n\neditIFeed 1\n");
         IFeed ifeed = iFeedService.updateIFeed(iFeed);
+        System.out.println("\n\neditIFeed 2\n");
         model.addAttribute("ifeed", ifeed);
+        System.out.println("\n\neditIFeed 3\n");
         model.addAttribute("saveAction", Boolean.TRUE);
+        System.out.println("\n\neditIFeed 4\n");
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
@@ -163,13 +174,21 @@ public class EditIFeedController {
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
+    protected Map<String, FieldInf> mapFieldInfToId() {
+        return iFeedService.mapFieldInfToId();
+    }
+
     @ActionMapping(params = "action=selectFilter")
     public void selectNewFilter(@ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam(required = false, value = "filter") final Filter filter, final Model model,
-            final ActionResponse response) throws IOException {
+            @RequestParam(required = false, value = "filter") String filter
+            // @RequestParam(required = false, value = "filter") final Filter filter
+            , final Model model, final ActionResponse response) throws IOException {
 
-        model.addAttribute("newFilter", filter);
-        Collection<String> vocabulary = metadataService.getVocabulary(filter.getMetadataKey());
+        FieldInf newFilter = mapFieldInfToId().get(filter);
+        model.addAttribute("newFilter", newFilter);
+
+        Collection<String> vocabulary = metadataService.getVocabulary(newFilter.getApelonKey());
+
         model.addAttribute("vocabulary", vocabulary);
         String vocabularyJson = new ObjectMapper().writeValueAsString(vocabulary);
         model.addAttribute("vocabularyJson", vocabularyJson);
@@ -184,25 +203,53 @@ public class EditIFeedController {
 
         LOGGER.debug("FilterFormBean: {}", ToStringBuilder.reflectionToString(filterFormBean));
 
-        iFeed.addFilter(new IFeedFilter(filterFormBean.getFilter(), filterFormBean.getFilterValue()));
+        System.out.println("\n\nFilterFormBean: " + ToStringBuilder.reflectionToString(filterFormBean) + "\n\n");
+
+        // if (filterFormBean.getFilterValue() == null && filterFormBean.getValidFromYear() != 0) {
+        // Date date = new Date();
+        // date.setYear(filterFormBean.getValidFromYear());
+        // date.setMonth(filterFormBean.getValidFromMonth());
+        // date.setDate(filterFormBean.getValidFromDay());
+        //
+        // filterFormBean.setFilterValue(date);
+        // System.out.println("Datumet blev: " + date);
+        // }
+
+        iFeed.addFilter(new IFeedFilter(null, filterFormBean.getFilterValue(), filterFormBean.getFilterTypeId()));
+
+        // Fix here!
+
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
     @ActionMapping(params = "action=editFilter")
     public void editFilter(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam("filter") final FilterType.Filter filter,
+            @RequestParam("filter") final String filter,
+            // @RequestParam("filter") final FilterType.Filter filter,
             @RequestParam("filterQuery") final String filterQuery, final Model model) throws IOException {
 
-        model.addAttribute("newFilter", filter);
+        model.addAttribute("newFilter", mapFieldInfToId().get(filter));
         model.addAttribute("filterValue", filterQuery);
 
-        Collection<String> vocabulary = metadataService.getVocabulary(filter.getMetadataKey());
+        // Collection<String> vocabulary = metadataService.getVocabulary(filter.getMetadataKey());
+
+        FieldInf newFilter = mapFieldInfToId().get(filter);
+
+        System.out.println("\neditFilter: " + newFilter + "\n filter: " + filter + "\n");
+
+        model.addAttribute("newFilter", newFilter);
+        Collection<String> vocabulary = metadataService.getVocabulary(newFilter.getApelonKey());
+        // Collection<String> vocabulary = metadataService.getVocabulary(filter);
+
         model.addAttribute("vocabulary", vocabulary);
         String vocabularyJson = new ObjectMapper().writeValueAsString(vocabulary);
         model.addAttribute("vocabularyJson", vocabularyJson);
 
-        iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
+        // Fix here!
+
+        iFeed.removeFilter(new IFeedFilter(null, filterQuery, filter));
+
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
@@ -210,9 +257,14 @@ public class EditIFeedController {
     @ActionMapping(params = "action=removeFilter")
     public void removeFilter(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
             @RequestParam("filter") final FilterType.Filter filter,
-            @RequestParam("filterQuery") final String filterQuery, final Model model) {
+            @RequestParam("filterQuery") final String filterQuery,
+            @RequestParam("filterKey") final String filterKey, final Model model) {
 
-        iFeed.removeFilter(new IFeedFilter(filter, filterQuery));
+        // Fix here!
+
+        System.out.println("removeFilter " + filter + " filterQuery ");
+
+        iFeed.removeFilter(new IFeedFilter(filter, filterQuery, filterKey));
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
@@ -384,6 +436,25 @@ public class EditIFeedController {
 
     public void setIFeedWebFeed(UriTemplate iFeedWebFeed) {
         this.iFeedWebFeed = iFeedWebFeed;
+    }
+
+    public List<FieldInf> getFieldInfs() {
+        if (fieldInfs == null) {
+            List<FieldsInf> infs = iFeedService.getFieldsInfs();
+            fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
+        }
+
+        System.out.println("anropar getFieldInfs " + fieldInfs.size());
+
+        return fieldInfs;
+    }
+
+    public static List<FieldInf> getFieldInfsCache() {
+        return fieldInfs;
+    }
+
+    public static void setFieldInfsCache(List<FieldInf> fieldInfs) {
+        EditIFeedController.fieldInfs = fieldInfs;
     }
 
 }

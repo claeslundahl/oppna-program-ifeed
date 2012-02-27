@@ -24,31 +24,15 @@ public class LdapSupportServiceImp implements LdapSupportService {
     public <T extends HasCommonLdapFields> List<T> findChildNodes(T org) {
         List<T> result = new ArrayList<T>();
         try {
+            System.out.println("Söker med " + org.getDn());
             LdapBeanContextMapper<T> mapper = new LdapBeanContextMapper<T>((Class<T>) org.getClass());
             result.addAll(getLdapTemplate().search(org.getDn(), nonsensFilter, SearchControls.ONELEVEL_SCOPE,
                     mapper));
             return result;
         } catch (Exception e) {
 
-            //
-            // List<T> result = new ArrayList<T>();
-            // T vo = null;
-            // try {
-            // vo = (T) org.getClass().newInstance();
-            // } catch (InstantiationException e1) {
-            // // TODO Auto-generated catch block
-            // e1.printStackTrace();
-            // } catch (IllegalAccessException e1) {
-            // // TODO Auto-generated catch block
-            // e1.printStackTrace();
-            // }
-            // int c = 0;
-            // if (org.getDn().matches(".* [0-9]+")) {
-            // String[] parts = org.getDn().split(Pattern.quote(" "));
-            // c = Integer.parseInt(parts[parts.length - 1]) + 1;
-            // }
-            // vo.setDn("Dummy " + c);
-            // result.add(vo);
+            e.printStackTrace();
+
             return result;
         }
     }

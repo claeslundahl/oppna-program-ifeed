@@ -2,24 +2,35 @@ package se.vgregion.ifeed.service.ifeed;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.push.IFeedPublisher;
+import se.vgregion.ifeed.types.FieldInf;
+import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
 public class IFeedServiceImpl implements IFeedService {
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
+    private JpaRepository<FieldsInf, Long, Long> fieldsInfRepo;
     private IFeedPublisher iFeedPublisher;
 
-    public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam, IFeedPublisher iFeedPublisher) {
+    IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam, IFeedPublisher iFeedPublisher,
+            JpaRepository<FieldsInf, Long, Long> fieldsInfRepo) {
         iFeedRepo = iFeedRepoParam;
         this.iFeedPublisher = iFeedPublisher;
+        this.fieldsInfRepo = fieldsInfRepo;
+    }
+
+    public IFeedServiceImpl() {
+
     }
 
     @Override
@@ -68,7 +79,11 @@ public class IFeedServiceImpl implements IFeedService {
 
         IFeed mergedIfeed = iFeedRepo.merge(oldIFeed);
         iFeedPublisher.addIFeed(mergedIfeed);
-        iFeedPublisher.publish();
+        try {
+            iFeedPublisher.publish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mergedIfeed.setTimestamp();
         mergedIfeed = iFeedRepo.merge(mergedIfeed);
         return mergedIfeed;
@@ -81,4 +96,68 @@ public class IFeedServiceImpl implements IFeedService {
 
         return !CollectionUtils.isEqualCollection(oldFilters, newFilters);
     }
+
+    @Override
+    public List<FieldsInf> getFieldsInfs() {
+        return new ArrayList<FieldsInf>(fieldsInfRepo.findByQuery("select fi from FieldsInf fi order by fi.id"));
+    }
+
+    @Transactional
+    @Override
+    public List<FieldInf> getFieldInfs() {
+        List<FieldsInf> fieldsInfs = getFieldsInfs();
+        if (fieldsInfs.isEmpty()) {
+            return new ArrayList<FieldInf>();
+        }
+        return fieldsInfs.get(fieldsInfs.size() - 1).getFieldInfs();
+    }
+
+    @Transactional
+    @Override
+    public void storeFieldsInf(FieldsInf inf) {
+        fieldsInfRepo.store(inf);
+    }
+
+    @Transactional
+    @Override
+    public Map<String, FieldInf> mapFieldInfToId() {
+        Map<String, FieldInf> result = new HashMap<String, FieldInf>();
+        mapFieldInfToId(getFieldInfs(), result);
+        return result;
+    }
+
+    void mapFieldInfToId(List<FieldInf> fields, Map<String, FieldInf> result) {
+        for (FieldInf fi : fields) {
+            if (fi.isLabel()) {
+                mapFieldInfToId(fi.getChildren(), result);
+            } else {
+                result.put(fi.getId(), fi);
+            }
+        }
+    }
+
+    public JpaRepository<IFeed, Long, Long> getiFeedRepo() {
+        return iFeedRepo;
+    }
+
+    public void setiFeedRepo(JpaRepository<IFeed, Long, Long> iFeedRepo) {
+        this.iFeedRepo = iFeedRepo;
+    }
+
+    public JpaRepository<FieldsInf, Long, Long> getFieldsInfRepo() {
+        return fieldsInfRepo;
+    }
+
+    public void setFieldsInfRepo(JpaRepository<FieldsInf, Long, Long> fieldsInfRepo) {
+        this.fieldsInfRepo = fieldsInfRepo;
+    }
+
+    public IFeedPublisher getiFeedPublisher() {
+        return iFeedPublisher;
+    }
+
+    public void setiFeedPublisher(IFeedPublisher iFeedPublisher) {
+        this.iFeedPublisher = iFeedPublisher;
+    }
+
 }

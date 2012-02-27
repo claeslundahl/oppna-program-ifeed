@@ -125,23 +125,22 @@ public class MetadataServiceImpl implements MetadataService {
         }
         CachedVocabulary cachedVocabulary = vocabularyCache.get(metadataNodeName);
 
-        if (emptyOrInvalidCache(cachedVocabulary)) {
-            LOGGER.debug("Reading vocabulary from source");
-            Collection<Metadata> vocabularyNodes = repo.findByAttribute("name", metadataNodeName);
+        // if (emptyOrInvalidCache(cachedVocabulary)) {
+        LOGGER.debug("Reading vocabulary from source");
+        Collection<Metadata> vocabularyNodes = repo.findByAttribute("name", metadataNodeName);
 
-            if (!vocabularyNodes.isEmpty()) {
-                vocabulary = new ArrayList<String>(vocabularyNodes.size());
-                List<Metadata> metadataChildNodes = (List<Metadata>) vocabularyNodes.iterator().next()
-                        .getChildren();
-                for (Metadata metadata : metadataChildNodes) {
-                    vocabulary.add(metadata.getName());
-                }
-                Collections.sort(vocabulary);
+        if (!vocabularyNodes.isEmpty()) {
+            vocabulary = new ArrayList<String>(vocabularyNodes.size());
+            List<Metadata> metadataChildNodes = (List<Metadata>) vocabularyNodes.iterator().next().getChildren();
+            for (Metadata metadata : metadataChildNodes) {
+                vocabulary.add(metadata.getName());
             }
-            vocabularyCache.put(metadataNodeName, new CachedVocabulary(vocabulary));
-        } else {
-            LOGGER.debug("Reading vocabulary from cache");
+            Collections.sort(vocabulary);
         }
+        vocabularyCache.put(metadataNodeName, new CachedVocabulary(vocabulary));
+        // } else {
+        // LOGGER.debug("Reading vocabulary from cache");
+        // }
         LOGGER.debug("Vocabulary: " + vocabularyCache.get(metadataNodeName).getVocabulary());
 
         return Collections.unmodifiableCollection(vocabularyCache.get(metadataNodeName).getVocabulary());

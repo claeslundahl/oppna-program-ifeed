@@ -6,13 +6,11 @@ import se.vgregion.ldap.HasCommonLdapFields;
 
 public class VgrOrganization implements Serializable, HasCommonLdapFields {
 
-    // private static On onForAll = new On();
-
     private String dn;
     private String ou;
     private String io;
+    private String cn;
     private String type;
-    // private On on = onForAll;
     private boolean leaf;
 
     @Override
@@ -36,7 +34,10 @@ public class VgrOrganization implements Serializable, HasCommonLdapFields {
     }
 
     public String getLabel() {
-        return ou;
+        if (ou != null) {
+            return ou;
+        }
+        return cn;
     }
 
     public String getId() {
@@ -67,33 +68,12 @@ public class VgrOrganization implements Serializable, HasCommonLdapFields {
         this.leaf = leaf;
     }
 
-    // public On getOn() {
-    // return on;
-    // }
-    //
-    // public void setOn(On on) {
-    // this.on = on;
-    // }
-    //
-    // public static class On {
-    // private String check = "defCallback", uncheck = "defCallback";
-    //
-    // public String getCheck() {
-    // return check;
-    // }
-    //
-    // public void setCheck(String check) {
-    // this.check = check;
-    // }
-    //
-    // public String getUncheck() {
-    // return uncheck;
-    // }
-    //
-    // public void setUncheck(String uncheck) {
-    // this.uncheck = uncheck;
-    // }
-    //
-    // }
+    public String getCn() {
+        return cn;
+    }
+
+    public void setCn(String cn) {
+        this.cn = cn;
+    }
 
 }

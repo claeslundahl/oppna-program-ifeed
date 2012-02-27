@@ -54,7 +54,6 @@ public class IFeedSolrQuery extends SolrQuery {
             hits = (ArrayList<Map<String, Object>>) response.getResults().clone();
         } catch (SolrServerException e) {
             LOGGER.error("Serverfel: {}", e.getCause());
-            e.printStackTrace();
         }
         return hits;
     }

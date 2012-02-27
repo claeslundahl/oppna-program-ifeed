@@ -1,13 +1,11 @@
 package se.vgregion.ifeed.service.solr;
 
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeedFilter;
-
 
 public class SolrQueryBuilderTest {
 
@@ -15,7 +13,7 @@ public class SolrQueryBuilderTest {
     public void shouldHandleFreeTextSearch() throws Exception {
         String expectedQueryString = "dc.title:\"A title\"";
 
-        IFeedFilter filter = new IFeedFilter(Filter.TITLE, "A title");
+        IFeedFilter filter = new IFeedFilter(Filter.TITLE, "A title", "foo.bar.baz");
         String queryString = SolrQueryBuilder.createQuery(filter);
         assertEquals(expectedQueryString, queryString);
     }
@@ -24,7 +22,7 @@ public class SolrQueryBuilderTest {
     public void shouldHandleFixedTextSearch() throws Exception {
         String expectedQueryString = "dc.language:\"Svenska\"";
 
-        IFeedFilter filter = new IFeedFilter(Filter.LANGUAGE, "Svenska");
+        IFeedFilter filter = new IFeedFilter(Filter.LANGUAGE, "Svenska", "foo.bar.baz");
         String queryString = SolrQueryBuilder.createQuery(filter);
         assertEquals(expectedQueryString, queryString);
     }
@@ -34,7 +32,7 @@ public class SolrQueryBuilderTest {
         String fromDate = "2011-01-01T00:00:00.000Z";
         String expectedQueryString = "dc.date.validto:[" + fromDate + " TO *]";
 
-        IFeedFilter filter = new IFeedFilter(Filter.VALID_FROM_DATE, fromDate);
+        IFeedFilter filter = new IFeedFilter(Filter.VALID_FROM_DATE, fromDate, "foo.bar.baz");
         String queryString = SolrQueryBuilder.createQuery(filter);
         assertEquals(expectedQueryString, queryString);
     }
@@ -44,7 +42,7 @@ public class SolrQueryBuilderTest {
         String toDate = "2011-01-01T00:00:00.000Z";
         String expectedQueryString = "dc.date.validfrom:[* TO " + toDate + "]";
 
-        IFeedFilter filter = new IFeedFilter(Filter.VALID_TO_DATE, toDate);
+        IFeedFilter filter = new IFeedFilter(Filter.VALID_TO_DATE, toDate, "foo.bar.baz");
         String queryString = SolrQueryBuilder.createQuery(filter);
         assertEquals(expectedQueryString, queryString);
     }

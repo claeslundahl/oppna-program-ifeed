@@ -23,6 +23,8 @@ import javax.portlet.ResourceResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +101,7 @@ public class EditIFeedController {
     public String showEditIFeedForm(@ModelAttribute("ifeed") final IFeed iFeed,
             @RequestParam(defaultValue = "") final String orderByCol,
             @RequestParam(defaultValue = "") final String orderByType, final Model model, RenderResponse repsonse,
-            PortletResponse pr) throws UnsupportedEncodingException {
+            PortletResponse pr) throws JsonGenerationException, JsonMappingException, IOException {
         // model.asMap().get("ifeed");
 
         // Priority of sort field is:
@@ -396,7 +398,8 @@ public class EditIFeedController {
         this.ldapPersonService = ldapPersonService;
     }
 
-    public String getVgrOrganizationJson(String ns) throws UnsupportedEncodingException {
+    public String getVgrOrganizationJson(String ns) throws JsonGenerationException, JsonMappingException,
+            IOException {
         if (vgrOrganizationJsonCache.get() == null) {
             VgrOrganization org = new VgrOrganization();
             org.setDn("Ou=org");
@@ -406,19 +409,27 @@ public class EditIFeedController {
     }
 
     private String getVgrOrganizationJsonPart(VgrOrganization org, String url2portlet)
-            throws UnsupportedEncodingException {
+            throws JsonGenerationException, JsonMappingException, IOException {
+
         List<VgrOrganization> orgs = getLdapOrganizationService().findChildNodes(org);
-        addDataTo(orgs, url2portlet, "io");
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new ObjectMapper().writeValue(baos, orgs);
-            baos.flush();
-            baos.close();
-            return new String(baos.toByteArray(), "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "[{label:'root', dn:'Vgr'}}";
+
+        if (orgs.isEmpty()) {
+            VgrOrganization vo = new VgrOrganization();
+            vo.setDn("test");
+            vo.setOu("ouLabel");
+            vo.setLeaf(false);
+            orgs.add(vo);
         }
+
+        addDataTo(orgs, url2portlet, "io");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new ObjectMapper().writeValue(baos, orgs);
+        baos.flush();
+        baos.close();
+
+        String r = new String(baos.toByteArray(), "UTF-8");
+        return r;
 
     }
 

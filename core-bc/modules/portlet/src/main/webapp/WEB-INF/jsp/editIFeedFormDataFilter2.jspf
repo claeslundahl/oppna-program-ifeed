@@ -46,17 +46,17 @@
           </c:when>
           <c:when test="${newFilter.type == 'LDAP_ORG_VALUE' or newFilter.type == 'd:ldap_org_value'}">
             <div id="<portlet:namespace />ldap-org" class="ifeed-portlet-ldap-people">
-              <aui:input label="${newFilter.name}" disabled="disabled" name="filterValue" id="ldap-value"
+              <aui:input type="hidden" label="${newFilter.name}" name="filterValue" id="ldap-value"
                 value="${filterValue}" cssClass="ifeed-portlet-filter-input" />
-              <aui:input label="${newFilter.name}" disabled="disabled" name="filterValueName"
-                value="${filterValue}" cssClass="ifeed-portlet-filter-input" />
+                
+                <span id="ldapOrgLabel" class="ifeed-portlet-filter-input ldapOrgLabel">${filterValue}</span>
+              
+              <div style="max-height: 200px; overflow-y:scroll;">  
+                <div id="tree"></div>
+              </div>
             </div>
           </c:when>
         </c:choose>
-
-
-        ${newFilter.name}
-
 
       </div>
       <c:if test="${not empty newFilter}">
@@ -97,7 +97,12 @@
                 <c:when test="${fieldsMap[iFeedFilter.filterKey] == 'd:date'}">
                           ${fn:substringBefore(iFeedFilter.filterQuery, 'T')}
                         </c:when>
-                <c:otherwise>${iFeedFilter.filterQuery}</c:otherwise>
+                <c:when test="${fieldsMap[iFeedFilter.filterKey].type == 'd:ldap_org_value'}">
+                  <span class="ldapOrgLabel">${iFeedFilter.filterQuery}</span>
+                </c:when>
+                <c:otherwise>
+                  ${iFeedFilter.filterQuery}
+                </c:otherwise>
               </c:choose>
               
           </span> </span>

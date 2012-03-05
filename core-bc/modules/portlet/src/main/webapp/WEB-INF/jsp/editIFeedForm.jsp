@@ -155,5 +155,3 @@
   <%@ include file="editIFeedFormJs.jspf" %>
 </aui:script>
 </c:if>
-
-<div id="tree"></div>

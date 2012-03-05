@@ -3,6 +3,7 @@ package se.vgregion.ifeed.viewer;
 import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
+import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.IFeed;
 
 @Controller
@@ -80,6 +82,13 @@ public class IFeedViewerController {
         String fullId = "workspace://SpacesStore/" + documentId;
         final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
         model.addAttribute("documentInfo", documentInfo);
+
+        List<FieldInf> fields = iFeedService.getFieldInfs();
+        Map<String, FieldInf> fieldsMap = new HashMap<String, FieldInf>();
+        for (FieldInf fi : fields) {
+            fieldsMap.put(fi.getId(), fi);
+        }
+        model.addAttribute("fields", fieldsMap);
 
         return "documentDetails";
     }

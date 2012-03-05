@@ -11,6 +11,7 @@ public class VgrOrganization implements Serializable, HasCommonLdapFields {
     private String io;
     private String cn;
     private String type;
+    private String hsaIdentity;
     private boolean leaf;
 
     @Override
@@ -74,6 +75,18 @@ public class VgrOrganization implements Serializable, HasCommonLdapFields {
 
     public void setCn(String cn) {
         this.cn = cn;
+    }
+
+    public String getHsaIdentity() {
+        return hsaIdentity;
+    }
+
+    public void setHsaIdentity(String hsaIdentity) {
+        this.hsaIdentity = hsaIdentity;
+    }
+
+    public String getQuery() {
+        return getHsaIdentity() + "|" + getOu();
     }
 
 }

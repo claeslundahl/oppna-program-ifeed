@@ -121,6 +121,9 @@
     };
     
     var tree2ChildrenJson = '${vgrOrganizationJson}';
+    
+    if (tree2ChildrenJson.length == 0) tree2ChildrenJson = [{label:'root', dn:'Vgr'}];
+    
     var tree2Children = A.JSON.parse(tree2ChildrenJson);
     
     function putIo(orgs) {
@@ -137,13 +140,30 @@
     
     //after : { lastSelectedChange : function(e){ putIo(e.newVal._originalConfig); show_page_detail(e);}},
     
+    
+    
+  function dnToLabel(dn) {
+    var arr = dn.split(',');
+    var result = [];
+    for (var i = 0; i < arr.length; i++) {
+      result.push(arr[i].split('=')[1]);
+    }
+    result.pop();
+    return result.join(' / ');
+  }
+    
+    
     function onOrgSelect(org) {
-        var input = document.getElementByName('filterValue');
+      try{
+        var input = document.getElementById('<portlet:namespace />ldap-value');
         input.value = org.dn;
-        input = document.getElementByName('filterValueName');
-        input.value = org.label;
+        document.getElementById('ldapOrgLabel').innerHTML = dnToLabel(org.dn);
+      }catch(e) {
+        alert('onOrgSelect: ' + e.message);
+      }
     }
     
+    if (document.getElementById('tree'))
     var tree2 = new A.TreeView({
       after : { lastSelectedChange : function(e){ onOrgSelect(e.newVal._originalConfig); }},
       width: 200,
@@ -152,3 +172,9 @@
       boundingBox: '#tree',
       children: tree2Children 
     }).render();
+
+    var allLdapOrgLabels = A.all('.ldapOrgLabel');
+    allLdapOrgLabels.each(function(each){
+      each.set('innerHTML', dnToLabel(each.get('innerHTML')));
+    });
+    

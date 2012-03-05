@@ -11,17 +11,15 @@
 <link href="${pageContext.request.contextPath}/resources/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-
-<dl class="ifeed-metadata">
-<c:forEach items="${documentInfo.metadata}" var="item">
-    <dt><spring:message code="${item.key}.label" text="${item.key}" />:</dt>
-    <dd>
-      <c:choose>
-        <c:when test="${item.value != ''}">${item.value}</c:when>
-        <c:otherwise>&ndash;</c:otherwise>
-      </c:choose>
-    </dd>
-</c:forEach>
-</dl>
+  <table class="ifeed-metadata">
+    <c:forEach items="${documentInfo.metadata}" var="item">
+      <c:if test="${item.value != '' and fields[item.key].inHtml}">
+        <tr>
+          <td>${fields[item.key].name}</td> <td>${item.value}</td>
+        </tr>
+      </c:if>
+    </c:forEach>
+  </table>
+  </dl>
 </body>
 </html>

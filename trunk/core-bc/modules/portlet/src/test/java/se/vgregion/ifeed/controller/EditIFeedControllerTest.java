@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,8 @@ import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceResponse;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.ui.Model;
@@ -115,7 +116,7 @@ public class EditIFeedControllerTest {
     }
 
     // @Test // Failed in maven... ! ?
-    public void showEditIFeedForm() throws UnsupportedEncodingException {
+    public void showEditIFeedForm() throws JsonGenerationException, JsonMappingException, IOException {
         IFeed iFeed = new IFeed();
         iFeed.setId(200l);
         iFeed.setSortField("id");

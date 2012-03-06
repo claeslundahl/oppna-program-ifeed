@@ -50,7 +50,8 @@
                 value="${filterValue}" cssClass="ifeed-portlet-filter-input" />
                 
                 <span id="ldapOrgLabel" class="ifeed-portlet-filter-input ldapOrgLabel">${filterValue}</span>
-              
+                <br />
+                <br />
               <div style="max-height: 200px; overflow-y:scroll;">  
                 <div id="tree"></div>
               </div>

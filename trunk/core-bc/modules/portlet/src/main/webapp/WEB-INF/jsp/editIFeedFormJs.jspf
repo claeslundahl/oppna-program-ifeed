@@ -143,21 +143,17 @@
     
     
   function dnToLabel(dn) {
-    var arr = dn.split(',');
-    var result = [];
-    for (var i = 0; i < arr.length; i++) {
-      result.push(arr[i].split('=')[1]);
-    }
-    result.pop();
-    return result.join(' / ');
+    var arr = dn.split('|');
+    if (arr.length < 2) return '';
+    return arr[1] + ' (' + arr[0] + ')';
   }
     
     
     function onOrgSelect(org) {
       try{
         var input = document.getElementById('<portlet:namespace />ldap-value');
-        input.value = org.dn;
-        document.getElementById('ldapOrgLabel').innerHTML = dnToLabel(org.dn);
+        input.value = org.query;
+        document.getElementById('ldapOrgLabel').innerHTML = dnToLabel(org.query);
       }catch(e) {
         alert('onOrgSelect: ' + e.message);
       }

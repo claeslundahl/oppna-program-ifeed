@@ -24,7 +24,6 @@ public class LdapSupportServiceImp implements LdapSupportService {
     public <T extends HasCommonLdapFields> List<T> findChildNodes(T org) {
         List<T> result = new ArrayList<T>();
         try {
-            System.out.println("Söker med " + org.getDn());
             LdapBeanContextMapper<T> mapper = new LdapBeanContextMapper<T>((Class<T>) org.getClass());
             result.addAll(getLdapTemplate().search(org.getDn(), nonsensFilter, SearchControls.ONELEVEL_SCOPE,
                     mapper));

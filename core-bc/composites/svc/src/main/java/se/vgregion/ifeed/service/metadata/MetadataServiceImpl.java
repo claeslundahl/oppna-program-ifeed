@@ -64,6 +64,9 @@ public class MetadataServiceImpl implements MetadataService {
         }
         Metadata root = new Metadata(rootMetadataName);
         updateCacheTree(root, StringUtils.EMPTY);
+        if (root.getChildren().size() == 0) {
+            throw new RuntimeException("The Apelon service didn't return any result. Roll back transaction.");
+        }
         repo.store(root);
     }
 

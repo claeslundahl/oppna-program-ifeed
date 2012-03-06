@@ -101,28 +101,6 @@ AUI().add('vgr-ifeed-config',function(A) {
 						
 						var contentBox = instance.get(CONTENT_BOX);
 						
-						// Create existing filter tree view
-						instance.existingFiltersTree = new A.TreeView({
-							boundingBox: instance.get(EXISTING_FILTERS_TREE_BOUNDING_BOX),
-							contentBox: instance.get(EXISTING_FILTERS_TREE_CONTENT_BOX),
-							type: 'normal'
-						})
-						.render();
-						
-						// Expand all existing filters node
-						instance.existingFiltersTree.expandAll();
-						
-						// Create existing filter tree view
-						instance.usedFiltersTree = new A.TreeView({
-							boundingBox: instance.get(USED_FILTERS_TREE_BOUNDING_BOX),
-              contentBox: instance.get(USED_FILTERS_TREE_CONTENT_BOX),
-							type: 'normal'
-						})
-						.render();
-						
-						// Expand allused filters node
-						instance.usedFiltersTree.expandAll();
-						
 						// Init editable for heading node
 						instance.headingEditable = new A.Editable({
 							node: instance.get(HEADING_NODE)

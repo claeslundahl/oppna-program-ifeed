@@ -4,31 +4,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeedFilter;
 
 public class SolrQueryBuilder {
 
-    public static String createQuery(IFeedFilter iFeedFilter) {
+    public static String createQuery(IFeedFilter iFeedFilter, Map<String, FieldInf> id2infs) {
         String query = "";
-
-        // iFeedFilter.getFilterKey()
-
         Filter filter = iFeedFilter.getFilter();
-
-        System.out.println("filter: " + ToStringBuilder.reflectionToString(filter));
-
         String filterQuery = iFeedFilter.getFilterQuery();
 
         if (filter == null || filter.getMetadataType() == null) {
 
-            if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validfrom")) {
-                query = filter.getFilterField() + ":[" + filterQuery + " TO *]";
-            } else if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validto")) {
-                query = filter.getFilterField() + ":[* TO " + filterQuery + "]";
+            if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validfrom")
+                    || iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.availablefrom")) {
+                // query = filter.getFilterField() + ":[" + filterQuery + " TO *]";
+                query = iFeedFilter.getFilterKey() + ":[" + filterQuery + " TO *]";
+            } else if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validto")
+                    || iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.availableto")) {
+                // query = filter.getFilterField() + ":[* TO " + filterQuery + "]";
+                query = iFeedFilter.getFilterKey() + ":[* TO " + filterQuery + "]";
             } else {
                 query = iFeedFilter.getFilterKey() + ":\"" + SolrQueryEscaper.escape(filterQuery) + "\"";
             }

@@ -40,14 +40,14 @@ public class LdapSupportFileSysTest {
     @Ignore
     public void findDirectory() {
         File result = support.findDirectory(root, path);
-        System.out.println(result);
+        // System.out.println(result);
         Assert.assertTrue(result.exists());
     }
 
     @Test
     public void toFilePath() {
         String result = support.toFilePath(path);
-        System.out.println(result);
+        // System.out.println(result);
     }
 
     public static class Bean implements HasCommonLdapFields {

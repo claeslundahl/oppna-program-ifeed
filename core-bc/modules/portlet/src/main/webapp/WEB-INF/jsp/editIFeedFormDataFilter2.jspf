@@ -95,9 +95,9 @@
               </c:choose> ${fieldsMap[iFeedFilter.filterKey].name}: 
               
               <c:choose>
-                <c:when test="${fieldsMap[iFeedFilter.filterKey] == 'd:date'}">
-                          ${fn:substringBefore(iFeedFilter.filterQuery, 'T')}
-                        </c:when>
+                <c:when test="${fieldsMap[iFeedFilter.filterKey].type == 'd:date'}">
+                  ${fn:substringBefore(iFeedFilter.filterQuery, 'T')}
+                </c:when>
                 <c:when test="${fieldsMap[iFeedFilter.filterKey].type == 'd:ldap_org_value'}">
                   <span class="ldapOrgLabel">${iFeedFilter.filterQuery}</span>
                 </c:when>

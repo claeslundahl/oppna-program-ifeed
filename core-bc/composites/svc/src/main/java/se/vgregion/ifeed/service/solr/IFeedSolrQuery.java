@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.vgregion.common.utils.CommonUtils;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -30,10 +31,13 @@ public class IFeedSolrQuery extends SolrQuery {
     public static final SortDirection DEFAULT_SORT_DIRECTION = SortDirection.desc;
     public static final String DEFAULT_SORT_FIELD = "dc.title";
 
+    private IFeedService iFeedService;
+
     private SolrServer solrServer;
 
-    public IFeedSolrQuery(SolrServer solrServer) {
+    public IFeedSolrQuery(SolrServer solrServer, IFeedService iFeedService) {
         this.solrServer = solrServer;
+        this.iFeedService = iFeedService;
         this.setFields("*");
     }
 
@@ -76,7 +80,7 @@ public class IFeedSolrQuery extends SolrQuery {
     private void addFeedFilters(IFeed iFeed) {
         // Populate the query with the feed's filters
         for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
-            addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter));
+            addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter, iFeedService.mapFieldInfToId()));
         }
         LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
     }

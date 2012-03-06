@@ -22,7 +22,7 @@ public class IFeedServiceImpl implements IFeedService {
     private JpaRepository<FieldsInf, Long, Long> fieldsInfRepo;
     private IFeedPublisher iFeedPublisher;
 
-    IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam, IFeedPublisher iFeedPublisher,
+    public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam, IFeedPublisher iFeedPublisher,
             JpaRepository<FieldsInf, Long, Long> fieldsInfRepo) {
         iFeedRepo = iFeedRepoParam;
         this.iFeedPublisher = iFeedPublisher;

@@ -2,10 +2,7 @@ package se.vgregion.ifeed.viewer;
 
 import static se.vgregion.common.utils.CommonUtils.getEnum;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +25,10 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.FieldInf;
+import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class IFeedViewerController {
@@ -77,20 +78,75 @@ public class IFeedViewerController {
         return details(documentId, model);
     }
 
+    @RequestMapping(value = "/documents/metadata")
+    public String detailsByRequestParam(@RequestParam(value = "documentId", required = false) String documentId,
+                                        Model model,
+                                        HttpServletResponse response) {
+        if (documentId == null) {
+            throw new BadRequestException("Document id must not be null.");
+        }
+        return details(documentId, model);
+    }
+
     @RequestMapping(value = "/documents/{documentId}/metadata")
     public String details(@PathVariable String documentId, Model model) {
-        String fullId = "workspace://SpacesStore/" + documentId;
-        final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
-        model.addAttribute("documentInfo", documentInfo);
-
-        List<FieldInf> fields = iFeedService.getFieldInfs();
-        Map<String, FieldInf> fieldsMap = new HashMap<String, FieldInf>();
-        for (FieldInf fi : fields) {
-            fieldsMap.put(fi.getId(), fi);
+        // We are flexible here; "workspace://SpacesStore/" is added if it isn't provided and vice versa.
+        String fullId;
+        if (documentId.contains("workspace://SpacesStore/")) {
+            fullId = documentId;
+        } else {
+            fullId = "workspace://SpacesStore/" + documentId;
         }
-        model.addAttribute("fields", fieldsMap);
+        final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
+
+        Map<String, String> idValueMap = new HashMap<String, String>();
+        List<FieldsInf> infs = iFeedService.getFieldsInfs(); //todo cache?
+        List<FieldInf> fieldInfs = null;
+        if (infs.size() > 0) {
+            fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
+            for (FieldInf fieldInf : fieldInfs) {
+                for (FieldInf child : fieldInf.getChildren()) {
+                    String childId = child.getId();
+                    if (StringUtils.hasText(childId)) { // If it has an id it is not just a caption
+                        // Does the document have any value for this field?
+                        Object value = documentInfo.getMetadata().get(childId);
+                        if (value instanceof String) {
+                            String sValue = (String) value;
+                            if (StringUtils.hasText(sValue)) {
+                                idValueMap.put(childId, sValue);
+                            }
+                        } else if (value instanceof Collection) {
+                            String sValue = collectionToString((Collection) value);
+                            if (StringUtils.hasText(sValue)) {
+                                idValueMap.put(childId, sValue);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        model.addAttribute("fieldInfs", fieldInfs);
+        model.addAttribute("idValueMap", idValueMap);
 
         return "documentDetails";
+    }
+
+    private String collectionToString(Collection values) {
+        if (values.size() == 0) {
+            return "";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        Iterator iterator = values.iterator();
+        Object firstElement = iterator.next();
+        sb.append(firstElement.toString());
+
+        while (iterator.hasNext()) {
+            sb.append(", " + iterator.next().toString());
+        }
+
+        return sb.toString();
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -98,7 +154,14 @@ public class IFeedViewerController {
         private static final long serialVersionUID = 1L;
     }
 
-    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public class BadRequestException extends RuntimeException {
+        public BadRequestException(String msg) {
+            super(msg);
+        }
+    }
+
+    @ExceptionHandler(IFeedServiceException.class)
     public ModelAndView handleAlfrescoDocumentServiceException(Exception e) {
         if (!(e instanceof IFeedServiceException)) {
             LOGGER.error("IFeed Excption: {}", e);
@@ -106,5 +169,4 @@ public class IFeedViewerController {
         }
         return new ModelAndView("ExceptionHandler", Collections.singletonMap("exception", e));
     }
-
 }

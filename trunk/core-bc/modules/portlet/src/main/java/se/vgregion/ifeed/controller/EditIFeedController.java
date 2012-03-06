@@ -7,11 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.portlet.ActionResponse;
@@ -29,6 +25,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -69,7 +66,7 @@ import com.liferay.portal.util.PortalUtil;
 public class EditIFeedController {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditIFeedController.class);
 
-    private static List<FieldInf> fieldInfs;
+    private static List<FieldInf> fieldInfs = new ArrayList<FieldInf>();
 
     @Autowired
     private IFeedService iFeedService;
@@ -83,6 +80,10 @@ public class EditIFeedController {
     private UriTemplate iFeedAtomFeed;
     @Resource(name = "iFeedWebFeed")
     private UriTemplate iFeedWebFeed;
+    @Resource(name = "iFeedJsonFeed")
+    private UriTemplate iFeedJsonFeed;
+    @Value("${ifeed.metadata.base.url}")
+    private String metadataBaseUrl;
 
     @Autowired
     private LdapSupportService ldapOrganizationService;
@@ -139,9 +140,13 @@ public class EditIFeedController {
         model.addAttribute("webFeedLink",
                 iFeedWebFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
 
+        model.addAttribute("jsonFeedLink",
+                iFeedJsonFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
+
         final PortletURL portletUrl = repsonse.createRenderURL();
         portletUrl.setParameter("view", "showEditIFeedForm");
         model.addAttribute("portletUrl", portletUrl);
+        model.addAttribute("metadataBaseUrl", metadataBaseUrl);
         model.addAttribute("orderByCol", iFeed.getSortField());
         model.addAttribute("orderByType", iFeed.getSortDirection());
         return "editIFeedForm";
@@ -450,12 +455,12 @@ public class EditIFeedController {
     }
 
     public List<FieldInf> getFieldInfs() {
-        if (fieldInfs == null) {
+        if (fieldInfs == null || fieldInfs.size() == 0) {
             List<FieldsInf> infs = iFeedService.getFieldsInfs();
-            fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
+            if (infs.size() > 0) {
+                fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
+            }
         }
-
-        System.out.println("anropar getFieldInfs " + fieldInfs.size());
 
         return fieldInfs;
     }

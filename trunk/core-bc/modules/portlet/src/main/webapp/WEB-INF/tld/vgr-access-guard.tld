@@ -13,5 +13,11 @@
     <function-class>se.vgregion.ifeed.el.AccessGuard</function-class>
     <function-signature>java.lang.Boolean mayEditFeed(com.liferay.portal.model.User, se.vgregion.ifeed.types.IFeed)</function-signature>
   </function>
+
+  <function>
+    <name>urlEncode</name>
+    <function-class>se.vgregion.ifeed.el.UrlEncoder</function-class>
+    <function-signature>java.lang.String urlEncode(java.lang.String)</function-signature>
+  </function>
   
 </taglib>

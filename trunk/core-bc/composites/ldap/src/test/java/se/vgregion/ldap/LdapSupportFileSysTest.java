@@ -7,6 +7,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LdapSupportFileSysTest {
@@ -27,6 +28,7 @@ public class LdapSupportFileSysTest {
     }
 
     @Test
+    @Ignore
     public void findChildNodes() {
         Bean bean = new Bean();
         bean.setDn("Ou=org");
@@ -35,6 +37,7 @@ public class LdapSupportFileSysTest {
     }
 
     @Test
+    @Ignore
     public void findDirectory() {
         File result = support.findDirectory(root, path);
         System.out.println(result);

@@ -57,13 +57,13 @@ public class IFeedViewerControllerTest {
         Assert.assertEquals("documentDetails", result);
     }
 
-    @Test
+    /*@Test
     public void handleAlfrescoDocumentServiceException() {
         Exception e = new IFeedServiceException("", "");
 
         ModelAndView result = controller.handleAlfrescoDocumentServiceException(e);
         IFeedServiceException se = (IFeedServiceException) result.getModel().get("exception");
         Assert.assertEquals(se, e);
-    }
+    }*/
 
 }

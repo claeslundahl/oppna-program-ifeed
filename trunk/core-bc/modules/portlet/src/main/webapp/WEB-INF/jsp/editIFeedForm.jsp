@@ -103,8 +103,9 @@
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Länkar till dokumentlista:</div>
       <div class="ifeed-meta-content">
-        <a href="${atomFeedLink}" target="_blank"><img src="/iFeed-portlet/img/rss.png" alt="atom"></a> 
+        <a href="${atomFeedLink}" target="_blank"><img src="/iFeed-portlet/img/rss.png" alt="atom"></a>
         <a href="${webFeedLink}" target="_blank"><img src="/iFeed-portlet/img/html.png" alt="html"></a>
+        <a id="json-feed-link" href="${jsonFeedLink}" target="_blank"><img src="/iFeed-portlet/img/json_53x21.png" alt="json" height="12px"></a>
       </div>
     </div>
   </aui:column>

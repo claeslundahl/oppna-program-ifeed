@@ -1,24 +1,21 @@
 package se.vgregion.ifeed.formbean;
 
-import java.io.Serializable;
-import java.util.AbstractList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.DateFormatter.DateFormat;
 import se.vgregion.ifeed.service.solr.DateUtils;
 
+import java.io.Serializable;
+import java.util.AbstractList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 public class SearchResultList extends AbstractList<SearchResultList.SearchResult> implements Serializable {
     private static final long serialVersionUID = 1L;
     private List<Map<String, Object>> iFeedResults = null;
-    private Iterator<Map<String, Object>> iterator = null;
 
     public SearchResultList(List<Map<String, Object>> iFeedResults) {
         this.iFeedResults = iFeedResults;
-        iterator = iFeedResults.iterator();
     }
 
     public static class SearchResult {

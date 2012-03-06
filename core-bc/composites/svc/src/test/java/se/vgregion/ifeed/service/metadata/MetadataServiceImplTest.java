@@ -86,7 +86,7 @@ public class MetadataServiceImplTest {
         serv = new MetadataServiceImpl(port, repo) {
             @Override
             void updateCacheTree(Metadata parent, String path) {
-
+                parent.addChild(new Metadata("test"));
             }
         };
         NodeListResponseObjectType nlrot = mock(NodeListResponseObjectType.class);
@@ -105,10 +105,5 @@ public class MetadataServiceImplTest {
         verify(repo).remove(any(Metadata.class));
         verify(repo).store(any(Metadata.class));
     }
-
-    // @Test
-    // public void testGetVocabulary() {
-    // fail("Not yet implemented");
-    // }
 
 }

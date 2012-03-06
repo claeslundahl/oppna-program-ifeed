@@ -27,6 +27,10 @@
     <constructor-arg value="${ifeed.web}" />
   </bean>
 
+  <bean id="iFeedJsonFeed" class="org.springframework.web.util.UriTemplate">
+    <constructor-arg value="${ifeed.json}" />
+  </bean>
+
   <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer" scope="prototype">
     <constructor-arg type="java.lang.String" value="${solr.service}" />
     <property name="requestWriter">

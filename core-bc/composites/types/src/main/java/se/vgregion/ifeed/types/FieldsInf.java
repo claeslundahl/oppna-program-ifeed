@@ -1,5 +1,9 @@
 package se.vgregion.ifeed.types;
 
+import net.sf.cglib.beans.BeanMap;
+import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,18 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
-import net.sf.cglib.beans.BeanMap;
-import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
-
 @Entity
-@Table(name = "fields_inf")
+@Table(name = "vgr_fields_inf")
 public class FieldsInf extends AbstractEntity<Long> implements Serializable, Comparable<FieldsInf> {
 
     private static final long serialVersionUID = 1L;
@@ -84,7 +78,6 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
         for (int i = 0; i < first.length; i++) {
             fieldPosition.put(i, first[i].trim());
         }
-        // System.out.println("fieldPosition: " + fieldPosition);
 
         List<FieldInf> nestedResult = result;
 
@@ -101,8 +94,10 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
                 String name = fieldPosition.get(c);
                 Class<?> type = bm.getPropertyType(name);
 
-                if (type.isPrimitive()) {
+                if (type.equals(Boolean.TYPE)) {
                     bm.put(name, "yes".equalsIgnoreCase(cells[c].trim()));
+                } else if (type.equals(List.class) && name.equals("children")) {
+                    ((List) bm.get(name)).add(cells[c].trim());
                 } else {
                     bm.put(name, cells[c].trim());
                 }

@@ -17,7 +17,6 @@ a {
 a img {
   border: none;
   margin-right: 0.5em;
-  padding: 
 }
 
 .ifeed-metadata dt {
@@ -45,7 +44,7 @@ dt {
   display: block;
 }
 
-webb:  1 .ifeed-metadata {
+.ifeed-metadata {
   font-size: 14px;
 }
 
@@ -85,4 +84,30 @@ dl dd {
 
 dl dd {
   margin-left: 1em;
+}
+
+#ifeed-metadata-table .section td {
+    background-color: #D1D6DC;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 1.2em;
+    padding-top: 10px;
+}
+
+#ifeed-metadata-table td {
+    padding-left: 20px;
+}
+
+#ifeed-metadata-table td.key {
+    font-weight: bold;
+    width: 25%;
+}
+
+#ifeed-metadata-table tr.even {
+    background-color: #DDE1E6;
+}
+
+#json-feed-link {
+    position: relative;
+    bottom: 2px;
 }

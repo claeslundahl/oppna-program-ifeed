@@ -44,7 +44,7 @@ public class AlfrescoDocumentService {
             }
         } catch (RestClientException e) {
             final String msg = "Unable to connect to Alfresco document service";
-            LOG.error(msg);
+            LOG.error(msg, e);
             throw new IFeedServiceException("error.alfresco.connection", msg, e);
         }
         return documentInfo;

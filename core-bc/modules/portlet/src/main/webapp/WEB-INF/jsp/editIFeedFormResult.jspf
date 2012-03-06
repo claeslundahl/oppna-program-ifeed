@@ -26,11 +26,7 @@
             <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">
               <liferay-ui:search-container-column-text>
                 <liferay-ui:icon-menu>
-                  <portlet:renderURL var="metadataURL">
-                    <portlet:param name="view" value="documentMetadata" />
-                    <portlet:param name="documentId" value="${hit.documentId}" />
-                  </portlet:renderURL>
-                  <liferay-ui:icon cssClass="metadata-icon-tooltip" image="" method="get" url="${metadataURL}" src="/iFeed-portlet/img/information.png"/>
+                  <liferay-ui:icon cssClass="metadata-icon-tooltip" image="" method="get" url="${metadataBaseUrl}?documentId=${guard:urlEncode(hit.documentId)}" src="/iFeed-portlet/img/information.png"/>
                 </liferay-ui:icon-menu>
               </liferay-ui:search-container-column-text>
               <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}" orderable="true" orderableProperty="dc.title"/>

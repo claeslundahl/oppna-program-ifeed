@@ -86,7 +86,7 @@ public class VgrOrganization implements Serializable, HasCommonLdapFields {
     }
 
     public String getQuery() {
-        return getHsaIdentity() + "|" + getOu();
+        return getHsaIdentity() + "|" + getLabel();
     }
 
 }

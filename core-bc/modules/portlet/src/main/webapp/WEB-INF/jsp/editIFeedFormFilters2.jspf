@@ -50,8 +50,3 @@
     </div>
   </liferay-ui:panel>
 </liferay-ui:panel-container>
-
-
-<c:forEach var="field" items="${fields}">
-      ${field.name}
-    </c:forEach>

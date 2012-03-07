@@ -55,8 +55,18 @@ public class IFeedSolrQuery extends SolrQuery {
         List<Map<String, Object>> hits = Collections.emptyList();
         try {
             QueryResponse response = solrServer.query(this);
+
+            System.out.println("\n\nresponse.getRequestUrl(): " + response.getRequestUrl() + "\n");
+
             hits = (ArrayList<Map<String, Object>>) response.getResults().clone();
+
+            int c = 0;
+            for (Map<String, Object> item : hits) {
+                System.out.println(c++ + " " + item);
+            }
+
         } catch (SolrServerException e) {
+            e.printStackTrace();
             LOGGER.error("Serverfel: {}", e.getCause());
         }
         return hits;

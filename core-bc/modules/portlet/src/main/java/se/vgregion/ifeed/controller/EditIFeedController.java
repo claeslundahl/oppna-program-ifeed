@@ -7,7 +7,14 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.portlet.ActionResponse;
@@ -89,6 +96,29 @@ public class EditIFeedController {
     private LdapSupportService ldapOrganizationService;
 
     private WeakReference<String> vgrOrganizationJsonCache = new WeakReference<String>(null);
+
+    static Map<String, String> charDecodeing = new HashMap<String, String>();
+
+    static Map<String, String> charEncodeing = new HashMap<String, String>();
+
+    static {
+        // This is for IE7 who cannot ajax-call, when there are some more exotic symbols in the path.
+        charDecodeing.put("C(AA)", "Å");
+        charDecodeing.put("C(AE)", "Ä");
+        charDecodeing.put("C(OO)", "Ö");
+        charDecodeing.put("C(aa)", "å");
+        charDecodeing.put("C(ae)", "ä");
+        charDecodeing.put("C(oo)", "ö");
+        charDecodeing.put("C(ee)", "é");
+
+        charEncodeing.put("Å", "C(AA)");
+        charEncodeing.put("Ä", "C(AE)");
+        charEncodeing.put("Ö", "C(OO)");
+        charEncodeing.put("å", "C(aa)");
+        charEncodeing.put("ä", "C(ae)");
+        charEncodeing.put("ö", "C(oo)");
+        charEncodeing.put("é", "C(ee)");
+    }
 
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId, final Model model,
@@ -293,18 +323,19 @@ public class EditIFeedController {
         }
     }
 
+    private String replace(String s, Map<String, String> map) {
+        for (String k : map.keySet()) {
+            s = s.replaceAll(Pattern.quote(k), map.get(k));
+        }
+        return s;
+    }
+
     @ResourceMapping("findOrgs")
     public void searchOrg(@RequestParam String parentOrg, @RequestParam String url, ResourceResponse response)
             throws IOException {
-
-        System.out.println("\nparentOrg: '" + parentOrg + "' Decoded: '" + URLDecoder.decode(parentOrg, "UTF-8")
-                + "'");
-
+        parentOrg = replace(parentOrg, charDecodeing);
         parentOrg = URLDecoder.decode(parentOrg, "UTF-8");
-
-        System.out.println("\nUrl direkt från klienten " + url + "\n");
         url = URLDecoder.decode(url, "UTF-8");
-        System.out.println("\nUrl efter decode från klienten " + url);
 
         VgrOrganization org = new VgrOrganization();
         org.setDn(parentOrg);
@@ -314,24 +345,6 @@ public class EditIFeedController {
         out.write(result.getBytes("UTF-8"));
         out.flush();
         out.close();
-
-        // List<VgrOrganization> orgs = ldapOrganizationService.findChildNodes(org);
-        // addDataTo(orgs, url, "io");
-        //
-        // try {
-        // final OutputStream out = response.getPortletOutputStream();
-        // response.setContentType("application/json");
-        // ObjectMapper om = new ObjectMapper();
-        //
-        // ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        // om.writeValue(baos, orgs);
-        // baos.flush();
-        // out.write(baos.toByteArray());
-        // // om.writeValue(out, orgs);
-        // out.flush();
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // }
     }
 
     public void addDataTo(List<VgrOrganization> vos, String ns, String type) throws UnsupportedEncodingException {
@@ -351,6 +364,7 @@ public class EditIFeedController {
         vo.setType("io");
         vo.setLeaf(ldapOrganizationService.findChildNodes(vo).isEmpty());
         vo.setType(type);
+        vo.setDn(replace(vo.getDn(), charEncodeing));
     }
 
     @ModelAttribute("filters")
@@ -417,14 +431,6 @@ public class EditIFeedController {
             throws JsonGenerationException, JsonMappingException, IOException {
 
         List<VgrOrganization> orgs = getLdapOrganizationService().findChildNodes(org);
-
-        if (orgs.isEmpty()) {
-            VgrOrganization vo = new VgrOrganization();
-            vo.setDn("test");
-            vo.setOu("ouLabel");
-            vo.setLeaf(false);
-            orgs.add(vo);
-        }
 
         addDataTo(orgs, url2portlet, "io");
 

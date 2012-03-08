@@ -26,7 +26,7 @@ public class SolrQueryBuilder {
                 // query = filter.getFilterField() + ":[* TO " + filterQuery + "]";
                 query = iFeedFilter.getFilterKey() + ":[* TO " + filterQuery + "]";
             } else {
-                query = iFeedFilter.getFilterKey() + ":\"" + SolrQueryEscaper.escape(filterQuery) + "\"";
+                query = iFeedFilter.getFilterKey() + ":" + SolrQueryEscaper.escape(filterQuery) + "";
             }
 
         } else {

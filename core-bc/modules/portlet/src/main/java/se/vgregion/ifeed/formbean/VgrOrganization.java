@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.formbean;
 
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 import se.vgregion.ldap.HasCommonLdapFields;
 
@@ -42,7 +43,11 @@ public class VgrOrganization implements Serializable, HasCommonLdapFields {
     }
 
     public String getId() {
-        return dn;
+        String result = dn;
+        if (result != null) {
+            result = result.replaceAll(Pattern.quote(","), " ");
+        }
+        return result;
     }
 
     public String getIo() {

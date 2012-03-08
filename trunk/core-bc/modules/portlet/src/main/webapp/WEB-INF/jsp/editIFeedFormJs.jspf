@@ -113,7 +113,6 @@
         });
     }
     
-    // after : { lastSelectedChange : function(e){ show_page_detail(e);}},
     var defCallback = function(event) {
         if (window.console && window.console.log) {
             console.log(event.type, event);
@@ -122,32 +121,24 @@
     
     var tree2ChildrenJson = '${vgrOrganizationJson}';
     
-    if (tree2ChildrenJson.length == 0) tree2ChildrenJson = [{label:'root', dn:'Vgr'}];
-    
     var tree2Children = A.JSON.parse(tree2ChildrenJson);
-    
+        
     function putIo(orgs) {
       if (!(orgs instanceof Array)) orgs = [orgs];
       for(var i = 0; i < orgs.length; i++) {
         var item = orgs[i];
-        //var p = '${findOrgs}&parentOrg=' + escape(item.id) + '&url=' + escape('${findOrgs}');
-        var p = '${findOrgs}&parentOrg=' + item.id.replace('&', '%26') + '&url=' + escape('${findOrgs}');
+        var p = '${findOrgs}&parentOrg=' + item.dn.replace('&', '%26') + '&url=' + escape('${findOrgs}');
         item.io = p;
       }
-    }
-        
+    }        
+
     putIo(tree2Children);
-    
-    //after : { lastSelectedChange : function(e){ putIo(e.newVal._originalConfig); show_page_detail(e);}},
-    
-    
     
   function dnToLabel(dn) {
     var arr = dn.split('|');
     if (arr.length < 2) return '';
     return arr[1] + ' (' + arr[0] + ')';
   }
-    
     
     function onOrgSelect(org) {
       try{
@@ -161,7 +152,10 @@
     
     if (document.getElementById('tree'))
     var tree2 = new A.TreeView({
-      after : { lastSelectedChange : function(e){ onOrgSelect(e.newVal._originalConfig); }},
+      after : { lastSelectedChange : function(e){ 
+        onOrgSelect(e.newVal._originalConfig);
+        //alert(e.newVal + '\n' + e.attrName + '\n'+ e.subAttrName);
+      }},
       width: 200,
       type: 'normal',
       expanded: true, 

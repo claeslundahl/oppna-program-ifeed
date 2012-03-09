@@ -19,16 +19,6 @@ a img {
   margin-right: 0.5em;
 }
 
-.ifeed-metadata dt {
-  font-weight: bold;
-  color: black;
-  float: left;
-  margin-bottom: .5em;
-  padding-right: 6px;
-  width: 20em;
-  text-align: right;
-}
-
 /*  */
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
   margin: 0;
@@ -38,14 +28,6 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
   margin: 0;
   padding: 0;
-}
-
-dt {
-  display: block;
-}
-
-.ifeed-metadata {
-  font-size: 14px;
 }
 
 /* Inherited from section#portlet_iFeed_WAR_iFeedportlet.portlet
@@ -70,41 +52,38 @@ body {
   margin: 0.5em;
 }
 
-
-.ifeed-metadata dd {
-  font-style: italic;
-  margin-bottom: .5em;
-  color: #333;
-  margin-left: 0;
+#table-container {
+    padding: 0 10px;
 }
 
-dl dd {
-  margin-left: 1em;
+.ifeed-metadata-table {
+    border-collapse: collapse;
+    margin: 20px 0px;
+    width: 100%;
 }
 
-dl dd {
-  margin-left: 1em;
-}
-
-#ifeed-metadata-table .section td {
-    background-color: #D1D6DC;
-    font-weight: bold;
-    font-style: italic;
+.ifeed-metadata-table thead td {
+    background-color: #ffffe0;
     font-size: 1.2em;
+    font-weight: bold;
+    padding-left: 6px;
     padding-top: 10px;
 }
 
-#ifeed-metadata-table td {
-    padding-left: 20px;
+.ifeed-metadata-table tbody td {
+    border-bottom: 1px solid lightgray;
+    font-family: monospace;
+    padding-left: 6px;
+    padding-top: 1px;
 }
 
-#ifeed-metadata-table td.key {
+.ifeed-metadata-table td.no-styling {
+    border-bottom: none;
+}
+
+.ifeed-metadata-table td.key {
     font-weight: bold;
     width: 25%;
-}
-
-#ifeed-metadata-table tr.even {
-    background-color: #DDE1E6;
 }
 
 #json-feed-link {

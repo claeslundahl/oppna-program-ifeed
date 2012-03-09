@@ -2,6 +2,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
@@ -12,35 +13,43 @@
 </head>
 <body>
 
-<dl class="ifeed-metadata">
-    <table id="ifeed-metadata-table">
-        <tbody>
-        <c:forEach items="${fieldInfs}" var="fieldInf">
-            <c:if test="${fieldInf.inHtmlView}">
-                <tr><td>&nbsp;</td></tr><%--Empty row for appearance--%>
-                <tr class="section">
+<div id="table-container">
+    <c:forEach items="${fieldInfs}" var="fieldInf">
+    <c:if test="${fieldInf.inHtmlView}">
+    <table class="ifeed-metadata-table">
+        <thead>
+            <tr>
                 <td colspan="2">
-                    <div class="heading"><c:out value="${fieldInf.name}"/></div>
+                    <c:out value="${fieldInf.name}"/>
                 </td>
-                <c:set var="count" value="0"/>
-                <c:forEach items="${fieldInf.children}" var="child">
-                    <c:if test="${child.inHtmlView and not empty idValueMap[child.id]}">
-                        <c:set var="count" value="${count + 1}"/>
-                        <tr class="${count % 2 == 0 ? 'even' : 'odd'}">
-                            <td class="key">
-                                <c:out value="${child.name}:"/>
-                            </td>
-                            <td class="value">
+            </tr>
+        </thead>
+        <tbody>
+        <c:forEach items="${fieldInf.children}" var="child">
+            <c:if test="${child.inHtmlView and not empty idValueMap[child.id]}">
+                <tr>
+                    <td class="key">
+                        <c:out value="${child.name}:"/>
+                    </td>
+                    <td class="value">
+                        <c:set var="value" value="${idValueMap[child.id]}"/>
+                        <c:choose>
+                            <c:when test="${fn:startsWith(value, 'http')==true}">
+                                <a href="${value}" target="_blank">${value}</a>
+                            </c:when>
+                            <c:otherwise>
                                 <c:out value="${idValueMap[child.id]}"/>
-                            </td>
-                        </tr>
-                    </c:if>
-                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                 </tr>
             </c:if>
         </c:forEach>
+        </tr>
+        </c:if>
+        </c:forEach>
         </tbody>
     </table>
-</dl>
+</div>
 </body>
 </html>

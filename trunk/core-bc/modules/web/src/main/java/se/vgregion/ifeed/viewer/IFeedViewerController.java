@@ -2,6 +2,8 @@ package se.vgregion.ifeed.viewer;
 
 import static se.vgregion.common.utils.CommonUtils.getEnum;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -99,6 +101,9 @@ public class IFeedViewerController {
         }
         final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
 
+        SimpleDateFormat inParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+        SimpleDateFormat outFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("sv", "SE"));
+
         Map<String, String> idValueMap = new HashMap<String, String>();
         List<FieldsInf> infs = iFeedService.getFieldsInfs(); //todo cache?
         List<FieldInf> fieldInfs = null;
@@ -113,7 +118,16 @@ public class IFeedViewerController {
                         if (value instanceof String) {
                             String sValue = (String) value;
                             if (StringUtils.hasText(sValue)) {
-                                idValueMap.put(childId, sValue);
+                                try {
+                                    Calendar calendar = Calendar.getInstance();
+                                    Date date = inParser.parse(sValue);
+                                    calendar.setTime(date);
+                                    outFormatter.setTimeZone(inParser.getTimeZone());
+                                    idValueMap.put(childId, outFormatter.format(date));
+                                } catch (ParseException e) {
+                                    // Wasn't a date
+                                    idValueMap.put(childId, sValue);
+                                }
                             }
                         } else if (value instanceof Collection) {
                             String sValue = collectionToString((Collection) value);

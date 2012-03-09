@@ -273,8 +273,6 @@ public class EditIFeedController {
 
         FieldInf newFilter = mapFieldInfToId().get(filter);
 
-        System.out.println("\neditFilter: " + newFilter + "\n filter: " + filter + "\n");
-
         model.addAttribute("newFilter", newFilter);
         Collection<String> vocabulary = metadataService.getVocabulary(newFilter.getApelonKey());
         // Collection<String> vocabulary = metadataService.getVocabulary(filter);

@@ -14,6 +14,7 @@
 <body>
 
 <div id="table-container">
+    <h1>Metadata för ${idValueMap['dc.title']}</h1>
     <c:forEach items="${fieldInfs}" var="fieldInf">
     <c:if test="${fieldInf.inHtmlView}">
     <table class="ifeed-metadata-table">

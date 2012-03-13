@@ -8,6 +8,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class FieldsInfTest {
@@ -17,6 +18,7 @@ public class FieldsInfTest {
     }
 
     @Test
+    @Ignore
     public void getFieldInfs() throws IOException {
         FieldsInf fi = new FieldsInf();
         fi.setText(loadFieldsConfigText());

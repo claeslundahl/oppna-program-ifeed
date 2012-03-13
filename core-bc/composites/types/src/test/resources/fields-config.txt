@@ -11,15 +11,15 @@ DC.type.record|Handlingstyp|Klassificering av dokumentets innehåll eller typ en
 DC.coverage.hsacode|Verksamhetskod enligt HSA|Kod och klartext för den/de verksamheter dokumentet, handlingen eller resursens innehåll beskriver (HSA-Nationell katalogtjänst)|d:text_fix|yes|Verksamhetskod|yes
 DC.audience|Målgrupp HoS|Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal|d:text|yes||yes
 DC.identifier.version|Version|Den version dokumentet, handlingen eller resursen har. (Systemstyrt). Mindre ändringar får vanligen version 0.1, 0.2 osv och större ändringar 1.0, 2.0 osv|d:text|no||yes
-DC.contributor.savedby|Sparat av|Inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). |d:text|yes||yes
-DC.contributor.savedby.id|Sparat av ID|Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager|d:text|no||yes
+DC.contributor.savedby|Sparat av|Inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). |d:text|no||yes
+DC.contributor.savedby.id|Sparat av ID|Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager|d:ldap_value|yes||yes
 DC.date.saved|Sparat datum|Tidpunkt då dokumentet, handlingen eller resursen sparades i systemet. (Systemstyrt)|d:datetime|no||yes
 vgregion.status.document|Dokumentstatus|Statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad|d:text_fix|yes|Dokumentstatus|yes
 DC.source.documentid|Dokumentid|För systemet unikt id för dokumentet. (Systemstyrt)|d:text|no||yes
 DC.source|Länk till dokumentets källa|Länk till dokumentet, handlingen eller resursen i källsystemet. (Systemstyrt)|d:text|no||yes
 |Skapat av och för|||||yes
 DC.creator|Skapat av (Hämtat värde)|Den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen|d:ldap_value|yes||yes
-DC.creator.id|Skapat av ID (Hämtat värde)|Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager|d:text|no||yes
+DC.creator.id|Skapat av ID (Hämtat värde)|Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager|d:text|yes||yes
 DC.creator.freetext|Skapat av (Fritext)|Den eller de personer som skapat eller uppdaterat innehållet och inte finns upplagda i katalogen.|d:text|yes||yes
 DC.creator.forunit|Skapat av enhet|Den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras) |d:ldap_org_value|yes||yes
 DC.creator.project-assignment |Skapat av Projekt/Uppdrag/Grupp|Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är skapad av|d:text|yes||yes
@@ -69,7 +69,7 @@ DC.type.document.id|Referensnummer i dokumentserie|Ett värde som anger det ensk
 DC.subject.keywords|Nyckelord|Det eller de enstaka ord som kan beskriva innehållet. Hämtas från kodverk.|d:text|yes||yes
 DC.subject.authorkeywords|Författarens nyckelord|Det eller de enstaka ord som kan beskriva innehållet. Sätts av den som skapar eller uppdaterar dokumentet, handlingen eller resursen. (Fritext)|d:text|yes||yes
 |Övrigt|||||yes
-DC.language|Språk|Det/de språk som innehållet är skrivet på|d:text|yes|Språk|yes
+DC.language|Språk|Det/de språk som innehållet är skrivet på|d:text_fix|yes|Språk|yes
 DC.relation.isversionof|Alternativ variant av|Länk (URI) till en version, upplaga eller anpassning av det dokument, handling eller resurs man refererar till. Ex populärversionen länkar till sitt huvuddokument|d:text|no||yes
 DC.relation.replaces|Ersätter|Länk (URI) till det dokument, handling eller resurs som ersatts|d:text|no||yes
 DC.format.extent|Omfattning|Storlek på eller varaktighet för resursen. Ex för media 90 minuter, för dokumentet 100 sidor. (Fritext).|d:text|no||yes

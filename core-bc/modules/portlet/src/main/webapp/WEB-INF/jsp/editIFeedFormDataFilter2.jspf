@@ -48,7 +48,8 @@
             <div id="<portlet:namespace />ldap-org" class="ifeed-portlet-ldap-people">
               <aui:input type="hidden" label="${newFilter.name}" name="filterValue" id="ldap-value"
                 value="${filterValue}" cssClass="ifeed-portlet-filter-input" />
-                
+                <aui:input label="${newFilter.name}" name="filterValue" id="ldap-value" value="${filterValue}"
+                cssClass="ifeed-portlet-filter-input" />
                 <span id="ldapOrgLabel" class="ifeed-portlet-filter-input ldapOrgLabel">${filterValue}</span>
                 <br />
                 <br />

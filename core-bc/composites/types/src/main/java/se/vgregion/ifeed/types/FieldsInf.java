@@ -1,15 +1,21 @@
 package se.vgregion.ifeed.types;
 
-import net.sf.cglib.beans.BeanMap;
-import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
+import net.sf.cglib.beans.BeanMap;
+import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 @Entity
 @Table(name = "vgr_fields_inf")
@@ -69,8 +75,7 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
     public List<FieldInf> getFieldInfs() {
         List<FieldInf> result = new ArrayList<FieldInf>();
 
-        String t = getText();
-        String[] rows = t.split(Pattern.quote("\n"));
+        String[] rows = getText().split(Pattern.quote("\n"));
 
         Map<Integer, String> fieldPosition = new HashMap<Integer, String>();
         String[] first = rows[0].split(Pattern.quote("|"));

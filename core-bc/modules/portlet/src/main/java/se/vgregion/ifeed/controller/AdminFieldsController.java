@@ -54,7 +54,10 @@ public class AdminFieldsController {
     @ActionMapping(params = { "action=addFieldConfig" })
     public void save(@ModelAttribute(value = "fields") FieldsInf fields, final ActionResponse response,
             final SessionStatus sessionStatus, final Model model) {
-        System.out.println("save " + fields);
+
+        fields.getFieldInfs(); // Throws exception and aborts the save if the text field cannot be parsed to
+                               // FieldInf-objects.
+
         iFeedService.storeFieldsInf(fields);
         EditIFeedController.setFieldInfsCache(null);
         response.setRenderParameter("view", "showAdminFields");

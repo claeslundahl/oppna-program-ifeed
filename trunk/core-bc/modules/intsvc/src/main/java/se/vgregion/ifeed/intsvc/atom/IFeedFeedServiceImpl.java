@@ -230,4 +230,12 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     void setContext(UriInfo context) {
         this.context = context;
     }
+
+    @Override
+    @GET
+    @Produces({ "application/xml", "application/atom+xml;type=feed;charset=UTF-8" })
+    @Path("/{id}")
+    public Feed getIFeedShorter(Long id, String sortField, String sortDirection) {
+        return getIFeed(id, sortField, sortDirection);
+    }
 }

@@ -2,6 +2,7 @@ package se.vgregion.ifeed.service.metadata;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -128,6 +129,11 @@ public class MetadataServiceImpl implements MetadataService {
         }
         CachedVocabulary cachedVocabulary = vocabularyCache.get(metadataNodeName);
 
+        if (cachedVocabulary == null || cachedVocabulary.vocabulary.isEmpty()) {
+            System.out.println("Inget vocabulär " + vocabularyCache.keySet() + "\n\n" + metadataNodeName);
+
+        }
+
         // if (emptyOrInvalidCache(cachedVocabulary)) {
         LOGGER.debug("Reading vocabulary from source");
         Collection<Metadata> vocabularyNodes = repo.findByAttribute("name", metadataNodeName);
@@ -152,4 +158,11 @@ public class MetadataServiceImpl implements MetadataService {
     private boolean emptyOrInvalidCache(CachedVocabulary cachedVocabulary) {
         return cachedVocabulary == null || !cachedVocabulary.isValid();
     }
+
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        String s = new String("Spr+Ñk".getBytes(), "UTF-8");
+
+        System.out.println("s=" + s);
+    }
+
 }

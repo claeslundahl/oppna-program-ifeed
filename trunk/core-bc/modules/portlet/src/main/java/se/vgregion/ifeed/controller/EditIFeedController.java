@@ -111,13 +111,9 @@ public class EditIFeedController {
         charDecodeing.put("C(oo)", "ö");
         charDecodeing.put("C(ee)", "é");
 
-        charEncodeing.put("Å", "C(AA)");
-        charEncodeing.put("Ä", "C(AE)");
-        charEncodeing.put("Ö", "C(OO)");
-        charEncodeing.put("å", "C(aa)");
-        charEncodeing.put("ä", "C(ae)");
-        charEncodeing.put("ö", "C(oo)");
-        charEncodeing.put("é", "C(ee)");
+        for (String key : charDecodeing.keySet()) {
+            charEncodeing.put(charDecodeing.get(key), key);
+        }
     }
 
     @ActionMapping(params = "action=editIFeed")
@@ -189,18 +185,18 @@ public class EditIFeedController {
     @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") final IFeed iFeed, final ActionResponse response,
             final Model model, PortletRequest request) throws SystemException, PortalException {
-        System.out.println("\n\neditIFeed\n");
+        // System.out.println("\n\neditIFeed\n");
         User user = fetchUser(request);
         if (!AccessGuard.mayEditFeed(user, iFeed)) {
             throw new RuntimeException();
         }
-        System.out.println("\n\neditIFeed 1\n");
+        // System.out.println("\n\neditIFeed 1\n");
         IFeed ifeed = iFeedService.updateIFeed(iFeed);
-        System.out.println("\n\neditIFeed 2\n");
+        // System.out.println("\n\neditIFeed 2\n");
         model.addAttribute("ifeed", ifeed);
-        System.out.println("\n\neditIFeed 3\n");
+        // System.out.println("\n\neditIFeed 3\n");
         model.addAttribute("saveAction", Boolean.TRUE);
-        System.out.println("\n\neditIFeed 4\n");
+        // System.out.println("\n\neditIFeed 4\n");
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 
@@ -217,14 +213,22 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=selectFilter")
     public void selectNewFilter(@ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam(required = false, value = "filter") String filter
-            // @RequestParam(required = false, value = "filter") final Filter filter
-            , final Model model, final ActionResponse response) throws IOException {
+            @RequestParam(required = false, value = "filter") String filter, final Model model,
+            final ActionResponse response) throws IOException {
 
         FieldInf newFilter = mapFieldInfToId().get(filter);
         model.addAttribute("newFilter", newFilter);
 
-        Collection<String> vocabulary = metadataService.getVocabulary(newFilter.getApelonKey());
+        String apelonKey = newFilter.getApelonKey();
+        if (apelonKey != null) {
+            // TODO: for some reason JPA/Database/Something-else replaces 'å' with '+Ñ' (probably other chars as
+            // well), correct this rather then doing the following:
+            // System.out.println("Innan replace " + apelonKey + " length is " + apelonKey.length());
+            apelonKey = apelonKey.replaceAll(Pattern.quote("+Ñ"), "å").trim();
+            // System.out.println("Efter replace " + apelonKey + " length is " + apelonKey.length());
+        }
+
+        Collection<String> vocabulary = metadataService.getVocabulary(apelonKey);
 
         model.addAttribute("vocabulary", vocabulary);
         String vocabularyJson = new ObjectMapper().writeValueAsString(vocabulary);
@@ -240,7 +244,8 @@ public class EditIFeedController {
 
         LOGGER.debug("FilterFormBean: {}", ToStringBuilder.reflectionToString(filterFormBean));
 
-        System.out.println("\n\nFilterFormBean: " + ToStringBuilder.reflectionToString(filterFormBean) + "\n\n");
+        // System.out.println("\n\nFilterFormBean: " + ToStringBuilder.reflectionToString(filterFormBean) +
+        // "\n\n");
 
         // if (filterFormBean.getFilterValue() == null && filterFormBean.getValidFromYear() != 0) {
         // Date date = new Date();
@@ -273,7 +278,11 @@ public class EditIFeedController {
 
         FieldInf newFilter = mapFieldInfToId().get(filter);
 
+        // System.out.println("\neditFilter: " + newFilter + "\n filter: " + filter + "\n");
+
         model.addAttribute("newFilter", newFilter);
+
+        // System.out.println("\napelonKey: " + newFilter.getApelonKey() + "\n");
         Collection<String> vocabulary = metadataService.getVocabulary(newFilter.getApelonKey());
         // Collection<String> vocabulary = metadataService.getVocabulary(filter);
 
@@ -297,7 +306,7 @@ public class EditIFeedController {
 
         // Fix here!
 
-        System.out.println("removeFilter " + filter + " filterQuery ");
+        // System.out.println("removeFilter " + filter + " filterQuery ");
 
         iFeed.removeFilter(new IFeedFilter(filter, filterQuery, filterKey));
         model.addAttribute("ifeed", iFeed);

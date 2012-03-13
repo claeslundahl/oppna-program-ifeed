@@ -69,7 +69,8 @@ DC.type.document.id|Referensnummer i dokumentserie|Ett värde som anger det ensk
 DC.subject.keywords|Nyckelord|Det eller de enstaka ord som kan beskriva innehållet. Hämtas från kodverk.|d:text|yes||yes
 DC.subject.authorkeywords|Författarens nyckelord|Det eller de enstaka ord som kan beskriva innehållet. Sätts av den som skapar eller uppdaterar dokumentet, handlingen eller resursen. (Fritext)|d:text|yes||yes
 |Övrigt|||||yes
-DC.language|Språk|Det/de språk som innehållet är skrivet på|d:text_fix|yes|Språk|yes
+language|Språk|Det/de språk som innehållet är skrivet på|d:text_fix|yes|Språk|yes
+DC.language|Språk|Det/de språk som innehållet är skrivet på|d:text_fix|no|Språk|no
 DC.relation.isversionof|Alternativ variant av|Länk (URI) till en version, upplaga eller anpassning av det dokument, handling eller resurs man refererar till. Ex populärversionen länkar till sitt huvuddokument|d:text|no||yes
 DC.relation.replaces|Ersätter|Länk (URI) till det dokument, handling eller resurs som ersatts|d:text|no||yes
 DC.format.extent|Omfattning|Storlek på eller varaktighet för resursen. Ex för media 90 minuter, för dokumentet 100 sidor. (Fritext).|d:text|no||yes

@@ -1,0 +1,170 @@
+  /**
+   * Monky patched function - issue AUI-416
+   * http://issues.liferay.com/browse/AUI-416
+   */
+  var _onContainerClick = function(event) {
+      var instance = this;
+  
+      var target = event.target;
+      var tagName = target.get('nodeName').toLowerCase();
+  
+      event.halt();
+  
+      while (target && (tagName != 'table')) {
+          switch (tagName) {
+              case 'body':
+              return;
+  
+              case 'li':
+                  instance._toggleHighlight(target, 'to');
+                  instance._selectItem(target);
+              return;
+  
+              default:  
+              break;
+          }
+  
+          target = target.get('parentNode');
+  
+          if (target) {
+              tagName = target.get('nodeName').toLowerCase();
+          }
+      }
+  };
+  
+  var vgrIfeedConfig = new A.VgrIfeedConfig({
+      existingFiltersTreeBoundingBox: '#<portlet:namespace />existingFiltersWrap',
+      existingFiltersTreeContentBox: '#<portlet:namespace />existingFiltersWrap > ul',
+      descriptionNode: '#<portlet:namespace />descriptionText',
+      descriptionInput: '#<portlet:namespace />descriptionTextInput',
+      metaDataForm: '#<portlet:namespace />metaDataForm',
+      headingNode: '#<portlet:namespace />headingText',
+      headingInput: '#<portlet:namespace />headingTextInput',
+      portletNamespace: '<portlet:namespace />',
+      portletWrap: '#p_p_id<portlet:namespace />',
+      usedFiltersTreeBoundingBox: '#<portlet:namespace />usedFiltersWrap',
+      usedFiltersTreeContentBox: '#<portlet:namespace />usedFiltersWrap > ul',
+      metadataTooltipURL: '${metdataTooltipURL}'
+  })
+  .render();
+  
+  AUI().ready('aui-autocomplete', function(A) {
+    //var inputFindExpression = "#<portlet:namespace />filterValue";
+    var inputFindExpression = "#<portlet:namespace />ldap-value";
+    if(A.one(inputFindExpression) != null) {
+      var datasource = function(request) {
+        var items = null;
+          A.io.request('${findPeople}&filterValue=' + A.one(inputFindExpression).get('value') + "*", {
+            cache: false,
+            sync: true,
+            timeout: 1000,
+            dataType: 'json',
+            method: 'get',
+            on: {
+              success: function(param) {
+                items = {};
+                items.list = eval(this.get('responseData'));
+              },
+              failure: function() {
+                alert("Fail");
+              }
+            }
+          });
+        return items;
+      };
+      var autoComplete = new A.AutoComplete({
+          dataSource: datasource,
+          schema: {
+            resultListLocator: 'list',
+            resultFields: ['firstName', 'lastName', 'userName', 'organisation', 'email']
+          },
+          forceSelection: true,
+          queryDelay: 0.5,
+          matchKey: 'userName',
+          dataSourceType: 'Function',
+          schemaType: 'json',
+          autoHiglight: true,
+          typeAhead: false,
+          minQueryLength: 3,
+          contentBox: '#<portlet:namespace />ldap-people',
+          input: '#<portlet:namespace />ldap-value'
+      });
+      autoComplete._onContainerClick = _onContainerClick;
+      var count = 0;
+      autoComplete.formatResult = function(result, request, resultMatch) {
+      var resultFormat = '<div class="ifeed-portlet-filter-result ifeed-portlet-filter-result-' + (count++%2==0?'even':'odd') + '"><div><strong>' + result.firstName + " " + result.lastName + '</strong> (' + result.userName + ')</div><div>' + result.organisation + '</div>';
+      //var resultFormat = '<ul class="ifeed-portlet-filter-result ifeed-portlet-filter-result-' + (count++%2==0?'even':'odd') + '"><li><strong>' + result.firstName + " " + result.lastName + '</strong> (' + result.userName + ')</li><li>' + result.organisation + '</ul>';
+        return resultFormat;
+      };
+    
+      autoComplete.render();
+    }
+  });
+  
+    function show_page_detail(e){
+    console.log(e.newVal);
+    console.log(e.newVal._originalConfig);
+    
+    A.io.request('${findOrgs}&parentOrg=' + escape(e.newVal._originalConfig.id) , {   
+          on: {   success: function() {
+              alert(this.get('responseData'));
+              }   
+          }   
+        });
+    }
+    
+    var defCallback = function(event) {
+        if (window.console && window.console.log) {
+            console.log(event.type, event);
+        }
+    };
+    
+    var tree2ChildrenJson = '${vgrOrganizationJson}';
+    
+    var tree2Children = A.JSON.parse(tree2ChildrenJson);
+        
+    function putIo(orgs) {
+      if (!(orgs instanceof Array)) orgs = [orgs];
+      for(var i = 0; i < orgs.length; i++) {
+        var item = orgs[i];
+        var p = '${findOrgs}&parentOrg=' + item.dn.replace('&', '%26') + '&url=' + escape('${findOrgs}');
+        item.io = p;
+      }
+    }        
+
+    putIo(tree2Children);
+    
+  function dnToLabel(dn) {
+    var arr = dn.split('|');
+    if (arr.length < 2) return '';
+    return arr[1] + ' (' + arr[0] + ')';
+  }
+    
+    function onOrgSelect(org) {
+      try{
+        var input = document.getElementById('<portlet:namespace />ldap-value');
+        input.value = org.query;
+        document.getElementById('ldapOrgLabel').innerHTML = dnToLabel(org.query);
+      }catch(e) {
+        alert('onOrgSelect: ' + e.message);
+      }
+    }
+    
+    if (document.getElementById('tree'))
+    var tree2 = new A.TreeView({
+      after : { lastSelectedChange : function(e){ 
+        onOrgSelect(e.newVal._originalConfig);
+        //alert(e.newVal + '\n' + e.attrName + '\n'+ e.subAttrName);
+      }},
+      width: 200,
+      type: 'normal',
+      expanded: true, 
+      boundingBox: '#tree',
+      children: tree2Children 
+    }).render();
+
+    var allLdapOrgLabels = A.all('.ldapOrgLabel');
+    allLdapOrgLabels.each(function(each){
+      each.set('innerHTML', dnToLabel(each.get('innerHTML')));
+    });
+    

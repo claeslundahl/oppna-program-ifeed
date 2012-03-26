@@ -103,9 +103,9 @@
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Länkar till dokumentlista:</div>
       <div class="ifeed-meta-content">
-        <a href="${atomFeedLink}" target="_blank"><img src="/iFeed-portlet/img/rss.png" alt="atom"></a>
-        <a href="${webFeedLink}" target="_blank"><img src="/iFeed-portlet/img/html.png" alt="html"></a>
-        <a id="json-feed-link" href="${jsonFeedLink}" target="_blank"><img src="/iFeed-portlet/img/json_53x21.png" alt="json" height="12px"></a>
+        <a href="${atomFeedLink}" target="_blank">Atom</a>
+        <a href="${webFeedLink}" target="_blank">Html</a>
+        <a id="json-feed-link" href="${jsonFeedLink}" target="_blank">Json</a>
       </div>
     </div>
   </aui:column>
@@ -132,11 +132,11 @@
 
 <aui:layout cssClass="ifeed-block">
   <aui:column columnWidth="33" first="true">
-    <%@ include file="editIFeedFormFilters2.jspf" %>
+    <%@ include file="editIFeedFormFilters.jspf" %>
   </aui:column>
 
   <aui:column columnWidth="33">
-    <%@ include file="editIFeedFormDataFilter2.jspf" %>
+    <%@ include file="editIFeedFormDataFilter.jspf" %>
   </aui:column>
 
   <aui:column columnWidth="33" last="true">
@@ -155,4 +155,5 @@
 <aui:script use="aui-base,aui-tree,json-parse,vgr-ifeed-config">
   <%@ include file="editIFeedFormJs.jspf" %>
 </aui:script>
+
 </c:if>

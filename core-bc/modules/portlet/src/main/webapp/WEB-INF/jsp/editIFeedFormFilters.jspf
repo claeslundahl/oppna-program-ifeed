@@ -13,44 +13,40 @@
 
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 
-    <liferay-ui:panel-container>
-      <liferay-ui:panel title="Tillgängliga filter" collapsible="true" extended="true">
-        <div id="<portlet:namespace />existingFiltersWrap" class="clear-fix">
-          <ul>
-            <c:forEach items="${filterTypes}" var="filterType" varStatus="filterRow">
-              <li><span class="tree-node-wrap clearfix"> <span class="tree-node-label"><liferay-ui:message
-                      key="${filterType.keyString}" /> </span> </span>
-                <ul>
-                  <c:forEach items="${filterType.filters}" var="filter">
-                    <li><span class="tree-node-wrap clearfix"> <portlet:actionURL name="selectFilter"
-                          var="selectFilter">
-                          <portlet:param name="action" value="selectFilter" />
-                          <portlet:param name="filter" value="${filter}" />
-                        </portlet:actionURL> <span class="tree-node-tooltip"
-                        title="<liferay-ui:message key='${filter.helpKey}' />">Icon</span>
-                        <c:choose>
-                          <c:when test="${guard:mayEditFeed(user, ifeed)}">
-                            <a href="${selectFilter}" class="tree-node-use tree-node-link tree-node-link-label"> <span
-                              class="tree-node-label"> <liferay-ui:message key="${filter.labelKey}" /> </span>
-                            </a>
-                          </c:when>
-                          <c:otherwise>
-                            <a class="tree-node-use tree-node-link tree-node-link-label"> <span
-                              class="tree-node-label"> <liferay-ui:message key="${filter.labelKey}" /> </span>
-                            </a>
-                          </c:otherwise>
-                        </c:choose> 
-                      </span></li>
-                  </c:forEach>
-                </ul></li>
-            </c:forEach>
-          </ul>
-        </div>
-      </liferay-ui:panel>
-    </liferay-ui:panel-container>
+<liferay-ui:panel-container>
+  <liferay-ui:panel title="Tillgängliga filter" collapsible="true" extended="true">
+    <div id="<portlet:namespace />existingFiltersWrap" class="clear-fix">
+      <ul>
+        <c:forEach items="${fields}" var="filterType">
+          <c:if test="${not empty filterType.filterCriteriaTypes}">
+            <li><span class="tree-node-wrap clearfix"> <span class="tree-node-label"><liferay-ui:message
+                    key="${filterType.name}" /> </span> </span>
+              <ul>
+                <c:forEach items="${filterType.filterCriteriaTypes}" var="filter">
 
-    
-    <c:forEach var="field" items="${fields}">
-      ${field.name}
-    </c:forEach>
-    
+                  <li><span class="tree-node-wrap clearfix"> <portlet:actionURL name="selectFilter"
+                        var="selectFilter">
+                        <portlet:param name="action" value="selectFilter" />
+                        <portlet:param name="filter" value="${filter.id}" />
+                      </portlet:actionURL> <span class="tree-node-tooltip" title="<liferay-ui:message key='${filter.help}' />">Icon</span>
+                      <c:choose>
+                        <c:when test="${guard:mayEditFeed(user, ifeed)}">
+                          <a href="${selectFilter}" class="tree-node-use tree-node-link tree-node-link-label">
+                            <span class="tree-node-label"> ${filter.name} </span> </a>
+                        </c:when>
+                        <c:otherwise>
+                          <a class="tree-node-use tree-node-link tree-node-link-label"> <span
+                            class="tree-node-label"> ${filter.name} </span> </a>
+                        </c:otherwise>
+                      </c:choose> </span>
+                  </li>
+
+                </c:forEach>
+              </ul>
+            </li>
+          </c:if>
+        </c:forEach>
+      </ul>
+    </div>
+  </liferay-ui:panel>
+</liferay-ui:panel-container>

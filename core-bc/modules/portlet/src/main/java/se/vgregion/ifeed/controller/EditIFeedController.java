@@ -51,6 +51,7 @@ import se.vgregion.ifeed.formbean.SearchResultList;
 import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
+import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
@@ -147,7 +148,8 @@ public class EditIFeedController {
         iFeed.setSortField(sortField);
         iFeed.setSortDirection(sortDirection);
 
-        List<Map<String, Object>> result = iFeedSolrQuery.getIFeedResults(iFeed);
+        IFeedResults result = iFeedSolrQuery.getIFeedResults(iFeed);
+
         if (result.size() == iFeedSolrQuery.getRows()) {
             result.remove(result.size() - 1);
             model.addAttribute("hitsOverflow", true);
@@ -159,6 +161,7 @@ public class EditIFeedController {
         model.addAttribute("vgrOrganizationJson", getVgrOrganizationJson(pr.getNamespace()));
         model.addAttribute("fields", getFieldInfs());
         model.addAttribute("fieldsMap", mapFieldInfToId());
+        model.addAttribute("queryUrl", result.getQueryUrl());
 
         model.addAttribute("atomFeedLink",
                 iFeedAtomFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));

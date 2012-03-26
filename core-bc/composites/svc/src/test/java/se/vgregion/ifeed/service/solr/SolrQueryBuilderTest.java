@@ -39,7 +39,7 @@ public class SolrQueryBuilderTest {
 
     @Test
     public void shouldHandleFixedTextSearch() throws Exception {
-        String expectedQueryString = "dc.language:\"Svenska\"";
+        String expectedQueryString = "language:\"Svenska\"";
 
         IFeedFilter filter = new IFeedFilter(Filter.LANGUAGE, "Svenska", "foo.bar.baz");
         String queryString = SolrQueryBuilder.createQuery(filter, iFeedService.mapFieldInfToId());

@@ -98,22 +98,6 @@
       autoComplete.render();
     }
   });
-  
-    function show_page_detail(e){
-    
-    A.io.request('${findOrgs}&parentOrg=' + escape(e.newVal._originalConfig.id) , {   
-          on: {   success: function() {
-              alert(this.get('responseData'));
-              }   
-          }   
-        });
-    }
-    
-    var defCallback = function(event) {
-        if (window.console && window.console.log) {
-            console.log(event.type, event);
-        }
-    };
     
     var tree2ChildrenJson = '${vgrOrganizationJson}';
     
@@ -150,7 +134,6 @@
     var tree2 = new A.TreeView({
       after : { lastSelectedChange : function(e){ 
         onOrgSelect(e.newVal._originalConfig);
-        //alert(e.newVal + '\n' + e.attrName + '\n'+ e.subAttrName);
       }},
       width: 200,
       type: 'normal',
@@ -170,7 +153,7 @@
       var field = document.getElementById('<portlet:namespace />text-free');
       if (field) {
       
-        queryUrl = queryUrl + '&fq=' + filterTypeId.value + '%3A{query}*&json.wrf={callback}&facet=on&wt=json&facet.field=' + filterTypeId.value + '&facet.mincount=1';
+        queryUrl = queryUrl + '&fq=' + filterTypeId.value + '%3Aquery*&json.wrf=callback&facet=on&wt=json&facet.field=' + filterTypeId.value + '&facet.mincount=1';
         
         function locate(d) {
           var r = d.facet_counts.facet_fields[filterTypeId.value];
@@ -178,12 +161,23 @@
           for (var i = 0; i < r.length; i+=2) result.push(r[i]);
           return result;
         }
+        
+        function jsonp(p, url) {
+          var scriptTag = document.getElementById('solrJsonp');
+          if (scriptTag) p.removeChild(scriptTag);
+          
+          var ne = document.createElement('script');
+          ne.setAttribute('type', 'text/javascript');
+          ne.setAttribute('src', url);
+          ne.setAttribute('id', 'solrJsonp');
+          p.appendChild(ne);
+        }
 
             window.stuff = [['AL', 'Alabama', 'The Heart of Dixie'],
               ['AK', 'Alaska', 'The Land of the Midnight Sun'],
               ['AZ', 'Arizona', 'The Grand Canyon State']]; 
 
-          AUI().ready('aui-autocomplete', 'jsonp', function (A) {
+          AUI().ready('aui-autocomplete', function (A) {
           
             window.process = function(data) {
                 try {
@@ -200,11 +194,11 @@
 
                     window.stuff.length = 0;
                     
-                    var url = queryUrl.replace('{query}',data).replace('{callback}','foo');
+                    var url = queryUrl.replace('query',data).replace('callback','foo');
                     url = url.replace('&sort=dc.title+desc', '');
                     url = url.replace('&sort=dc.title+asc', '');
                     
-                    A.jsonp(url, alert);
+                    jsonp(document.body, url);
                     
                     window.foo = function(r) {
                         var d = locate(r);
@@ -212,7 +206,6 @@
                             var item = [d[i],d[i],d[i]];
                             window.stuff.push(item);
                         }
-                        //window.stuff.sort();
                         var e = {data:window.stuff};
                         window.auto.dataSource._defDataFn(e);
                     }

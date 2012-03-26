@@ -14,7 +14,10 @@ import java.util.Map;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +58,8 @@ public class IFeedSolrQuery extends SolrQuery {
         List<Map<String, Object>> hits = Collections.emptyList();
         try {
             QueryResponse response = solrServer.query(this);
-            hits = (ArrayList<Map<String, Object>>) response.getResults().clone();
+            SolrDocumentList sdl = response.getResults();
+            hits = (ArrayList<Map<String, Object>>) sdl.clone();
         } catch (SolrServerException e) {
             e.printStackTrace();
             LOGGER.error("Serverfel: {}", e.getCause());
@@ -86,13 +90,25 @@ public class IFeedSolrQuery extends SolrQuery {
         LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
     }
 
-    public List<Map<String, Object>> getIFeedResults(IFeed iFeed) {
+    public IFeedResults getIFeedResults(IFeed iFeed) {
         addFeedFilters(iFeed);
         addUnPublishedFilter();
 
         SortDirection direction = isBlank(iFeed.getSortDirection()) ? DEFAULT_SORT_DIRECTION : SortDirection
                 .valueOf(iFeed.getSortDirection());
-        return prepareAndPerformQuery(iFeed.getSortField(), direction);
+
+        IFeedResults results = new IFeedResults();
+
+        if (solrServer instanceof CommonsHttpSolrServer) {
+            CommonsHttpSolrServer chss = (CommonsHttpSolrServer) solrServer;
+            results.setQueryUrl(chss.getBaseURL() + "/select" + ClientUtils.toQueryString(this, false));
+        } else {
+            results.setQueryUrl(ClientUtils.toQueryString(this, false));
+        }
+
+        results.addAll(prepareAndPerformQuery(iFeed.getSortField(), direction));
+
+        return results;
     }
 
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {

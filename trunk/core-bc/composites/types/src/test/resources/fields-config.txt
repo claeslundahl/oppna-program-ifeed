@@ -2,12 +2,11 @@ id|name|help|type|filter|apelonKey|inHtmlView
 |Dokumentbeskrivning|||||yes
 DC.title|Titel|Namn på dokument, handling eller annan typ av resurs. (Fritext)|d:text|yes||yes
 DC.title.filename|Filnamn, utgivet/publicerat |Namn på utgiven/publicerad fil. Filen är en identisk pdf/a-variant av orginalfilen som laddas upp i dokumentlagret. Gäller konverterbara filformat, t ex Office-dokument (Systemstyrt)|d:text|no||yes
-DC.title.filename.native|Filnamn, original |||||yes
-(original skriv endast ut för i-ikonerna)|Namn på fil i orginal. Laddas upp och hanteras i källsystemet och kan publiceras till dokumentlagretfilen, där det kopplas till sin identiska utgivna pdf/a-variant om det är ett filformat som konverteras, t ex Office-dokument. (Systemstyrt)|d:text|no|||yes
+DC.title.filename.native|Filnamn, original (original skriv endast ut för i-ikonerna)|Namn på fil i orginal. Laddas upp och hanteras i källsystemet och kan publiceras till dokumentlagretfilen, där det kopplas till sin identiska utgivna pdf/a-variant om det är ett filformat som konverteras, t ex Office-dokument. (Systemstyrt)|d:text|no|||yes
 DC.title.alternative|Alternativ titel|Alternativ till den formella titeln. Kan tex vara en förkortning eller översättning av titeln. (Fritext)|d:text|yes||yes
 DC.description|Beskrivning|En kort redogörelse för dokumentet, handlingen eller resursens innehåll. (Fritext)|d:mltext|no||yes
 DC.type.document|Dokumenttyp|Grupp av handlingstyper, används för att enklare hitta handlingstyp|d:text_fix|yes|Dokumenttyp VGR|yes
-DC.type.record|Handlingstyp|Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas.|d:text|yes||yes
+DC.type.record|Handlingstyp|Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas.|d:text|yes|Handlingstyp|yes
 DC.coverage.hsacode|Verksamhetskod enligt HSA|Kod och klartext för den/de verksamheter dokumentet, handlingen eller resursens innehåll beskriver (HSA-Nationell katalogtjänst)|d:text_fix|yes|Verksamhetskod|yes
 DC.audience|Målgrupp HoS|Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal|d:text|yes||yes
 DC.identifier.version|Version|Den version dokumentet, handlingen eller resursen har. (Systemstyrt). Mindre ändringar får vanligen version 0.1, 0.2 osv och större ändringar 1.0, 2.0 osv|d:text|no||yes
@@ -18,14 +17,14 @@ vgregion.status.document|Dokumentstatus|Statusmärkning för dokumentet, handlin
 DC.source.documentid|Dokumentid|För systemet unikt id för dokumentet. (Systemstyrt)|d:text|no||yes
 DC.source|Länk till dokumentets källa|Länk till dokumentet, handlingen eller resursen i källsystemet. (Systemstyrt)|d:text|no||yes
 |Skapat av och för|||||yes
-DC.creator|Skapat av (Hämtat värde)|Den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen|d:ldap_value|yes||yes
-DC.creator.id|Skapat av ID (Hämtat värde)|Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager|d:text|yes||yes
+DC.creator|Skapat av (Hämtat värde)|Den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen|d:text|no||yes
+DC.creator.id|Skapat av ID (Hämtat värde)|Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager|d:ldap_value|yes||yes
 DC.creator.freetext|Skapat av (Fritext)|Den eller de personer som skapat eller uppdaterat innehållet och inte finns upplagda i katalogen.|d:text|yes||yes
 DC.creator.forunit|Skapat av enhet|Den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras) |d:ldap_org_value|yes||yes
 DC.creator.project-assignment |Skapat av Projekt/Uppdrag/Grupp|Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är skapad av|d:text|yes||yes
 |Ansvariga|||||yes
-DC.creator.document|Innehållsansvarig/Dokumentansvarig|Den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.|d:text|yes||yes
-DC.creator.document.id|Innehållsansvarig/Dokumentansvarig ID|Id för den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.  Sätts i Alfresco Lager|d:text|no||yes
+DC.creator.document|Innehållsansvarig/Dokumentansvarig|Den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.|d:text|no||yes
+DC.creator.document.id|Innehållsansvarig/Dokumentansvarig ID|Id för den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.  Sätts i Alfresco Lager|d:ldap_value|yes||yes
 DC.creator.function|Funktionsansvar|Den funktion eller roll som ansvarar för innehållet i dokumentet. Funktionen eller rollen skrivs in som fritext t.ex: Lex Maria-ansvarig, Tjänsteman i beredskap eller Reception.|d:text|yes||yes
 DC.creator.recordscreator|Arkivbildare|Ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet|d:ldap_org_value|yes||yes
 |Giltighet och tillgänglighet|||||yes
@@ -51,8 +50,8 @@ DC.contributor.controlledby.unit.freetext|Enhet (Fritext)|En enhet anges för va
 DC.publisher.forunit|Publicerat för enhet|Den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)|d:ldap_org_value|yes||yes
 DC.publisher.project-assignment|Publicerat för Projekt/Uppdrag/Grupp|Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är publicerad för. (Fritext)|d:text|yes||yes
 DC.rights.accessrights|Publik åtkomsträtt|Hur den publicerade informationen blir tillgänglig: Internet och/eller Intranät|d:text|yes||yes
-DC.publisher|Publicerat av|Inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen|d:text|yes||yes
-DC.publisher.id|Publicerat av ID|Id för inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager|d:text|no||yes
+DC.publisher|Publicerat av|Inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen|d:text|no||yes
+DC.publisher.id|Publicerat av ID|Id för inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager|d:text|yes||yes
 DC.date.issued|Publiceringsdatum|Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen.|d:date|yes||yes
 DC.identifier.documentid|Dokumentid till publicerat dokument|För systemet unikt id till det publicerade dokumentet. (Systemstyrt)|d:text|no||yes
 DC.identifier|Länk till publicerat/utgivet dokument|Länk till det publicerade dokumentet, handlingen eller resursen, pdf/a-utgåva. Se filnamn (Systemstyrt)|d:text|no||yes

@@ -35,6 +35,7 @@ import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
+import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FilterType;
@@ -127,7 +128,7 @@ public class EditIFeedControllerTest {
         javax.portlet.RenderResponse response = mock(RenderResponse.class);
 
         IFeedSolrQuery iFeedSolrQuery = mock(IFeedSolrQuery.class);
-        when(iFeedSolrQuery.getIFeedResults(iFeed)).thenReturn(new ArrayList<Map<String, Object>>());
+        when(iFeedSolrQuery.getIFeedResults(iFeed)).thenReturn(new IFeedResults());
         when(iFeedSolrQuery.getRows()).thenReturn(10);
         controller.setIFeedSolrQuery(iFeedSolrQuery);
 

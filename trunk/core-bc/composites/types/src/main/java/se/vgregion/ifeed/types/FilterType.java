@@ -39,6 +39,7 @@ import static se.vgregion.ifeed.types.MetadataType.TEXT_FREE;
 
 import java.util.EnumSet;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -102,8 +103,8 @@ public enum FilterType {
         CREATED_BY_FREE("dc.creator.freetext", TEXT_FREE, ""), TITLE("dc.title", TEXT_FREE, ""), ALT_TITLE(
                 "dc.title.alternative", TEXT_FREE, ""), KEYWORDS_FIX("dc.subject.keywords", TEXT_FREE, ""), KEYWORDS_AUTHORS(
                 "dc.subject.authorkeywords", TEXT_FREE, ""), HSA("dc.coverage.hsacode", TEXT_FIX, "Verksamhetskod"), LANGUAGE(
-                "dc.language", TEXT_FIX, "Språk"), FILE_EXTENSION("dc.format.extension", TEXT_FREE, ""), DOCUMENT_STATUS(
-                "vgr.status.document", TEXT_FIX, "Dokumentstatus");
+                "language", /* "dc.language", */TEXT_FIX, "Språk"), FILE_EXTENSION("dc.format.extension",
+                TEXT_FREE, ""), DOCUMENT_STATUS("vgr.status.document", TEXT_FIX, "Dokumentstatus");
 
         private String metadataField;
         private String keyString;
@@ -161,6 +162,10 @@ public enum FilterType {
                         + "' where filter ='" + f + "';");
             }
         }
+        String s = "hej?foo=123&rows=501&bla";
+
+        s = s.replaceAll("rows" + Pattern.quote("=") + "[0-9]+", "rows=0");
+        System.out.println("\ns= " + s);
 
     }
 }

@@ -47,13 +47,43 @@
       metadataTooltipURL: '${metdataTooltipURL}'
   })
   .render();
+
+  function orgs2label(orgs) {
+    if (orgs.length == 0)
+      return "<em>Inga organisationer matchade Hsa-Id!</em>";
+    var r = [];
+    for (var i = 0; i < orgs.length; i++)
+      r.push(' ' + orgs[i].label);
+    return '('+ r + ' )';
+  }
+
+  window.updateSelectedHsaIdName = function(data) {
+    var ldapOrgLabel = document.getElementById('ldapOrgLabel');
+    ldapOrgLabel.innerHTML = orgs2label(data); 
+  }  
+  
+  window.fetchOrgNameWithSelectedHsaId = function() {
+    try {
+      var inputFindExpression = "<portlet:namespace />filterValue";
+      var hsaId = document.getElementById(inputFindExpression).value;
+      var path = '${findOrganizationByHsaId}&callback=window.updateSelectedHsaIdName&hsaId=' + hsaId;
+      path += '&maxHits=100';
+      var ldapOrgLabel = document.getElementById('ldapOrgLabel');
+      ldapOrgLabel.innerHTML = '-';
+      jsonp(document.body, path);
+    }catch(eee) {
+      alert(eee.message);
+    }
+  }
+  
   
   AUI().ready('aui-autocomplete', function(A) {
-    var inputFindExpression = "#<portlet:namespace />ldap-value";
-    if(A.one(inputFindExpression) != null) {
+    var inputFindExpression = "#<portlet:namespace />filterValue";
+    
+    if(window.filterType == 'd:ldap_value') {
       var datasource = function(request) {
         var items = null;
-          A.io.request('{findPeople}&filterValue=' + A.one(inputFindExpression).get('value') + "*", {
+          A.io.request('${findPeople}&filterValue=' + A.one(inputFindExpression).get('value') + "*", {
             cache: false,
             sync: true,
             timeout: 1000,
@@ -86,7 +116,7 @@
           typeAhead: false,
           minQueryLength: 3,
           contentBox: '#<portlet:namespace />ldap-people',
-          input: '#<portlet:namespace />ldap-value'
+          input: '#<portlet:namespace />filterValue'
       });
       autoComplete._onContainerClick = _onContainerClick;
       var count = 0;
@@ -99,60 +129,66 @@
     }
   });
     
-    var tree2ChildrenJson = '${vgrOrganizationJson}';
-    
-    var tree2Children = A.JSON.parse(tree2ChildrenJson);
-        
-    function putIo(orgs) {
-      if (!(orgs instanceof Array)) orgs = [orgs];
-      for(var i = 0; i < orgs.length; i++) {
-        var item = orgs[i];
-        var p = '${findOrgs}&parentOrg=' + item.dn.replace('&', '%26') + '&url=' + escape('${findOrgs}');
-        item.io = p;
-      }
-    }        
+  var tree2ChildrenJson = '${vgrOrganizationJson}';
+  
+  var tree2Children = A.JSON.parse(tree2ChildrenJson);
+      
+  function putIo(orgs) {
+    if (!(orgs instanceof Array)) orgs = [orgs];
+    for(var i = 0; i < orgs.length; i++) {
+      var item = orgs[i];
+      var p = '${findOrgs}&parentOrg=' + item.dn.replace('&', '%26') + '&url=' + escape('${findOrgs}');
+      item.io = p;
+    }
+  }        
 
-    putIo(tree2Children);
+  putIo(tree2Children);
     
   function dnToLabel(dn) {
-    var arr = dn.split('|');
-    if (arr.length < 2) return '';
-    return arr[1] + ' (' + arr[0] + ')';
+    var s = dn.label;
+    if (dn.query) s += '(' + dn.query + ')';
+    return s;
   }
     
-    function onOrgSelect(org) {
-      try{
-        var input = document.getElementById('<portlet:namespace />ldap-value');
-        input.value = org.query;
-        document.getElementById('ldapOrgLabel').innerHTML = dnToLabel(org.query);
-      }catch(e) {
-        alert('onOrgSelect: ' + e.message);
-      }
+  function onOrgSelect(org) {
+    try{
+      var input = document.getElementById('<portlet:namespace />filterValue');
+      input.value = org.query;
+      fetchOrgNameWithSelectedHsaId();
+    }catch(e) {
+      alert('onOrgSelect: ' + e.message);
     }
+  }
     
-    if (document.getElementById('tree'))
-    var tree2 = new A.TreeView({
-      after : { lastSelectedChange : function(e){ 
-        onOrgSelect(e.newVal._originalConfig);
-      }},
-      width: 200,
-      type: 'normal',
-      expanded: true, 
-      boundingBox: '#tree',
-      children: tree2Children 
-    }).render();
+  if (document.getElementById('tree'))
+  window.tree2 = new A.TreeView({
+    after : { lastSelectedChange : function(e){ 
+      onOrgSelect(e.newVal._originalConfig);
+    }},
+    width: 200,
+    type: 'normal',
+    expanded: true, 
+    boundingBox: '#tree',
+    children: tree2Children 
+  }).render();
 
     var allLdapOrgLabels = A.all('.ldapOrgLabel');
     allLdapOrgLabels.each(function(each){
-      each.set('innerHTML', dnToLabel(each.get('innerHTML')));
+      try {
+        var json = each.get('title');
+        if (json == '' || json == null) return;
+        eval('var orgs = ' + json);
+        each.set('innerHTML', each.get('innerHTML') + '<br/>' + orgs2label(orgs));
+      }catch(e) {
+        //console.log(e);
+      }
     });
 
     var queryUrl = '${queryUrl}';
     var filterTypeId = document.getElementById('<portlet:namespace />filterTypeId');
-    if (filterTypeId) {
-      var field = document.getElementById('<portlet:namespace />text-free');
+    if (window.filterType == 'd:text_facet' || window.filterType == 'd:ldap_org_value') {
+      var field = document.getElementById('<portlet:namespace />filterValue');
       if (field) {
-      
         queryUrl = queryUrl + '&fq=' + filterTypeId.value + '%3Aquery*&json.wrf=callback&facet=on&wt=json&facet.field=' + filterTypeId.value + '&facet.mincount=1';
         
         function locate(d) {
@@ -173,62 +209,67 @@
           p.appendChild(ne);
         }
 
-            window.stuff = [['AL', 'Alabama', 'The Heart of Dixie'],
-              ['AK', 'Alaska', 'The Land of the Midnight Sun'],
-              ['AZ', 'Arizona', 'The Grand Canyon State']]; 
-
-          AUI().ready('aui-autocomplete', function (A) {
+        window.stuff = [['AL', 'Alabama', 'The Heart of Dixie'],
+          ['AK', 'Alaska', 'The Land of the Midnight Sun'],
+          ['AZ', 'Arizona', 'The Grand Canyon State']]; 
+  
+        AUI().ready('aui-autocomplete', function (A) {
+        
+          window.process = function(data) {
+              try {
+                  function replaceAll(s, ss, ns) {
+                      var re = s;
+                      do {
+                        s = re;
+                        re = re.replace(ss, ns);
+                      }while(re != s);
+                      return re;
+                  }
+                  data = replaceAll(data, '%20', '%5C ');
+                  data = replaceAll(data, ' ', '%20');
+  
+                  window.stuff.length = 0;
+                  
+                  var url = queryUrl.replace('query',data).replace('callback','window.foo');
+                  url = url.replace('&sort=dc.title+desc', '');
+                  url = url.replace('&sort=dc.title+asc', '');
+                  
+                  window.foo = function(r) {
+                    //if (console) console.log(r);
+                    try {
+                      var d = locate(r);
+                      for (var i = 0; i < d.length; i++) {
+                          var item = [d[i],d[i],d[i]];
+                          window.stuff.push(item);
+                      }
+                      var e = {data:window.stuff};
+                      window.auto.dataSource._defDataFn(e);
+                    } catch(e) {
+                      alert(e.message); 
+                    }   
+                  };
+                  
+                  jsonp(document.body, url);
+              } catch(e) {
+                  alert(e.message); 
+              }
+              return window.stuff;
+          };
+            
+          window.auto = new A.AutoComplete({
+            dataSource: window.process,
+            schema: {
+              resultFields: ['key', 'name', 'description']
+            },
+            matchKey: 'name',
+            typeAhead: false,
+            contentBox: '#myAutoComplete',
+            input: '#<portlet:namespace />filterValue',
+            forceSelection: false,
+            maxResultsDisplayed: 15,
+            autoHiglight: false
+          }).render();            
           
-            window.process = function(data) {
-                try {
-                    function replaceAll(s, ss, ns) {
-                        var re = s;
-                        do {
-                          s = re;
-                          re = re.replace(ss, ns);
-                        }while(re != s);
-                        return re;
-                    }
-                    data = replaceAll(data, '%20', '%5C ');
-                    data = replaceAll(data, ' ', '%20');
-
-                    window.stuff.length = 0;
-                    
-                    var url = queryUrl.replace('query',data).replace('callback','foo');
-                    url = url.replace('&sort=dc.title+desc', '');
-                    url = url.replace('&sort=dc.title+asc', '');
-                    
-                    jsonp(document.body, url);
-                    
-                    window.foo = function(r) {
-                        var d = locate(r);
-                        for (var i = 0; i < d.length; i++) {
-                            var item = [d[i],d[i],d[i]];
-                            window.stuff.push(item);
-                        }
-                        var e = {data:window.stuff};
-                        window.auto.dataSource._defDataFn(e);
-                    }
-                } catch(e) {
-                    alert(e.message); 
-                }
-                return window.stuff;
-            };
-            
-            window.auto = new A.AutoComplete({
-              dataSource: window.process,
-              schema: {
-                resultFields: ['key', 'name', 'description']
-              },
-              matchKey: 'name',
-              typeAhead: false,
-              contentBox: '#myAutoComplete',
-              input: '#myAutoCompleteIo',
-              forceSelection: false,
-              maxResultsDisplayed: 15,
-              autoHiglight: false
-            }).render();            
-            
-          });
+        });
       }
     }

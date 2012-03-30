@@ -63,4 +63,16 @@ public class LdapSupportFileSys implements LdapSupportService {
         return sb.toString();
     }
 
+    @Override
+    public <T extends HasCommonLdapFields> List<T> find(T org) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public <T extends HasCommonLdapFields, R> List<R> find(T org, Class<R> resultType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

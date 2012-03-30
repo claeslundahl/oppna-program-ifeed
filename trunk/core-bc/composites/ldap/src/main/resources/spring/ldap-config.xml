@@ -66,4 +66,11 @@
     <property name="ldapTemplate" ref="vgr.org.ldapTemplate" />
   </bean>
   
+  
+  <bean id="ldapJsonBean" class="se.vgregion.ifeed.el.Json">
+    <property name="ldapSupportService" ref="ldapOrganizationService" />
+  </bean>
+  
+  
+  
 </beans>

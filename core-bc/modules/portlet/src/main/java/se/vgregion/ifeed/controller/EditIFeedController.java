@@ -46,6 +46,7 @@ import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 import org.springframework.web.util.UriTemplate;
 
 import se.vgregion.ifeed.el.AccessGuard;
+import se.vgregion.ifeed.el.Json;
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.formbean.SearchResultList;
 import se.vgregion.ifeed.formbean.VgrOrganization;
@@ -333,6 +334,30 @@ public class EditIFeedController {
         }
     }
 
+    @ResourceMapping("findOrganizationByHsaId")
+    public void findOrganizationByHsaId(@RequestParam String hsaId,
+            @RequestParam(required = false) String callback, @RequestParam(required = false) Integer maxHits,
+            ResourceResponse response) {
+
+        try {
+            String json = Json.vgrHsaIdToJson(hsaId, maxHits);
+            final OutputStream out = response.getPortletOutputStream();
+            response.setContentType("application/json");
+            if (callback != null) {
+                out.write(callback.getBytes());
+                out.write("(".getBytes());
+                out.write(json.getBytes());
+                out.write(")".getBytes());
+                out.flush();
+            } else {
+                out.write(json.getBytes());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String replace(String s, Map<String, String> map) {
         for (String k : map.keySet()) {
             s = s.replaceAll(Pattern.quote(k), map.get(k));
@@ -488,5 +513,15 @@ public class EditIFeedController {
     public static void setFieldInfsCache(List<FieldInf> fieldInfs) {
         EditIFeedController.fieldInfs = fieldInfs;
     }
+
+    // private void addLabelToOrganizations(IFeed feed) {
+    // Map<String, FieldInf> map = iFeedService.mapFieldInfToId();
+    // for (IFeedFilter filter : feed.getFilters()) {
+    // FieldInf fi = map.get(filter.getFilterKey());
+    // if (fi != null && "d:ldap_org_value".equals(fi.getName())) {
+    //
+    // }
+    // }
+    // }
 
 }

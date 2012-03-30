@@ -57,4 +57,5 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
     public void setFilterKey(String filterKey) {
         this.filterKey = filterKey;
     }
+
 }

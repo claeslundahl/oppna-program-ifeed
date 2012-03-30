@@ -13,10 +13,23 @@
 
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 
+
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/redmond/jquery-ui.css" type="text/css" />
+<link rel="stylesheet" href="http://webframe.vgregion.se/documentListing/docListCreator/lib/jquery.cluetip.css" type="text/css" />
+<link rel="stylesheet" href="http://webframe.vgregion.se/documentListing/docListCreator/lib/jquery-impromptu.4.0.min.css" type="text/css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
+<script src="http://webframe.vgregion.se/documentListing/docListCreator/lib/jquery-impromptu.4.0.min.js"></script>
+<script src="http://webframe.vgregion.se/documentListing/docListCreator/lib/jquery.cluetip.all.js"></script>
+<script type="text/javascript" src="http://webframe.vgregion.se/documentListing/docListCreator/local.js"></script>
+
+
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <portlet:resourceURL id="findPeople" var="findPeople" />
 <portlet:resourceURL id="findOrgs" var="findOrgs" />
+<portlet:resourceURL id="findOrganizationByHsaId" var="findOrganizationByHsaId" />
+
 <portlet:resourceURL var="metdataTooltipURL" id="metadata"  />
 
 <portlet:actionURL name="editIFeed" var="editIFeedURL">
@@ -99,13 +112,16 @@
       <div class="ifeed-meta-label">Id:</div>
       <div class="ifeed-meta-content">${ifeed.id}</div>
     </div>
-    
+
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Länkar till dokumentlista:</div>
       <div class="ifeed-meta-content">
-        <a href="${atomFeedLink}" target="_blank">Atom</a>
-        <a href="${webFeedLink}" target="_blank">Html</a>
-        <a id="json-feed-link" href="${jsonFeedLink}" target="_blank">Json</a>
+
+      <a href="${atomFeedLink}" target="_blank">Atom</a>
+      <a href="${webFeedLink}" target="_blank">Html</a>
+      <a id="json-feed-link" href="${jsonFeedLink}" target="_blank">Json</a>
+      <a href="javascript:loadCodeFrame('${ifeed.id}');">Jsonp-hjälp</a>
+
       </div>
     </div>
   </aui:column>
@@ -155,5 +171,7 @@
 <aui:script use="aui-base,aui-tree,json-parse,vgr-ifeed-config">
   <%@ include file="editIFeedFormJs.jspf" %>
 </aui:script>
+
+
 
 </c:if>

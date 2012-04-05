@@ -53,6 +53,7 @@
           </c:when>
           
           <c:when test="${newFilter.type == 'LDAP_VALUE' or newFilter.type == 'd:ldap_value'}">
+            <label class="aui-field-label" for="<portlet:namespace />filterValue">${newFilter.name}</label>
             <script type="text/javascript">
               window.filterType = 'd:ldap_value';
             </script>
@@ -64,18 +65,27 @@
           
           <c:when test="${newFilter.type == 'LDAP_ORG_VALUE' or newFilter.type == 'd:ldap_org_value'}">
             <div>
-            <script type="text/javascript">
-              window.filterType = 'd:ldap_org_value';
-            </script>
-            <div id="myAutoComplete" class="ifeed-portlet-ldap-people">
-                <aui:input label="${newFilter.name}" name="filterValue" id="filterValue" value="${filterValue}"
-                cssClass="ifeed-portlet-filter-input" onChange="window.fetchOrgNameWithSelectedHsaId()" />
-            </div>
-            <span class="ldapOrgLabel" id="ldapOrgLabel" title='${json:vgrHsaIdToJson(filterValue, 100)}'>${filterValue}</span>
-            <br /><br />
-            <div style="max-height: 200px; overflow-y:scroll;">  
-              <div id="tree"></div>
-            </div>
+              <div id="myAutoComplete" class="ifeed-portlet-ldap-people">
+                  <aui:input label="${newFilter.name}" name="filterValue" id="filterValue" value="${filterValue}" 
+                  cssClass="ifeed-portlet-filter-input" onChange="window.fetchOrgNameWithSelectedHsaId()" type="text"
+                   />
+              </div>
+              <span class="ldapOrgLabel" id="ldapOrgLabel" title='${json:vgrHsaIdToJson(filterValue, 100)}'>${filterValue}</span>
+              <br /><br />
+              <div style="max-height: 200px; overflow-y:scroll;">  
+                <div id="tree"></div>
+              </div>
+              
+              <script type="text/javascript">
+                window.filterType = 'd:ldap_org_value';
+                function hinder() {
+                    return false;
+                }
+                var filterValue = document.getElementById('<portlet:namespace />filterValue');
+                filterValue.onkeypress = hinder;
+                filterValue.onkeydown = hinder;
+              </script>
+              
             </div>
           </c:when>
         </c:choose>
@@ -85,9 +95,9 @@
         <aui:button-row>
           <aui:button type="submit" value="Lägg Till" name="add" />
         </aui:button-row>
-        <div class="aui-widget-bd">
-          ${not empty newFilter.help ? newFilter.help : ''}
-        </div>
+        <c:if test="${not empty newFilter.help}">
+          <div class="aui-widget-bd portlet-msg-info">${newFilter.help}</div>
+        </c:if>
       </c:if>      
 
       

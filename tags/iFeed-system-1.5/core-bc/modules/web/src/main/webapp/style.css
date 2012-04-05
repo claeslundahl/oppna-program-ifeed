@@ -1,0 +1,95 @@
+.doc-list {
+  list-style-type: none;
+}
+
+a {
+  PADDING-RIGHT: 0px;
+  PADDING-LEFT: 0px;
+  PADDING-BOTTOM: 0px;
+  MARGIN: 0px;
+  COLOR: #005baa;
+  PADDING-TOP: 0px;
+  TEXT-DECORATION: underline;
+  margin: 0px;
+  vertical-align: top;
+}
+
+a img {
+  border: none;
+  margin-right: 0.5em;
+}
+
+/*  */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
+  margin: 0;
+  padding: 0;
+}
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
+  margin: 0;
+  padding: 0;
+}
+
+/* Inherited from section#portlet_iFeed_WAR_iFeedportlet.portlet
+main.css: 1 */
+.portlet {
+  text-align: left;
+}
+
+/* Inherited from div#aui_3_2_0_11035.portlet-layout
+main.css: 1*/
+.portlet-layout {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Inherited from body#aui_3_2_0_1324.controls-hidden.signed-in.private-page
+main.css: 1 */
+body {
+  color: #333;
+  font-family: Arial, Verdana, Helvetica, sans-serif;
+  font-size: 12px;
+  margin: 0.5em;
+}
+
+#table-container {
+    padding: 0 10px;
+}
+
+#table-container h1 {
+    font-size: 16px;
+}
+
+.ifeed-metadata-table {
+    border-collapse: collapse;
+    margin: 20px 0px;
+    width: 100%;
+}
+
+.ifeed-metadata-table thead td {
+    background-color: #ebebeb;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding-left: 6px;
+    padding: 5px 0px 5px 6px;
+}
+
+.ifeed-metadata-table tbody td {
+    border-bottom: 1px solid lightgray;
+    padding-left: 6px;
+    padding-top: 1px;
+}
+
+.ifeed-metadata-table td.no-styling {
+    border-bottom: none;
+}
+
+.ifeed-metadata-table td.key {
+    font-weight: bold;
+    width: 25%;
+}
+
+#json-feed-link {
+    position: relative;
+    bottom: 2px;
+}

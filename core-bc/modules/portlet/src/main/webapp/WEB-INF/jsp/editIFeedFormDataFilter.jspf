@@ -72,7 +72,7 @@
               </div>
               <span class="ldapOrgLabel" id="ldapOrgLabel" title='${json:vgrHsaIdToJson(filterValue, 100)}'>${filterValue}</span>
               <br /><br />
-              <div style="max-height: 200px; overflow-y:scroll;">  
+              <div style="max-height: 200px; overflow-y:scroll; border: solid black 1px;">  
                 <div id="tree"></div>
               </div>
               

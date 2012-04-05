@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+  <mvc:resources location="/" mapping="/resources/**" />
+  <mvc:annotation-driven />
+
+  <context:component-scan base-package="se.vgregion.ifeed.viewer"></context:component-scan>
+
+
+  <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+    <property name="order" value="1" />
+    <property name="mediaTypes">
+      <map>
+        <entry key="json" value="application/json" />
+        <entry key="xml" value="application/xml" />
+      </map>
+    </property>
+    <property name="defaultViews">
+      <list>
+        <bean class="se.vgregion.ifeed.viewer.CustomMappingJacksonJsonView" />
+        <bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+          <constructor-arg>
+            <bean class="org.springframework.oxm.xstream.XStreamMarshaller" />
+          </constructor-arg>
+        </bean>
+      </list>
+    </property>
+    <property name="ignoreAcceptHeader" value="true" />
+  </bean>
+
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="order" value="2" />
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+    <property name="prefix" value="/WEB-INF/jsp/" />
+    <property name="suffix" value=".jsp" />
+    <property name="contentType" value="text/html;charset=UTF-8" />
+  </bean>
+
+</beans>

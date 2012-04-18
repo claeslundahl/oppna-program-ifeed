@@ -1,3 +1,4 @@
+
 AUI().add('vgr-ifeed-config',function(A) {
 	var Lang = A.Lang,
 		isArray = Lang.isArray,
@@ -140,6 +141,7 @@ AUI().add('vgr-ifeed-config',function(A) {
             
 						// Setup tree node tooltips
 						// 
+            /*
 						instance.treeNodeTooltip =  new A.Tooltip({
 							trigger: '#' + instance.get(PORTLET_WRAP).get(ID) + ' .' + CSS_CLASS_TREE_NODE_TOOLTIP,
 							align: { points: [ 'bc', 'tc' ] },
@@ -147,7 +149,7 @@ AUI().add('vgr-ifeed-config',function(A) {
 							title: true							
 						})
 						.render();
-						
+				*/		
 						//Tooltip for metadata
 						instance.tooltipMetadata = new A.Tooltip({
 					    trigger: '#' + instance.get(PORTLET_WRAP).get(ID) + ' .' + CSS_CLASS_METADATA_NODE_TOOLTIP,

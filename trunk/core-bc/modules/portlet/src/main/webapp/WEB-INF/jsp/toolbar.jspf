@@ -1,4 +1,6 @@
+<%@page import="se.vgregion.ifeed.el.AccessGuard"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 
 <div class="lfr-portlet-toolbar">
     <portlet:renderURL var="viewOwnedURL">
@@ -22,11 +24,13 @@
         <a href="<%=addIFeedFormURL%>"><liferay-ui:message key="add" /></a>
     </span>
     
-    <portlet:actionURL var="adminFieldsURL">
-        <portlet:param name="action" value="adminFields" />
-    </portlet:actionURL>
-    <span class="lfr-toolbar-button add-button <c:if test='${toolbarItem eq "add"}'>current</c:if>">
-        <a href="<%=adminFieldsURL%>"><liferay-ui:message key="Fältinställningar" /></a>
-    </span>
+    <%if(com.liferay.portal.util.PortalUtil.getUser(request) != null && se.vgregion.ifeed.el.AccessGuard.mayEditAllFeeds(com.liferay.portal.util.PortalUtil.getUser(request))){%>
+      <portlet:actionURL var="adminFieldsURL">
+          <portlet:param name="action" value="adminFields" />
+      </portlet:actionURL>
+      <span class="lfr-toolbar-button add-button <c:if test='${toolbarItem eq "adminFields"}'>current</c:if>">
+          <a href="<%=adminFieldsURL%>"><liferay-ui:message key="Fältinställningar" /></a>
+      </span>
+    <%}%>
 	
 </div>

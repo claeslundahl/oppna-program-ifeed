@@ -6,5 +6,6 @@
     <class>se.vgregion.ifeed.types.IFeed</class>
     <class>se.vgregion.ifeed.types.IFeedFilter</class>
     <class>se.vgregion.ifeed.types.Metadata</class>
+    <class>se.vgregion.ifeed.types.Ownership</class>
   </persistence-unit>
 </persistence>

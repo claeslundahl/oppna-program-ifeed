@@ -19,8 +19,8 @@
   margin: 0 0 10px 0;
 }
 
-.ifeed-portlet .lfr-panel .aui-toolbar {
-  display: none;
+#trigger {
+  visibility: hidden;
 }
 
 .ifeed-portlet .lfr-panel .aui-field-content {

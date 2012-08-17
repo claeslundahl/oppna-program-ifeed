@@ -14,7 +14,7 @@
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 
     <liferay-ui:panel-container>
-      <liferay-ui:panel title="Träfflista" collapsible="true" extended="true" cssClass="ifeed-search-result-list">
+      <liferay-ui:panel title="Träfflista" collapsible="false" extended="true" cssClass="ifeed-search-result-list">
         <c:if test="${not empty ifeed.filters}">
           <c:if test="${hitsOverflow}">
             <div class="portlet-msg-success">

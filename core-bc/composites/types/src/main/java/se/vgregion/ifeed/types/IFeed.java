@@ -4,8 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -13,14 +17,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
@@ -28,142 +31,173 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 @Table(name = "vgr_ifeed")
 public class IFeed extends AbstractEntity<Long> implements Serializable, Comparable<IFeed> {
 
-    private static final long serialVersionUID = -2277251806545192506L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
+	private static final long serialVersionUID = -2277251806545192506L;
+	// private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
 
-    @Id
-    @GeneratedValue
-    private Long id;
-    @Version
-    private Long version;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
-    private List<IFeedFilter> filters;
-    private String name;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp = null;
-    private String description;
-    private String userId;
-    private String sortField;
-    private String sortDirection;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    public List<IFeedFilter> getFilters() {
-        if (filters == null) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableList(filters);
-    }
+	@Version
+	private Long version;
 
-    public boolean addFilter(IFeedFilter filter) {
-        if (filter == null) {
-            throw new IllegalArgumentException();
-        }
-        if (filters == null) {
-            filters = new ArrayList<IFeedFilter>();
-        } else if (filters.contains(filter)) {
-            return false;
-        }
-        filters.add(filter);
-        return true;
-    }
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
+	private List<IFeedFilter> filters;
 
-    public IFeedFilter getFilter(IFeedFilter filter) {
-        IFeedFilter f = null;
-        int index = filters.indexOf(filter);
-        if (index >= 0) {
-            f = filters.get(index);
-        }
-        return f;
-    }
+	private String name;
 
-    public void setFilters(List<IFeedFilter> filters) {
-        this.filters.clear();
-        this.filters.addAll(filters);
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timestamp = null;
 
-    public void removeFilter(IFeedFilter filter) {
-        filters.remove(filter);
-    }
+	private String description;
+	private String userId;
 
-    public String getName() {
-        return name;
-    }
+	// @ElementCollection(fetch = FetchType.EAGER)
+	// @CollectionTable(name = "vgr_ifeed_ownership", joinColumns = @JoinColumn(name = "ifeed_id"))
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
+	private Set<Ownership> ownerships = new HashSet<Ownership>();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	private String sortField;
+	private String sortDirection;
 
-    public Date getTimestamp() {
-        if (timestamp == null) {
-            return null;
-        } else {
-            return new Date(timestamp.getTime());
-        }
-    }
+	public List<IFeedFilter> getFilters() {
+		if (filters == null) {
+			return Collections.emptyList();
+		}
+		return Collections.unmodifiableList(filters);
+	}
 
-    public void clearTimestamp() {
-        this.timestamp = null;
-    }
+	public boolean addFilter(IFeedFilter filter) {
+		if (filter == null) {
+			throw new IllegalArgumentException();
+		}
+		if (filters == null) {
+			filters = new ArrayList<IFeedFilter>();
+		} else if (filters.contains(filter)) {
+			return false;
+		}
+		filters.add(filter);
+		return true;
+	}
 
-    public String getUserId() {
-        return userId;
-    }
+	public IFeedFilter getFilter(IFeedFilter filter) {
+		IFeedFilter f = null;
+		int index = filters.indexOf(filter);
+		if (index >= 0) {
+			f = filters.get(index);
+		}
+		return f;
+	}
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+	public void setFilters(List<IFeedFilter> filters) {
+		this.filters.clear();
+		this.filters.addAll(filters);
+	}
 
-    public void setTimestamp() {
-        this.timestamp = new Date();
-    }
+	public void removeFilter(IFeedFilter filter) {
+		filters.remove(filter);
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Date getTimestamp() {
+		if (timestamp == null) {
+			return null;
+		} else {
+			return new Date(timestamp.getTime());
+		}
+	}
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	public void clearTimestamp() {
+		this.timestamp = null;
+	}
 
-    public String getSortDirection() {
-        return sortDirection;
-    }
+	public String getUserId() {
+		return userId;
+	}
 
-    public String getSortField() {
-        return sortField;
-    }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    public void setSortDirection(String sortDirection) {
-        this.sortDirection = sortDirection;
-    }
+	public void setTimestamp() {
+		this.timestamp = new Date();
+	}
 
-    public void setSortField(String sortField) {
-        this.sortField = sortField;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setVersion(Long version) {
-        this.version = version;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Long getVersion() {
-        return version;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    @Override
-    public final int compareTo(final IFeed o) {
-        if (o == null) {
-            return +1;
-        }
-        return new CompareToBuilder().append(name, o.name).toComparison();
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
+
+	public String getSortDirection() {
+		return sortDirection;
+	}
+
+	public String getSortField() {
+		return sortField;
+	}
+
+	public void setSortDirection(String sortDirection) {
+		this.sortDirection = sortDirection;
+	}
+
+	public void setSortField(String sortField) {
+		this.sortField = sortField;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	@Override
+	public final int compareTo(final IFeed o) {
+		if (o == null) {
+			return +1;
+		}
+		return new CompareToBuilder().append(name, o.name).toComparison();
+	}
+
+	public Set<Ownership> getOwnerships() {
+		return ownerships;
+	}
+
+	public void setOwnerships(Set<Ownership> ownerships) {
+		this.ownerships = ownerships;
+	}
+
+	public String getOwnershipsText() {
+		List<String> names = new ArrayList<String>();
+		for (Ownership ownership : getOwnerships()) {
+			names.add(ownership.getUserId());
+		}
+		names.remove(getUserId());
+		names.add(0, getUserId());
+		String text = names.toString();
+		text = text.replaceAll(Pattern.quote("["), "").replaceAll(Pattern.quote("]"), "");
+		return text;
+	}
 
 }

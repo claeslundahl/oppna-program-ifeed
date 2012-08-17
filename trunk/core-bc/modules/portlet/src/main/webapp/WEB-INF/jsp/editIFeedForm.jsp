@@ -127,6 +127,8 @@
   </aui:column>
 </aui:layout>
 
+  <%@ include file="editIFeedFormOwners.jspf" %>
+
 <aui:layout cssClass="ifeed-block">
   <aui:column columnWidth="33" first="true">
     <div class="ifeed-step">
@@ -145,7 +147,7 @@
   </aui:column>
 </aui:layout>
 
-
+<%--
 <aui:layout cssClass="ifeed-block">
   <aui:column columnWidth="33" first="true">
     <%@ include file="editIFeedFormFilters.jspf" %>
@@ -158,8 +160,31 @@
   <aui:column columnWidth="33" last="true">
     <%@ include file="editIFeedFormResult.jspf" %>
   </aui:column>
-  
+
+
 </aui:layout>
+--%>
+
+<table class="ifeed-block" style="width: 100%" cellpadding="5px" cellspacing="6px">
+	<tr>
+		
+  <td style="width:33%; vertical-align:top">
+    <%@ include file="editIFeedFormFilters.jspf" %>
+  </td>
+  <td style="widthx:5%">&nbsp;</td>
+<td style="width:33%; vertical-align:top">
+    <%@ include file="editIFeedFormDataFilter.jspf" %>
+  </td>
+  
+  <td style="widthx:5%">&nbsp;</td>
+<td style="width:33%; vertical-align:top">
+    <%@ include file="editIFeedFormResult.jspf" %>
+  </td>
+  </tr>
+</table>
+
+
+
 <liferay-util:html-top>
   <%@ include file="ifeed_css.jsp"%>
   <c:if test="${guard:mayEditFeed(user, ifeed)}">

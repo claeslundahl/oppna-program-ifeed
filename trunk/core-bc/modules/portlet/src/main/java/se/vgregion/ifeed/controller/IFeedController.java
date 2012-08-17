@@ -99,6 +99,9 @@ public class IFeedController {
 	private static final Transformer LOWER_CASE_TRANSFORMER = new Transformer() {
 		@Override
 		public Object transform(final Object input) {
+			if (input == null) {
+				return "";
+			}
 			return ((String) input).toLowerCase(CommonUtils.SWEDISH_LOCALE);
 		}
 	};

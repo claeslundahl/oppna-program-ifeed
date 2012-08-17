@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.el;
 
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.Ownership;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.Role;
@@ -32,7 +33,17 @@ public class AccessGuard {
 		} catch (SystemException se) {
 			throw new RuntimeException(se);
 		}
-		return user.getScreenName().equals(feed.getUserId());
+		if (user.getScreenName().equals(feed.getUserId())) {
+			return true;
+		}
+
+		for (Ownership ownership : feed.getOwnerships()) {
+			if (user.getScreenName().equals(ownership.getUserId())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

@@ -1,0 +1,68 @@
+<%@page import="se.vgregion.ifeed.types.IFeed"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
+<%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
+<%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
+<%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
+<%@ taglib uri="/WEB-INF/tld/json.tld" prefix="json"%>
+<div class="clear-fix">
+<table class="tree-node-label">
+	
+	<tr>
+		<td style="padding-right: 5px; height: 20px">
+			Typ
+        </td>
+		<td style="padding-right: 5px; height: 20px">
+			Värde
+        </td>
+		
+    </tr>
+	
+    <c:forEach items="${ifeed.filters}" var="iFeedFilter" varStatus="filtersRow">
+        <portlet:actionURL name="removeFilter" var="removeFilter">
+            <portlet:param name="action" value="removeFilter" />
+            <portlet:param name="filter" value="${iFeedFilter.filter}" />
+            <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
+            <portlet:param name="filterKey" value="${iFeedFilter.filterKey}" />
+        </portlet:actionURL>
+        <portlet:actionURL name="editFilter" var="editFilter">
+            <portlet:param name="action" value="editFilter" />
+            <portlet:param name="filter" value="${iFeedFilter.filterKey}" />
+            <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
+        </portlet:actionURL>
+        <tr style="height: 20px; vertical-align: top">
+            <td style="padding-right: 5px; height: 20px">
+                <c:choose>
+                    <c:when test="${guard:mayEditFeed(user, ifeed)}">
+                        <a href="${editFilter}" class="tree-node-link tree-node-edit">Redigera</a>
+                        <a href="${removeFilter}" class="tree-node-link tree-node-delete">Ta bort</a>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="tree-node-link tree-node-edit">Redigera</span>
+                        <span class="tree-node-link tree-node-delete">Ta bort</span>
+                    </c:otherwise>
+                </c:choose>
+                ${fieldsMap[iFeedFilter.filterKey].name}:
+            </td>
+            <td style="padding-right: 5px; height: 20px">
+                <c:choose>
+                    <c:when test="${fieldsMap[iFeedFilter.filterKey].type == 'd:date'}">
+                        ${fn:substringBefore(iFeedFilter.filterQuery, 'T')}
+                    </c:when>
+                    <c:when test="${fieldsMap[iFeedFilter.filterKey].type == 'd:ldap_org_value'}">
+                        <span class="ldapOrgLabel" title='${json:vgrHsaIdToJson(iFeedFilter.filterQuery, 100)}'>${iFeedFilter.filterQuery}</span>
+                    </c:when>
+                    <c:otherwise>
+                        ${iFeedFilter.filterQuery}
+                    </c:otherwise>
+                </c:choose>
+            </td>
+        </tr>
+    </c:forEach>
+</table>
+</div>

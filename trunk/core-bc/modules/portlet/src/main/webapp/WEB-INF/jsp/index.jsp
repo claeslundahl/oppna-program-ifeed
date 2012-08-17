@@ -44,7 +44,7 @@
         <liferay-ui:icon method="get" image="rss" target="_blank" url="${iFeedEntry.atomLink}" />
       </liferay-ui:search-container-column-text>
       <liferay-ui:search-container-column-text name="Namn" property="iFeed.name" orderableProperty="name" orderable="true" href="${editIFeedURL}" />
-      <liferay-ui:search-container-column-text name="Ägare" property="iFeed.userId" orderableProperty="userId" orderable="true" />
+      <liferay-ui:search-container-column-text name="Ägare" property="iFeed.ownershipsText" orderableProperty="ownershipsText" orderable="true" />
       <liferay-ui:search-container-column-text name="Beskrivning" property="iFeed.description" />
   
       <liferay-ui:search-container-column-text>

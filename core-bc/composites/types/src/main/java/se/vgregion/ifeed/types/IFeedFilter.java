@@ -13,49 +13,44 @@ import se.vgregion.dao.domain.patterns.valueobject.AbstractValueObject;
 @Embeddable
 public final class IFeedFilter extends AbstractValueObject implements Serializable {
 
-    private static final long serialVersionUID = -8141707337621433677L;
+	private static final long serialVersionUID = -8141707337621433677L;
 
-    private String filterQuery;
+	private String filterQuery;
 
-    private String filterKey;
+	private String filterKey;
 
-    @Enumerated(EnumType.STRING)
-    private FilterType.Filter filter;
+	@Enumerated(EnumType.STRING)
+	private FilterType.Filter filter;
 
-    public IFeedFilter() {
-        // To make Hibernate happy
-    }
+	public IFeedFilter() {
+		// To make Hibernate happy
+	}
 
-    public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
-        this.filter = filter;
-        this.filterQuery = filterQuery;
-        this.filterKey = filterKey;
-    }
+	public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
+		this.filter = filter;
+		this.filterQuery = filterQuery;
+		this.filterKey = filterKey;
+	}
 
-    // public IFeedFilter(String filterKey, String filterQuery) {
-    // this.filterKey = filterKey;
-    // this.filterQuery = filterQuery;
-    // }
+	public FilterType.Filter getFilter() {
+		return filter;
+	}
 
-    public FilterType.Filter getFilter() {
-        return filter;
-    }
+	public String getFilterQuery() {
+		return filterQuery;
+	}
 
-    public String getFilterQuery() {
-        return filterQuery;
-    }
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append(filter).append(filterQuery).toString();
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append(filter).append(filterQuery).toString();
-    }
+	public String getFilterKey() {
+		return filterKey;
+	}
 
-    public String getFilterKey() {
-        return filterKey;
-    }
-
-    public void setFilterKey(String filterKey) {
-        this.filterKey = filterKey;
-    }
+	public void setFilterKey(String filterKey) {
+		this.filterKey = filterKey;
+	}
 
 }

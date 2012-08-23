@@ -124,22 +124,26 @@ public class EditIFeedController {
 	        final ActionResponse response) {
 		IFeed iFeed = iFeedService.getIFeed(feedId);
 
+		for (Ownership ownership : iFeed.getOwnerships()) {
+			ownership.setName(fetchNameOfPersonIfMatch(ownership.getUserId()));
+		}
+		iFeed.setCreatorName(fetchNameOfPersonIfMatch(iFeed.getUserId()));
+
+		model.addAttribute("ifeed", iFeed);
+		response.setRenderParameter("view", "showEditIFeedForm");
+	}
+
+	private String fetchNameOfPersonIfMatch(String key) {
 		try {
-			for (Ownership ownership : iFeed.getOwnerships()) {
-				List<Person> persons = ldapPersonService.getPeople(ownership.getUserId(), 2);
-				if (persons.size() == 1) {
-					Person person = persons.get(0);
-					ownership.setName(person.getFirstName() + " " + person.getLastName());
-				} else {
-					ownership.setName("");
-				}
+			List<Person> persons = ldapPersonService.getPeople(key, 2);
+			if (persons.size() == 1) {
+				Person person = persons.get(0);
+				return person.getFirstName() + " " + person.getLastName();
 			}
 		} catch (Exception e) {
 			LOGGER.warn("Could not get feed owners info from ldap.", e);
 		}
-
-		model.addAttribute("ifeed", iFeed);
-		response.setRenderParameter("view", "showEditIFeedForm");
+		return "";
 	}
 
 	@RenderMapping(params = "view=showEditIFeedForm")
@@ -353,6 +357,7 @@ public class EditIFeedController {
 	        @RequestParam("ownerId") final String ownerId, final Model model) {
 		Ownership ownership = new Ownership();
 		ownership.setUserId(ownerId);
+		ownership.setName(fetchNameOfPersonIfMatch(ownerId));
 		iFeed.getOwnerships().add(ownership);
 
 		model.addAttribute("ifeed", iFeed);

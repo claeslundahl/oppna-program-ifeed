@@ -340,3 +340,8 @@ a.link-button-help .link-button-content {
     width: 6em;
 }
 </style>
+
+<script type="text/javascript">
+  window.nameSpace = '<portlet:namespace />';
+</script>
+

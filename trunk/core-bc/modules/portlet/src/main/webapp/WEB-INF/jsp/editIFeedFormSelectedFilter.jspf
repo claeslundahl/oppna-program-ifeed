@@ -11,7 +11,7 @@
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 <%@ taglib uri="/WEB-INF/tld/json.tld" prefix="json"%>
 <div class="clear-fix">
-<table class="tree-node-label">
+<table class="tree-node-labelXXX">
 	
 	<tr>
 		<td style="padding-right: 5px; height: 20px">

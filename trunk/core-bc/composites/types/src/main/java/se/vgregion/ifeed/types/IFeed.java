@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -43,7 +44,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
-	private List<IFeedFilter> filters;
+	// @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
+	private Set<IFeedFilter> filters;
 
 	private String name;
 
@@ -53,6 +55,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 	private String description;
 	private String userId;
 
+	@Transient
+	private String creatorName;
+
 	// @ElementCollection(fetch = FetchType.EAGER)
 	// @CollectionTable(name = "vgr_ifeed_ownership", joinColumns = @JoinColumn(name = "ifeed_id"))
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
@@ -61,11 +66,11 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 	private String sortField;
 	private String sortDirection;
 
-	public List<IFeedFilter> getFilters() {
+	public Set<IFeedFilter> getFilters() {
 		if (filters == null) {
-			return Collections.emptyList();
+			return Collections.emptySet();
 		}
-		return Collections.unmodifiableList(filters);
+		return Collections.unmodifiableSet(filters);
 	}
 
 	public boolean addFilter(IFeedFilter filter) {
@@ -73,7 +78,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 			throw new IllegalArgumentException();
 		}
 		if (filters == null) {
-			filters = new ArrayList<IFeedFilter>();
+			filters = new HashSet<IFeedFilter>();
 		} else if (filters.contains(filter)) {
 			return false;
 		}
@@ -83,6 +88,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
 	public IFeedFilter getFilter(IFeedFilter filter) {
 		IFeedFilter f = null;
+		List<IFeedFilter> filters = new ArrayList<IFeedFilter>(getFilters());
 		int index = filters.indexOf(filter);
 		if (index >= 0) {
 			f = filters.get(index);
@@ -90,13 +96,17 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 		return f;
 	}
 
-	public void setFilters(List<IFeedFilter> filters) {
+	public void setFilters(Set<IFeedFilter> filters) {
 		this.filters.clear();
 		this.filters.addAll(filters);
 	}
 
 	public void removeFilter(IFeedFilter filter) {
 		filters.remove(filter);
+	}
+
+	public void removeFilters() {
+		filters.clear();
 	}
 
 	public String getName() {
@@ -198,6 +208,14 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 		String text = names.toString();
 		text = text.replaceAll(Pattern.quote("["), "").replaceAll(Pattern.quote("]"), "");
 		return text;
+	}
+
+	public String getCreatorName() {
+		return creatorName;
+	}
+
+	public void setCreatorName(String creatorName) {
+		this.creatorName = creatorName;
 	}
 
 }

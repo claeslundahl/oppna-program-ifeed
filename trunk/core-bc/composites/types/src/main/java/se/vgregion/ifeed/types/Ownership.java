@@ -80,4 +80,12 @@ public class Ownership extends AbstractEntity<Long> implements Serializable, Com
 		this.name = name;
 	}
 
+	public IFeed getIfeed() {
+	    return ifeed;
+    }
+
+	public void setIfeed(IFeed ifeed) {
+	    this.ifeed = ifeed;
+    }
+
 }

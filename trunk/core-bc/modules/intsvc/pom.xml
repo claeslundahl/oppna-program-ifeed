@@ -15,7 +15,7 @@
   <name>${project.artifactId}</name>
 
   <build>
-    <finalName>${project.artifactId}</finalName>
+    <finalName>iFeed-intsvc</finalName>
   </build>
   
   <dependencies>

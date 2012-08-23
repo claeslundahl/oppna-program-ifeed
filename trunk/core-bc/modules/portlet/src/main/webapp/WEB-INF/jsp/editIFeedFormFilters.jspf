@@ -36,13 +36,18 @@
                                         <portlet:param name="filter" value="${filter.id}" />
 									</portlet:actionURL>
 								
-                                <td class="tree-node-tooltip" title="<liferay-ui:message key='${filter.help}' />">Icon</td>
+                                <td title="<liferay-ui:message key='${filter.help}' />">
+									<img src="/regionportalen-theme/images/common/help.png"/>
+								</td>
 								
 								<td>
                                     <c:choose>
                                         <c:when test="${guard:mayEditFeed(user, ifeed)}">
-                                            <a href="${selectFilter}" class="tree-node-use tree-node-link tree-node-link-label">
-                                                <span class="tree-node-label"> ${filter.name} </span>
+                                            <a href="${selectFilter}">
+                                                <span class="tree-node-label"> 
+													<img src="/regionportalen-theme/images/common/add.png"/>
+													${filter.name} 
+												</span>
                                             </a>
                                         </c:when>
                                         <c:otherwise>

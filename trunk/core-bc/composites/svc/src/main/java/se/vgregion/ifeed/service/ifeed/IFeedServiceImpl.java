@@ -41,15 +41,14 @@ public class IFeedServiceImpl implements IFeedService {
 
 	@Override
 	public final List<IFeed> getUserIFeeds(final String userId) {
-		return new ArrayList<IFeed>(iFeedRepo.findByQuery("SELECT distinct ifeed FROM IFeed ifeed "
-		        + "WHERE ifeed.userId=?1 or ifeed.id in (select o.id from Ownership o where o.userId=?2)",
-		        new Object[] { userId, userId }));
+		ArrayList<IFeed> result = new ArrayList<IFeed>(
+		        iFeedRepo
+		                .findByQuery(
+		                        "SELECT distinct ifeed FROM IFeed ifeed "
+		                                + "WHERE ifeed.userId=?1 or ifeed.id in (select o.ifeedId from Ownership o where o.userId=?2)",
+		                        new Object[] { userId, userId }));
 
-		/*
-		 * return new ArrayList<IFeed>(iFeedRepo.findByQuery("SELECT distinct ifeed FROM IFeed ifeed, " +
-		 * Ownership.class.getName() + " ownership WHERE ifeed.userId=?1 " +
-		 * " OR (ownership.userId=?2 AND ownership.ifeed_id=ifeed.id)", new Object[] { userId, userId }));
-		 */
+		return result;
 	}
 
 	@Override
@@ -81,19 +80,34 @@ public class IFeedServiceImpl implements IFeedService {
 
 		oldIFeed.setName(iFeed.getName());
 		oldIFeed.setDescription(iFeed.getDescription());
-		oldIFeed.setFilters(iFeed.getFilters());
 		oldIFeed.setSortDirection(iFeed.getSortDirection());
 		oldIFeed.setSortField(iFeed.getSortField());
 
 		oldIFeed.getOwnerships().clear();
+
 		for (Ownership ownership : iFeed.getOwnerships()) {
 			ownership.setIfeedId(oldIFeed.getId());
+			ownership.setIfeed(oldIFeed);
 			oldIFeed.getOwnerships().add(ownership);
 		}
 
+		oldIFeed.removeFilters();
+		iFeedRepo.merge(oldIFeed);
+		iFeedRepo.flush();
+		// Strange thing to do? Yes - but it does not work otherwise. Old, removed, filters are kept in the db
+		// despite being removed from the collection.
+		// This behavior have not been repeated with unit-test though.
+
+		oldIFeed = iFeedRepo.find(oldIFeed.getId());
+
+		for (IFeedFilter filter : iFeed.getFilters()) {
+			oldIFeed.addFilter(filter);
+		}
+
 		IFeed mergedIfeed = iFeedRepo.merge(oldIFeed);
-		iFeedPublisher.addIFeed(mergedIfeed);
+
 		try {
+			iFeedPublisher.addIFeed(mergedIfeed);
 			iFeedPublisher.publish();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -101,7 +115,6 @@ public class IFeedServiceImpl implements IFeedService {
 		mergedIfeed.setTimestamp();
 		mergedIfeed = iFeedRepo.merge(mergedIfeed);
 		return mergedIfeed;
-
 	}
 
 	private boolean filterChanged(final IFeed oldIFeed, final IFeed iFeed) {

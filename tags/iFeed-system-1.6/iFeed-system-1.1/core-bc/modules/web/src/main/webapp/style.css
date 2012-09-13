@@ -1,0 +1,88 @@
+.doc-list {
+  list-style-type: none;
+}
+
+a {
+  PADDING-RIGHT: 0px;
+  PADDING-LEFT: 0px;
+  PADDING-BOTTOM: 0px;
+  MARGIN: 0px;
+  COLOR: #005baa;
+  PADDING-TOP: 0px;
+  TEXT-DECORATION: underline;
+  margin: 0px;
+  vertical-align: top;
+}
+
+a img {
+  border: none;
+  margin-right: 0.5em;
+  padding: 
+}
+
+.ifeed-metadata dt {
+  font-weight: bold;
+  color: black;
+  float: left;
+  margin-bottom: .5em;
+  padding-right: 6px;
+  width: 20em;
+  text-align: right;
+}
+
+/*  */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
+  margin: 0;
+  padding: 0;
+}
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
+  margin: 0;
+  padding: 0;
+}
+
+dt {
+  display: block;
+}
+
+webb:  1 .ifeed-metadata {
+  font-size: 14px;
+}
+
+/* Inherited from section#portlet_iFeed_WAR_iFeedportlet.portlet
+main.css: 1 */
+.portlet {
+  text-align: left;
+}
+
+/* Inherited from div#aui_3_2_0_11035.portlet-layout
+main.css: 1*/
+.portlet-layout {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Inherited from body#aui_3_2_0_1324.controls-hidden.signed-in.private-page
+main.css: 1 */
+body {
+  color: #333;
+  font-family: Arial, Verdana, Helvetica, sans-serif;
+  font-size: 12px;
+  margin: 0.5em;
+}
+
+
+.ifeed-metadata dd {
+  font-style: italic;
+  margin-bottom: .5em;
+  color: #333;
+  margin-left: 0;
+}
+
+dl dd {
+  margin-left: 1em;
+}
+
+dl dd {
+  margin-left: 1em;
+}

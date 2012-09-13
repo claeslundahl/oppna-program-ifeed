@@ -1,0 +1,162 @@
+<%@page import="se.vgregion.ifeed.types.IFeed"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
+<%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
+<%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
+
+<%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
+<%@ taglib uri="/WEB-INF/tld/json.tld" prefix="json"%>
+
+<liferay-ui:panel-container>
+  <liferay-ui:panel title="Nytt filter" collapsible="true" extended="true">
+    <aui:form action="<%=addFilterURL%>" method="post">
+      <aui:input name="filterTypeId" type="hidden" value="${newFilter.id}" />
+      <%--           <aui:input name="filter" type="hidden" value="${newFilter}" /> --%>
+      <div id="<portlet:namespace />filter-value-box">
+        <c:choose>
+          <c:when test="${newFilter.type == 'd:text_fix'}">
+            <aui:select label="${newFilter.name}" name="filterValue" id="text-fix">
+              <c:forEach items="${vocabulary}" var="meta">
+                <aui:option label="${meta}" value="${meta}" selected="${filterValue eq meta}" />
+              </c:forEach>
+            </aui:select>
+          </c:when>
+          <c:when test="${newFilter.type == 'd:date'}">
+            <aui:field-wrapper label="${newFilter.name}">
+              <liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
+                monthParam="validFromMonth" dayParam="validFromDay" firstDayOfWeek="1"
+                yearValue="${filterFormBean.validFromYear}" monthValue="${filterFormBean.validFromMonth }"
+                dayValue="${filterFormBean.validFromDay }" />
+            </aui:field-wrapper>
+          </c:when>
+          <c:when test="${newFilter.type == 'd:text'}">
+            <script type="text/javascript">
+              window.filterType = 'd:text';
+            </script>
+            <aui:input label="${newFilter.name}" name="filterValue" id="filterValue" value="${filterValue}" />
+          </c:when>
+          
+          <c:when test="${newFilter.type == 'd:text_facet'}">
+            <script type="text/javascript">
+              window.filterType = 'd:text_facet';
+            </script>          
+            <div id="myAutoComplete" class="ifeed-portlet-filter-input">
+                <aui:input label="${newFilter.name}" name="filterValue" id="filterValue" value="${filterValue}" type="text" />
+            </div>
+          </c:when>
+          
+          <c:when test="${newFilter.type == 'LDAP_VALUE' or newFilter.type == 'd:ldap_value'}">
+            <label class="aui-field-label" for="<portlet:namespace />filterValue">${newFilter.name}</label>
+            <script type="text/javascript">
+              window.filterType = 'd:ldap_value';
+            </script>
+            <div id="<portlet:namespace />ldap-people" class="ifeed-portlet-ldap-people">
+              <aui:input label="${newFilter.name}" name="filterValue" id="filterValue" value="${filterValue}"
+                cssClass="ifeed-portlet-filter-input" />
+            </div>
+          </c:when>
+          
+          <c:when test="${newFilter.type == 'LDAP_ORG_VALUE' or newFilter.type == 'd:ldap_org_value'}">
+            <div>
+              <div id="myAutoComplete" class="ifeed-portlet-ldap-people">
+                  <aui:input label="${newFilter.name}" name="filterValue" id="filterValue" value="${filterValue}" 
+                  cssClass="ifeed-portlet-filter-input" onChange="window.fetchOrgNameWithSelectedHsaId()" type="text"
+                   />
+              </div>
+              <span class="ldapOrgLabel" id="ldapOrgLabel" title='${json:vgrHsaIdToJson(filterValue, 100)}'>${filterValue}</span>
+              <br /><br />
+              <div style="max-height: 200px; overflow-y:scroll; border: solid black 1px;">  
+                <div id="tree"></div>
+              </div>
+              
+              <script type="text/javascript">
+                window.filterType = 'd:ldap_org_value';
+                function hinder() {
+                    return false;
+                }
+                var filterValue = document.getElementById('<portlet:namespace />filterValue');
+                filterValue.onkeypress = hinder;
+                filterValue.onkeydown = hinder;
+              </script>
+              
+            </div>
+          </c:when>
+        </c:choose>
+
+      </div>
+      <c:if test="${not empty newFilter}">
+        <aui:button-row>
+          <aui:button type="submit" value="Lägg Till" name="add" />
+        </aui:button-row>
+        <c:if test="${not empty newFilter.help}">
+          <div class="aui-widget-bd portlet-msg-info">${newFilter.help}</div>
+        </c:if>
+      </c:if>      
+
+      
+    </aui:form>
+  </liferay-ui:panel>
+  <liferay-ui:panel title="Valda filter" collapsible="true" extended="true">
+    <div id="<portlet:namespace />usedFiltersWrap">
+      <ul>
+        <c:forEach items="${ifeed.filters}" var="iFeedFilter" varStatus="filtersRow">
+
+          <portlet:actionURL name="removeFilter" var="removeFilter">
+            <portlet:param name="action" value="removeFilter" />
+            <portlet:param name="filter" value="${iFeedFilter.filter}" />
+            <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
+            <portlet:param name="filterKey" value="${iFeedFilter.filterKey}" />
+          </portlet:actionURL>
+          <portlet:actionURL name="editFilter" var="editFilter">
+            <portlet:param name="action" value="editFilter" />
+            <portlet:param name="filter" value="${iFeedFilter.filterKey}" />
+            <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
+          </portlet:actionURL>
+          <li><span class="tree-node-wrap clearfix"> <c:choose>
+                <c:when test="${guard:mayEditFeed(user, ifeed)}">
+                  <a href="${editFilter}" class="tree-node-link tree-node-edit">Redigera</a>
+                  <a href="${removeFilter}" class="tree-node-link tree-node-delete">Ta bort</a>
+                </c:when>
+                <c:otherwise>
+                  <span class="tree-node-link tree-node-edit">Redigera</span>
+                  <span class="tree-node-link tree-node-delete">Ta bort</span>
+                </c:otherwise>
+              </c:choose> ${fieldsMap[iFeedFilter.filterKey].name}: 
+              
+              <c:choose>
+                <c:when test="${fieldsMap[iFeedFilter.filterKey].type == 'd:date'}">
+                  ${fn:substringBefore(iFeedFilter.filterQuery, 'T')}
+                </c:when>
+                <c:when test="${fieldsMap[iFeedFilter.filterKey].type == 'd:ldap_org_value'}">
+                  <span class="ldapOrgLabel" title='${json:vgrHsaIdToJson(iFeedFilter.filterQuery, 100)}'>${iFeedFilter.filterQuery}</span>
+                </c:when>
+                <c:otherwise>
+                  ${iFeedFilter.filterQuery}
+                </c:otherwise>
+              </c:choose>
+              
+          </span> </span>
+          </li>
+
+
+
+
+          </span>
+          </span>
+          </li>
+        </c:forEach>
+      </ul>
+    </div>
+  </liferay-ui:panel>
+
+
+
+
+</liferay-ui:panel-container>

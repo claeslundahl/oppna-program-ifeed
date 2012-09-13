@@ -1,0 +1,56 @@
+<%@page import="se.vgregion.ifeed.types.IFeed"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
+<%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
+<%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
+
+<%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
+
+    <liferay-ui:panel-container>
+      <liferay-ui:panel title="Tillgängliga filter" collapsible="true" extended="true">
+        <div id="<portlet:namespace />existingFiltersWrap" class="clear-fix">
+          <ul>
+            <c:forEach items="${filterTypes}" var="filterType" varStatus="filterRow">
+              <li><span class="tree-node-wrap clearfix"> <span class="tree-node-label"><liferay-ui:message
+                      key="${filterType.keyString}" /> </span> </span>
+                <ul>
+                  <c:forEach items="${filterType.filters}" var="filter">
+                    <li><span class="tree-node-wrap clearfix"> <portlet:actionURL name="selectFilter"
+                          var="selectFilter">
+                          <portlet:param name="action" value="selectFilter" />
+                          <portlet:param name="filter" value="${filter}" />
+                        </portlet:actionURL> <span class="tree-node-tooltip"
+                        title="<liferay-ui:message key='${filter.helpKey}' />">Icon</span>
+                        <c:choose>
+                          <c:when test="${guard:mayEditFeed(user, ifeed)}">
+                            <a href="${selectFilter}" class="tree-node-use tree-node-link tree-node-link-label"> <span
+                              class="tree-node-label"> <liferay-ui:message key="${filter.labelKey}" /> </span>
+                            </a>
+                          </c:when>
+                          <c:otherwise>
+                            <a class="tree-node-use tree-node-link tree-node-link-label"> <span
+                              class="tree-node-label"> <liferay-ui:message key="${filter.labelKey}" /> </span>
+                            </a>
+                          </c:otherwise>
+                        </c:choose> 
+                      </span></li>
+                  </c:forEach>
+                </ul></li>
+            </c:forEach>
+          </ul>
+        </div>
+      </liferay-ui:panel>
+    </liferay-ui:panel-container>
+
+    
+    <c:forEach var="field" items="${fields}">
+      ${field.name}
+    </c:forEach>
+    

@@ -11,10 +11,12 @@
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 <%@ taglib uri="/WEB-INF/tld/json.tld" prefix="json"%>
 <div class="clear-fix">
-<table class="tree-node-labelXXX">
+<table class="tree-node-labelXXX" cellpadding="5" cellspacing="5">
 	
-	<tr>
-		<td style="padding-right: 5px; height: 20px">
+	<tr style="font-weight: bold">
+		<td>
+        </td>
+		<td style="padding-right: 15px">
 			Typ
         </td>
 		<td style="padding-right: 5px; height: 20px">
@@ -47,9 +49,11 @@
                         <span class="tree-node-link tree-node-delete">Ta bort</span>
                     </c:otherwise>
                 </c:choose>
+            </td>
+			<td>
                 ${fieldsMap[iFeedFilter.filterKey].name}:
             </td>
-            <td style="padding-right: 5px; height: 20px">
+            <td style="padding-right: 15px; height: 20px">
                 <c:choose>
                     <c:when test="${fieldsMap[iFeedFilter.filterKey].type == 'd:date'}">
                         ${fn:substringBefore(iFeedFilter.filterQuery, 'T')}

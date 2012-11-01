@@ -37,7 +37,7 @@
 									</portlet:actionURL>
 								
                                 <td title="<liferay-ui:message key='${filter.help}' />">
-									<img src="/regionportalen-theme/images/common/help.png"/>
+									<img src="/regionportalen2-theme/images/common/help.png"/>
 								</td>
 								
 								<td>
@@ -45,7 +45,7 @@
                                         <c:when test="${guard:mayEditFeed(user, ifeed)}">
                                             <a href="${selectFilter}">
                                                 <span class="tree-node-label"> 
-													<img src="/regionportalen-theme/images/common/add.png"/>
+													<img src="/regionportalen2-theme/images/common/add.png"/>
 													${filter.name} 
 												</span>
                                             </a>

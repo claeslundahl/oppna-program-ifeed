@@ -32,190 +32,200 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 @Table(name = "vgr_ifeed")
 public class IFeed extends AbstractEntity<Long> implements Serializable, Comparable<IFeed> {
 
-	private static final long serialVersionUID = -2277251806545192506L;
-	// private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
+    private static final long serialVersionUID = -2277251806545192506L;
+    // private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
 
-	@Id
-	@GeneratedValue
-	private Long id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-	@Version
-	private Long version;
+    @Version
+    private Long version;
 
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
-	// @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
-	private Set<IFeedFilter> filters;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
+    // @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
+    private Set<IFeedFilter> filters;
 
-	private String name;
+    private String name;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date timestamp = null;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp = null;
 
-	private String description;
-	private String userId;
+    private String description;
+    private String userId;
 
-	@Transient
-	private String creatorName;
+    @Transient
+    private String creatorName;
 
-	// @ElementCollection(fetch = FetchType.EAGER)
-	// @CollectionTable(name = "vgr_ifeed_ownership", joinColumns = @JoinColumn(name = "ifeed_id"))
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
-	private Set<Ownership> ownerships = new HashSet<Ownership>();
+    // @ElementCollection(fetch = FetchType.EAGER)
+    // @CollectionTable(name = "vgr_ifeed_ownership", joinColumns = @JoinColumn(name = "ifeed_id"))
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
+    private Set<Ownership> ownerships = new HashSet<Ownership>();
 
-	private String sortField;
-	private String sortDirection;
+    private String sortField;
+    private String sortDirection;
 
-	public Set<IFeedFilter> getFilters() {
-		if (filters == null) {
-			return Collections.emptySet();
-		}
-		return Collections.unmodifiableSet(filters);
-	}
+    private Boolean linkNativeDocument;
 
-	public boolean addFilter(IFeedFilter filter) {
-		if (filter == null) {
-			throw new IllegalArgumentException();
-		}
-		if (filters == null) {
-			filters = new HashSet<IFeedFilter>();
-		} else if (filters.contains(filter)) {
-			return false;
-		}
-		filters.add(filter);
-		return true;
-	}
+    public Set<IFeedFilter> getFilters() {
+        if (filters == null) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(filters);
+    }
 
-	public IFeedFilter getFilter(IFeedFilter filter) {
-		IFeedFilter f = null;
-		List<IFeedFilter> filters = new ArrayList<IFeedFilter>(getFilters());
-		int index = filters.indexOf(filter);
-		if (index >= 0) {
-			f = filters.get(index);
-		}
-		return f;
-	}
+    public boolean addFilter(IFeedFilter filter) {
+        if (filter == null) {
+            throw new IllegalArgumentException();
+        }
+        if (filters == null) {
+            filters = new HashSet<IFeedFilter>();
+        } else if (filters.contains(filter)) {
+            return false;
+        }
+        filters.add(filter);
+        return true;
+    }
 
-	public void setFilters(Set<IFeedFilter> filters) {
-		this.filters.clear();
-		this.filters.addAll(filters);
-	}
+    public IFeedFilter getFilter(IFeedFilter filter) {
+        IFeedFilter f = null;
+        List<IFeedFilter> filters = new ArrayList<IFeedFilter>(getFilters());
+        int index = filters.indexOf(filter);
+        if (index >= 0) {
+            f = filters.get(index);
+        }
+        return f;
+    }
 
-	public void removeFilter(IFeedFilter filter) {
-		filters.remove(filter);
-	}
+    public void setFilters(Set<IFeedFilter> filters) {
+        this.filters.clear();
+        this.filters.addAll(filters);
+    }
 
-	public void removeFilters() {
-		filters.clear();
-	}
+    public void removeFilter(IFeedFilter filter) {
+        filters.remove(filter);
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void removeFilters() {
+        filters.clear();
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Date getTimestamp() {
-		if (timestamp == null) {
-			return null;
-		} else {
-			return new Date(timestamp.getTime());
-		}
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void clearTimestamp() {
-		this.timestamp = null;
-	}
+    public Date getTimestamp() {
+        if (timestamp == null) {
+            return null;
+        } else {
+            return new Date(timestamp.getTime());
+        }
+    }
 
-	public String getUserId() {
-		return userId;
-	}
+    public void clearTimestamp() {
+        this.timestamp = null;
+    }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+    public String getUserId() {
+        return userId;
+    }
 
-	public void setTimestamp() {
-		this.timestamp = new Date();
-	}
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setTimestamp() {
+        this.timestamp = new Date();
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getSortDirection() {
-		return sortDirection;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public String getSortField() {
-		return sortField;
-	}
+    public String getSortDirection() {
+        return sortDirection;
+    }
 
-	public void setSortDirection(String sortDirection) {
-		this.sortDirection = sortDirection;
-	}
+    public String getSortField() {
+        return sortField;
+    }
 
-	public void setSortField(String sortField) {
-		this.sortField = sortField;
-	}
+    public void setSortDirection(String sortDirection) {
+        this.sortDirection = sortDirection;
+    }
 
-	public void setVersion(Long version) {
-		this.version = version;
-	}
+    public void setSortField(String sortField) {
+        this.sortField = sortField;
+    }
 
-	public Long getVersion() {
-		return version;
-	}
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
-	@Override
-	public final int compareTo(final IFeed o) {
-		if (o == null) {
-			return +1;
-		}
-		return new CompareToBuilder().append(name, o.name).toComparison();
-	}
+    public Long getVersion() {
+        return version;
+    }
 
-	public Set<Ownership> getOwnerships() {
-		return ownerships;
-	}
+    @Override
+    public final int compareTo(final IFeed o) {
+        if (o == null) {
+            return +1;
+        }
+        return new CompareToBuilder().append(name, o.name).toComparison();
+    }
 
-	public void setOwnerships(Set<Ownership> ownerships) {
-		this.ownerships = ownerships;
-	}
+    public Set<Ownership> getOwnerships() {
+        return ownerships;
+    }
 
-	public String getOwnershipsText() {
-		List<String> names = new ArrayList<String>();
-		for (Ownership ownership : getOwnerships()) {
-			names.add(ownership.getUserId());
-		}
-		names.remove(getUserId());
-		names.add(0, getUserId());
-		String text = names.toString();
-		text = text.replaceAll(Pattern.quote("["), "").replaceAll(Pattern.quote("]"), "");
-		return text;
-	}
+    public void setOwnerships(Set<Ownership> ownerships) {
+        this.ownerships = ownerships;
+    }
 
-	public String getCreatorName() {
-		return creatorName;
-	}
+    public String getOwnershipsText() {
+        List<String> names = new ArrayList<String>();
+        for (Ownership ownership : getOwnerships()) {
+            names.add(ownership.getUserId());
+        }
+        names.remove(getUserId());
+        names.add(0, getUserId());
+        String text = names.toString();
+        text = text.replaceAll(Pattern.quote("["), "").replaceAll(Pattern.quote("]"), "");
+        return text;
+    }
 
-	public void setCreatorName(String creatorName) {
-		this.creatorName = creatorName;
-	}
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public Boolean getLinkNativeDocument() {
+        return linkNativeDocument;
+    }
+
+    public void setLinkNativeDocument(Boolean linkNativeDocument) {
+        this.linkNativeDocument = linkNativeDocument;
+    }
 
 }

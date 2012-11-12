@@ -74,6 +74,7 @@
      <aui:form id="metaDataForm" name="metaDataForm" method="post" action="<%=updateIFeedURL%>">
         <aui:input id="headingTextInput" name="name" type="hidden" value="${ifeed.name}" />
         <aui:input id="descriptionTextInput" name="description" type="hidden" value="${ifeed.description}" />
+		<aui:input id="linkNativeDocumentInput" name="linkNativeDocument" type="hidden" value="${ifeed.linkNativeDocument ? 'true' : 'false'}" />
      </aui:form>
    </c:if>
     <aui:form method="post" action="<%=saveIFeedURL%>">
@@ -122,6 +123,9 @@
       <a id="json-feed-link" href="${jsonFeedLink}" target="_blank">Json</a>
       <a href="javascript:loadCodeFrame('${ifeed.id}');">Jsonp-hjälp</a>
 
+	  	  <br> Länka till ursprungsdokument i html-vyn, om möjligt (annars som pdf-a):
+	  <input type="checkbox" ${ifeed.linkNativeDocument ? 'checked' : ''} onchange="document.getElementById('<portlet:namespace />linkNativeDocumentInput').value = this.checked ? 'true' : 'false'; document.getElementById('<portlet:namespace />metaDataForm').submit();"  />
+	  
       </div>
     </div>
   </aui:column>

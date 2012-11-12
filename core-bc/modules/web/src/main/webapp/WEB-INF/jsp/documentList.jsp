@@ -11,10 +11,19 @@
 <body>
   <ul class="doc-list">
     <c:forEach items="${result}" var="item">
-      <li><a
+      <li>
+		<a
         href="${pageContext.request.contextPath}/documents/${fn:replace(item['dc.identifier.documentid'], 'workspace://SpacesStore/', '')}/metadata">
-          <img src="${pageContext.request.contextPath}/resources/information.png" /></a> 
-          <a target="_blank" href="${item.url}">${item['dc.title']}</a>
+          <img src="${pageContext.request.contextPath}/resources/information.png" />
+		</a> 
+		<c:choose>
+			<c:when test="${not empty(item['dc.identifier.native']) and feed.linkNativeDocument}">
+				<a target="_blank" href="${fn:replace(fn:replace(item['dc.identifier.native'], '[', ''), ']', '')}">${item['dc.title']}</a>
+            </c:when>
+			<c:otherwise>
+				<a target="_blank" href="${item.url}">${item['dc.title']}</a>
+            </c:otherwise>
+        </c:choose>
       </li>
     </c:forEach>
   </ul>

@@ -4,7 +4,17 @@ import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +39,6 @@ import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
-
-import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class IFeedViewerController {
@@ -72,6 +80,7 @@ public class IFeedViewerController {
                 getEnum(SortDirection.class, sortDirection));
 
         model.addAttribute("result", result);
+        model.addAttribute("feed", retrievedFeed);
         return "documentList";
     }
 
@@ -82,8 +91,7 @@ public class IFeedViewerController {
 
     @RequestMapping(value = "/documents/metadata")
     public String detailsByRequestParam(@RequestParam(value = "documentId", required = false) String documentId,
-                                        Model model,
-                                        HttpServletResponse response) {
+            Model model, HttpServletResponse response) {
         if (documentId == null) {
             throw new BadRequestException("Document id must not be null.");
         }
@@ -105,7 +113,7 @@ public class IFeedViewerController {
         SimpleDateFormat outFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("sv", "SE"));
 
         Map<String, String> idValueMap = new HashMap<String, String>();
-        List<FieldsInf> infs = iFeedService.getFieldsInfs(); //todo cache?
+        List<FieldsInf> infs = iFeedService.getFieldsInfs(); // todo cache?
         List<FieldInf> fieldInfs = null;
         if (infs.size() > 0) {
             fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
@@ -150,7 +158,7 @@ public class IFeedViewerController {
         if (values.size() == 0) {
             return "";
         }
-        
+
         StringBuilder sb = new StringBuilder();
         Iterator iterator = values.iterator();
         Object firstElement = iterator.next();

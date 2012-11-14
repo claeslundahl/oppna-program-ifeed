@@ -123,7 +123,7 @@
       <a id="json-feed-link" href="${jsonFeedLink}" target="_blank">Json</a>
       <a href="javascript:loadCodeFrame('${ifeed.id}');">Jsonp-hjälp</a>
 
-	  	  <br> Länka till orginaldokument i html-vyn:
+	  	  <br><span class="ifeed-meta-label"> Länka till orginaldokument i html-vyn: </span>
 	  <input type="checkbox" ${ifeed.linkNativeDocument ? 'checked' : ''} onchange="document.getElementById('<portlet:namespace />linkNativeDocumentInput').value = this.checked ? 'true' : 'false'; document.getElementById('<portlet:namespace />metaDataForm').submit();"  />
 	  
       </div>

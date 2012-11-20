@@ -80,7 +80,7 @@ public class IFeedViewerController {
                 getEnum(SortDirection.class, sortDirection));
 
         model.addAttribute("result", result);
-        model.addAttribute("feed", retrievedFeed);
+        //model.addAttribute("feed", retrievedFeed);
         return "documentList";
     }
 

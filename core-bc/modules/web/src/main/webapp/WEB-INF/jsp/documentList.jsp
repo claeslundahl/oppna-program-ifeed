@@ -12,7 +12,7 @@
   <ul class="doc-list">
     <c:forEach items="${result}" var="item">
       <li>
-		<a
+		<a target="_blank" 
         href="${pageContext.request.contextPath}/documents/${fn:replace(item['dc.identifier.documentid'], 'workspace://SpacesStore/', '')}/metadata">
           <img src="${pageContext.request.contextPath}/resources/information.png" />
 		</a> 

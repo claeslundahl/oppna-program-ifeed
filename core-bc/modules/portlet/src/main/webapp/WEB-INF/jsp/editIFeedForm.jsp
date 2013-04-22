@@ -119,6 +119,7 @@
       <div class="ifeed-meta-content">
 
       <a href="${atomFeedLink}" target="_blank">Atom</a>
+      <a href="${rssFeedLink}" target="_blank">Rss</a>
       <a href="${webFeedLink}" target="_blank">Html</a>
       <a id="json-feed-link" href="${jsonFeedLink}" target="_blank">Json</a>
       <a href="javascript:loadCodeFrame('${ifeed.id}');">Jsonp-hjälp</a>

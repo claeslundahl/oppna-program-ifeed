@@ -19,9 +19,13 @@
   <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
-  <bean id="iFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
-    <constructor-arg value="${ifeed.feed}" />
-  </bean>
+    <bean id="iFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
+        <constructor-arg value="${ifeed.feed}" />
+    </bean>
+
+    <bean id="rssIFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
+        <constructor-arg value="${ifeed.rss-feed}" />
+    </bean>
   
   <bean id="iFeedWebFeed" class="org.springframework.web.util.UriTemplate">
     <constructor-arg value="${ifeed.web}" />

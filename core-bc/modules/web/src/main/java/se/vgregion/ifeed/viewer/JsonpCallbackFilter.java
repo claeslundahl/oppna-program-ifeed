@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.vgregion.ifeed.webcomp.filter.GenericResponseWrapper;
 
 public class JsonpCallbackFilter implements Filter {
 

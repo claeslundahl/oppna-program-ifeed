@@ -9,6 +9,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -22,6 +25,9 @@ import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
@@ -178,6 +184,24 @@ public class IFeedFeedServiceImplTest {
         hits.add(item);
 
         serv.populateFeed(f, hits);
+    }
+
+
+    public static void main(String[] args) throws FileNotFoundException, TransformerException {
+        String xsltFilePath = "/home/portaldev/Dokument/iFeed/atom2rss-exslt.xsl";
+        String atomSampleFilePath = "/home/portaldev/Dokument/iFeed/sample-atom-feed.txt";
+        //FileReader xsltReader = new FileReader(xsltFilePath);
+        //FileReader atomSampleReader = new FileReader(atomSampleFilePath);
+
+
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Source xslt = new StreamSource(new File(xsltFilePath));
+        Transformer transformer = factory.newTransformer(xslt);
+
+        Source text = new StreamSource(new File(atomSampleFilePath));
+        transformer.transform(text, new StreamResult(new File("output.xml")));
+
+
     }
 
 }

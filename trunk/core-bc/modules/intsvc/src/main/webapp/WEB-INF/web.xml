@@ -36,6 +36,17 @@
 <!--         <listener-class>se.vgregion.spring.bootstrap.MyContextLoaderListener</listener-class> -->
 <!--     </listener> -->
 
+
+    <filter>
+        <filter-name>rssFilter</filter-name>
+        <filter-class>se.vgregion.ifeed.intsvc.atom.AtomToRssFilter</filter-class>                                          o
+    </filter>
+
+    <filter-mapping>
+        <filter-name>rssFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 	<servlet>
 		<servlet-name>CXFServlet</servlet-name>
 		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>

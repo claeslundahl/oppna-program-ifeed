@@ -88,6 +88,8 @@ public class EditIFeedController {
     private LdapPersonService ldapPersonService;
     @Resource(name = "iFeedAtomFeed")
     private UriTemplate iFeedAtomFeed;
+    @Resource(name = "rssIFeedAtomFeed")
+    private UriTemplate rssIFeedAtomFeed;
     @Resource(name = "iFeedWebFeed")
     private UriTemplate iFeedWebFeed;
     @Resource(name = "iFeedJsonFeed")
@@ -186,6 +188,9 @@ public class EditIFeedController {
 
         model.addAttribute("atomFeedLink",
                 iFeedAtomFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
+
+        model.addAttribute("rssFeedLink",
+                rssIFeedAtomFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
 
         model.addAttribute("webFeedLink",
                 iFeedWebFeed.expand(iFeed.getId(), iFeed.getSortField(), iFeed.getSortDirection()));
@@ -570,4 +575,11 @@ public class EditIFeedController {
         EditIFeedController.fieldInfs = fieldInfs;
     }
 
+    public void setRssIFeedAtomFeed(UriTemplate rssIFeedAtomFeed) {
+        this.rssIFeedAtomFeed = rssIFeedAtomFeed;
+    }
+
+    public UriTemplate getRssIFeedAtomFeed() {
+        return this.rssIFeedAtomFeed;
+    }
 }

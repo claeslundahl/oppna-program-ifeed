@@ -49,21 +49,21 @@ AUI().add('vgr-ifeed-config',function(A) {
 					existingFiltersTreeContentBox: {
 						setter: A.one
 					},
-          descriptionInput: {
-            setter: A.one
-          },
+		          descriptionInput: {
+		            setter: A.one
+		          },
 					descriptionNode: {
 						setter: A.one
 					},
-          headingInput: {
-            setter: A.one
-          },					
-          headingNode: {
-            setter: A.one
-          },        
-          metaDataForm: {
-            setter: A.one
-          },        
+		          headingInput: {
+		            setter: A.one
+		          },					
+		          headingNode: {
+		            setter: A.one
+		          },        
+		          metaDataForm: {
+		            setter: A.one
+		          },        
 					portletNamespace: {
 						value: ''
 					},

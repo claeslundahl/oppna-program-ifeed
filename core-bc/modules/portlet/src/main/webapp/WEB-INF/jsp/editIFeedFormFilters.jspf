@@ -9,62 +9,47 @@
 <%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
+
 <liferay-ui:panel-container>
     <liferay-ui:panel title="Tillgängliga filter" collapsible="false" extended="true">
-        <div id="<portlet:namespace />existingFiltersWrap" class="clear-fix">
-            <table>
-                <c:forEach items="${fields}" var="filterType">
-                    <c:if test="${not empty filterType.filterCriteriaTypes}">
-                        
-						<tr>
-							<td colspan="3" style="height: 20px; vertical-align: bottom">
-                                <span class="tree-node-wrap clearfix">
-                                    <span class="tree-node-label"><liferay-ui:message
-                                            key="${filterType.name}" /> </span>
-                                </span>
-                            </td>
-                        </tr>
-						
-                        
-                        <c:forEach items="${filterType.filterCriteriaTypes}" var="filter">
-                            <tr>
-								<td style="width: 20px"> </td>
-									
+        <div id="<portlet:namespace />existingFiltersWrap" class="clearfix">
+        	<c:forEach items="${fields}" var="filterType">
+        		<c:if test="${not empty filterType.filterCriteriaTypes}">
+        			<div class="filter-type">
+        				<h4 class="label">
+        					<liferay-ui:message key="${filterType.name}" />
+        				</h4>
+        				<c:if test="${not empty filterType.filterCriteriaTypes}">
+        					<ul class="filter-criteria-list clearfix">
+			        			<c:forEach items="${filterType.filterCriteriaTypes}" var="filter">
 									<portlet:actionURL name="selectFilter"
                                         var="selectFilter">
                                         <portlet:param name="action" value="selectFilter" />
                                         <portlet:param name="filter" value="${filter.id}" />
 									</portlet:actionURL>
-								
-                                <td title="<liferay-ui:message key='${filter.help}' />">
-									<img src="/regionportalen2-theme/images/common/help.png"/>
-								</td>
-								
-								<td>
-                                    <c:choose>
-                                        <c:when test="${guard:mayEditFeed(user, ifeed)}">
-                                            <a href="${selectFilter}">
-                                                <span class="tree-node-label"> 
-													<img src="/regionportalen2-theme/images/common/add.png"/>
-													${filter.name} 
-												</span>
-                                            </a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a class="tree-node-use tree-node-link tree-node-link-label"> <span
-                                                    class="tree-node-label"> ${filter.name} </span>
-                                            </a>
-                                        </c:otherwise>
-                                    </c:choose>
-                                
-								</td>
-                            </tr>
-                        </c:forEach>
-                    
-                    
-                    </c:if>
-                </c:forEach>
-            </table>
+									<li class="clearfix">
+										<div class="criteria-help" title="<liferay-ui:message key='${filter.help}' />">
+											Hj&auml;lp
+										</div>
+										<div class="criteria-label">
+                                    		<c:choose>
+                                        		<c:when test="${guard:mayEditFeed(user, ifeed)}">
+                                            		<a href="${selectFilter}" class="criteria-add">
+														${filter.name} 
+                                            		</a>
+                                        		</c:when>
+                                        		<c:otherwise>
+                                        			${filter.name}
+                                        		</c:otherwise>
+                                    		</c:choose>
+										</div>
+									</li>			        				
+			        			</c:forEach>
+		        			</ul>
+        				</c:if>
+        			</div>
+        		</c:if>
+        	</c:forEach>
         </div>
     </liferay-ui:panel>
 </liferay-ui:panel-container>

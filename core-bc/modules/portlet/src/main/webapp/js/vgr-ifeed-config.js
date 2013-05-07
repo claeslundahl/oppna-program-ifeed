@@ -24,8 +24,8 @@ AUI().add('vgr-ifeed-config',function(A) {
 		DESCRIPTION_INPUT = 'descriptionInput',
 		EXISTING_FILTERS_TREE_BOUNDING_BOX = 'existingFiltersTreeBoundingBox',
 		EXISTING_FILTERS_TREE_CONTENT_BOX = 'existingFiltersTreeContentBox',
-    META_DATA_FORM = 'metaDataForm',
-    HEADING_NODE = 'headingNode',
+	    META_DATA_FORM = 'metaDataForm',
+	    HEADING_NODE = 'headingNode',
 		HEADING_INPUT = 'headingInput',
 		HREF = 'href',
 		ID = 'id',
@@ -92,9 +92,6 @@ AUI().add('vgr-ifeed-config',function(A) {
 				prototype: {
 					initializer: function(config) {
 						var instance = this;
-						
-						// Init debugger console (if console is activated, console must be added to the module dependency list)
-						//instance._initConsole();
 					},
 					
 					renderUI: function() {
@@ -102,23 +99,40 @@ AUI().add('vgr-ifeed-config',function(A) {
 						
 						var contentBox = instance.get(CONTENT_BOX);
 						
+						instance._initEditables();
+						instance._initMetadataTooltip();
+
+					},
+					
+					bindUI: function() {
+						var instance = this;
+						
+						// Bind edit triggers
+						var portletWrap = instance.get(PORTLET_WRAP);
+						var editTriggers = portletWrap.all('.' + CSS_CLASS_EDIT_TRIGGER);
+						editTriggers.on('click', instance._onEditTriggersClick, instance);
+					},
+					
+					_initEditables: function() {
+						var instance = this;
+						
 						// Init editable for heading node
 						instance.headingEditable = new A.Editable({
 							node: instance.get(HEADING_NODE)
 						});
 						
-            instance.headingEditable.after('save', function(e){
-              var instance = this;
-              
-              var node = instance.headingEditable.get('node');
-              var nodeValue = node.html();
-              var nodeInput = instance.get(HEADING_INPUT);
-              var form = instance.get(META_DATA_FORM);
-              
-              nodeInput.set('value', nodeValue);
-              form.submit();
-              
-            }, instance);						
+			            instance.headingEditable.after('save', function(e){
+			              var instance = this;
+			              
+			              var node = instance.headingEditable.get('node');
+			              var nodeValue = node.html();
+			              var nodeInput = instance.get(HEADING_INPUT);
+			              var form = instance.get(META_DATA_FORM);
+			              
+			              nodeInput.set('value', nodeValue);
+			              form.submit();
+			              
+			            }, instance);						
 
 						// Init editable for description node
 						instance.descriptionEditable = new A.Editable({
@@ -126,30 +140,23 @@ AUI().add('vgr-ifeed-config',function(A) {
 							node: instance.get(DESCRIPTION_NODE)
 						});
 						
-            instance.descriptionEditable.after('save', function(e){
-              var instance = this;
-              
-              var node = instance.descriptionEditable.get('node');
-              var nodeValue = node.html();
-              var nodeInput = instance.get(DESCRIPTION_INPUT);
-              var form = instance.get(META_DATA_FORM);
-              
-              nodeInput.set('value', nodeValue);
-              form.submit();
-              
-            }, instance);   
-            
-						// Setup tree node tooltips
-						// 
-            /*
-						instance.treeNodeTooltip =  new A.Tooltip({
-							trigger: '#' + instance.get(PORTLET_WRAP).get(ID) + ' .' + CSS_CLASS_TREE_NODE_TOOLTIP,
-							align: { points: [ 'bc', 'tc' ] },
-							hideDelay: 50,
-							title: true							
-						})
-						.render();
-				*/		
+			            instance.descriptionEditable.after('save', function(e){
+			              var instance = this;
+			              
+			              var node = instance.descriptionEditable.get('node');
+			              var nodeValue = node.html();
+			              var nodeInput = instance.get(DESCRIPTION_INPUT);
+			              var form = instance.get(META_DATA_FORM);
+			              
+			              nodeInput.set('value', nodeValue);
+			              form.submit();
+			              
+			            }, instance);   
+					},
+					
+					_initMetadataTooltip: function() {
+						var instance = this;
+						
 						//Tooltip for metadata
 						instance.tooltipMetadata = new A.Tooltip({
 					    trigger: '#' + instance.get(PORTLET_WRAP).get(ID) + ' .' + CSS_CLASS_METADATA_NODE_TOOLTIP,
@@ -166,56 +173,33 @@ AUI().add('vgr-ifeed-config',function(A) {
 					        setTimeout(
 					          function() {
 					                
-                        A.io.request(instance.get(METADATA_TOOLTIP_URL)+'&documentId='+documentId, {
-                              method: 'GET',
-                              dataType: 'json',
-                              on: {
-                                  success: function (event,id,xhr) {
-                                      var res = this.get('responseData');
+					        	  A.io.request(instance.get(METADATA_TOOLTIP_URL)+'&documentId='+documentId, {
+					        		  method: 'GET',
+					        		  dataType: 'json',
+					        		  on: {
+					        			  success: function (event,id,xhr) {
+					        				  var res = this.get('responseData');
                                       
-                                      var html = ['<dl class="metadata-tooltip">'];
-                                      for (attr in res) { 
-                                          html.push('<dt>');
-                                          html.push(attr);
-                                          html.push('</dt>');
-                                          html.push('<dd>');
-                                          html.push(res[attr]?res[attr]:'&ndash;');
-                                          html.push('</dd>')
-                                      }
-                                      html.push('</dl>');
-                                      html.push('<a class="metadata-tooltip-more" href="'+href+'">mer...</a>');
-                                      me.bodyNode.setContent(html.join(''));
-                                  }
-                              }
-                        });
-					          },
-					        1);
-					      }
+					        				  var html = ['<dl class="metadata-tooltip">'];
+					        				  for (attr in res) { 
+					        					  html.push('<dt>');
+					        					  html.push(attr);
+					        					  html.push('</dt>');
+					        					  html.push('<dd>');
+					        					  html.push(res[attr]?res[attr]:'&ndash;');
+					        					  html.push('</dd>')
+					        				  }
+					        				  html.push('</dl>');
+					        				  html.push('<a class="metadata-tooltip-more" href="'+href+'">mer...</a>');
+					        				  me.bodyNode.setContent(html.join(''));
+					        			  }
+					        		  }
+					        	  });
+				          		},1);
+						    }
 					    }
-					  })
-					  .render();
-
-					},
-					
-					bindUI: function() {
-						var instance = this;
+					  }).render();
 						
-						// Bind edit triggers
-						var portletWrap = instance.get(PORTLET_WRAP);
-						var editTriggers = portletWrap.all('.' + CSS_CLASS_EDIT_TRIGGER);
-						editTriggers.on('click', instance._onEditTriggersClick, instance);
-					},
-					
-					_initConsole: function() {
-						var instance = this;
-						
-						new A.Console({
-							//height: '250px',
-							newestOnTop: false,
-							style: 'block',
-							visible: true//,
-							//width: '600px'
-						}).render();
 					},
 					
 					_onEditTriggersClick: function(e) {

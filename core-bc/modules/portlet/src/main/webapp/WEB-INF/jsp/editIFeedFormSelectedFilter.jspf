@@ -17,13 +17,13 @@
 			<li class="clearfix">
 				<div class="ifeed-applied-filter-tools">
                     <c:if test="${guard:mayEditFeed(user, ifeed)}">
-				        <portlet:actionURL name="removeFilter" var="removeFilter2">
+				        <portlet:actionURL name="removeFilter" var="removeFilter">
 				            <portlet:param name="action" value="removeFilter" />
 				            <portlet:param name="filter" value="${iFeedFilter.filter}" />
 				            <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
 				            <portlet:param name="filterKey" value="${iFeedFilter.filterKey}" />
 				        </portlet:actionURL>
-				        <portlet:actionURL name="editFilter" var="editFilter2">
+				        <portlet:actionURL name="editFilter" var="editFilter">
 				            <portlet:param name="action" value="editFilter" />
 				            <portlet:param name="filter" value="${iFeedFilter.filterKey}" />
 				            <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />

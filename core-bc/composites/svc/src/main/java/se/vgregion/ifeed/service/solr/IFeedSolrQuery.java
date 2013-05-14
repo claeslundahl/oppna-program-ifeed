@@ -4,12 +4,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static se.vgregion.common.utils.CommonUtils.isNull;
 import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.SOLR_DATE_FORMAT;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -84,9 +79,24 @@ public class IFeedSolrQuery extends SolrQuery {
 
     private void addFeedFilters(IFeed iFeed) {
         // Populate the query with the feed's filters
+
+        FeedFilterBag bag = new FeedFilterBag();
+
         for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
-            addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter, iFeedService.mapFieldInfToId()));
+            bag.get(iFeedFilter.getFilterKey()).add(iFeedFilter);
+            //addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter, iFeedService.mapFieldInfToId()));
         }
+
+        for (String key: bag.keySet()) {
+            List<IFeedFilter> filters = bag.get(key);
+            if (filters.size() == 1) {
+                addFilterQuery(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
+            } else {
+                String fq = SolrQueryBuilder.createOrQuery(filters);
+                addFilterQuery(fq);
+            }
+        }
+
         LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
     }
 
@@ -142,4 +152,16 @@ public class IFeedSolrQuery extends SolrQuery {
 
         return hits;
     }
+
+    public static class FeedFilterBag extends HashMap<String, List<IFeedFilter>> {
+        @Override
+        public List<IFeedFilter> get(Object key) {
+            List<IFeedFilter> result = super.get(key);    //To change body of overridden methods use File | Settings | File Templates.
+            if (result == null) {
+                put((String) key, result = new ArrayList<IFeedFilter>());
+            }
+            return result;
+        }
+    }
+
 }

@@ -30,7 +30,6 @@ public class AdminFieldsController {
 
     @ModelAttribute("fields")
     public FieldsInf getCommandObject() {
-        System.out.println("getCommandObject() " + iFeedService);
         List<FieldsInf> infs = iFeedService.getFieldsInfs();
         if (infs.isEmpty()) {
             return new FieldsInf();

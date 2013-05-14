@@ -45,7 +45,7 @@ public class IFeedController {
     }
 
     @RenderMapping
-    public String showIFeeds(final Model model, @RequestParam(defaultValue = "10") final int delta,
+    public String showIFeeds(final Model model, @RequestParam(defaultValue = "100") final int delta,
             @RequestParam(defaultValue = "1") final int cur,
             @RequestParam(defaultValue = "name") final String orderByCol,
             @RequestParam(defaultValue = "asc") final SortDirection orderByType, final RenderRequest request) {
@@ -58,7 +58,7 @@ public class IFeedController {
     }
 
     @RenderMapping(params = { "view=showUserIFeeds" })
-    public String showUserIFeeds(final Model model, @RequestParam(defaultValue = "10") final int delta,
+    public String showUserIFeeds(final Model model, @RequestParam(defaultValue = "100") final int delta,
             @RequestParam(defaultValue = "1") final int cur,
             @RequestParam(defaultValue = "name") final String orderByCol,
             @RequestParam(defaultValue = "asc") final SortDirection orderByType, final RenderRequest request) {
@@ -71,7 +71,7 @@ public class IFeedController {
     }
 
     @RenderMapping(params = { "view=showAllIFeeds" })
-    public String showAllIFeeds(final Model model, @RequestParam(defaultValue = "10") final int delta,
+    public String showAllIFeeds(final Model model, @RequestParam(defaultValue = "100") final int delta,
             @RequestParam(defaultValue = "1") final int cur,
             @RequestParam(defaultValue = "name") final String orderByCol,
             @RequestParam(defaultValue = "asc") final SortDirection orderByType) {

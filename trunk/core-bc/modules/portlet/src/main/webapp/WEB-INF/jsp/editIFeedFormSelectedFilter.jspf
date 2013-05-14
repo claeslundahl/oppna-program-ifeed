@@ -45,7 +45,7 @@
                         		<span class="ldapOrgLabel" title='${json:vgrHsaIdToJson(iFeedFilter.filterQuery, 100)}'>${iFeedFilter.filterQuery}</span>
                     		</c:when>
                     		<c:otherwise>
-                        		${iFeedFilter.filterQuery}lsdkflsdkflksdlfkdfslkfdslkfsldkfsdlfkslfkldskfsdlfklskfldsklskdlfdsklfdskflsdkflsdkfdslkfsdlfkdslkfdslksdlfksdlfdksflslkfdkllklkdsflkfdslkflkdslfsdfklsdkflslkdfksdllf
+                        		${iFeedFilter.filterQuery}
                     		</c:otherwise>
                 		</c:choose>				
 					</span>

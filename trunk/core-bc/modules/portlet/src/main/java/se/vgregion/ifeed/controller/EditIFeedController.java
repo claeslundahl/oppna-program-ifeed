@@ -120,7 +120,7 @@ public class EditIFeedController {
             charEncodeing.put(charDecodeing.get(key), key);
         }
     }
-
+    
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId, final Model model,
             final ActionResponse response) {
@@ -147,6 +147,21 @@ public class EditIFeedController {
         }
         return "";
     }
+    
+    
+    
+    @RenderMapping(params = "view=showEditJsonp")
+    public String showEditJsonp(@ModelAttribute("ifeed") final IFeed iFeed,
+            @RequestParam(defaultValue = "") final String orderByCol,
+            @RequestParam(defaultValue = "") final String orderByType, final Model model, RenderResponse repsonse,
+            PortletResponse pr) throws JsonGenerationException, JsonMappingException, IOException {
+    	
+    	return "edit_jsonp";
+    	
+    }
+    
+    
+    
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(@ModelAttribute("ifeed") final IFeed iFeed,
@@ -442,6 +457,19 @@ public class EditIFeedController {
         out.flush();
         out.close();
     }
+    
+    @ResourceMapping(value="updateJsonpEmbedCode")
+    public void updateJsonpEmbedCode(ResourceResponse response) throws IOException {
+    	
+    	System.out.println("EditIFeedController - updateJsonpEmbedCode");
+    	
+        String result = "my response";
+        final OutputStream out = response.getPortletOutputStream();
+        out.write(result.getBytes("UTF-8"));
+        out.flush();
+        out.close();
+    }
+    
 
     public void addDataTo(List<VgrOrganization> vos, String ns, String type) throws UnsupportedEncodingException {
         for (VgrOrganization vo : vos) {

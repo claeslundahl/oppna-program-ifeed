@@ -123,6 +123,13 @@
       <a href="${webFeedLink}" target="_blank">Html</a>
       <a id="json-feed-link" href="${jsonFeedLink}" target="_blank">Json</a>
       <a href="javascript:loadCodeFrame('${ifeed.id}');">Jsonp-hjälp</a>
+      
+		<portlet:renderURL var="showEditJsonpUrl">
+		  <portlet:param name="view" value="showEditJsonp"/>
+		</portlet:renderURL>
+
+		<a href="${showEditJsonpUrl}" class="rp-overlay-link">EPI-konfiguration (JSON)</a>
+      
 
 	  	  <br><span class="ifeed-meta-label"> Länka till orginaldokument i html-vyn: </span>
 	  <input type="checkbox" ${ifeed.linkNativeDocument ? 'checked' : ''} onchange="document.getElementById('<portlet:namespace />linkNativeDocumentInput').value = this.checked ? 'true' : 'false'; document.getElementById('<portlet:namespace />metaDataForm').submit();"  />

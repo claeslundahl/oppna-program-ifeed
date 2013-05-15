@@ -14,6 +14,7 @@
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 <%@ taglib uri="/WEB-INF/tld/json.tld" prefix="json"%>
 
+
 <liferay-ui:panel-container>
 	<liferay-ui:panel title="Nytt filter" collapsible="false" extended="true">
 		<aui:form action="${addFilterURL}" method="post">

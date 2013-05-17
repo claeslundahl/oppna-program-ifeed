@@ -1,3 +1,5 @@
+
+
 AUI().add('ifeed-jsonp-builder',function(A) {
     var Lang = A.Lang,
         isNull = Lang.isNull,
@@ -109,7 +111,7 @@ AUI().add('ifeed-jsonp-builder',function(A) {
                     	// Make a new template
                     	instance._copyColumnRowTemplate();
 
-                    	instance._renumberColumnRows();
+                    	//instance._renumberColumnRows();
 
                     	instance._submitForm();
                     },
@@ -138,7 +140,8 @@ AUI().add('ifeed-jsonp-builder',function(A) {
                     	console.log(xhr);
                     	/* Todo - add logic to retrieve new embed code from xhr response */
                     	/* Currently just printing out random dummy data */
-                    	var embedCode = '<p>Dummy Code here now</p>' + '<div>' + Math.floor(Math.random()*100000001) + '</div>foo';
+                    	//var embedCode = '<p>Dummy Code here now</p>' + '<div>' + Math.floor(Math.random()*100000001) + '</div>foo';
+                    	var embedCode = xhr.response;
 
                     	instance._updateEmbedCode(embedCode);
                     },
@@ -156,6 +159,7 @@ AUI().add('ifeed-jsonp-builder',function(A) {
                     },
 
                     _renumberColumnRows: function() {
+                        return;
                     	var instance = this;
 
                     	var form = instance.get(FORM);

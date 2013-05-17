@@ -17,12 +17,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceResponse;
+import javax.portlet.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -72,7 +67,7 @@ import com.liferay.portal.util.PortalUtil;
 
 @Controller
 @RequestMapping("VIEW")
-@SessionAttributes({ "ifeed", "hits", "vgrOrganizationJson", "fields" })
+@SessionAttributes({"ifeed", "hits", "vgrOrganizationJson", "fields"})
 public class EditIFeedController {
     private static final Logger LOGGER = LoggerFactory.getLogger(EditIFeedController.class);
 
@@ -120,10 +115,10 @@ public class EditIFeedController {
             charEncodeing.put(charDecodeing.get(key), key);
         }
     }
-    
+
     @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId, final Model model,
-            final ActionResponse response) {
+                          final ActionResponse response) {
         IFeed iFeed = iFeedService.getIFeed(feedId);
 
         for (Ownership ownership : iFeed.getOwnerships()) {
@@ -147,27 +142,24 @@ public class EditIFeedController {
         }
         return "";
     }
-    
-    
-    
+
+
     @RenderMapping(params = "view=showEditJsonp")
     public String showEditJsonp(@ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam(defaultValue = "") final String orderByCol,
-            @RequestParam(defaultValue = "") final String orderByType, final Model model, RenderResponse repsonse,
-            PortletResponse pr) throws JsonGenerationException, JsonMappingException, IOException {
-    	
-    	return "edit_jsonp";
-    	
+                                @RequestParam(defaultValue = "") final String orderByCol,
+                                @RequestParam(defaultValue = "") final String orderByType, final Model model, RenderResponse repsonse,
+                                PortletResponse pr) throws JsonGenerationException, JsonMappingException, IOException {
+        model.addAttribute("ifeedId", iFeed.getId());
+        return "edit_jsonp";
+
     }
-    
-    
-    
+
 
     @RenderMapping(params = "view=showEditIFeedForm")
     public String showEditIFeedForm(@ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam(defaultValue = "") final String orderByCol,
-            @RequestParam(defaultValue = "") final String orderByType, final Model model, RenderResponse repsonse,
-            PortletResponse pr) throws JsonGenerationException, JsonMappingException, IOException {
+                                    @RequestParam(defaultValue = "") final String orderByCol,
+                                    @RequestParam(defaultValue = "") final String orderByType, final Model model, RenderResponse repsonse,
+                                    PortletResponse pr) throws JsonGenerationException, JsonMappingException, IOException {
         // model.asMap().get("ifeed");
 
         // Priority of sort field is:
@@ -228,10 +220,8 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") final IFeed iFeed, final ActionResponse response,
-            final Model model, PortletRequest request) throws SystemException, PortalException {
+                          final Model model, PortletRequest request) throws SystemException, PortalException {
         // System.out.println("\n\neditIFeed\n");
-
-        System.out.println("\nParams: ");
 
         Map<String, String[]> map = request.getParameterMap();
         for (String key : map.keySet()) {
@@ -255,7 +245,7 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=updateIFeed")
     public void updateIFeed(@ModelAttribute("ifeed") final IFeed iFeed, final ActionResponse response,
-            final Model model) {
+                            final Model model) {
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
@@ -266,8 +256,8 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=selectFilter")
     public void selectNewFilter(@ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam(required = false, value = "filter") String filter, final Model model,
-            final ActionResponse response) throws IOException {
+                                @RequestParam(required = false, value = "filter") String filter, final Model model,
+                                final ActionResponse response) throws IOException {
 
         FieldInf newFilter = mapFieldInfToId().get(filter);
         model.addAttribute("newFilter", newFilter);
@@ -293,7 +283,7 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=addFilter")
     public void addFilter(@ModelAttribute("ifeed") final IFeed iFeed,
-            @ModelAttribute final FilterFormBean filterFormBean, final ActionResponse response, final Model model) {
+                          @ModelAttribute final FilterFormBean filterFormBean, final ActionResponse response, final Model model) {
 
         LOGGER.debug("FilterFormBean: {}", ToStringBuilder.reflectionToString(filterFormBean));
 
@@ -320,9 +310,9 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=editFilter")
     public void editFilter(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam("filter") final String filter,
-            // @RequestParam("filter") final FilterType.Filter filter,
-            @RequestParam("filterQuery") final String filterQuery, final Model model) throws IOException {
+                           @RequestParam("filter") final String filter,
+                           // @RequestParam("filter") final FilterType.Filter filter,
+                           @RequestParam("filterQuery") final String filterQuery, final Model model) throws IOException {
 
         model.addAttribute("newFilter", mapFieldInfToId().get(filter));
         model.addAttribute("filterValue", filterQuery);
@@ -353,9 +343,9 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=removeFilter")
     public void removeFilter(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam("filter") final FilterType.Filter filter,
-            @RequestParam("filterQuery") final String filterQuery,
-            @RequestParam("filterKey") final String filterKey, final Model model) {
+                             @RequestParam("filter") final FilterType.Filter filter,
+                             @RequestParam("filterQuery") final String filterQuery,
+                             @RequestParam("filterKey") final String filterKey, final Model model) {
 
         // Fix here!
 
@@ -368,7 +358,7 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=removeOwner")
     public void removeOwner(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam("ownerId") final String ownerId, final Model model) {
+                            @RequestParam("ownerId") final String ownerId, final Model model) {
         List<Ownership> ownerships = new ArrayList<Ownership>(iFeed.getOwnerships());
 
         for (Ownership ownership : ownerships) {
@@ -383,7 +373,7 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=addOwner")
     public void addOwner(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
-            @RequestParam("ownerId") final String ownerId, final Model model) {
+                         @RequestParam("ownerId") final String ownerId, final Model model) {
         Ownership ownership = new Ownership();
         ownership.setUserId(ownerId);
         ownership.setName(fetchNameOfPersonIfMatch(ownerId));
@@ -412,8 +402,8 @@ public class EditIFeedController {
 
     @ResourceMapping("findOrganizationByHsaId")
     public void findOrganizationByHsaId(@RequestParam String hsaId,
-            @RequestParam(required = false) String callback, @RequestParam(required = false) Integer maxHits,
-            ResourceResponse response) {
+                                        @RequestParam(required = false) String callback, @RequestParam(required = false) Integer maxHits,
+                                        ResourceResponse response) {
 
         try {
             String json = Json.vgrHsaIdToJson(hsaId, maxHits);
@@ -457,19 +447,99 @@ public class EditIFeedController {
         out.flush();
         out.close();
     }
-    
-    @ResourceMapping(value="updateJsonpEmbedCode")
-    public void updateJsonpEmbedCode(ResourceResponse response) throws IOException {
-    	
-    	System.out.println("EditIFeedController - updateJsonpEmbedCode");
-    	
-        String result = "my response";
+
+    @ResourceMapping(value = "updateJsonpEmbedCode")
+    public void updateJsonpEmbedCode(ResourceRequest request, ResourceResponse response) throws IOException {
+
+        System.out.println("EditIFeedController - updateJsonpEmbedCode");
+
+        Map<String, String[]> map = request.getParameterMap();
+
+        for (String key : map.keySet()) {
+            String[] arr = map.get(key);
+            String str = key + " = " + Arrays.asList(arr);
+            System.out.println(str);
+        }
+
+
+        String[] fields = map.get("field");
+        String[] aliases = map.get("alias");
+        String[] orientations = map.get("orientation");
+        String[] widths = map.get("width");
+        String ifeedId = map.get("ifeedId")[0];
+        String limitList = map.get("limitList")[0];
+        String sortColumn = map.get("sortColumn")[0];
+        String sortOrder = map.get("sortOrder")[0];
+        String hideEpiRightColumn = map.get("hideEpiRightColumn")[0];
+
+
+        String result = toTableMarkup(ifeedId, limitList, sortColumn, sortOrder, hideEpiRightColumn, fields, aliases, orientations, widths);
         final OutputStream out = response.getPortletOutputStream();
         out.write(result.getBytes("UTF-8"));
         out.flush();
         out.close();
     }
-    
+
+    private String toTableMarkup(String ifeedId, String limitList, String sortColumn, String sortOrder, String hideEpiRightColumn, String[] fields, String[] aliases, String[] orientations, String[] widths) {
+        StringBuilder sb = new StringBuilder();
+        List<String> concat = new ArrayList<String>();
+        for (int i = 0; i < fields.length; i++) {
+            concat.add(join("|", fields[i], aliases[i], orientations[i]));
+        }
+        String columns = join(concat, ",");
+
+
+        String result = "<div \n" +
+                "\tclass=\"ifeedDocList\" \n" +
+                //"\tcolumnes=\"title|Titel|left,dc.date.issued|Publiceringsdatum|right\" \n" +
+                "\tcolumnes=\"" + columns + "\" \n" +
+                "\tdefaultsortcolumn=\"" + sortColumn + "\" \n" +
+                "\tdefaultsortorder=\"" + sortOrder + "\" \n" +
+                "\tlimit=\"" + limitList + "\" \n" +
+                "\thiderightcolumn=\"" + hideEpiRightColumn + "\" \n" +
+                "\tfeedid=\"" + ifeedId + "\">\n" +
+                "</div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/" + ifeedId + "/?by=" + sortColumn + "&dir=" + sortOrder + "' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>\n" +
+                "</iframe>\n" +
+                "</noscript>";
+
+        return result;
+    }
+
+    /**
+     * Concatenates several strings and places another string between each of those.
+     *
+     * @param junctor what string to concatenate between the other parameters.
+     * @param items   the different strings to be concatenated
+     * @return as string product of the parameters.
+     */
+    public static String join(String junctor, String... items) {
+        return join(Arrays.asList(items), junctor);
+    }
+
+    /**
+     * Concatenates several strings and places another string between each of those.
+     *
+     * @param junctor what string to concatenate between the other parameters.
+     * @param list    the different strings to be concatenated
+     * @return as string product of the parameters.
+     */
+    public static String join(List<?> list, String junctor) {
+        StringBuilder sb = new StringBuilder();
+        if (list.isEmpty()) {
+            return "";
+        }
+        if (list.size() == 1) {
+            return list.get(0) + "";
+        }
+
+        for (int i = 0, j = list.size() - 1; i < j; i++) {
+            sb.append(list.get(i));
+            sb.append(junctor);
+        }
+        sb.append(list.get(list.size() - 1));
+        return sb.toString();
+    }
+
 
     public void addDataTo(List<VgrOrganization> vos, String ns, String type) throws UnsupportedEncodingException {
         for (VgrOrganization vo : vos) {

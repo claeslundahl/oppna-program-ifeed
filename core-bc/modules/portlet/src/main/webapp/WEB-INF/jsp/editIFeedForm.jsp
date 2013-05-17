@@ -13,16 +13,14 @@
 
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 
-
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/redmond/jquery-ui.css" type="text/css" />
-<link rel="stylesheet" href="http://webframe.vgregion.se/documentListing/docListCreator/lib/jquery.cluetip.css" type="text/css" />
-<link rel="stylesheet" href="http://webframe.vgregion.se/documentListing/docListCreator/lib/jquery-impromptu.4.0.min.css" type="text/css" />
+<link rel="stylesheet" href="css/jquery.cluetip.css" type="text/css" />
+<link rel="stylesheet" href="css/jquery-impromptu.4.0.min.css" type="text/css" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
-<script src="http://webframe.vgregion.se/documentListing/docListCreator/lib/jquery-impromptu.4.0.min.js"></script>
-<script src="http://webframe.vgregion.se/documentListing/docListCreator/lib/jquery.cluetip.all.js"></script>
-<script type="text/javascript" src="http://webframe.vgregion.se/documentListing/docListCreator/local.js"></script>
-
+<script src="js/jquery-impromptu.4.0.min.js"></script>
+<script src="js/jquery.cluetip.all.js"></script>
+<script type="text/javascript" src="js/local.js"></script>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />

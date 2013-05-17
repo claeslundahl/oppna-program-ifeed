@@ -9,6 +9,7 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
+<%@ taglib uri="/WEB-INF/tld/field-infs.tld" prefix="fi"%>
 
 <portlet:resourceURL id="updateJsonpEmbedCode" var="updateJsonpEmbedCodeURL" />
 
@@ -24,7 +25,7 @@
 	<liferay-ui:panel-container cssClass="ifeed-jspon-container">
 	    <liferay-ui:panel title="Inst&auml;llningar f&ouml;r listan" collapsible="true" extended="true" cssClass="ifeed-jsonp-settings">
 	    
-	    	<aui:input name="ifeedId" type="hidden" value="" />
+	    	<aui:input name="ifeedId" type="hidden" value="${ifeedId}" />
 	    	
 	    	<%-- Input field example --%>
 	    	<%--
@@ -70,9 +71,13 @@
 		    		
 		    		<div class="aui-field-multi-element">
 			    		<aui:select name="sortColumn" label="">
-							<aui:option value="0" label="Titel" selected="true" />
-							<aui:option value="1" label="Lorem" />
-							<aui:option value="2" label="Ipsum" />
+														<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status">
+														    <optgroup label="${field.name}">
+														        <c:forEach items="${field.filterCriteriaTypes}" var="option" varStatus="status2">
+                          								            <aui:option value="${option.id}" label="${option.name}" />
+                                                                </c:forEach>
+                            								</optgroup>
+                            							</c:forEach>
 			    		</aui:select>
 			    		<aui:select name="sortOrder" label="">
 							<aui:option value="asc" label="Stigande" selected="true" />
@@ -94,7 +99,6 @@
 	    			Vill du visa tabellhuvudet (rubrikerna f&ouml;r kolumnerna)?
     			</span>
 	    	</aui:field-wrapper>
-	    	
 	    	
 	    	<aui:field-wrapper>
 	    		<aui:select name="fontSize" label="Teckenstorlek">
@@ -128,30 +132,33 @@
 					&nbsp;
 				</aui:column>
 			</aui:layout>
-		
+
 			<div class="ifeed-jsonp-column-bd">
 				<aui:layout cssClass="ifeed-jsonp-column-bd-item ifeed-jsonp-column-bd-item-1">
 					<aui:column columnWidth="20" first="true">
-						<aui:select name="column_1_field" label="" data-name="field">
-							<aui:option value="0" label="Titel" selected="true" />
-							<aui:option value="1" label="Publiceringsdatum" />
-							<c:forEach begin="2" end="10" varStatus="status">
-								<aui:option value="field-element-${status.index}" label="field-element-${status.index}" />
-							</c:forEach>
+						<aui:select name="field" label="" data-name="field">
+
+														<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status">
+														    <optgroup label="${field.name}">
+														        <c:forEach items="${field.filterCriteriaTypes}" var="option" varStatus="status2">
+                          								            <aui:option value="${option.id}" label="${option.name}" />
+                                                                </c:forEach>
+                            								</optgroup>
+                            							</c:forEach>
 						</aui:select>
 					</aui:column>
 					<aui:column columnWidth="20">
-						<aui:input name="column_1_alias" type="text" value="Titel" label="" data-name="alias" />
+						<aui:input name="alias" type="text" value="Titel" label="" data-name="alias" />
 					</aui:column>
 					<aui:column columnWidth="20">
-						<aui:select name="column_1_orientation" label="" data-name="orientation">
+						<aui:select name="orientation" label="" data-name="orientation">
 							<aui:option value="0" label="V&auml;nsterst&auml;lld kolumn" selected="true" />
 							<aui:option value="1" label="Houml;gerst&auml;lld kolumn" />
 							<aui:option value="2" label="Centrerad kolumn" />
 						</aui:select>
 					</aui:column>
 					<aui:column columnWidth="20">
-						<aui:input name="column_1_width" type="text" value="70" label="" data-name="width" />
+						<aui:input name="width" type="text" value="70" label="" data-name="width" />
 					</aui:column>
 					<aui:column columnWidth="20" last="true">
 						<div class="link-icon-wrap">
@@ -159,7 +166,9 @@
 						</div>
 					</aui:column>
 				</aui:layout>
-	
+
+
+	            <%--
 				<aui:layout cssClass="ifeed-jsonp-column-bd-item ifeed-jsonp-column-bd-item-2">
 					<aui:column columnWidth="20" first="true">
 						<aui:select name="column_2_field" label="" data-name="field">
@@ -189,6 +198,8 @@
 						</div>
 					</aui:column>
 				</aui:layout>
+				--%>
+
 			</div>
 			
 			<div class="clearfix">
@@ -210,7 +221,7 @@
 </aui:form>
 
 <liferay-util:html-bottom>
-    <script type="text/javascript" src="<%= request.getContextPath() %>/js/ifeed-jsonp-builder.js"></script>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/ifeed-jsonp-builder.jsp"></script>
     <script type="text/javascript">
 
         AUI().ready('aui-base', 'ifeed-jsonp-builder', function (A) {

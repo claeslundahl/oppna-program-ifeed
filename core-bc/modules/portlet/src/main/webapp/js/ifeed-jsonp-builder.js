@@ -13,7 +13,7 @@ AUI().add('ifeed-jsonp-builder',function(A) {
 
         PORTLET_NAMESPACE = 'portletNamespace',
 
-        CSS_COLUMN_ROWS_WRAP = 'ifeed-jsonp-column-bd'
+        CSS_COLUMN_ROWS_WRAP = 'ifeed-jsonp-column-bd',
         CSS_COLUMN_ROW_ITEM = 'ifeed-jsonp-column-bd-item'
     ;
 
@@ -61,12 +61,10 @@ AUI().add('ifeed-jsonp-builder',function(A) {
 
                         if(form) {
                         	// Bind selects
-                            var selects = form.all('select');
-                            selects.on('change', instance._onSelectChange, instance);
+                            form.delegate('change', instance._onSelectChange, 'select', instance);
 
                             // Bind text inputs
-                            var textInputs = form.all('input[type="text"]');
-                            textInputs.on('change', instance._onTextInputChange, instance);
+                            form.delegate('change', instance._onTextInputChange, 'input[type="text"]', instance);
 
                             // Bind delete column links (through delegate since new rows may be inserted after bind)
                             var columnRowsWrap = form.one('.' + CSS_COLUMN_ROWS_WRAP);
@@ -133,12 +131,8 @@ AUI().add('ifeed-jsonp-builder',function(A) {
 
                     _onFormSubmitSuccess: function(e, id, xhr) {
                     	var instance = this;
-                    	console.log(e);
-                    	console.log(id);
-                    	console.log(xhr);
-                    	/* Todo - add logic to retrieve new embed code from xhr response */
-                    	/* Currently just printing out random dummy data */
-                    	var embedCode = '<p>Dummy Code here now</p>' + '<div>' + Math.floor(Math.random()*100000001) + '</div>foo';
+
+                    	var embedCode = xhr.response;
 
                     	instance._updateEmbedCode(embedCode);
                     },
@@ -176,7 +170,6 @@ AUI().add('ifeed-jsonp-builder',function(A) {
                     			var updatedId = portletNamespace + 'column_' + rowIndexDom + '_' + dataName;
 
                     			select.setAttribute('id', updatedId);
-                    			select.setAttribute('name', updatedId);
                     		});
 
                     		// Rename all text inputs
@@ -186,7 +179,6 @@ AUI().add('ifeed-jsonp-builder',function(A) {
                     			var updatedId = portletNamespace + 'column_' + rowIndexDom + '_' + dataName;
 
                     			textInput.setAttribute('id', updatedId);
-                    			textInput.setAttribute('name', updatedId);
                     		});
 
 

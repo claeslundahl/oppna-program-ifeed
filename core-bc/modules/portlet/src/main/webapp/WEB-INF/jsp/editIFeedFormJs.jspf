@@ -192,7 +192,7 @@
         var s = '&fq=' + filterTypeId.value;
         if (queryUrl.indexOf(s) != -1) {
             console.log(queryUrl);
-            queryUrl = queryUrl.replace(s, s + " OR %3Aquery*' + filterTypeId.value);
+            queryUrl = queryUrl.replace(s, s + ' OR %3Aquery*' + filterTypeId.value);
             console.log(queryUrl);
         } else {
           queryUrl = queryUrl + '&fq=' + filterTypeId.value + '%3Aquery*&json.wrf=callback&facet=on&wt=json&facet.field=' + filterTypeId.value + '&facet.mincount=1';

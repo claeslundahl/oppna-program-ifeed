@@ -484,7 +484,7 @@ public class EditIFeedController {
         StringBuilder sb = new StringBuilder();
         List<String> concat = new ArrayList<String>();
         for (int i = 0; i < fields.length; i++) {
-            concat.add(join("|", fields[i], aliases[i], orientations[i]));
+            concat.add(join("|", fields[i], aliases[i], orientations[i], widths[i]));
         }
         String columns = join(concat, ",");
 

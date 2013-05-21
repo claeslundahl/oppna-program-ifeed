@@ -108,6 +108,11 @@ AUI().add('ifeed-jsonp-builder',function(A) {
 
                     	columnRowsWrap.append(clonedNode);
 
+                        var selects = clonedNode.all('select');
+                        selects.on('change', instance._onSelectChange, instance);
+
+                        var selects = clonedNode.all('input');
+                        selects.on('change', instance._onSelectChange, instance);
                     	// Make a new template
                     	instance._copyColumnRowTemplate();
 
@@ -135,9 +140,6 @@ AUI().add('ifeed-jsonp-builder',function(A) {
 
                     _onFormSubmitSuccess: function(e, id, xhr) {
                     	var instance = this;
-                    	console.log(e);
-                    	console.log(id);
-                    	console.log(xhr);
                     	/* Todo - add logic to retrieve new embed code from xhr response */
                     	/* Currently just printing out random dummy data */
                     	//var embedCode = '<p>Dummy Code here now</p>' + '<div>' + Math.floor(Math.random()*100000001) + '</div>foo';

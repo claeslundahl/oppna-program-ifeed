@@ -209,12 +209,12 @@
 			</div>
 		</liferay-ui:panel>
 	    <liferay-ui:panel title="Kod att klistra in" collapsible="true" extended="true" cssClass="ifeed-jsonp-embed-code">
-	    
+
 	    	<%-- Dummy kod --%>
-	    	<c:set scope="page" var="embedCodeHtml" value="<div class=\"ifeedDocList\" columnes=\"title|Titel|left,dc.date.issued|Publiceringsdatum|right\" defaultsortcolumn=\"title\" defaultsortorder=\"desc\" limit=\"0\" hiderightcolumn=\"true\" feedid=\"5\"></div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/5/?by=dc.title&dir=desc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'></iframe></noscript>" />
-	    
+	    	<c:set scope="page" var="embedCodeHtml" value="Ändra parametrar för att generera skript." />
+
 	    	<aui:input name="embedCode" type="textarea" cssClass="embed-code-textarea" onClick="Liferay.Util.selectAndCopy(this);" value="${embedCodeHtml}" label="" />
-	    
+
 		</liferay-ui:panel>
 	</liferay-ui:panel-container>
 

@@ -189,7 +189,14 @@
     if (window.filterType == 'd:text_facet' || window.filterType == 'd:ldap_org_value') {
       var field = document.getElementById('<portlet:namespace />filterValue');
       if (field) {
-        queryUrl = queryUrl + '&fq=' + filterTypeId.value + '%3Aquery*&json.wrf=callback&facet=on&wt=json&facet.field=' + filterTypeId.value + '&facet.mincount=1';
+        var s = '&fq=' + filterTypeId.value;
+        if (queryUrl.indexOf(s) != -1) {
+            console.log(queryUrl);
+            queryUrl = queryUrl.replace(s, s + " OR %3Aquery*' + filterTypeId.value);
+            console.log(queryUrl);
+        } else {
+          queryUrl = queryUrl + '&fq=' + filterTypeId.value + '%3Aquery*&json.wrf=callback&facet=on&wt=json&facet.field=' + filterTypeId.value + '&facet.mincount=1';
+        }
         
         function locate(d) {
           var r = d.facet_counts.facet_fields[filterTypeId.value];

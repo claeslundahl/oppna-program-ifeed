@@ -13,6 +13,7 @@
 
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 
+<%-- 
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/redmond/jquery-ui.css" type="text/css" />
 <link rel="stylesheet" href="css/jquery.cluetip.css" type="text/css" />
 <link rel="stylesheet" href="css/jquery-impromptu.4.0.min.css" type="text/css" />
@@ -21,6 +22,7 @@
 <script src="js/jquery-impromptu.4.0.min.js"></script>
 <script src="js/jquery.cluetip.all.js"></script>
 <script type="text/javascript" src="js/local.js"></script>
+--%>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />

@@ -471,16 +471,19 @@ public class EditIFeedController {
         String sortColumn = map.get("sortColumn")[0];
         String sortOrder = map.get("sortOrder")[0];
         String hideEpiRightColumn = map.get("hideEpiRightColumn")[0];
+        String fontSize =map.get("fontSize")[0];
+        String showTableHeader =map.get("showTableHeader")[0];
+        String linkOriginalDoc =map.get("linkOriginalDoc")[0];
 
 
-        String result = toTableMarkup(ifeedId, limitList, sortColumn, sortOrder, hideEpiRightColumn, fields, aliases, orientations, widths);
+        String result = toTableMarkup(ifeedId, limitList, sortColumn, sortOrder, hideEpiRightColumn, fontSize, showTableHeader, linkOriginalDoc, fields, aliases, orientations, widths);
         final OutputStream out = response.getPortletOutputStream();
         out.write(result.getBytes("UTF-8"));
         out.flush();
         out.close();
     }
 
-    private String toTableMarkup(String ifeedId, String limitList, String sortColumn, String sortOrder, String hideEpiRightColumn, String[] fields, String[] aliases, String[] orientations, String[] widths) {
+    private String toTableMarkup(String ifeedId, String limitList, String sortColumn, String sortOrder, String hideEpiRightColumn, String fontSize, String showTableHeader, String linkOriginalDoc, String[] fields, String[] aliases, String[] orientations, String[] widths) {
         StringBuilder sb = new StringBuilder();
         List<String> concat = new ArrayList<String>();
         for (int i = 0; i < fields.length; i++) {
@@ -493,8 +496,11 @@ public class EditIFeedController {
                 "\tclass=\"ifeedDocList\" \n" +
                 //"\tcolumnes=\"title|Titel|left,dc.date.issued|Publiceringsdatum|right\" \n" +
                 "\tcolumnes=\"" + columns + "\" \n" +
+                "\tfontSize=\"" + fontSize + "\" \n" +
                 "\tdefaultsortcolumn=\"" + sortColumn + "\" \n" +
                 "\tdefaultsortorder=\"" + sortOrder + "\" \n" +
+                "\tshowTableHeader=\"" + showTableHeader + "\" \n" +
+                "\tlinkOriginalDoc=\"" + linkOriginalDoc + "\" \n" +
                 "\tlimit=\"" + limitList + "\" \n" +
                 "\thiderightcolumn=\"" + hideEpiRightColumn + "\" \n" +
                 "\tfeedid=\"" + ifeedId + "\">\n" +

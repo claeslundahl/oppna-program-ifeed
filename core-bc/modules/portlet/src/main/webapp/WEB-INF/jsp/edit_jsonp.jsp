@@ -111,6 +111,16 @@
 	    			V&auml;lj teckenstorlek f&ouml;r listan
     			</span>
 	    	</aui:field-wrapper>
+
+	    	<aui:field-wrapper>
+	    		<aui:select name="linkOriginalDoc" label="Länka till orginaldokument">
+					<aui:option value="no" label="Nej" />
+					<aui:option value="yes" label="Ja" selected="true" />
+	    		</aui:select>
+	    		<span class="aui-field-help">
+
+    			</span>
+	    	</aui:field-wrapper>
 				
 		</liferay-ui:panel>
 		
@@ -151,9 +161,9 @@
 					</aui:column>
 					<aui:column columnWidth="20">
 						<aui:select name="orientation" label="" data-name="orientation" id="column_1_orientation">
-							<aui:option value="0" label="V&auml;nsterst&auml;lld kolumn" selected="true" />
-							<aui:option value="1" label="H&ouml;gerst&auml;lld kolumn" />
-							<aui:option value="2" label="Centrerad kolumn" />
+							<aui:option value="left" label="V&auml;nsterst&auml;lld kolumn" selected="true" />
+							<aui:option value="right" label="H&ouml;gerst&auml;lld kolumn" />
+							<aui:option value="center" label="Centrerad kolumn" />
 						</aui:select>
 					</aui:column>
 					<aui:column columnWidth="20">

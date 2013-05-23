@@ -114,8 +114,8 @@
 
 	    	<aui:field-wrapper>
 	    		<aui:select name="linkOriginalDoc" label="Länka till orginaldokument">
-					<aui:option value="no" label="Nej" />
-					<aui:option value="yes" label="Ja" selected="true" />
+					<aui:option value="no" label="Nej" selected="true" />
+					<aui:option value="yes" label="Ja" />
 	    		</aui:select>
 	    		<span class="aui-field-help">
 

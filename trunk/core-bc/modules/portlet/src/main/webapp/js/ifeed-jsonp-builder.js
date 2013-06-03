@@ -60,20 +60,28 @@ AUI().add('ifeed-jsonp-builder',function(A) {
                         var form = instance.get(FORM);
 
                         if(form) {
+
                         	// Bind selects
-                            form.delegate('change', instance._onSelectChange, 'select', instance);
+//                            form.delegate('change', instance._onSelectChange, 'select', instance);
+                            hookEventByElementType(form, 'select', function () { instance._onSelectChange(); });
 
                             // Bind text inputs
-                            form.delegate('change', instance._onTextInputChange, 'input[type="text"]', instance);
+//                            form.delegate('change', instance._onTextInputChange, 'input[type="text"]', instance);
+                            hookEventByElementType(form, 'input', function () { instance._onTextInputChange(); });
 
                             // Bind delete column links (through delegate since new rows may be inserted after bind)
                             var columnRowsWrap = form.one('.' + CSS_COLUMN_ROWS_WRAP);
 
-                            columnRowsWrap.delegate('click', instance._onDeleteColumRow, '.link-icon-delete', instance);
+//                            columnRowsWrap.delegate('click', instance._onDeleteColumRow, '.link-icon-delete', instance);
+                            hookEventByElementType(form, 'a', function () { instance._onDeleteColumRow(); });
 
                             // Bind add column click
                             var addColumnLink = instance.get(ADD_COLUMN_LINK);
-                            addColumnLink.on('click', instance._onAddColumnLinkClick, instance);
+
+                            //addColumnLink.on('click', instance._onAddColumnLinkClick, instance);
+                            hookEvent(addColumnLink.getDOM(), 'click', function() { instance._onAddColumnLinkClick(); instance.bindUI(); });
+                        } else {
+		 		alert('did mot find any form');
                         }
                     },
 
@@ -91,8 +99,7 @@ AUI().add('ifeed-jsonp-builder',function(A) {
 
                     _onAddColumnLinkClick: function(e) {
                     	var instance = this;
-
-                    	e.halt();
+                        if (e && e.halt) e.halt();
 
                     	var form = instance.get(FORM);
 
@@ -131,9 +138,8 @@ AUI().add('ifeed-jsonp-builder',function(A) {
 
                     _onFormSubmitSuccess: function(e, id, xhr) {
                     	var instance = this;
-
-                    	var embedCode = xhr.response;
-
+                    	var embedCode = xhr.responseText;
+                        if (embedCode == undefined) embedCode = xhr.response;
                     	instance._updateEmbedCode(embedCode);
                     },
 
@@ -211,12 +217,9 @@ AUI().add('ifeed-jsonp-builder',function(A) {
 
                     _updateEmbedCode: function(embedCode) {
                     	var instance = this;
-
                     	var textarea = instance.get(EMBED_CODE_TEXTAREA);
-
                     	textarea.set('value', embedCode);
                     },
-
 
                     _someFunction: function() {
                         var instance = this;
@@ -237,3 +240,60 @@ AUI().add('ifeed-jsonp-builder',function(A) {
       ]
     }
 );
+
+function hookEventByElementType(elementRoot, type, func) {
+	try {
+    var elements = document.getElementsByTagName(type);
+    for (var i = 0; i < elements.length; i++) {
+	if (!elements[i].hooked) {
+        	hookEvent(elements[i], 'change', func);
+		elements[i].hooked = true;
+	}
+    }
+    return true;
+}catch(e) {
+alert(e.message);
+}
+};
+
+// http://stackoverflow.com/questions/3568753/cross-browser-event-handling
+function hookEvent(elem, evt, func)
+{
+    if (typeof elem === "string")
+    {
+        elem = document.getElementById(elem);
+    }
+    if (!elem)
+    {
+        return null;
+    }
+    var old, r;
+    if (elem.addEventListener)  //w3c
+    {
+        elem.addEventListener(evt, func, false);
+        r = true;
+    }
+    else if (elem.attachEvent)  //ie
+    {
+        elem[evt + func] = function ()
+        {
+            func.call(this, window.event);
+        };
+        r = elem.attachEvent("on" + evt, elem[evt + func]);
+    }
+    else                        //old
+    {
+        old = elem["on" + evt] ? elem["on" + evt] : function (e) { };
+        elem["on" + evt] = function (e)
+        {
+            if (!e)
+            {
+                e = window.event;
+            }
+            old.call(this, e);
+            func.call(this, e);
+        };
+        r = true;
+    }
+    return r;
+};

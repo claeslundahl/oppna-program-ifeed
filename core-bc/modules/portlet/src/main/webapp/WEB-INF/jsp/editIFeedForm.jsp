@@ -122,8 +122,7 @@
       <a href="${rssFeedLink}" target="_blank">Rss</a>
       <a href="${webFeedLink}" target="_blank">Html</a>
       <a id="json-feed-link" href="${jsonFeedLink}" target="_blank">Json</a>
-      <a href="javascript:loadCodeFrame('${ifeed.id}');">Jsonp-hjälp</a>
-      
+
 		<portlet:renderURL var="showEditJsonpUrl">
 		  <portlet:param name="view" value="showEditJsonp"/>
 		</portlet:renderURL>

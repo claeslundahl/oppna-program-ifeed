@@ -84,6 +84,16 @@ public class FieldInf {
         return result;
     }
 
+    public List<FieldInf> getFilterCriteriaAndViewTypes() {
+        List<FieldInf> result = new ArrayList<FieldInf>();
+        for (FieldInf fi : getChildren()) {
+            if (fi.isFilter() || fi.isInHtmlView()) {
+                result.add(fi);
+            }
+        }
+        return result;
+    }
+
     public String getApelonKey() {
         return apelonKey;
     }

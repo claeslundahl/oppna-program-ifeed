@@ -1,4 +1,3 @@
-
 var currentSortCol="title";
 var currentSort="asc";
 var limit=0;
@@ -12,7 +11,7 @@ $.feed=new Array();
 $.callback=undefined;
 
 function pad2(number) {
-     return (number < 10 ? '0' : '') + number   
+     return (number < 10 ? '0' : '') + number
 }
 
 function getDocumentId(str)
@@ -57,12 +56,16 @@ function resortDoclist(listNumber,col)
 	currentSortCol=col;
 
 	printIfeed((listNumber),feeds[(listNumber)]);
-	
+
 	$('td').css('padding','5px');
 
 	initTooltip();
 }
 
+
+function makeMetaDataUrl(docId) {
+	return "http://portalen.vgregion.se/iFeed-web/documents/" + docId + "/metadata";
+}
 
 function printIfeed(i,jsonp)
 {
@@ -84,7 +87,7 @@ function printIfeed(i,jsonp)
 	else
 		$('.doc-list', ob).append("<tr>");
 
-	$(".doc-list tr:last",ob).append("<th class='info' style='width: 10px'></th>\n");
+	$(".doc-list tr:last",ob).append("<th class='info' style='width: 15px'></th>\n");
 
 	$.each(cols,function(key,col)
 	{
@@ -104,7 +107,7 @@ function printIfeed(i,jsonp)
 		}
 		else
 		{
-			$(".doc-list tr",ob).append( "<th colname='"+subcols[0]+"' style='text-align: "+subcols[2]+"'><a title='Sortera efter "+colName+"' href=\"javascript:resortDoclist("+i+",'"+subcols[0]+"')\"><b>"+colName+"</b></a><img src='http://webframe.vgregion.se/documentListing/images/Sort.gif' /></nobr></th>\n");
+			$(".doc-list tr",ob).append( "<th colname='"+subcols[0]+"' style='text-align: "+subcols[2]+"'><a title='Sortera efter "+colName+"' href=\"javascript:resortDoclist("+i+",'"+subcols[0]+"')\"><b>"+colName+"</b></a><img src='http://webframe.vgregion.se/documentListing/images/Sort.gif' /></th>\n");
 		}
 	});
 
@@ -117,19 +120,32 @@ function printIfeed(i,jsonp)
 		docs[val["docid"]]=val;
 
 		$(".doc-list",ob).append("<tr>");
+		$(".doc-list",ob).append("<td style='width: 15px'></td>");
+
+		var info;
 
 		if(val['dc.date.validto']!=undefined && checkDateValidTo(val['dc.date.validto']))
 		{
-			$(".doc-list tr:last",ob).append("<td style='width: 16px'><nobr><a target=_blank href='http://portalen.vgregion.se/iFeed-web/documents/"+val["docid"]+"/metadata'><img class='tooltip' feedid='"+val["docid"]+"' style='margin-right: 0.5em;' src='http://webframe.vgregion.se/information.png' /></a><img title='Dokumentet har gÃ¥tt ut: "+timestampTodate(val['dc.date.validto'])+"' src='http://webframe.vgregion.se/documentListing/images/utropstecken_rod.gif'></nobr></td>");
+			//$(".doc-list tr:last",ob).append("<td style='width: 16px'><nobr><a target=_blank href='http://portalen.vgregion.se/iFeed-web/documents/"+val["docid"]+"/metadata'><img class='tooltip' feedid='"+val["docid"]+"' style='margin-right: 0.5em;' src='http://webframe.vgregion.se/information.png' /></a><img title='Dokumentet har gÃ¥tt ut: "+timestampTodate(val['dc.date.validto'])+"' src='http://webframe.vgregion.se/documentListing/images/utropstecken_rod.gif'></nobr></td>");
+			info = ("<a target=_blank href='"+makeMetaDataUrl(val['docid'])+
+			"'><img class='tooltip' feedid='"+val["docid"]+"' style='margin-right: 0.5em;white-space: nowrap;' src='http://webframe.vgregion.se/information.png' /><img title='Dokumentet har gÃ¥tt ut: "
+			+timestampTodate(val['dc.date.validto'])+"' src='http://webframe.vgregion.se/documentListing/images/utropstecken_rod.gif'></a>");
 		}
 		else if(val['dc.date.validfrom']!=undefined && checkDateValidFrom(val['dc.date.validfrom']))
 		{
-			$(".doc-list tr:last",ob).append("<td style='width: 16px'><nobr><a target=_blank href='http://portalen.vgregion.se/iFeed-web/documents/"+val["docid"]+"/metadata'><img class='tooltip' feedid='"+val["docid"]+"' style='margin-right: 0.5em;' src='http://webframe.vgregion.se/information.png' /></a><img title='Dokumentet bÃ¶rjar gÃ¤lla: "+timestampTodate(val['dc.date.validfrom'])+"' src='http://webframe.vgregion.se/documentListing/images/utropstecken_rod.gif'></nobr></td>");
+			info = ("<a target=_blank href='"+makeMetaDataUrl(val['docid'])+"'><img class='tooltip' feedid='"
+			+val["docid"]+"' style='margin-right: 0.5em;white-space: nowrap;' src='http://webframe.vgregion.se/information.png' /><img title='Dokumentet bÃ¶rjar gÃ¤lla: "
+			+timestampTodate(val['dc.date.validfrom'])+"' src='http://webframe.vgregion.se/documentListing/images/utropstecken_rod.gif'></a>");
 		}
 		else
 		{
-			$(".doc-list tr:last",ob).append("<td style='width: 16px'><a target=_blank href='http://portalen.vgregion.se/iFeed-web/documents/"+val["docid"]+"/metadata'><img class='tooltip' feedid='"+val["docid"]+"' style='margin-right: 0.5em;' src='http://webframe.vgregion.se/information.png' /></a></td>");
+			info = ("<a target=_blank href='"+makeMetaDataUrl(val['docid'])+
+			"'><img class='tooltip' feedid='"+val["docid"]+"' style='margin-right: 0.5em;' src='http://webframe.vgregion.se/information.png' /></a>");
 		}
+
+		info = "<td style='width:15px'>" + info + "</td>";
+		$(".doc-list tr:last",ob).append(info);
+		info = '';
 
 		$.each(cols,function(key2,col2)
 		{
@@ -140,15 +156,9 @@ function printIfeed(i,jsonp)
 
 			if(subcols[3]==undefined)
                         	subcols[3]="inherit";
-			else 
+			else
 				subcols[3]=subcols[3] + '%';
 
-
-			/*if(subcols[0]=="title")
-			{*/
-				//$(".doc-list tr:last",ob).append( "<td style='text-align:"+subcols[2]+";width:"+subcols[3]+"'><a target=_blank href='"+val['url']+"'>"+val[subcols[0]]+"</a></td>\n");
-			/*}
-			else*/ 
 			if(subcols[0]=="dc.date.issued" || subcols[0]=="dc.date.validto" || subcols[0]=="dc.date.validfrom")
 			{
 				$(".doc-list tr:last",ob).append( "<td style='text-align:"+subcols[2]+";width:"+subcols[3]+"'>"+timestampTodate(val[subcols[0]])+"</td>\n");
@@ -159,13 +169,15 @@ function printIfeed(i,jsonp)
 					val[subcols[0]]=" ";
 
 				var nativeLink = val['dc.identifier.native'];
-				if (currentLinkOriginalDoc=='yes' && nativeLink)
-					$(".doc-list tr:last",ob).append( "<td style='text-align:"+subcols[2]+";width:"+subcols[3]+"'><a target=_blank href='"+nativeLink+"'>"+val[subcols[0]]+"</a></td>\n");
-				else
-					$(".doc-list tr:last",ob).append( "<td style='text-align:"+subcols[2]+";width:"+subcols[3]+"'><a target=_blank href='"+val['url']+"'>"+val[subcols[0]]+"</a></td>\n");
+				if (currentLinkOriginalDoc=='yes' && nativeLink) {
+					$(".doc-list tr:last",ob).append("<td style='text-align:"+subcols[2]+";width:"+subcols[3]+"'>" + info +
+						"<a target=_blank href='"+nativeLink+"'>"+val[subcols[0]]+"</a></td>\n");
+				} else {
+					$(".doc-list tr:last",ob).append("<td style='text-align:"+subcols[2]+";width:"+subcols[3]+"'>" + info +
+						"<a target=_blank href='"+val['url']+"'>"+val[subcols[0]]+"</a></td>\n");
 				//$(".doc-list tr:last",ob).append( "<td style='text-align:"+subcols[2]+";width:"+subcols[3]+"'>"+val[subcols[0]]+"</td>\n");
+				}
 			}
-
 		});
 	});
 }
@@ -201,7 +213,7 @@ function printDocList(i)
 	"	printDocLists("+(i+1)+");"+
 	"};");
 
-	$.getScript("http://ifeed.vgregion.se/iFeed-web/documentlists/"+$(".ifeedDocList").eq(i).attr('feedid')+"/metadata.json?by=processingtime&dir=desc&callback=f_"+$(".ifeedDocList").eq(i).attr('feedid'));			
+	$.getScript("http://ifeed.vgregion.se/iFeed-web/documentlists/"+$(".ifeedDocList").eq(i).attr('feedid')+"/metadata.json?by=processingtime&dir=desc&callback=f_"+$(".ifeedDocList").eq(i).attr('feedid'));
 }
 
 	var currentFontSize="inherit";
@@ -289,7 +301,7 @@ function printDocLists(i,f)
 	}
 
 }
-
+console.log(2);
 function initTooltip()
 {
 	$('.tooltip').cluetip({
@@ -306,14 +318,31 @@ function initTooltip()
     		closeText:        'Stäng',
 		onShow: function(ct, c)
 		{
-			$('.cluetip-title').append("Dokument: "+docs[$(this).attr('feedid')]['dc.title']);
+			$('.cluetip-title').append("Titel: "+docs[$(this).attr('feedid')]['dc.title']);
 			$('.cluetip-inner').append(createToolTipBody(docs[$(this).attr('feedid')]));
 		}
 	});
 }
 
-var headings_first=new Array();
-headings_first['dc.title']="Dokument titel";
+try {
+var headings_first=[];
+/*headings_first['dc.title']="Titel";
+headings_first['dc.description']="Beskrivning";
+headings_first['dc.publisher.forunit']="Publicerat för enhet";
+headings_first['dc.creator.function']="Innehållsansvarig (funktion)";
+headings_first['dc.contributor.acceptedby.role']="Innehållsansvarig (funktion)";
+headings_first['dc.type.document.structure']="Dokumentstruktur VGR";*/
+
+headings_first.push({v:'dc.title', t:"Titel"});
+headings_first.push({v:'dc.description', t:"Beskrivning"});
+headings_first.push({v:'dc.publisher.forunit', t:"Publicerat f&ouml;r enhet"});
+headings_first.push({v:'dc.creator.function', t:"Inneh&aring;llsansvarig (funktion)"});
+headings_first.push({v:'dc.contributor.acceptedby.role', t:"Godk&auml;nd av (funktion)"});
+headings_first.push({v:'dc.type.document.structure', t:"Dokumentstruktur VGR"});
+
+/*
+
+headings_first['dc.title']="Titel";
 headings_first['dc.publisher']="Publicerat av";
 headings_first['dc.contributer.acceptedby']="GodkÃ¤nd av";
 headings_first['dc.date.issued']="Publiceringsdatum";
@@ -327,23 +356,34 @@ headings_first['dc.date.validfrom']="Giltig fr o m";
 headings_first['dc.date.validto']="Giltig t o m";
 
 
+*/
+} catch(e) {
+	console.log(e);
+}
+
 var headings_all=headings_first;
 headings_all['dc.title']="Dokument titel";
 
 function getFirstHeading(key)
 {
+	return headings_first[0].t;
+/*
 	if(headings_first[key]!=undefined)
 		return headings_first[key];
 	else
 		return key;
+*/
 }
 
 function getAllFirst(key)
 {
+	return headings_first[0].v;
+/*
 	if(headings_all[key]!=undefined)
 		return headings_all[key];
 	else
 		return key;
+*/
 }
 
 function checkDateValidTo(to)
@@ -405,7 +445,7 @@ function timeConverterDate(UNIX_timestamp){
 		return "";
 }
 
-function createToolTipBody(doc)
+function createToolTipBody_old(doc)
 {
 	var headings=new Array('');
 	headings['dc.title']="";
@@ -415,7 +455,7 @@ function createToolTipBody(doc)
 
 	t+="<table border=0 >";
 
- 	$.each(doc, function(key, val) 
+ 	$.each(doc, function(key, val)
 	{
 		if(key!=getFirstHeading(key))
 		{
@@ -439,4 +479,45 @@ function createToolTipBody(doc)
 
 }
 
+function createToolTipBody(doc)
+{
+	var headings=new Array('');
+	headings['dc.title']="";
+
+	var t=[];
+
+	for (var i = 1; i < headings_first.length; i++) {
+		var conf = headings_first[i];
+		var key = conf.v;
+		var val = doc[conf.v];
+		if (!val) val = '';
+		var label = conf.t;
+		if(key=="dc.date.issued" || key=="dc.date.validfrom" || key=="dc.date.validto")	{
+			t.push("<tr><td align='left' style='padding-right: 5px'><b>");
+			t.push(label);
+			t.push("</b></td><td>");
+			t.push(timestampTodate(val));
+			t.push("</td></tr>");
+		} else {
+			t.push("<tr><td align='left' style='padding-right: 5px'><b>");
+			t.push(label);
+			t.push("</b></td><td>");
+			t.push(val);
+			t.push("</td></tr>");
+		}
+	}
+
+/*
+	t.push("<tr><td align='left' style='padding-right: 5px'><b><a href='");
+	t.push("</b></td><td>");
+	t.push("<a target=_blank href='"+makeMetaDataUrl(val['docid'])+"'><img class='tooltip' feedid='"+doc["docid"]+"' style='margin-right: 0.5em;' src='http://webframe.vgregion.se/information.png' /></a>");
+	t.push("</td></tr>");
+
+	t.push("</table>");
+*/
+
+
+	return t.join("");
+
+}
 

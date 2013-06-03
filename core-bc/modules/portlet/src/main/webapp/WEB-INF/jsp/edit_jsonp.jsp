@@ -113,7 +113,7 @@
 	    	</aui:field-wrapper>
 
 	    	<aui:field-wrapper>
-	    		<aui:select name="linkOriginalDoc" label="Länka till orginaldokument">
+	    		<aui:select name="linkOriginalDoc" label="L&auml;nka till orginaldokument">
 					<aui:option value="no" label="Nej" selected="true" />
 					<aui:option value="yes" label="Ja" />
 	    		</aui:select>
@@ -146,10 +146,10 @@
 			<div class="ifeed-jsonp-column-bd">
 				<aui:layout cssClass="ifeed-jsonp-column-bd-item ifeed-jsonp-column-bd-item-1">
 					<aui:column columnWidth="20" first="true">
-						<aui:select name="field" label="" data-name="field" id="column_1_field">
+						<aui:select name="field" label="" data-name="field" id="column_1_field" style="width:255px">
 							<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status">
 								<optgroup label="${field.name}">
-									<c:forEach items="${field.filterCriteriaTypes}" var="option" varStatus="status2">
+									<c:forEach items="${field.filterCriteriaAndViewTypes}" var="option" varStatus="status2">
 										<aui:option value="${option.id}" label="${option.name}" />
 									</c:forEach>
 								</optgroup>
@@ -186,10 +186,7 @@
 		</liferay-ui:panel>
 	    <liferay-ui:panel title="Kod att klistra in" collapsible="true" extended="true" cssClass="ifeed-jsonp-embed-code">
 
-	    	<%-- Dummy kod --%>
-	    	<c:set scope="page" var="embedCodeHtml" value="Ändra parametrar för att generera skript." />
-
-	    	<aui:input name="embedCode" type="textarea" cssClass="embed-code-textarea" onClick="Liferay.Util.selectAndCopy(this);" value="${embedCodeHtml}" label="" />
+	    	<aui:input name="embedCode" type="textarea" cssClass="embed-code-textarea" onClick="Liferay.Util.selectAndCopy(this);" value="Modifiera parametrar för att generera skript." label="" />
 
 		</liferay-ui:panel>
 	</liferay-ui:panel-container>
@@ -197,7 +194,7 @@
 </aui:form>
 
 <liferay-util:html-bottom>
-    <script type="text/javascript" src="<%= request.getContextPath() %>/js/ifeed-jsonp-builder.js"></script>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/ifeed-jsonp-builder.js?id=<%= System.currentTimeMillis() %>"></script>
     <script type="text/javascript">
 
         AUI().ready('aui-base', 'ifeed-jsonp-builder', function (A) {

@@ -13,7 +13,7 @@
 
 <%@ taglib uri="/WEB-INF/tld/vgr-access-guard.tld" prefix="guard"%>
 
-    <liferay-ui:panel-container>
+    <liferay-ui:panel-container cssClass="ifeed-search-list">
       <liferay-ui:panel title="Träfflista" collapsible="false" extended="true" cssClass="ifeed-search-result-list">
         <c:if test="${not empty ifeed.filters}">
           <c:if test="${hitsOverflow}">
@@ -26,10 +26,14 @@
             <liferay-ui:search-container-row className="se.vgregion.ifeed.formbean.SearchResultList.SearchResult" modelVar="hit" stringKey="true">
               <liferay-ui:search-container-column-text>
                 <liferay-ui:icon-menu>
-                  <liferay-ui:icon cssClass="metadata-icon-tooltip" image="" method="get" url="${metadataBaseUrl}?documentId=${guard:urlEncode(hit.documentId)}" src="/iFeed-portlet/img/information.png"/>
+                 <liferay-ui:icon cssClass="metadata-icon-tooltip" image="" method="get" url="${metadataBaseUrl}?documentId=${guard:urlEncode(hit.documentId)}" src="/iFeed-portlet/img/information.png"/>
                 </liferay-ui:icon-menu>
               </liferay-ui:search-container-column-text>
-              <liferay-ui:search-container-column-text name="Title" property="title" href="${hit.link}" orderable="true" orderableProperty="dc.title"/>
+              <liferay-ui:search-container-column-text name="Title" href="${hit.link}" orderable="true" orderableProperty="dc.title">
+              	<div class="title-wrap">
+              		${hit.title}
+              	</div>
+              </liferay-ui:search-container-column-text>
               <liferay-ui:search-container-column-text name="Ändrad" property="processingTime" orderable="true" orderableProperty="processingtime"/>
             </liferay-ui:search-container-row>
             <liferay-ui:search-iterator />

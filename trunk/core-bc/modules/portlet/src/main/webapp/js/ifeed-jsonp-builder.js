@@ -72,8 +72,24 @@ AUI().add('ifeed-jsonp-builder',function(A) {
                             // Bind delete column links (through delegate since new rows may be inserted after bind)
                             var columnRowsWrap = form.one('.' + CSS_COLUMN_ROWS_WRAP);
 
-//                            columnRowsWrap.delegate('click', instance._onDeleteColumRow, '.link-icon-delete', instance);
-                            hookEventByElementType(form, 'a', function () { instance._onDeleteColumRow(); });
+var removeButton = form.all('.link-icon.link-icon-delete')._nodes;
+removeButton = removeButton[removeButton.length - 1];
+
+                            hookEvent(removeButton, 'click', function() {
+
+			try {
+			var wrapNode = removeButton.parentNode.parentNode.parentNode.parentNode.parentNode;
+
+                    	wrapNode.parentNode.removeChild(wrapNode);
+
+                    	instance._renumberColumnRows();
+
+                    	instance._submitForm();
+}catch(e) {
+alert(e.message);
+}
+
+				});
 
                             // Bind add column click
                             var addColumnLink = instance.get(ADD_COLUMN_LINK);
@@ -122,9 +138,13 @@ AUI().add('ifeed-jsonp-builder',function(A) {
                     _onDeleteColumRow: function(e) {
                     	var instance = this;
 
-                    	e.halt();
+                        if (e && e.halt) {
+  	                      e.halt();
+                        }
 
                     	var currentTarget = e.currentTarget;
+
+if (!currentTarget) return null;
 
                     	// Find wrap node and delete it
                     	var wrapNode = currentTarget.ancestor('.' + CSS_COLUMN_ROW_ITEM);
@@ -245,10 +265,10 @@ function hookEventByElementType(elementRoot, type, func) {
 	try {
     var elements = document.getElementsByTagName(type);
     for (var i = 0; i < elements.length; i++) {
-	if (!elements[i].hooked) {
+	//if (!elements[i].hooked) {
         	hookEvent(elements[i], 'change', func);
-		elements[i].hooked = true;
-	}
+		//elements[i].hooked = true;
+	//}
     }
     return true;
 }catch(e) {
@@ -267,6 +287,13 @@ function hookEvent(elem, evt, func)
     {
         return null;
     }
+    if (elem.hooked) {
+console.log("hooked" + elem);
+      return null;
+    } else {
+console.log("not hooked" + elem);
+    }
+    elem.hooked = true;
     var old, r;
     if (elem.addEventListener)  //w3c
     {

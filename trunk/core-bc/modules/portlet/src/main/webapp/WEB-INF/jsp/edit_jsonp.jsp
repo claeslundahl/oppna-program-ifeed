@@ -74,7 +74,9 @@
 							<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status">
 								<optgroup label="${field.name}">
 									<c:forEach items="${field.filterCriteriaTypes}" var="option" varStatus="status2">
-										<aui:option value="${option.id}" label="${option.name}" />
+									    <c:if test="${field.inHtmlView}">
+										    <aui:option value="${option.id}" label="${option.name} (${option.id})" />
+										</c:if>
 									</c:forEach>
 								</optgroup>
 							</c:forEach>
@@ -150,7 +152,11 @@
 							<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status">
 								<optgroup label="${field.name}">
 									<c:forEach items="${field.filterCriteriaAndViewTypes}" var="option" varStatus="status2">
-										<aui:option value="${option.id}" label="${option.name}" />
+
+									    <c:if test="${field.inHtmlView}">
+										    <aui:option value="${option.id}" label="${option.name} (${option.id})" />
+										</c:if>
+
 									</c:forEach>
 								</optgroup>
 							</c:forEach>

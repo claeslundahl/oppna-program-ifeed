@@ -128,7 +128,7 @@
 		
 	    <liferay-ui:panel title="Kolumner" collapsible="true" extended="true" cssClass="ifeed-jsonp-columns">
 			<aui:layout cssClass="ifeed-jsonp-columns-hd">
-				<aui:column columnWidth="20" first="true">
+				<aui:column columnWidth="30" first="true">
 					F&auml;lt
 				</aui:column>
 				<aui:column columnWidth="20">
@@ -140,7 +140,7 @@
 				<aui:column columnWidth="20">
 					Bredd (%)
 				</aui:column>
-				<aui:column columnWidth="20" last="true">
+				<aui:column columnWidth="10" last="true">
 					&nbsp;
 				</aui:column>
 			</aui:layout>

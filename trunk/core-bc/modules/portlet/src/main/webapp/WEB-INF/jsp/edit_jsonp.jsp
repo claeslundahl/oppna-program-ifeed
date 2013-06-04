@@ -147,8 +147,8 @@
 
 			<div class="ifeed-jsonp-column-bd">
 				<aui:layout cssClass="ifeed-jsonp-column-bd-item ifeed-jsonp-column-bd-item-1">
-					<aui:column columnWidth="20" first="true">
-						<aui:select name="field" label="" data-name="field" id="column_1_field" style="width:255px">
+					<aui:column columnWidth="30" first="true">
+						<aui:select name="field" label="" data-name="field" id="column_1_field">
 							<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status">
 								<optgroup label="${field.name}">
 									<c:forEach items="${field.filterCriteriaAndViewTypes}" var="option" varStatus="status2">
@@ -175,7 +175,7 @@
 					<aui:column columnWidth="20">
 						<aui:input name="width" type="text" value="70" label="" data-name="width" id="column_1_width" />
 					</aui:column>
-					<aui:column columnWidth="20" last="true">
+					<aui:column columnWidth="10" last="true">
 						<div class="link-icon-wrap">
 							<a href="#" class="link-icon link-icon-delete">Ta bort</a>
 						</div>

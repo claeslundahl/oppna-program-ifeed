@@ -288,10 +288,8 @@ function hookEvent(elem, evt, func)
         return null;
     }
     if (elem.hooked) {
-console.log("hooked" + elem);
       return null;
     } else {
-console.log("not hooked" + elem);
     }
     elem.hooked = true;
     var old, r;

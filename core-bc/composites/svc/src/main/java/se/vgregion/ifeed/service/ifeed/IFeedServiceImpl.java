@@ -102,7 +102,9 @@ public class IFeedServiceImpl implements IFeedService {
         oldIFeed = iFeedRepo.find(oldIFeed.getId());
 
         for (IFeedFilter filter : iFeed.getFilters()) {
-            oldIFeed.addFilter(filter);
+            if (filter.getFilterQuery() != null && !"".equals(filter.getFilterQuery().trim())) {
+                oldIFeed.addFilter(filter);
+            }
         }
 
         IFeed mergedIfeed = iFeedRepo.merge(oldIFeed);

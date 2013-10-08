@@ -221,25 +221,13 @@ public class EditIFeedController {
     @ActionMapping(params = "action=saveIFeed")
     public void editIFeed(@ModelAttribute("ifeed") final IFeed iFeed, final ActionResponse response,
                           final Model model, PortletRequest request) throws SystemException, PortalException {
-        // System.out.println("\n\neditIFeed\n");
-
-        Map<String, String[]> map = request.getParameterMap();
-        for (String key : map.keySet()) {
-            System.out.println(key + " = " + Arrays.asList(map.get(key)));
-        }
-        System.out.println("iFeed.getLinkNativeDocument(): " + iFeed.getLinkNativeDocument());
-
         User user = fetchUser(request);
         if (!AccessGuard.mayEditFeed(user, iFeed)) {
             throw new RuntimeException();
         }
-        // System.out.println("\n\neditIFeed 1\n");
         IFeed ifeed = iFeedService.updateIFeed(iFeed);
-        // System.out.println("\n\neditIFeed 2\n");
         model.addAttribute("ifeed", ifeed);
-        // System.out.println("\n\neditIFeed 3\n");
         model.addAttribute("saveAction", Boolean.TRUE);
-        // System.out.println("\n\neditIFeed 4\n");
         response.setRenderParameter("view", "showEditIFeedForm");
     }
 

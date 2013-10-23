@@ -23,7 +23,7 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.8</version>
         <configuration>
-          <contextPath>/</contextPath>
+          <contextPath>/ifeed-web</contextPath>
           <scanIntervalSeconds>1</scanIntervalSeconds>
           <connectors>
             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
@@ -58,6 +58,13 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>iFeed-core-bc-composite-webcomp</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>8.4-702.jdbc4</version>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>

@@ -87,7 +87,7 @@ public class IFeedSolrQuery extends SolrQuery {
             //addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter, iFeedService.mapFieldInfToId()));
         }
 
-        for (String key: bag.keySet()) {
+        for (String key : bag.keySet()) {
             List<IFeedFilter> filters = bag.get(key);
             if (filters.size() == 1) {
                 addFilterQuery(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
@@ -136,12 +136,12 @@ public class IFeedSolrQuery extends SolrQuery {
     }
 
     private List<Map<String, Object>> prepareAndPerformQuery(final String sortField,
-            final SortDirection sortDirection) {
+                                                             final SortDirection sortDirection) {
         LOGGER.debug("Search filters: {}", Arrays.toString(this.getFilterQueries()));
 
         String sortBy = isBlank(sortField) ? DEFAULT_SORT_FIELD : sortField;
         SortDirection direction = isNull(sortDirection) ? DEFAULT_SORT_DIRECTION : sortDirection;
-        LOGGER.debug("Sort by: {}, Order: {}", new Object[] { sortBy, direction });
+        LOGGER.debug("Sort by: {}, Order: {}", new Object[]{sortBy, direction});
 
         // Perform query
         List<Map<String, Object>> hits = doFilterQuery(sortBy, direction);

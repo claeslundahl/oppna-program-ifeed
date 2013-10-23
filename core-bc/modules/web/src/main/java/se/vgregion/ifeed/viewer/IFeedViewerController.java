@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,13 +47,13 @@ public class IFeedViewerController {
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedViewerController.class);
 
     private IFeedService iFeedService;
-    private IFeedSolrQuery solrQuery;
+    private SolrServer solrServer;
     private AlfrescoDocumentService alfrescoMetadataService;
 
     @Autowired
-    public IFeedViewerController(IFeedSolrQuery solrQuery, IFeedService iFeedService,
-            AlfrescoDocumentService documentService) {
-        this.solrQuery = solrQuery;
+    public IFeedViewerController(IFeedService iFeedService, AlfrescoDocumentService documentService,
+                                 SolrServer solrServer) {
+        this.solrServer = solrServer;
         this.iFeedService = iFeedService;
         this.alfrescoMetadataService = documentService;
     }
@@ -76,6 +77,11 @@ public class IFeedViewerController {
             // Throw 404 if the feed doesn't exist
             throw new ResourceNotFoundException();
         }
+
+        IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
+        solrQuery.setRows(501);
+        solrQuery.setShowDebugInfo(true);
+
         List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField,
                 getEnum(SortDirection.class, sortDirection));
 

@@ -82,8 +82,8 @@
 							</c:forEach>
 			    		</aui:select>
 			    		<aui:select name="sortOrder" label="">
-							<aui:option value="asc" label="Stigande" selected="true" />
-							<aui:option value="desc" label="Fallande" />
+							<aui:option value="asc" label="Stigande (a - &ouml;)" selected="true" />
+							<aui:option value="desc" label="Fallande (&ouml; - a)" />
 			    		</aui:select>
 		    		</div>
 	    		</div>

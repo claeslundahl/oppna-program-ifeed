@@ -2,6 +2,7 @@ package se.vgregion.ifeed.types;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,7 +16,8 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 
 	private static final long serialVersionUID = -8141707337621433677L;
 
-	private String filterQuery;
+    @Column(nullable = false)
+    private String filterQuery;
 
 	private String filterKey;
 

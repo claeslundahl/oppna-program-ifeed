@@ -47,7 +47,9 @@ public class IFeedServiceImplIntTest {
 
 		IFeed oldFeed = new IFeed();
 
-		IFeedFilter filter = new IFeedFilter();
+        // public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
+		IFeedFilter filter = new IFeedFilter(null, "some.value", "some.filter.key");
+
 		oldFeed.addFilter(filter);
 		newFeed.addFilter(filter);
 

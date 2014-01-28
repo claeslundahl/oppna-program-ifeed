@@ -362,11 +362,12 @@ public class EditIFeedController {
     @ActionMapping(params = "action=addOwner")
     public void addOwner(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
                          @RequestParam("ownerId") final String ownerId, final Model model) {
-        Ownership ownership = new Ownership();
-        ownership.setUserId(ownerId);
-        ownership.setName(fetchNameOfPersonIfMatch(ownerId));
-        iFeed.getOwnerships().add(ownership);
-
+        if (ownerId != null && !"".equals(ownerId)) {
+            Ownership ownership = new Ownership();
+            ownership.setUserId(ownerId);
+            ownership.setName(fetchNameOfPersonIfMatch(ownerId));
+            iFeed.getOwnerships().add(ownership);
+        }
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }

@@ -41,12 +41,21 @@
 		
 		<c:if test="${guard:mayEditFeed(user, ifeed) and empty newFilter}">
             <aui:column columnWidth="33">
-                
+    		<aui:column columnWidth="33">
+    			<button id="addOwnerButton" onclick="javascript:addOwner()">Lägg till administratör</button>
+            </aui:column>
+
                     <portlet:actionURL name="addOwner" var="addOwnerUrl">
                         <portlet:param name="action" value="addOwner" />
                         <portlet:param name="ownerId" value="xxx" />
                     </portlet:actionURL>
                     <input id="addOwnerUrl" type="hidden" value="${addOwnerUrl}" style="width:250px" />
+                    <span id="<portlet:namespace />ldap-people" class="ifeed-portlet-ldap-people">
+                        <input id="<portlet:namespace />filterValue" onKeyPress="javascript:enableButtonWhenValuePresent"
+                            onKeyUp="javascript:enableButtonWhenValuePresent()"
+                            onchange="javascript:enableButtonWhenValuePresent()"
+                            onblur="javascript:enableButtonWhenValuePresent()" style="width:300px" />
+                    </span>
                     <script type="text/javascript">
                         window.filterType = 'd:ldap_value';
                         function addOwner() {
@@ -56,16 +65,19 @@
                             url = url.replace('xxx',id);
                             window.location = url;
                         }
+                        function enableButtonWhenValuePresent() {
+                            var userId = document.getElementById('<portlet:namespace />filterValue').value;
+                            var button = document.getElementById('addOwnerButton');
+                            if (userId == '') {
+                               button.disabled = 'disabled';
+                            } else {
+                               button.removeAttribute('disabled');
+                           }
+                        }
+                        enableButtonWhenValuePresent();
                     </script>
-                    <span id="<portlet:namespace />ldap-people" class="ifeed-portlet-ldap-people">
-                        <input id="<portlet:namespace />filterValue" style="width:300px" /> 
-                    </span>
-                
             </aui:column>
-    		
-    		<aui:column columnWidth="33">
-    			<button id="addOwnerButton" onclick="javascript:addOwner()">Lägg till administratör</button>
-            </aui:column>
+
 		</c:if>
 		
     </aui:layout>

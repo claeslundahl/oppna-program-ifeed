@@ -22,7 +22,7 @@
   </repositories>
 
   <properties>
-    <liferay.version>6.0.11</liferay.version>
+    <liferay.version>6.2.10-GA1</liferay.version>
   </properties>
 
   <build>

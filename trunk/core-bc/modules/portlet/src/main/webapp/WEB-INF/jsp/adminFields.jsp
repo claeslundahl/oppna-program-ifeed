@@ -16,9 +16,9 @@
 
 <aui:form action="<%=url%>" method="post" name="editFeedFieldConfiguration"
   cssClass="edit-feed-configuration-fm">
-  
-  <textarea name="text" style="width:100%; min-height: 100px;">${fields.text}</textarea>
-  
+
+  <aui:input type="textarea" name="text" value="${fields.text}" style="width:100%; min-height: 100px;" />
+
       <aui:button type="submit" value="save" />
   
       <portlet:renderURL var="viewIFeedsURL">

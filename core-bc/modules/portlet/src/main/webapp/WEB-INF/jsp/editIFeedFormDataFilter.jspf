@@ -30,7 +30,7 @@
 					</c:when>
 					<c:when test="${newFilter.type == 'd:date'}">
 						<aui:field-wrapper label="${newFilter.name}">
-							<liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
+							<liferay-ui:input-date yearParam="validFromYear"
 								monthParam="validFromMonth" dayParam="validFromDay" firstDayOfWeek="1"
 								yearValue="${filterFormBean.validFromYear}" monthValue="${filterFormBean.validFromMonth }"
 								dayValue="${filterFormBean.validFromDay }" />

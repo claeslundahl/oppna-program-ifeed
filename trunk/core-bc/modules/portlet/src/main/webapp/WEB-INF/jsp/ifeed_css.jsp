@@ -77,7 +77,7 @@
 }
 
 .ifeed-portlet .tree-node-edit {
-  background: transparent url(/regionportalen2-theme/images/common/edit.png) 0 0 no-repeat;
+  background: transparent url(/rp-boostrap-theme/images/common/edit.png) 0 0 no-repeat;
 }
 
 .ifeed-portlet .tree-node-delete {
@@ -100,7 +100,7 @@
 
 /*-- Edit triggers ------*/
 .ifeed-edit-trigger {
-  background: transparent url(/regionportalen2-theme/images/common/edit.png) right center no-repeat;
+  background: transparent url(/rp-boostrap-theme/images/common/edit.png) right center no-repeat;
   cursor: pointer;
   display: block;
   font-size: 0;
@@ -188,11 +188,11 @@ a.link-button-icon .link-button-content {
 }
 
 a.link-button-cancel .link-button-content {
-  background: transparent url(/regionportalen2-theme/images/common/close.png) 0 0 no-repeat;
+  background: transparent url(/rp-boostrap-theme/images/common/close.png) 0 0 no-repeat;
 }
 
 a.link-button-help .link-button-content {
-  background: transparent url(/regionportalen2-theme/images/common/help.png) 0 0 no-repeat;
+  background: transparent url(/rp-boostrap-theme/images/common/help.png) 0 0 no-repeat;
 }
 
 /*-- Meta info block ------*/

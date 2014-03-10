@@ -54,7 +54,7 @@
                         <input id="<portlet:namespace />filterValue" onKeyPress="javascript:enableButtonWhenValuePresent"
                             onKeyUp="javascript:enableButtonWhenValuePresent()"
                             onchange="javascript:enableButtonWhenValuePresent()"
-                            onblur="javascript:enableButtonWhenValuePresent()" style="width:300px" />
+                            onblur="javascript:enableButtonWhenValuePresent()" style="width:250px" />
                     </span>
                     <script type="text/javascript">
                         window.filterType = 'd:ldap_value';

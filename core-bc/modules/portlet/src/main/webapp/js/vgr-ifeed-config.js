@@ -230,7 +230,7 @@ AUI().add('vgr-ifeed-config',function(A) {
 	},1, {
 		requires: [
 			'aui-base',
-			'aui-editable',
+			'aui-editable-deprecated',
 			'aui-io',
 			'aui-tooltip',
 			'aui-tree-view'

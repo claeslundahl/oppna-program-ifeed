@@ -107,7 +107,7 @@
       </div>
     </div>
   </aui:column>
-  <aui:column columnWidth="66">
+  <aui:column columnWidth="65">
     
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Id:</div>

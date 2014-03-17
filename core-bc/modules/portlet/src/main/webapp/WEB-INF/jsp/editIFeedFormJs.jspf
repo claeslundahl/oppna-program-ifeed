@@ -76,14 +76,16 @@
     }
   }
 
+// få se ifall det finns någon deprecated version av det här.
 
-  AUI().ready('aui-autocomplete', function(A) {
+  AUI().ready('aui-autocomplete-deprecated', function(A) {
     var inputFindExpression = "#<portlet:namespace />filterValue";
 
     if(window.filterType == 'd:ldap_value') {
       var datasource = function(request) {
         var items = null;
-          A.io.request('${findPeople}&filterValue=' + A.one(inputFindExpression).get('value') + "*", {
+        var tmpUrl = '${findPeople}&<portlet:namespace />filterValue=' + A.one(inputFindExpression).get('value') + "*";
+          A.io.request('${findPeople}&<portlet:namespace />filterValue=' + A.one(inputFindExpression).get('value') + "*", {
             cache: false,
             sync: true,
             timeout: 1000,
@@ -99,9 +101,11 @@
               }
             }
           });
+
         return items;
       };
-      var autoComplete = new A.AutoComplete({
+
+      var autoComplete = new A.AutoCompleteDeprecated({
           dataSource: datasource,
           schema: {
             resultListLocator: 'list',
@@ -219,10 +223,10 @@
           ['AK', 'Alaska', 'The Land of the Midnight Sun'],
           ['AZ', 'Arizona', 'The Grand Canyon State']];
 
-        AUI().ready('aui-autocomplete', function (A) {
+        AUI().ready('aui-autocomplete-deprecated', function (A) {
 
           window.process = function(data) {
-              try {
+             // try {
                   function replaceAll(s, ss, ns) {
                       var re = s;
                       do {
@@ -241,27 +245,31 @@
                   url = url.replace('&sort=dc.title+asc', '');
 
                   window.foo = function(r) {
-                    try {
+                    //try {
                       var d = locate(r);
                       for (var i = 0; i < d.length; i++) {
                           var item = [d[i],d[i],d[i]];
                           window.stuff.push(item);
                       }
                       var e = {data:window.stuff};
+                      var payload = {};
+                      e.details = [payload];
                       window.auto.dataSource._defDataFn(e);
+                    try {
                     } catch(e) {
-                      alert(e.message);
+                      alert('problem in function foo. \n' + e.message);
                     }
                   };
 
                   jsonp(document.body, url);
+              try {
               } catch(e) {
                   alert(e.message);
               }
               return window.stuff;
           };
 
-          window.auto = new A.AutoComplete({
+          window.auto = new A.AutoCompleteDeprecated({
             dataSource: window.process,
             schema: {
               resultFields: ['key', 'name', 'description']

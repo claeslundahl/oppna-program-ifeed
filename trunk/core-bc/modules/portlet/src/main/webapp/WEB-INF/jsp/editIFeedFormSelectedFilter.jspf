@@ -21,7 +21,6 @@
 	                    <c:if test="${guard:mayEditFeed(user, ifeed)}">
 					        <portlet:actionURL name="removeFilter" var="removeFilter">
 					            <portlet:param name="action" value="removeFilter" />
-					            <portlet:param name="filter" value="${iFeedFilter.filter}" />
 					            <portlet:param name="filterQuery" value="${iFeedFilter.filterQuery}" />
 					            <portlet:param name="filterKey" value="${iFeedFilter.filterKey}" />
 					        </portlet:actionURL>
@@ -32,6 +31,7 @@
 					        </portlet:actionURL>
 	                        <a href="${editFilter}" class="link-icon link-icon-edit">Redigera</a>
 	                        <a href="${removeFilter}" class="link-icon link-icon-delete">Ta bort</a>
+
 	                    </c:if>
 					</div>
 				</div>				

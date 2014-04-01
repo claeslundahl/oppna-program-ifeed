@@ -28,11 +28,16 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 		// To make Hibernate happy
 	}
 
-	public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
-		this.filter = filter;
-		this.filterQuery = filterQuery;
-		this.filterKey = filterKey;
-	}
+    public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
+        this.filter = filter;
+        this.filterQuery = filterQuery;
+        this.filterKey = filterKey;
+    }
+
+    public IFeedFilter(String filterQuery, String filterKey) {
+        this.filterQuery = filterQuery;
+        this.filterKey = filterKey;
+    }
 
 	public FilterType.Filter getFilter() {
 		return filter;

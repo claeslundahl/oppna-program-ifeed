@@ -188,7 +188,8 @@ public class EditIFeedController {
         }
         model.addAttribute("hits", new SearchResultList(result));
         model.addAttribute("maxHits", iFeedSolrQuery.getRows() - 1);
-        model.addAttribute("vgrOrganizationJson", getVgrOrganizationJson(pr.getNamespace()));
+        String vgrOrganizationJson = getVgrOrganizationJson(pr.getNamespace());
+        model.addAttribute("vgrOrganizationJson", vgrOrganizationJson);
         model.addAttribute("fields", getFieldInfs());
         model.addAttribute("fieldsMap", mapFieldInfToId());
         model.addAttribute("queryUrl", result.getQueryUrl());
@@ -288,6 +289,8 @@ public class EditIFeedController {
         // System.out.println("Datumet blev: " + date);
         // }
 
+        filterFormBean.setFilterValue(replace(filterFormBean.getFilterValue(), charDecodeing));
+        
         iFeed.addFilter(new IFeedFilter(null, filterFormBean.getFilterValue(), filterFormBean.getFilterTypeId()));
 
         // Fix here!
@@ -331,7 +334,7 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=removeFilter")
     public void removeFilter(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
-                             @RequestParam("filter") final FilterType.Filter filter,
+                             // @RequestParam("filter") final FilterType.Filter filter,
                              @RequestParam("filterQuery") final String filterQuery,
                              @RequestParam("filterKey") final String filterKey, final Model model) {
 
@@ -339,7 +342,7 @@ public class EditIFeedController {
 
         // System.out.println("removeFilter " + filter + " filterQuery ");
 
-        iFeed.removeFilter(new IFeedFilter(filter, filterQuery, filterKey));
+        iFeed.removeFilter(new IFeedFilter(filterQuery, filterKey));
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
@@ -377,6 +380,7 @@ public class EditIFeedController {
         sessionStatus.setComplete();
     }
 
+    /*
     @ResourceMapping("findPeople")
     public void searchPeople(@RequestParam final String filterValue, ResourceResponse response) {
         List<Person> people = ldapPersonService.getPeople(filterValue, 10);
@@ -411,15 +415,18 @@ public class EditIFeedController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    private String replace(String s, Map<String, String> map) {
+    public static String replace(String s, Map<String, String> map) {
+        if (s == null) {
+            return null;
+        }
         for (String k : map.keySet()) {
             s = s.replaceAll(Pattern.quote(k), map.get(k));
         }
         return s;
     }
-
+/*
     @ResourceMapping("findOrgs")
     public void searchOrg(@RequestParam String parentOrg, @RequestParam String url, ResourceResponse response)
             throws IOException {
@@ -499,6 +506,7 @@ public class EditIFeedController {
 
         return result;
     }
+    */
 
     /**
      * Concatenates several strings and places another string between each of those.
@@ -543,17 +551,12 @@ public class EditIFeedController {
     }
 
     public void addDataTo(VgrOrganization vo, String portletUrl, String type) throws UnsupportedEncodingException {
-        // ns = ns + "/findOrgs?parentOrg=";
-        // if (ns.contains("parentOrg")) {
-        // ns = ns.substring(0, ns.indexOf("parentOrg")) + "parentOrg";
-        // }
-        // vo.setIo(ns + "&parentOrg=" + URLEncoder.encode(vo.getDn(), "UTF-8") + "&url=" + ns);
         vo.setIo(portletUrl + "&parentOrg=" + URLEncoder.encode(vo.getDn(), "UTF-8") + "&url="
                 + URLEncoder.encode(portletUrl, "UTF-8"));
         vo.setType("io");
         vo.setLeaf(ldapOrganizationService.findChildNodes(vo).isEmpty());
         vo.setType(type);
-        vo.setDn(replace(vo.getDn(), charEncodeing));
+        vo.setDn(EditIFeedController.replace(vo.getDn(), EditIFeedController.charEncodeing));
     }
 
     @ModelAttribute("filters")

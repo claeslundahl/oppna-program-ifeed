@@ -65,7 +65,8 @@
   window.fetchOrgNameWithSelectedHsaId = function() {
     try {
       var inputFindExpression = "<portlet:namespace />filterValue";
-      var hsaId = document.getElementById(inputFindExpression).value;
+      var hsaIdInput = document.getElementById(inputFindExpression).getElementsByTagName('input')[0];
+      var hsaId = hsaIdInput.value;
       var path = '${findOrganizationByHsaId}&callback=window.updateSelectedHsaIdName&hsaId=' + hsaId;
       path += '&maxHits=100';
       var ldapOrgLabel = document.getElementById('ldapOrgLabel');
@@ -79,13 +80,17 @@
 // få se ifall det finns någon deprecated version av det här.
 
   AUI().ready('aui-autocomplete-deprecated', function(A) {
-    var inputFindExpression = "#<portlet:namespace />filterValue";
+    //var inputFindExpression = "#<portlet:namespace />filterValue";
+    var inputFindExpression = "<portlet:namespace />filterValue";
 
     if(window.filterType == 'd:ldap_value') {
       var datasource = function(request) {
         var items = null;
-        var tmpUrl = '${findPeople}&<portlet:namespace />filterValue=' + A.one(inputFindExpression).get('value') + "*";
-          A.io.request('${findPeople}&<portlet:namespace />filterValue=' + A.one(inputFindExpression).get('value') + "*", {
+        var ve = document.getElementById(inputFindExpression);
+        var v = ve.getElementsByTagName('input')[0].value;
+        //var tmpUrl =   '${findPeople}&<portlet:namespace />filterValue=' + A.one(inputFindExpression).get('value') + "*";
+        var tmpUrl =   '${findPeople}&<portlet:namespace />filterValue=' + v + "*";
+          A.io.request('${findPeople}&<portlet:namespace />filterValue=' + v + "*", {
             cache: false,
             sync: true,
             timeout: 1000,
@@ -101,7 +106,6 @@
               }
             }
           });
-
         return items;
       };
 
@@ -133,10 +137,10 @@
     }
   });
 
-  var tree2ChildrenJson = '${vgrOrganizationJson}';
-
-  var tree2Children = A.JSON.parse(tree2ChildrenJson);
-
+  //var tree2ChildrenJson = '${vgrOrganizationJson}';
+  //var tree2Children = A.JSON.parse(tree2ChildrenJson);
+  var tree2Children = ${vgrOrganizationJson};
+  window.tree2Children = tree2Children;
   function putIo(orgs) {
     if (!(orgs instanceof Array)) orgs = [orgs];
     for(var i = 0; i < orgs.length; i++) {
@@ -154,11 +158,14 @@
     return s;
   }
 
-  function onOrgSelect(org) {
+  function onOrgSelect(org, label) {
     try{
-      var input = document.getElementById('<portlet:namespace />filterValue');
-      input.value = org.query;
-      fetchOrgNameWithSelectedHsaId();
+      //var input = document.getElementById('<portlet:namespace />filterValue');
+      var input = document.getElementById('<portlet:namespace />filterValue').getElementsByTagName('input')[0];
+      input.value = org;
+
+      var ldapOrgLabel = document.getElementById('ldapOrgLabel');
+      ldapOrgLabel.innerHTML = label;
     }catch(e) {
       alert('onOrgSelect: ' + e.message);
     }
@@ -167,7 +174,9 @@
   if (document.getElementById('tree'))
   window.tree2 = new A.TreeView({
     after : { lastSelectedChange : function(e){
-      onOrgSelect(e.newVal._originalConfig);
+      var jsonId = e.newVal.get('id');
+      eval('var obj = ' + jsonId + ';');
+      onOrgSelect(obj.hsaIdentity, obj.label);
     }},
     width: 200,
     type: 'normal',

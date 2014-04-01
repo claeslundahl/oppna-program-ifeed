@@ -60,7 +60,7 @@
                         window.filterType = 'd:ldap_value';
                         function addOwner() {
     						document.getElementById('addOwnerButton').disabled = 'disabled';
-                            var id = document.getElementById('<portlet:namespace />filterValue').value;
+                            var id = document.getElementById('<portlet:namespace />filterValue').getElementsByTagName('input')[0].value;
                             var url = document.getElementById('addOwnerUrl').value;
                             url = url.replace('xxx',id);
                             window.location = url;

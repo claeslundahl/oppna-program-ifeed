@@ -20,14 +20,21 @@ public class Json {
 
     private static LdapSupportService ldapSupportService;
 
-    public static String toJson(Object obj) throws JsonGenerationException, JsonMappingException, IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new ObjectMapper().writeValue(baos, obj);
-        baos.flush();
-        baos.close();
+    public static String toJson(Object obj) {
+        if (obj == null) {
+            return "null";
+        }
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            new ObjectMapper().writeValue(baos, obj);
+            baos.flush();
+            baos.close();
 
-        String r = new String(baos.toByteArray(), "UTF-8");
-        return r;
+            String r = new String(baos.toByteArray(), "UTF-8");
+            return r;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String vgrHsaIdToJson(String id, Integer maxHits) throws JsonGenerationException,
@@ -35,6 +42,24 @@ public class Json {
 
         List<VgrOrganization> findings = ldapSupportService.find(new BaseVgrOrganization("Ou=Org", id),
                 VgrOrganization.class);
+
+        if (maxHits != null && findings.size() > maxHits.intValue()) {
+            VgrOrganization vo = new VgrOrganization();
+            vo.setOu("Hsa-id strängen matchade " + findings.size() + " träffar.");
+            findings = new ArrayList<VgrOrganization>();
+            findings.add(vo);
+        }
+
+        return toJson(findings);
+    }
+
+    public static String dnToJson(String id, Integer maxHits) throws JsonGenerationException,
+            JsonMappingException, IOException {
+
+        BaseVgrOrganization sample = new BaseVgrOrganization();
+        sample.setDn(id);
+
+        List<VgrOrganization> findings = ldapSupportService.find(sample, VgrOrganization.class);
 
         if (maxHits != null && findings.size() > maxHits.intValue()) {
             VgrOrganization vo = new VgrOrganization();

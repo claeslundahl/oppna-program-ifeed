@@ -26,7 +26,7 @@
 						<tr>
 						<td>
 							<a href="${removeOwner}" title="Ta bort" class="tree-node-delete">
-								<img style="padding-right: 5px;" src="/regionportalen2-theme/images/common/delete.png"/>
+								<img style="padding-right: 5px;" src="/rp-boostrap-theme/images/common/remove.png"/>
 							</a>
 						</td>
 					<td>

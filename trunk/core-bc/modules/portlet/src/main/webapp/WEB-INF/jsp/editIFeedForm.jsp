@@ -25,10 +25,16 @@
 --%>
 
 <portlet:defineObjects />
+
 <liferay-theme:defineObjects />
 <portlet:resourceURL id="findPeople" var="findPeople" />
 <portlet:resourceURL id="findOrgs" var="findOrgs" />
-<portlet:resourceURL id="findOrganizationByHsaId" var="findOrganizationByHsaId" />
+
+<portlet:resourceURL var="findOrganizationByHsaId">
+    <portlet:param name="callback" value="window.updateSelectedHsaIdName" />
+    <portlet:param name="hsaId" value="XhsaIdX" />
+    <portlet:param name="maxHits" value="100" />
+</portlet:resourceURL>
 
 <portlet:resourceURL var="metdataTooltipURL" id="metadata"  />
 

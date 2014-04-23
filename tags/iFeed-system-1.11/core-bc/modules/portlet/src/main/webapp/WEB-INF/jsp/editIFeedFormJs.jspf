@@ -1,0 +1,297 @@
+  /**
+   * Monky patched function - issue AUI-416
+   * http://issues.liferay.com/browse/AUI-416
+   */
+  var _onContainerClick = function(event) {
+      var instance = this;
+
+      var target = event.target;
+      var tagName = target.get('nodeName').toLowerCase();
+
+      event.halt();
+
+      while (target && (tagName != 'table')) {
+          switch (tagName) {
+              case 'body':
+              return;
+
+              case 'li':
+                  instance._toggleHighlight(target, 'to');
+                  instance._selectItem(target);
+              return;
+
+              default:
+              break;
+          }
+
+          target = target.get('parentNode');
+
+          if (target) {
+              tagName = target.get('nodeName').toLowerCase();
+          }
+      }
+  };
+
+  var vgrIfeedConfig = new A.VgrIfeedConfig({
+      existingFiltersTreeBoundingBox: '#<portlet:namespace />existingFiltersWrap',
+      existingFiltersTreeContentBox: '#<portlet:namespace />existingFiltersWrap > ul',
+      descriptionNode: '#<portlet:namespace />descriptionText',
+      descriptionInput: '#<portlet:namespace />descriptionTextInput',
+      metaDataForm: '#<portlet:namespace />metaDataForm',
+      headingNode: '#<portlet:namespace />headingText',
+      headingInput: '#<portlet:namespace />headingTextInput',
+      portletNamespace: '<portlet:namespace />',
+      portletWrap: '#p_p_id<portlet:namespace />',
+      usedFiltersTreeBoundingBox: '#<portlet:namespace />usedFiltersWrap',
+      usedFiltersTreeContentBox: '#<portlet:namespace />usedFiltersWrap > ul',
+      metadataTooltipURL: '${metdataTooltipURL}'
+  })
+  .render();
+
+  function orgs2label(orgs) {
+    if (orgs.length == 0)
+      return "<em>Inga organisationer matchade Hsa-Id!</em>";
+    var r = [];
+    for (var i = 0; i < orgs.length; i++)
+      r.push(' ' + orgs[i].label);
+    return '('+ r + ' )';
+  }
+
+  window.updateSelectedHsaIdName = function(data) {
+    var ldapOrgLabel = document.getElementById('ldapOrgLabel');
+    ldapOrgLabel.innerHTML = orgs2label(data);
+  }
+
+  window.fetchOrgNameWithSelectedHsaId = function() {
+    try {
+      var inputFindExpression = "<portlet:namespace />filterValue";
+      var hsaIdInput = document.getElementById(inputFindExpression).getElementsByTagName('input')[0];
+      var hsaId = hsaIdInput.value;
+      var path = '${findOrganizationByHsaId}&callback=window.updateSelectedHsaIdName&hsaId=' + hsaId;
+      path += '&maxHits=100';
+      var ldapOrgLabel = document.getElementById('ldapOrgLabel');
+      ldapOrgLabel.innerHTML = '-';
+      jsonp(document.body, path);
+    }catch(eee) {
+      alert(eee.message);
+    }
+  }
+
+// få se ifall det finns någon deprecated version av det här.
+
+  AUI().ready('aui-autocomplete-deprecated', function(A) {
+    //var inputFindExpression = "#<portlet:namespace />filterValue";
+    var inputFindExpression = "<portlet:namespace />filterValue";
+
+    if(window.filterType == 'd:ldap_value') {
+      var datasource = function(request) {
+        var items = null;
+        var ve = document.getElementById(inputFindExpression);
+        var v = ve.getElementsByTagName('input')[0].value;
+        //var tmpUrl =   '${findPeople}&<portlet:namespace />filterValue=' + A.one(inputFindExpression).get('value') + "*";
+        var tmpUrl =   '${findPeople}&<portlet:namespace />filterValue=' + v + "*";
+          A.io.request('${findPeople}&<portlet:namespace />filterValue=' + v + "*", {
+            cache: false,
+            sync: true,
+            timeout: 1000,
+            dataType: 'json',
+            method: 'get',
+            on: {
+              success: function(param) {
+                items = {};
+                items.list = eval(this.get('responseData'));
+              },
+              failure: function() {
+                alert("Fail");
+              }
+            }
+          });
+        return items;
+      };
+
+      var autoComplete = new A.AutoCompleteDeprecated({
+          dataSource: datasource,
+          schema: {
+            resultListLocator: 'list',
+            resultFields: ['firstName', 'lastName', 'userName', 'organisation', 'email']
+          },
+          forceSelection: true,
+          queryDelay: 0.5,
+          matchKey: 'userName',
+          dataSourceType: 'Function',
+          schemaType: 'json',
+          autoHiglight: true,
+          typeAhead: false,
+          minQueryLength: 3,
+          contentBox: '#<portlet:namespace />ldap-people',
+          input: '#<portlet:namespace />filterValue'
+      });
+      autoComplete._onContainerClick = _onContainerClick;
+      var count = 0;
+      autoComplete.formatResult = function(result, request, resultMatch) {
+      var resultFormat = '<div class="ifeed-portlet-filter-result ifeed-portlet-filter-result-' + (count++%2==0?'even':'odd') + '"><div><strong>' + result.firstName + " " + result.lastName + '</strong> (' + result.userName + ')</div><div>' + result.organisation + '</div>';
+        return resultFormat;
+      };
+
+      autoComplete.render();
+    }
+  });
+
+  //var tree2ChildrenJson = '${vgrOrganizationJson}';
+  //var tree2Children = A.JSON.parse(tree2ChildrenJson);
+  var tree2Children = ${vgrOrganizationJson};
+  window.tree2Children = tree2Children;
+  function putIo(orgs) {
+    if (!(orgs instanceof Array)) orgs = [orgs];
+    for(var i = 0; i < orgs.length; i++) {
+      var item = orgs[i];
+      var p = '${findOrgs}&parentOrg=' + item.dn.replace('&', '%26') + '&url=' + escape('${findOrgs}');
+      item.io = p;
+    }
+  }
+
+  putIo(tree2Children);
+
+  function dnToLabel(dn) {
+    var s = dn.label;
+    if (dn.query) s += '(' + dn.query + ')';
+    return s;
+  }
+
+  function onOrgSelect(org, label) {
+    try{
+      //var input = document.getElementById('<portlet:namespace />filterValue');
+      var input = document.getElementById('<portlet:namespace />filterValue').getElementsByTagName('input')[0];
+      input.value = org;
+
+      var ldapOrgLabel = document.getElementById('ldapOrgLabel');
+      ldapOrgLabel.innerHTML = label;
+    }catch(e) {
+      alert('onOrgSelect: ' + e.message);
+    }
+  }
+
+  if (document.getElementById('tree'))
+  window.tree2 = new A.TreeView({
+    after : { lastSelectedChange : function(e){
+      var jsonId = e.newVal.get('id');
+      eval('var obj = ' + jsonId + ';');
+      onOrgSelect(obj.hsaIdentity, obj.label);
+    }},
+    width: 200,
+    type: 'normal',
+    expanded: true,
+    boundingBox: '#tree',
+    children: tree2Children
+  }).render();
+
+    var allLdapOrgLabels = A.all('.ldapOrgLabel');
+    allLdapOrgLabels.each(function(each){
+      try {
+        var json = each.get('title');
+        if (json == '' || json == null) return;
+        eval('var orgs = ' + json);
+        each.set('innerHTML', each.get('innerHTML') + '<br/>' + orgs2label(orgs));
+      }catch(e) {
+
+      }
+    });
+
+    var queryUrl = '${queryUrl}';
+    var filterTypeId = document.getElementById('<portlet:namespace />filterTypeId');
+    if (window.filterType == 'd:text_facet' || window.filterType == 'd:ldap_org_value') {
+      var field = document.getElementById('<portlet:namespace />filterValue');
+      if (field) {
+        var s = '&fq=' + filterTypeId.value;
+        var q = queryUrl;
+        var index = (q.indexOf(s));
+        if (index != -1) {
+            queryUrl = q.substring(0, index) + '&dummy=' + q.substring(index + s.length, q.length);
+        }
+        queryUrl = queryUrl + '&fq=' + filterTypeId.value + '%3Aquery*&json.wrf=callback&facet=on&wt=json&facet.field=' + filterTypeId.value + '&facet.mincount=1';
+
+        function locate(d) {
+          var r = d.facet_counts.facet_fields[filterTypeId.value];
+          var result = [];
+          for (var i = 0; i < r.length; i+=2) result.push(r[i]);
+          return result;
+        }
+
+        function jsonp(p, url) {
+          var scriptTag = document.getElementById('solrJsonp');
+          if (scriptTag) p.removeChild(scriptTag);
+
+          var ne = document.createElement('script');
+          ne.setAttribute('type', 'text/javascript');
+          ne.setAttribute('src', url);
+          ne.setAttribute('id', 'solrJsonp');
+          p.appendChild(ne);
+        }
+
+        window.stuff = [['AL', 'Alabama', 'The Heart of Dixie'],
+          ['AK', 'Alaska', 'The Land of the Midnight Sun'],
+          ['AZ', 'Arizona', 'The Grand Canyon State']];
+
+        AUI().ready('aui-autocomplete-deprecated', function (A) {
+
+          window.process = function(data) {
+             // try {
+                  function replaceAll(s, ss, ns) {
+                      var re = s;
+                      do {
+                        s = re;
+                        re = re.replace(ss, ns);
+                      }while(re != s);
+                      return re;
+                  }
+                  data = replaceAll(data, '%20', '%5C ');
+                  data = replaceAll(data, ' ', '%20');
+
+                  window.stuff.length = 0;
+
+                  var url = queryUrl.replace('query',data).replace('callback','window.foo');
+                  url = url.replace('&sort=dc.title+desc', '');
+                  url = url.replace('&sort=dc.title+asc', '');
+
+                  window.foo = function(r) {
+                    //try {
+                      var d = locate(r);
+                      for (var i = 0; i < d.length; i++) {
+                          var item = [d[i],d[i],d[i]];
+                          window.stuff.push(item);
+                      }
+                      var e = {data:window.stuff};
+                      var payload = {};
+                      e.details = [payload];
+                      window.auto.dataSource._defDataFn(e);
+                    try {
+                    } catch(e) {
+                      alert('problem in function foo. \n' + e.message);
+                    }
+                  };
+
+                  jsonp(document.body, url);
+              try {
+              } catch(e) {
+                  alert(e.message);
+              }
+              return window.stuff;
+          };
+
+          window.auto = new A.AutoCompleteDeprecated({
+            dataSource: window.process,
+            schema: {
+              resultFields: ['key', 'name', 'description']
+            },
+            matchKey: 'name',
+            typeAhead: false,
+            contentBox: '#myAutoComplete',
+            input: '#<portlet:namespace />filterValue',
+            forceSelection: false,
+            maxResultsDisplayed: 15,
+            autoHiglight: false
+          }).render();
+
+        });
+      }
+    }

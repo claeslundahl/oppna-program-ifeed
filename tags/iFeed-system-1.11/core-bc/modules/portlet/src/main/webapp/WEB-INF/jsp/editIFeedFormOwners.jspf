@@ -1,0 +1,83 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
+
+    <aui:layout cssClass="ifeed-block">
+		
+        <aui:column columnWidth="33" first="true">
+			<span class="ifeed-meta-label lfr-panel-title"><c:out value="Administratörer" /> </span>
+			<table>
+				<tr>
+                    <td colspan="2">${ifeed.creatorName} (${ifeed.userId}) (ägare)</td>
+                </tr>
+            <c:forEach items="${ifeed.ownerships}" var="o">
+                <c:choose>
+                    <c:when test="${o.userId == ifeed.userId}">
+                    </c:when>
+                    <c:when test="${not guard:mayEditFeed(user, ifeed)}">
+					<td>*</td>
+					<td>	
+                        ${o.name} (${o.userId})
+                    </td>
+                    </c:when>
+                    <c:otherwise>
+                        <portlet:actionURL name="removeOwner" var="removeOwner">
+                            <portlet:param name="action" value="removeOwner" />
+                            <portlet:param name="ownerId" value="${o.userId}" />
+                        </portlet:actionURL>
+						<tr>
+						<td>
+							<a href="${removeOwner}" title="Ta bort" class="tree-node-delete">
+								<img style="padding-right: 5px;" src="/rp-boostrap-theme/images/common/remove.png"/>
+							</a>
+						</td>
+					<td>
+						${o.name} (${o.userId})
+					</td>
+					</tr>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            </table>
+        </aui:column>
+		
+		<c:if test="${guard:mayEditFeed(user, ifeed) and empty newFilter}">
+            <aui:column columnWidth="33">
+    		<aui:column columnWidth="33">
+    			<button id="addOwnerButton" onclick="javascript:addOwner()">Lägg till administratör</button>
+            </aui:column>
+
+                    <portlet:actionURL name="addOwner" var="addOwnerUrl">
+                        <portlet:param name="action" value="addOwner" />
+                        <portlet:param name="ownerId" value="xxx" />
+                    </portlet:actionURL>
+                    <input id="addOwnerUrl" type="hidden" value="${addOwnerUrl}" style="width:250px" />
+                    <span id="<portlet:namespace />ldap-people" class="ifeed-portlet-ldap-people">
+                        <input id="<portlet:namespace />filterValue" onKeyPress="javascript:enableButtonWhenValuePresent"
+                            onKeyUp="javascript:enableButtonWhenValuePresent()"
+                            onchange="javascript:enableButtonWhenValuePresent()"
+                            onblur="javascript:enableButtonWhenValuePresent()" style="width:250px" />
+                    </span>
+                    <script type="text/javascript">
+                        window.filterType = 'd:ldap_value';
+                        function addOwner() {
+    						document.getElementById('addOwnerButton').disabled = 'disabled';
+                            var id = document.getElementById('<portlet:namespace />filterValue').getElementsByTagName('input')[0].value;
+                            var url = document.getElementById('addOwnerUrl').value;
+                            url = url.replace('xxx',id);
+                            window.location = url;
+                        }
+                        function enableButtonWhenValuePresent() {
+                            var userId = document.getElementById('<portlet:namespace />filterValue').value;
+                            var button = document.getElementById('addOwnerButton');
+                            if (userId == '') {
+                               button.disabled = 'disabled';
+                            } else {
+                               button.removeAttribute('disabled');
+                           }
+                        }
+                        enableButtonWhenValuePresent();
+                    </script>
+            </aui:column>
+
+		</c:if>
+		
+    </aui:layout>

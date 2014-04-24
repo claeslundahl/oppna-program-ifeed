@@ -35,6 +35,7 @@
                             <exclude>**/*.properties</exclude>
                             <exclude>**/*.sql</exclude>
                             <exclude>**/*.xsl</exclude>
+                            <exclude>**/sample-atom-feed.xsl</exclude>
                         </excludes>
                     </configuration>
                     <executions>

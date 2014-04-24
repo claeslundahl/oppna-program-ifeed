@@ -86,9 +86,12 @@ public class IFeedViewerController {
                 getEnum(SortDirection.class, sortDirection));
 
         model.addAttribute("result", result);
-        model.addAttribute("feed", retrievedFeed);
+        //model.addAttribute("feed", retrievedFeed);
+        Util.setLocalValue(retrievedFeed);
         return "documentList";
     }
+
+
 
     @RequestMapping(value = "/documents/{documentId}")
     public String detailsHtml(@PathVariable String documentId, Model model) {

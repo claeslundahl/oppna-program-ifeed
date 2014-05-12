@@ -60,15 +60,17 @@ public class IFeedViewerController {
 
     @RequestMapping(value = "/documentlists/{listId}")
     public String getIFeedHtml(@PathVariable Long listId, Model model,
-            @RequestParam(value = "by", required = false) String sortField,
-            @RequestParam(value = "dir", required = false) String sortDirection) {
-        return getIFeed(listId, model, sortField, sortDirection);
+                               @RequestParam(value = "by", required = false) String sortField,
+                               @RequestParam(value = "dir", required = false) String sortDirection) {
+        return getIFeed(listId, model, sortField, sortDirection, null, null);
     }
 
     @RequestMapping(value = "/documentlists/{listId}/metadata")
     public String getIFeed(@PathVariable Long listId, Model model,
-            @RequestParam(value = "by", required = false) String sortField,
-            @RequestParam(value = "dir", required = false) String sortDirection) {
+                           @RequestParam(value = "by", required = false) String sortField,
+                           @RequestParam(value = "dir", required = false) String sortDirection,
+                           @RequestParam(value = "startBy", required = false) Integer startBy,
+                           @RequestParam(value = "endBy", required = false) Integer endBy) {
 
         // Retrieve feed from store
         IFeed retrievedFeed = iFeedService.getIFeed(listId);
@@ -85,12 +87,21 @@ public class IFeedViewerController {
         List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField,
                 getEnum(SortDirection.class, sortDirection));
 
+        if (startBy != null && endBy != null) {
+            if (result.size() < startBy) {
+                startBy = result.size();
+            }
+            if (result.size() < endBy) {
+                endBy = result.size();
+            }
+            result = result.subList(startBy, endBy);
+        }
+
         model.addAttribute("result", result);
         //model.addAttribute("feed", retrievedFeed);
         Util.setLocalValue(retrievedFeed);
         return "documentList";
     }
-
 
 
     @RequestMapping(value = "/documents/{documentId}")
@@ -100,7 +111,7 @@ public class IFeedViewerController {
 
     @RequestMapping(value = "/documents/metadata")
     public String detailsByRequestParam(@RequestParam(value = "documentId", required = false) String documentId,
-            Model model, HttpServletResponse response) {
+                                        Model model, HttpServletResponse response) {
         if (documentId == null) {
             throw new BadRequestException("Document id must not be null.");
         }

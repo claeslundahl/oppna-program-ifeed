@@ -54,7 +54,7 @@ public class IFeedViewerControllerTest {
 
         when(solrServer.query(any(IFeedSolrQuery.class))).thenReturn(queryResponse);
 
-        String result = controller.getIFeed(listId, model, sortField, sortDirection);
+        String result = controller.getIFeed(listId, model, sortField, sortDirection, null, null);
         verify(iFeedService).getIFeed(listId);
         Assert.assertEquals("documentList", result);
     }

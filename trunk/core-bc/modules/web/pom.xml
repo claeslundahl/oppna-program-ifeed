@@ -10,7 +10,7 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <groupId>se.vgregion.iFeed</groupId>
-  <artifactId>iFeed-core-bc-module-web-script</artifactId>
+  <artifactId>iFeed-core-bc-module-web</artifactId>
   <packaging>war</packaging>
   <name>${project.artifactId}</name>
 

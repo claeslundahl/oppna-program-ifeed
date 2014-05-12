@@ -27,7 +27,8 @@ Generation time : 2011-01-14 11:17:18 CET
     <module>composites/ldap</module>
     <module>modules/portlet</module>
     <module>modules/intsvc</module>
-	<module>modules/web</module>
+    <module>modules/web</module>
+    <module>modules/web-script</module>
   </modules>
 
   <dependencies>

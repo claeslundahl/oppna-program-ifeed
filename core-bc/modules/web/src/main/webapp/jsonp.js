@@ -301,12 +301,14 @@ function printDocLists(i,f)
 	}
 
 }
-console.log(2);
+/*
+
 function initTooltip()
 {
 	$('.tooltip').cluetip({
     		splitTitle: '|',
 	    	showTitle: true,
+	    	trigger: '.jtip',
 		cluetipClass: 'jtip',
 		mouseOutClose: true,
 		sticky: false,
@@ -323,6 +325,7 @@ function initTooltip()
 		}
 	});
 }
+*/
 
 try {
 var headings_first=[];
@@ -358,7 +361,7 @@ headings_first['dc.date.validto']="Giltig t o m";
 
 */
 } catch(e) {
-	console.log(e);
+	if(console) console.log(e);
 }
 
 var headings_all=headings_first;

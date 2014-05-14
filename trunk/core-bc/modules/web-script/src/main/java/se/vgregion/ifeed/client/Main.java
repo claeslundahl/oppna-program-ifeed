@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Starting point for the web-script. It delas with loading information from the page it is loaded on and then to
  * get data from the server, then rendering that data on the client.
- *
+ * <p/>
  * The feeds, if several on the page, is rendered one after the other. Each rendering is done after an asyncronous call
  * to the server. If the sice of the feed is larger then the batch-size (se value in the code), then several calls are
  * made for that feed. This division is made so that the client browser not will be that likely to frees for longer
@@ -87,14 +87,14 @@ public class Main implements EntryPoint {
 
     private String getUrl(TableDef tableDef, int startBy, int endBy) {
         // http://ifeed.vgregion.se/
-        String url = "http://127.0.0.1:8080/example-feed.jsonp.jsp";
+        //String url = "http://127.0.0.1:8080/example-feed.jsonp.jsp";
         /*String url = "http://ifeed.vgregion.se/iFeed-web/documentlists/"
                 + tableDef.getFeedId() + "/metadata.json?by="
                 + tableDef.getDefaultSortColumn()
                 + "&dir=" + tableDef.getDefaultSortOrder();*/
 
-        /*
-        String url = "http://127.0.0.1:8080/iFeed-web/documentlists/"
+
+        /*String url = "http://127.0.0.1:8080/iFeed-web2/documentlists/"
                 + tableDef.getFeedId() + "/metadata.json?by="
                 + tableDef.getDefaultSortColumn()
                 + "&dir=" + tableDef.getDefaultSortOrder()
@@ -106,6 +106,12 @@ public class Main implements EntryPoint {
                 + tableDef.getDefaultSortColumn()
                 + "&dir=" + tableDef.getDefaultSortOrder()
                 + "&startBy=" + startBy + "&endBy=" + endBy;*/
+
+        String url = "http://portalen-test.vgregion.se/iFeed-web/documentlists/"
+                + tableDef.getFeedId() + "/metadata.json?by="
+                + tableDef.getDefaultSortColumn()
+                + "&dir=" + tableDef.getDefaultSortOrder()
+                + "&startBy=" + startBy + "&endBy=" + endBy;
 
         return url;
     }

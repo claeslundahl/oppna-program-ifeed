@@ -37,8 +37,12 @@ public class Util {
      * @return A formatted version of the input or empty string if it turned out to be null.
      */
     public static String timeStampTodate(String asText) {
-        if (asText != null && !"".equals(asText.trim())) {
-            return asText.substring(0, Math.max(0, asText.indexOf("T")));
+        if (asText != null && !"".equals(asText.trim()) && !"undefined".equals(asText)) {
+            if (asText.contains("T")) {
+                return asText.substring(0, asText.indexOf("T"));
+            } else {
+                return asText;
+            }
         } else {
             return "";
         }

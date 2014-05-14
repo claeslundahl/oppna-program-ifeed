@@ -17,7 +17,9 @@ public final class Entry extends JavaScriptObject implements HasGetter {
      * @return value of the property as text.
      */
     public native String get(Object key) /*-{
-      return this[key] + '';
+      var v = this[key];
+      if (v) return v + '';
+      return null;
     }-*/;
 
     /**

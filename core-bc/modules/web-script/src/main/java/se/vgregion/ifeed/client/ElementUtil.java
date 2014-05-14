@@ -65,9 +65,6 @@ public class ElementUtil {
      */
 
     public static TableDef toTableDef(Element from) {
-        Util.log("From");
-        Util.log(from);
-
         TableDef tableDef = new TableDef();
         tableDef.setElement(from);
         tableDef.setDefaultSortColumn(from.getAttribute("defaultsortcolumn"));

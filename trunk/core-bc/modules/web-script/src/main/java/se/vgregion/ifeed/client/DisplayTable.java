@@ -3,8 +3,6 @@ package se.vgregion.ifeed.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -16,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by clalu4 on 2014-05-09.
+ * Widget that renders entries as a table.
  */
 public class DisplayTable extends Composite {
 
@@ -38,6 +36,12 @@ public class DisplayTable extends Composite {
         }
     }
 
+    /**
+     * Constructs an instance.
+     *
+     * @param tableDef
+     * @param data
+     */
     public DisplayTable(final TableDef tableDef, final List<Entry> data) {
         initWidget(impl);
         this.tableDef = tableDef;
@@ -47,76 +51,92 @@ public class DisplayTable extends Composite {
         render();
     }
 
-    public static void showWaitCursor() {
+    private static void showWaitCursor() {
         DOM.setStyleAttribute(RootPanel.getBodyElement(), "cursor", "wait");
     }
 
-    public static void showDefaultCursor() {
+    private static void showDefaultCursor() {
         DOM.setStyleAttribute(RootPanel.getBodyElement(), "cursor", "default");
     }
 
-    void render() {
+    /**
+     * Method that (re)renders the layout of this widget.
+     */
+    public void render() {
         impl.clear();
+        ifMetadataSaysSoTryToApplyFontSize();
+        int row = ifMetadataSaysSoRenderColumnHeadersAndReturnRow(0);
+        renderDataRows(row);
+        addColumnWidth();
+        addTextAlignmentToColumns();
+    }
+
+    private void ifMetadataSaysSoTryToApplyFontSize() {
         if (!tableDef.getFontSize().equals("inherit") && !tableDef.getFontSize().equals("auto")) {
             try {
                 double fontSize = Double.parseDouble(tableDef.getFontSize().toLowerCase().replace("px", ""));
                 impl.getElement().getStyle().setFontSize(fontSize, Style.Unit.PX);
             } catch (Exception e) {
-                System.out.println("tableDef.getFontSize(): " + tableDef.getFontSize());
+                Util.log(e);
             }
         }
-        int row = 0;
-        List<ColumnDef> columns = tableDef.getColumnDefs();
+    }
 
-        if (tableDef.isShowTableHeader()) {
-            impl.setText(0, 0, " ");
-            int c = 1;
-            for (final ColumnDef cd : tableDef.getColumnDefs()) {
-                final ToggleButton tb = new ToggleButton(cd.getLabel());
-                tb.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
-                tb.getElement().getStyle().setTextDecoration(Style.TextDecoration.UNDERLINE);
-
-                tb.setDown(cd.getName().equals(currentSortColumn));
-                tb.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-                    @Override
-                    public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
-                        showWaitCursor();
-                        Timer timer = new Timer() {
-                            @Override
-                            public void run() {
-                                currentSortColumn = cd.getName();
-                                currentSortOrder = "asc".
-                                        equals(currentSortOrder)
-                                        ? "desc" : "asc";
-                                render();
-                                showDefaultCursor();
-                            }
-                        };
-                        timer.schedule(100);
-                    }
-                });
-                HorizontalPanel hp = new HorizontalPanel();
-                hp.add(tb);
-                if (currentSortColumn.equals(cd.getName())) {
-                    hp.add(new Image(currentSortOrder.equals("asc") ? images.sortasc() : images.sortdesc()));
+    private int ifMetadataSaysSoRenderColumnHeadersAndReturnRow(int row) {
+        if (!tableDef.isShowTableHeader()) {
+            return row;
+        }
+        impl.setText(0, 0, " ");
+        int c = 1;
+        for (final ColumnDef cd : tableDef.getColumnDefs()) {
+            final Anchor tb = new Anchor(cd.getLabel());
+            tb.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
+            tb.getElement().getStyle().setTextDecoration(Style.TextDecoration.UNDERLINE);
+            tb.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    showWaitCursor();
+                    // Use the timer so that the change in cursor symbol might become visible.
+                    Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            currentSortColumn = cd.getName();
+                            currentSortOrder = "asc".
+                                    equals(currentSortOrder)
+                                    ? "desc" : "asc";
+                            render();
+                            showDefaultCursor();
+                        }
+                    };
+                    timer.schedule(100);
                 }
-                impl.setWidget(row, c, hp);
-                c++;
-            }
-            row++;
-        }
+            });
 
+            FlowPanel hp = new FlowPanel();
+            hp.add(tb);
+            if (currentSortColumn.equals(cd.getName())) {
+                hp.add(new Image(currentSortOrder.equals("asc") ? images.sortasc() : images.sortdesc()));
+            }
+            impl.setWidget(row, c, hp);
+            c++;
+        }
+        row++;
+        return row;
+    }
+
+    private void renderDataRows(int row) {
+        List<ColumnDef> columns = tableDef.getColumnDefs();
         List<Entry> sortedData = getSortedData();
 
         for (Entry data : sortedData) {
             int c = 0;
-            impl.setWidget(row, c++, mkInfoCell(data));
+            impl.setWidget(row, c++, makeInfoCell(data));
             ColumnDef first = columns.get(0);
 
             Anchor anchor = new Anchor(
                     Util.formatValueForDisplay(data, first.getName()),
                     data.get(tableDef.isLinkOriginalDoc() ? "dc.identifier.native" : "url")
-                );
+            );
             anchor.setTarget("_blank");
 
             impl.setWidget(row, c++, anchor);
@@ -129,13 +149,11 @@ public class DisplayTable extends Composite {
             }
             row++;
         }
-
-        addColumnWidth();
-        addTextAlgnmentToColumns();
     }
 
-    void addColumnWidth() {
+    private void addColumnWidth() {
         List<ColumnDef> columns = tableDef.getColumnDefs();
+        impl.getFlexCellFormatter().getElement(0,0).getStyle().setWidth(15, Style.Unit.PX);
         for (int i = 0; i < columns.size(); i++) {
             ColumnDef cd = columns.get(i);
             String width = cd.getWidth();
@@ -148,7 +166,7 @@ public class DisplayTable extends Composite {
         }
     }
 
-    void addTextAlgnmentToColumns() {
+    private void addTextAlignmentToColumns() {
         int c = 1;
         for (ColumnDef cd : tableDef.getColumnDefs()) {
             if (isBlanc(cd.getAlignment())) {
@@ -166,14 +184,14 @@ public class DisplayTable extends Composite {
         }
     }
 
-    boolean isBlanc(String s) {
+    private boolean isBlanc(String s) {
         if (s == null) {
             return true;
         }
         return s.trim().equals("");
     }
 
-    List<Entry> getSortedData() {
+    private List<Entry> getSortedData() {
         MapOfLists<Entry> mapOfLists = new MapOfLists<Entry>();
         for (Entry entry : data) {
             mapOfLists.get(entry.get(currentSortColumn)).add(entry);
@@ -187,7 +205,7 @@ public class DisplayTable extends Composite {
         return result;
     }
 
-    Widget mkInfoCell(final Entry entry) {
+    private Widget makeInfoCell(final Entry entry) {
         final HorizontalPanel hp = new HorizontalPanel();
         Image icon = new Image(images.information());
         icon.addClickHandler(new ClickHandler() {
@@ -198,7 +216,7 @@ public class DisplayTable extends Composite {
         });
         hp.add(icon);
 
-        hp.addDomHandler(new MouseOverHandler() {
+        icon.addDomHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent mouseOverEvent) {
                 final EntryPopupPanel info = new EntryPopupPanel(entry);
@@ -208,7 +226,7 @@ public class DisplayTable extends Composite {
             }
         }, MouseOverEvent.getType());
 
-        hp.addDomHandler(new MouseOutHandler() {
+        icon.addDomHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent mouseOutEvent) {
                 EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
@@ -217,14 +235,16 @@ public class DisplayTable extends Composite {
         }, MouseOutEvent.getType());
 
         String validToKey = "dc.date.validto";
-        if (Util.isTimeStampPassed(entry.get(validToKey))) {
+        String textDate = entry.get(validToKey);
+        if (!isBlanc(textDate) && Util.isTimeStampPassed(textDate)) {
             Image x = new Image(images.exclamation());
             x.setTitle("Dokumentet har gått ut: " + Util.formatValueForDisplay(entry, "dc.date.validto"));
             hp.add(x);
         }
 
         String validFromKey = "dc.date.validfrom";
-        if (!Util.isTimeStampPassed(entry.get(validFromKey))) {
+        textDate = entry.get(validFromKey);
+        if (!isBlanc(textDate) && !Util.isTimeStampPassed(textDate)) {
             Image x = new Image(images.exclamation());
             x.setTitle("Dokumentet börjar gälla: " + Util.formatValueForDisplay(entry, validFromKey));
             hp.add(x);

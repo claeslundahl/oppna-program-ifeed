@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * Created by clalu4 on 2014-05-09.
+ * Utility class that, among other things, ca be used to help sort objects.
+ *
+ * It is constructed to return lists of objects. If the mapping to the list is not present then a list is inserted and
+ * that new instance is returned.
  */
 public class MapOfLists<T> extends TreeMap<String, List<T>> {
 
@@ -21,6 +24,10 @@ public class MapOfLists<T> extends TreeMap<String, List<T>> {
         return result;
     }
 
+    /**
+     * Returns all values in the order of the keys that holds them.
+     * @return A list of all values.
+     */
     public List<T> allInOrder() {
         List<T> allItems = new ArrayList<T>();
         for (String key : keySet()) {

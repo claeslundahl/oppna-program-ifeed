@@ -6,12 +6,16 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.user.client.ui.*;
 
 /**
- * Created by clalu4 on 2014-05-12.
+ * A small popup display for entry details.
  */
 public class EntryPopupPanel extends PopupPanel {
 
     private Entry entry;
 
+    /**
+     * Constructs an instance. Doing all the layout at once.
+     * @param entry the data to render.
+     */
     public EntryPopupPanel(Entry entry) {
         super();
         this.entry = entry;

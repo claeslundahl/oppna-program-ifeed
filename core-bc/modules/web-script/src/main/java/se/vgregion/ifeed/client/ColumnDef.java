@@ -1,7 +1,7 @@
 package se.vgregion.ifeed.client;
 
 /**
- * Created by clalu4 on 2014-03-14.
+ * Holds description of a column. How it should be rendered to the user.
  */
 public class ColumnDef {
 
@@ -10,8 +10,12 @@ public class ColumnDef {
     private String alignment;
     private String width;
 
+    /**
+     * Takes a text that contains information about the column in question. Then it parses that string and puts
+     * appropriate values inside its own properties based on that.
+     * @param values the text describing the object. An example woud be "dc.title|Titel|left|70".
+     */
     public void parseAndSet(String values) {
-        // dc.title|Titel|left|70
         String[] fragments = values.split("['|']");
         setName(fragments[0]);
         setLabel(fragments[1]);

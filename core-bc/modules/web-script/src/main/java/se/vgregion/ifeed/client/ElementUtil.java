@@ -10,10 +10,10 @@ public class ElementUtil {
 
     /**
      * Returns a List of Element objects that have the specified CSS class name.
-     * 
-     * @param element Element to start search from
+     *
+     * @param element   Element to start search from
      * @param className name of class to find
-     * @return
+     * @return elements that matches the className.
      */
     public static List<Element> findByCssClass(Element element, String className) {
         List result = new ArrayList();
@@ -36,7 +36,7 @@ public class ElementUtil {
                 }
             }
         }
-        
+
         for (int i = 0; i < DOM.getChildCount(element); i++) {
             Element child = DOM.getChild(element, i);
             findByCssClassImpl(res, child, className);
@@ -44,27 +44,29 @@ public class ElementUtil {
     }
 
     /**
-     * <div
-     class="ifeedDocList"
-     columnes="dc.title|Titel|left|70,dcterms.audience|Titel|left|70"
-     fontSize="auto"
-     defaultsortcolumn="dc.title"
-     defaultsortorder="asc"
-     showTableHeader="yes"
-     linkOriginalDoc="no"
-     limit="0"
-     hiderightcolumn="yes"
-     feedid="3630394">
-     </div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/3630394/?by=dc.title&dir=asc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
-     </iframe>
-     </noscript>
-     * @param from
-     * @return
+     * Converts an element from the markup to a TableDef instance. The element looks something like this:
+     * <code> <div
+     * class="ifeedDocList"
+     * columnes="dc.title|Titel|left|70,dcterms.audience|Titel|left|70"
+     * fontSize="auto"
+     * defaultsortcolumn="dc.title"
+     * defaultsortorder="asc"
+     * showTableHeader="yes"
+     * linkOriginalDoc="no"
+     * limit="0"
+     * hiderightcolumn="yes"
+     * feedid="3630394">
+     * </div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/3630394/?by=dc.title&dir=asc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
+     * </iframe>
+     * </noscript> </code>
+     *
+     * @param from element that contains ifeed information to be packaged as a TableDef
+     * @return the TableDef that packs information about the ifeed.
      */
 
     public static TableDef toTableDef(Element from) {
-        Util.consoleLog("From");
-        Util.consoleLog(from);
+        Util.log("From");
+        Util.log(from);
 
         TableDef tableDef = new TableDef();
         tableDef.setElement(from);
@@ -90,5 +92,5 @@ public class ElementUtil {
         }
         return "yes".equals(value);
     }
-    
+
 }

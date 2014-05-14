@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by clalu4 on 2014-03-14.
- * <p/>
+ * Designed to hold information about an ifeed - mirroring the textual description on the element.
+ *
+ * An sample data could be:
+ * <code>
  * <div
  * class="ifeedDocList"
  * columnes="dc.title|Titel|left|70,dcterms.audience|Titel|left|70"
@@ -22,6 +24,7 @@ import java.util.List;
  * </div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/3630394/?by=dc.title&dir=asc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
  * </iframe>
  * </noscript>
+ * </code>
  */
 public class TableDef {
 
@@ -40,6 +43,11 @@ public class TableDef {
 
     private Element element;
 
+    /**
+     * Pass in text from the column element property 'columnes' (yes miss-spelled) - and the method will initialize
+     * the objects in the columnDefs property of this object.
+     * @param fromText the text describing the values of the columnDefs collection.
+     */
     public void createColumnDefs(String fromText) {
         String[] fragments = fromText.split("[,]");
         for (String fragment : fragments) {

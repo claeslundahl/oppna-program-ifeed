@@ -9,7 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by clalu4 on 2014-04-24.
+ * A collection of utility functions to be used inside the gui. Handy to have this separately so that it can be run in
+ * unit-tests.
  */
 public class Util {
 
@@ -30,14 +31,25 @@ public class Util {
 
     static String validToKey = "dc.date.validto", validFromKey = "dc.date.validfrom";
 
+    /**
+     * Formats a time stamp to something more friendly to the swedish-reading user.
+     * @param asText the time as a textual time-stamp.
+     * @return A formatted version of the input or empty string if it turned out to be null.
+     */
     public static String timeStampTodate(String asText) {
         if (asText != null && !"".equals(asText.trim())) {
-            return asText.substring(0, asText.indexOf("T"));
+            return asText.substring(0, Math.max(0, asText.indexOf("T")));
         } else {
             return "";
         }
     }
 
+    /**
+     * General formatting of values to display in the gui.
+     * @param entry the entry in wich the value resides.
+     * @param key name of the value inside the entry.
+     * @return value of the entry formatted to be viewed by a person accustomed reading swedish.
+     */
     public static String formatValueForDisplay(HasGetter entry, String key) {
         if (timeStampFieldNames.contains(key)) {
             return timeStampTodate(entry.get(key));
@@ -45,15 +57,32 @@ public class Util {
         return entry.get(key);
     }
 
+    /**
+     * Finds out if the time of a time-stamp is passed or not. It compares that against that of the current time (or
+     * rather the time when the script first initialized).
+     * @param timeStampAsText the time-stamp to be tested as text.
+     * @return true if the time of the parameter is less than that of the current time. False is also returned if the
+     * content is nothing.
+     */
     public static boolean isTimeStampPassed(String timeStampAsText) {
         if (timeStampAsText == null || "".equals(timeStampAsText.trim())) {
             return false;
         }
-        timeStampAsText = timeStampAsText.substring(0, 10);
+        timeStampAsText = timeStampAsText.substring(0, Math.max(Math.min(timeStampAsText.length(), 10), 0));
         return timeStampAsText.compareTo(currentTextDate) < 0;
     }
 
-    native public static void consoleLog(Object message) /*-{
-      if (window['console']) console.log(message);
+    /**
+     * Logs with console.log (if that is present in the browsers window-object.
+     * @param message
+     * @return true if the logging could be performed (if there where a console.log).
+     */
+    native public static boolean log(Object message) /*-{
+      if (window['console']) {
+        console.log(message);
+        return true;
+      } else {
+        return false;
+      }
     }-*/;
 }

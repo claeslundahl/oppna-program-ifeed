@@ -4,7 +4,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -16,7 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by clalu4 on 2014-03-13.
+ * Starting point for the web-script. It delas with loading information from the page it is loaded on and then to
+ * get data from the server, then rendering that data on the client.
+ *
+ * The feeds, if several on the page, is rendered one after the other. Each rendering is done after an asyncronous call
+ * to the server. If the sice of the feed is larger then the batch-size (se value in the code), then several calls are
+ * made for that feed. This division is made so that the client browser not will be that likely to frees for longer
+ * moments.
  */
 public class Main implements EntryPoint {
 
@@ -28,30 +36,58 @@ public class Main implements EntryPoint {
 
     private static int batchSize = 300;
 
+    /**
+     * Here the execution of the code starts.
+     */
     @Override
     public void onModuleLoad() {
         Element body = RootPanel.getBodyElement();
         List<Element> result = ElementUtil.findByCssClass(body, "ifeedDocList");
         ifeedDocLists = result;
         fetchNext();
-        Util.consoleLog("Alla doclists");
-        Util.consoleLog(ifeedDocLists);
     }
 
-    void fetchNext() {
+    private void fetchNext() {
         if (ifeedDocLists.isEmpty()) {
             return;
         }
         Element element = ifeedDocLists.remove(0);
         TableDef tableDef = ElementUtil.toTableDef(element);
+        hideRightEpiServerColumn(tableDef);
         tableDefs.add(tableDef);
         fetch(tableDef);
     }
 
+    private void hideRightEpiServerColumn(TableDef tableDef) {
+        /*
+            Original handling in js-script.
+            if ($(".ifeedDocList").eq(i).attr('hideRightColumn') == "true") {
+            $("#rightcol").css('display', 'none');
+            $("#centercolinner").css('width', '660px');
+            $("#rightcol").css("display", "none");
+            $(".doc-list").css('width', '100%');
+        }
+         */
+        if (tableDef.isHideRightColumn()) {
+            Element rightcol = DOM.getElementById("");
+            if (rightcol != null) {
+                rightcol.getStyle().setDisplay(Style.Display.NONE);
+            }
+            Element centercolinner = DOM.getElementById("centercolinner");
+            if (centercolinner != null) {
+                centercolinner.getStyle().setWidth(660, Style.Unit.PX);
+            }
+            List<Element> docLists = ElementUtil.findByCssClass(RootPanel.getBodyElement(), "doc-list");
+            for (Element docList : docLists) {
+                docList.getStyle().setWidth(100, Style.Unit.PC);
+            }
+        }
+    }
 
-    String getUrl(TableDef tableDef, int startBy, int endBy) {
+
+    private String getUrl(TableDef tableDef, int startBy, int endBy) {
         // http://ifeed.vgregion.se/
-        //String url = "http://127.0.0.1:8080/example-feed.jsonp.jsp";
+        String url = "http://127.0.0.1:8080/example-feed.jsonp.jsp";
         /*String url = "http://ifeed.vgregion.se/iFeed-web/documentlists/"
                 + tableDef.getFeedId() + "/metadata.json?by="
                 + tableDef.getDefaultSortColumn()
@@ -65,17 +101,25 @@ public class Main implements EntryPoint {
                 + "&startBy=" + startBy + "&endBy=" + endBy;
 */
 
-        String url = "http://ifeed.vgregion.se/iFeed-web/documentlists/"
+        /*String url = "http://ifeed.vgregion.se/iFeed-web/documentlists/"
                 + tableDef.getFeedId() + "/metadata.json?by="
                 + tableDef.getDefaultSortColumn()
                 + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy;
+                + "&startBy=" + startBy + "&endBy=" + endBy;*/
 
         return url;
     }
 
-
     private void fetch(final TableDef tableDef) {
+        try {
+            fetchImpl(tableDef);
+        } catch (Exception e) {
+            Util.log(e);
+            fetchNext();
+        }
+    }
+
+    private void fetchImpl(final TableDef tableDef) {
         final HTMLPanel panel = HTMLPanel.wrap(tableDef.getElement());
         panel.add(new Image(images.loading()));
         JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
@@ -156,6 +200,5 @@ public class Main implements EntryPoint {
 
         });
     }
-
 
 }

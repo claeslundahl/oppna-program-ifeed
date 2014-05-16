@@ -4,15 +4,7 @@ import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,7 +54,16 @@ public class IFeedViewerController {
     public String getIFeedHtml(@PathVariable Long listId, Model model,
                                @RequestParam(value = "by", required = false) String sortField,
                                @RequestParam(value = "dir", required = false) String sortDirection) {
-        return getIFeed(listId, model, sortField, sortDirection, null, null);
+        return getIFeed(listId, model, sortField, sortDirection, null, null, null);
+    }
+
+    public static final Map<String, Integer> callsToJsonpMetadata = new TreeMap<String, Integer>();
+
+    @RequestMapping(value = "/metadata-calls")
+    public String viewCallsToJsonpMetadata(Model model) {
+        model.addAttribute("keys", callsToJsonpMetadata.keySet());
+        model.addAttribute("values", callsToJsonpMetadata);
+        return "metadata-calls";
     }
 
     @RequestMapping(value = "/documentlists/{listId}/metadata")
@@ -70,7 +71,18 @@ public class IFeedViewerController {
                            @RequestParam(value = "by", required = false) String sortField,
                            @RequestParam(value = "dir", required = false) String sortDirection,
                            @RequestParam(value = "startBy", required = false) Integer startBy,
-                           @RequestParam(value = "endBy", required = false) Integer endBy) {
+                           @RequestParam(value = "endBy", required = false) Integer endBy,
+                           @RequestParam(value = "fromPage", required = false) String fromPage) {
+
+        if (fromPage != null && !"".equals(fromPage.trim())) {
+            System.out.println("From Page " + fromPage);
+            Integer i = callsToJsonpMetadata.get(fromPage);
+            if (i == null) {
+                callsToJsonpMetadata.put(fromPage, 1);
+            } else {
+                callsToJsonpMetadata.put(fromPage, i.intValue() + 1);
+            }
+        }
 
         // Retrieve feed from store
         IFeed retrievedFeed = iFeedService.getIFeed(listId);

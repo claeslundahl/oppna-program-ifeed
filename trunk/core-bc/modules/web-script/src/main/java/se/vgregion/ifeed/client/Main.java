@@ -42,6 +42,7 @@ public class Main implements EntryPoint {
     @Override
     public void onModuleLoad() {
         Element body = RootPanel.getBodyElement();
+        if (body == null) Window.alert("Did not find the body!");
         List<Element> result = ElementUtil.findByCssClass(body, "ifeedDocList");
         ifeedDocLists = result;
         fetchNext();
@@ -85,36 +86,7 @@ public class Main implements EntryPoint {
     }
 
 
-    private String getUrl(TableDef tableDef, int startBy, int endBy) {
-        // http://ifeed.vgregion.se/
-        //String url = "http://127.0.0.1:8080/example-feed.jsonp.jsp";
-        /*String url = "http://ifeed.vgregion.se/iFeed-web/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder();*/
 
-
-        /*String url = "http://127.0.0.1:8080/iFeed-web2/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy;
-*/
-
-        /*String url = "http://ifeed.vgregion.se/iFeed-web/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy;*/
-
-        String url = "http://portalen-test.vgregion.se/iFeed-web/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy;
-
-        return url;
-    }
 
     private void fetch(final TableDef tableDef) {
         try {
@@ -130,11 +102,11 @@ public class Main implements EntryPoint {
         panel.add(new Image(images.loading()));
         JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
 
-        requestBuilder.requestObject(getUrl(tableDef, 0, 100), new AsyncCallback<JsArray<JavaScriptObject>>() {
+        requestBuilder.requestObject(Util.getServiceUrl(tableDef, 0, 100), new AsyncCallback<JsArray<JavaScriptObject>>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert(caught.getMessage());
+                Util.log(caught.getMessage());
             }
 
             @Override
@@ -178,11 +150,11 @@ public class Main implements EntryPoint {
 
         final int endAt = startAt + batchSize;
 
-        requestBuilder.requestObject(getUrl(tableDef, startAt, endAt), new AsyncCallback<JsArray<JavaScriptObject>>() {
+        requestBuilder.requestObject(Util.getServiceUrl(tableDef, startAt, endAt), new AsyncCallback<JsArray<JavaScriptObject>>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert(caught.getMessage());
+                Util.log(caught);
             }
 
             @Override

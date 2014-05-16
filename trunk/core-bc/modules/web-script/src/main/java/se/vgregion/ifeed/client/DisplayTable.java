@@ -64,6 +64,7 @@ public class DisplayTable extends Composite {
      */
     public void render() {
         impl.clear();
+        impl.addStyleName("doc-list");
         ifMetadataSaysSoTryToApplyFontSize();
         int row = ifMetadataSaysSoRenderColumnHeadersAndReturnRow(0);
         renderDataRows(row);
@@ -118,6 +119,7 @@ public class DisplayTable extends Composite {
                 hp.add(new Image(currentSortOrder.equals("asc") ? images.sortasc() : images.sortdesc()));
             }
             impl.setWidget(row, c, hp);
+            impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-head-td");
             c++;
         }
         row++;
@@ -130,7 +132,8 @@ public class DisplayTable extends Composite {
 
         for (Entry data : sortedData) {
             int c = 0;
-            impl.setWidget(row, c++, makeInfoCell(data));
+            impl.setWidget(row, c, makeInfoCell(data));
+            impl.getFlexCellFormatter().addStyleName(row, c++, "ifeed-info-td");
             ColumnDef first = columns.get(0);
 
             Anchor anchor = new Anchor(
@@ -138,13 +141,14 @@ public class DisplayTable extends Composite {
                     data.get(tableDef.isLinkOriginalDoc() ? "dc.identifier.native" : "url")
             );
             anchor.setTarget("_blank");
-
             impl.setWidget(row, c++, anchor);
+            impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-link-td");
 
             for (int i = 1; i < columns.size(); i++) {
                 ColumnDef cd = columns.get(i);
                 String text = Util.formatValueForDisplay(data, cd.getName());
                 impl.setText(row, c, text);
+                impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-td");
                 c++;
             }
             row++;
@@ -258,7 +262,7 @@ public class DisplayTable extends Composite {
     }
 
     private String urlToMetaData(Entry entry) {
-        String result = "http://ifeed.vgregion.se/iFeed-web/documents/" + entry.get("dc.identifier.documentid") + "/metadata";
+        String result = tableDef.getFeedHome() + "/iFeed-web/documents/" + entry.get("dc.identifier.documentid") + "/metadata";
         result = result.replace("workspace://SpacesStore/", "");
         return result;
     }

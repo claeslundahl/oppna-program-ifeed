@@ -1,24 +1,10 @@
 package se.vgregion.ifeed.service.metadata;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.vgr.metaservice.schema.node.v2.NodeListType;
 import se.vgr.metaservice.schema.node.v2.NodeType;
 import se.vgr.metaservice.schema.response.v1.NodeListResponseObjectType;
@@ -26,6 +12,11 @@ import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.types.Metadata;
 import vocabularyservices.wsdl.metaservice_vgr_se.v2.GetVocabularyRequest;
 import vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService;
+
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class MetadataServiceImpl implements MetadataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataService.class);
@@ -84,7 +75,7 @@ public class MetadataServiceImpl implements MetadataService {
 
         NodeListType nodes = result.getNodeList();
         for (NodeType node : nodes.getNode()) {
-            LOGGER.info("Importing: {}/{}", new Object[] { fullPath, node.getName() });
+            LOGGER.info("Importing: {}/{}", new Object[]{fullPath, node.getName()});
             Metadata child = new Metadata(node.getName());
             parent.addChild(child);
             updateCacheTree(child, fullPath);

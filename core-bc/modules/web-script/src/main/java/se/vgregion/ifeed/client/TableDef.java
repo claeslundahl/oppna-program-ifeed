@@ -32,6 +32,7 @@ public class TableDef {
     private String defaultSortColumn;
     private String defaultSortOrder;
     private String feedId;
+    private String feedHome;
 
     private int limit;
 
@@ -131,5 +132,13 @@ public class TableDef {
 
     public void setElement(Element element) {
         this.element = element;
+    }
+
+    public String getFeedHome() {
+        return feedHome;
+    }
+
+    public void setFeedHome(String feedHome) {
+        this.feedHome = feedHome;
     }
 }

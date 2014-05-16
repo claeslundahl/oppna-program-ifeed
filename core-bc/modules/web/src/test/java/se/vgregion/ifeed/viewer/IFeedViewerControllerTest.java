@@ -54,7 +54,7 @@ public class IFeedViewerControllerTest {
 
         when(solrServer.query(any(IFeedSolrQuery.class))).thenReturn(queryResponse);
 
-        String result = controller.getIFeed(listId, model, sortField, sortDirection, null, null);
+        String result = controller.getIFeed(listId, model, sortField, sortDirection, null, null, null);
         verify(iFeedService).getIFeed(listId);
         Assert.assertEquals("documentList", result);
     }
@@ -66,6 +66,13 @@ public class IFeedViewerControllerTest {
 
         String result = controller.details(documentId, model);
         Assert.assertEquals("documentDetails", result);
+
+
+        String foo = "<iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/91940/?by=dc.title&amp;dir=asc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>\n" +
+                "</iframe>";
+
+        System.out.println(foo.substring(foo.indexOf("src='") + 5, foo.indexOf("/iFeed-web/")));
+
     }
 
     /*@Test

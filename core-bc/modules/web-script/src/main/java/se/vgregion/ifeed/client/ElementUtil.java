@@ -26,10 +26,10 @@ public class ElementUtil {
             return;
         }
 
-        String c = element.getAttribute("class");
+        String c = element.getClassName();
 
         if (c != null) {
-            String[] p = c.split(" ");
+            String[] p = c.split("[' ']");
             for (int x = 0; x < p.length; x++) {
                 if (p[x].equals(className)) {
                     res.add(element);
@@ -67,6 +67,7 @@ public class ElementUtil {
     public static TableDef toTableDef(Element from) {
         TableDef tableDef = new TableDef();
         tableDef.setElement(from);
+        tableDef.setFeedHome(Util.getIfeedHome(tableDef));
         tableDef.setDefaultSortColumn(from.getAttribute("defaultsortcolumn"));
         tableDef.setDefaultSortOrder(from.getAttribute("defaultsortorder"));
         tableDef.setFeedId(from.getAttribute("feedid"));

@@ -55,7 +55,7 @@ public class IFeedViewerController {
     public String getIFeedHtml(@PathVariable Long listId, Model model,
                                @RequestParam(value = "by", required = false) String sortField,
                                @RequestParam(value = "dir", required = false) String sortDirection) {
-        return getIFeed(listId, model, sortField, sortDirection, null, null, null);
+        return getIFeedById(listId, model, sortField, sortDirection, null, null, null);
     }
 
     public static final Map<String, Integer> callsToJsonpMetadata = new TreeMap<String, Integer>();
@@ -76,7 +76,7 @@ public class IFeedViewerController {
         return true;
     }
 
-    @RequestMapping(value = "/documentlists/{listId}/metadata")
+    @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata")
     public String getIFeed(@PathVariable String listIdOrSerializedInstance, Model model,
                            @RequestParam(value = "by", required = false) String sortField,
                            @RequestParam(value = "dir", required = false) String sortDirection,
@@ -85,29 +85,30 @@ public class IFeedViewerController {
                            @RequestParam(value = "fromPage", required = false) String fromPage) {
         if (isNumeric(listIdOrSerializedInstance)) {
             Long id = Long.parseLong(listIdOrSerializedInstance);
-            return getIFeed(id, model, sortField, sortDirection, startBy, endBy, fromPage);
+            return getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage);
         } else {
             IFeed ifeed = (IFeed) CommonUtils.toObject(listIdOrSerializedInstance);
-            return getIFeed(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage);
+            return getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage);
         }
     }
 
-    public String getIFeed(@PathVariable Long listId, Model model,
-                           @RequestParam(value = "by", required = false) String sortField,
-                           @RequestParam(value = "dir", required = false) String sortDirection,
-                           @RequestParam(value = "startBy", required = false) Integer startBy,
-                           @RequestParam(value = "endBy", required = false) Integer endBy,
-                           @RequestParam(value = "fromPage", required = false) String fromPage) {
+    //@RequestMapping(value = "/documentlists/{listId}/metadata")
+    public String getIFeedById(@PathVariable Long listId, Model model,
+                               @RequestParam(value = "by", required = false) String sortField,
+                               @RequestParam(value = "dir", required = false) String sortDirection,
+                               @RequestParam(value = "startBy", required = false) Integer startBy,
+                               @RequestParam(value = "endBy", required = false) Integer endBy,
+                               @RequestParam(value = "fromPage", required = false) String fromPage) {
         IFeed retrievedFeed = iFeedService.getIFeed(listId);
-        return getIFeed(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage);
+        return getIFeedByInstance(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage);
     }
 
-    public String getIFeed(IFeed retrievedFeed, Model model,
-                            String sortField,
-                            String sortDirection,
-                            Integer startBy,
-                            Integer endBy,
-                            String fromPage) {
+    public String getIFeedByInstance(IFeed retrievedFeed, Model model,
+                                     String sortField,
+                                     String sortDirection,
+                                     Integer startBy,
+                                     Integer endBy,
+                                     String fromPage) {
 
         if (fromPage != null && !"".equals(fromPage.trim())) {
             System.out.println("From Page " + fromPage);
@@ -120,7 +121,7 @@ public class IFeedViewerController {
         }
 
         // Retrieve feed from store
-        //IFeed retrievedFeed = iFeedService.getIFeed(listId);
+        //IFeed retrievedFeed = iFeedService.getIFeedById(listId);
 
         if (retrievedFeed == null) {
             // Throw 404 if the feed doesn't exist

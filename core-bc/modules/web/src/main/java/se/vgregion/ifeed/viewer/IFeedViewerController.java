@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
@@ -66,13 +67,47 @@ public class IFeedViewerController {
         return "metadata-calls";
     }
 
+    public static boolean isNumeric(String str) {
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @RequestMapping(value = "/documentlists/{listId}/metadata")
+    public String getIFeed(@PathVariable String listIdOrSerializedInstance, Model model,
+                           @RequestParam(value = "by", required = false) String sortField,
+                           @RequestParam(value = "dir", required = false) String sortDirection,
+                           @RequestParam(value = "startBy", required = false) Integer startBy,
+                           @RequestParam(value = "endBy", required = false) Integer endBy,
+                           @RequestParam(value = "fromPage", required = false) String fromPage) {
+        if (isNumeric(listIdOrSerializedInstance)) {
+            Long id = Long.parseLong(listIdOrSerializedInstance);
+            return getIFeed(id, model, sortField, sortDirection, startBy, endBy, fromPage);
+        } else {
+            IFeed ifeed = (IFeed) CommonUtils.toObject(listIdOrSerializedInstance);
+            return getIFeed(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage);
+        }
+    }
+
     public String getIFeed(@PathVariable Long listId, Model model,
                            @RequestParam(value = "by", required = false) String sortField,
                            @RequestParam(value = "dir", required = false) String sortDirection,
                            @RequestParam(value = "startBy", required = false) Integer startBy,
                            @RequestParam(value = "endBy", required = false) Integer endBy,
                            @RequestParam(value = "fromPage", required = false) String fromPage) {
+        IFeed retrievedFeed = iFeedService.getIFeed(listId);
+        return getIFeed(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage);
+    }
+
+    public String getIFeed(IFeed retrievedFeed, Model model,
+                            String sortField,
+                            String sortDirection,
+                            Integer startBy,
+                            Integer endBy,
+                            String fromPage) {
 
         if (fromPage != null && !"".equals(fromPage.trim())) {
             System.out.println("From Page " + fromPage);
@@ -85,7 +120,7 @@ public class IFeedViewerController {
         }
 
         // Retrieve feed from store
-        IFeed retrievedFeed = iFeedService.getIFeed(listId);
+        //IFeed retrievedFeed = iFeedService.getIFeed(listId);
 
         if (retrievedFeed == null) {
             // Throw 404 if the feed doesn't exist

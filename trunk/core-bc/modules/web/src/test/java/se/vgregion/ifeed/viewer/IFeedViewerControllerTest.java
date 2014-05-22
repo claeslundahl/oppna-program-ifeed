@@ -13,10 +13,8 @@ import org.apache.solr.common.SolrDocumentList;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
 
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
-import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
@@ -45,7 +43,7 @@ public class IFeedViewerControllerTest {
         String sortDirection = "asc";
         IFeed feed = new IFeed();
         feed.setId(listId);
-        // IFeed retrievedFeed = iFeedService.getIFeed(listId);
+        // IFeed retrievedFeed = iFeedService.getIFeedById(listId);
         when(iFeedService.getIFeed(listId)).thenReturn(feed);
 
         // To avoid null-pointer
@@ -54,7 +52,7 @@ public class IFeedViewerControllerTest {
 
         when(solrServer.query(any(IFeedSolrQuery.class))).thenReturn(queryResponse);
 
-        String result = controller.getIFeed(listId, model, sortField, sortDirection, null, null, null);
+        String result = controller.getIFeedById(listId, model, sortField, sortDirection, null, null, null);
         verify(iFeedService).getIFeed(listId);
         Assert.assertEquals("documentList", result);
     }

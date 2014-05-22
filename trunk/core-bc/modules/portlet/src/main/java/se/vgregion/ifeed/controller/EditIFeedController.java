@@ -663,6 +663,7 @@ public class EditIFeedController {
         return fieldInfs;
     }
 
+
     public static List<FieldInf> getFieldInfsCache() {
         return fieldInfs;
     }

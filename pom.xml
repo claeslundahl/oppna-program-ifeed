@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
-  <!--
-    This is the System-level Maven POM. Usage: Define all truly common things for the system here. For example:
-    versions of third-party dependencies used throughout the system. Template version: 1.5-SNAPSHOT
-    Generation time : 2011-01-14 11:17:18 CET
-  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--
+  This is the System-level Maven POM. Usage: Define all truly common things for the system here. For example:
+  versions of third-party dependencies used throughout the system. Template version: 1.5-SNAPSHOT
+  Generation time : 2011-01-14 11:17:18 CET
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>se.vgregion.common</groupId>
@@ -19,7 +20,8 @@
   <name>${project.artifactId}</name>
 
   <build>
-      <!-- maven-license-plugin helps you managing license headers in source files. -->
+    <!-- maven-license-plugin helps you managing license headers in source files. -->
+    <pluginManagement>
       <plugins>
         <plugin>
           <groupId>com.mycila.maven-license-plugin</groupId>
@@ -60,6 +62,7 @@
           </executions>
         </plugin>
       </plugins>
+    </pluginManagement>
   </build>
 
   <modules>
@@ -74,8 +77,27 @@
   </scm>
 
   <properties>
-	  <apache.cxf.version>2.3.2</apache.cxf.version>
-      <spring.fw.version>3.1.2.RELEASE</spring.fw.version>
+    <apache.cxf.version>2.3.2</apache.cxf.version>
+    <spring.fw.version>3.1.2.RELEASE</spring.fw.version>
   </properties>
 
+  <profiles>
+    <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

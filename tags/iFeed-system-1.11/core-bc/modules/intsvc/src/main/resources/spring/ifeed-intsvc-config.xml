@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright 2011 Västra Götalandsregionen This library is free software; you can redistribute it and/or modify it 
+  under the terms of version 2.1 of the GNU Lesser General Public License as published by the Free Software Foundation. 
+  This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. 
+  You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the 
+  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:cxf="http://cxf.apache.org/core" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        	http://www.springframework.org/schema/context
+        	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        	http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+        	http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+  <import resource="classpath:META-INF/cxf/cxf.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+  <jaxrs:server id="iFeedIntService" address="/">
+    <jaxrs:serviceBeans>
+      <ref bean="iFeedFeedService" />
+    </jaxrs:serviceBeans>
+
+    <jaxrs:providers>
+      <ref bean="atomFeedProvider" />
+      <ref bean="atomEntryProvider" />
+    </jaxrs:providers>
+  </jaxrs:server>
+
+  <bean id="iFeedFeedService" class="se.vgregion.ifeed.intsvc.atom.IFeedFeedServiceImpl">
+    <property name="pushServerEndpoint" value="${push.service}" />
+    <property name="namespaces">
+      <map>
+        <entry key="dc" value="http://purl.org/dc/elements/1.1/" />
+        <entry key="vgregion" value="http://purl.org/vgregion/elements/1.0/" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
+    <property name="formattedOutput" value="true" />
+  </bean>
+
+  <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.AtomEntryProvider">
+    <property name="formattedOutput" value="true" />
+  </bean>
+
+</beans>

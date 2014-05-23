@@ -107,6 +107,7 @@ public class Main implements EntryPoint {
             @Override
             public void onFailure(Throwable caught) {
                 Util.log(caught.getMessage());
+                fetchNext();
             }
 
             @Override

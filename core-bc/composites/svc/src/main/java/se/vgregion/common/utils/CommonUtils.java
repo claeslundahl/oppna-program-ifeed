@@ -1,5 +1,7 @@
 package se.vgregion.common.utils;
 
+import com.liferay.portal.kernel.util.Base64;
+
 import java.io.*;
 import java.util.Locale;
 
@@ -38,8 +40,8 @@ public final class CommonUtils {
      */
     private static Object toObjectImpl(String s) throws IOException,
             ClassNotFoundException {
-        //byte [] data = Base64Coder.decode(s);
-        byte[] data = s.getBytes();
+        byte[] data = Base64.decode(s);
+        //byte[] data = s.getBytes();
         ObjectInputStream ois = new ObjectInputStream(
                 new ByteArrayInputStream(data));
         Object o = ois.readObject();
@@ -63,8 +65,8 @@ public final class CommonUtils {
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(o);
         oos.close();
-        //return new String( Base64Coder.encode(baos.toByteArray()) );
-        return new String(baos.toByteArray());
+        return new String(Base64.encode(baos.toByteArray()));
+        //return new String(baos.toByteArray());
     }
 
 

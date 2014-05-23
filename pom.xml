@@ -15,7 +15,7 @@
   <groupId>se.vgregion.iFeed</groupId>
   <artifactId>iFeed-system</artifactId>
   <packaging>pom</packaging>
-  <version>1.12-SNAPSHOT</version>
+  <version>1.11-SNAPSHOT</version>
   <name>${project.artifactId}</name>
 
   <build>
@@ -30,10 +30,10 @@
             <header>http://oppna-program.googlecode.com/files/header.txt</header>
             <skipExistingHeaders>true</skipExistingHeaders>
             <excludes>
-              <exclude>src\test\resources\sample-atom-feed.txt</exclude>
-              <exclude>src\main\resources\atom2rss-exslt.xsl</exclude>
-              <exclude>src\main\webapp\jquery.js</exclude>
-              <exclude>src\main\webapp\jquery.cluetip.all.js</exclude>
+              <exclude>**\sample-atom-feed.txt</exclude>
+              <exclude>**\atom2rss-exslt.xsl</exclude>
+              <exclude>**\jquery.js</exclude>
+              <exclude>**\jquery.cluetip.all.js</exclude>
               <exclude>target/**</exclude>
               <exclude>**/NOTICES.txt</exclude>
               <exclude>thirdpartylicenses/**</exclude>

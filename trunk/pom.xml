@@ -44,10 +44,10 @@
               <exclude>**/*.sql</exclude>
             </excludes>
           </configuration>
-          <!--<executions>
+          <executions>
             <execution>
               <id>format</id>
-              <phase>performe-rele</phase>
+              <phase>process-sources</phase>
               <goals>
                 <goal>format</goal>
               </goals>
@@ -59,7 +59,7 @@
                 <goal>check</goal>
               </goals>
             </execution>
-          </executions>-->
+          </executions>
         </plugin>
       </plugins>
     <!--</pluginManagement>-->

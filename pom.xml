@@ -21,7 +21,7 @@
 
   <build>
     <!-- maven-license-plugin helps you managing license headers in source files. -->
-    <!--<pluginManagement>-->
+    <pluginManagement>
       <plugins>
         <plugin>
           <groupId>com.mycila.maven-license-plugin</groupId>
@@ -62,7 +62,7 @@
           </executions>
         </plugin>
       </plugins>
-    <!--</pluginManagement>-->
+    </pluginManagement>
   </build>
 
   <modules>

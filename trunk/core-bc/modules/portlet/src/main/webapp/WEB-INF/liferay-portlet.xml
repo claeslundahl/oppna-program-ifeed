@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
+<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN"
+        "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
 
 <liferay-portlet-app>
-<!--  <portlet>
-    <portlet-name>iFeed</portlet-name>
-    <instanceable>false</instanceable>
-      <requires-namespaced-parameters>false</requires-namespaced-parameters>
-    <css-class-wrapper>ifeed-portlet</css-class-wrapper>
-  </portlet>-->
-    <portlet>
-        <portlet-name>iFeedJsf</portlet-name>
-        <action-url-redirect>true</action-url-redirect>
-        <instanceable>false</instanceable>
+  <!--  <portlet>
+      <portlet-name>iFeed</portlet-name>
+      <instanceable>false</instanceable>
         <requires-namespaced-parameters>false</requires-namespaced-parameters>
-        <header-portlet-css>/css/theme.css</header-portlet-css>
+      <css-class-wrapper>ifeed-portlet</css-class-wrapper>
+    </portlet>-->
+  <portlet>
+    <portlet-name>iFeedJsf</portlet-name>
+    <action-url-redirect>true</action-url-redirect>
+    <instanceable>false</instanceable>
+    <requires-namespaced-parameters>false</requires-namespaced-parameters>
+    <header-portlet-css>/css/theme.css</header-portlet-css>
+    <header-portlet-css>/css/prime-faces.css</header-portlet-css>
 
-        <add-default-resource>false</add-default-resource>
-    </portlet>
+    <add-default-resource>false</add-default-resource>
+  </portlet>
   <portlet>
     <portlet-name>apelon-scheduler</portlet-name>
     <scheduler-entry>
@@ -28,25 +30,25 @@
         </cron>
       </trigger>
     </scheduler-entry>
-      <requires-namespaced-parameters>false</requires-namespaced-parameters>
+    <requires-namespaced-parameters>false</requires-namespaced-parameters>
     <system>true</system>
   </portlet>
 
-    <!--
-  <portlet>
-    <portlet-name>publish-scheduler</portlet-name>
-    <scheduler-entry>
-      <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedPublishScheduler</scheduler-event-listener-class>
-      <trigger>
-        <cron>
-          <cron-trigger-value>0 */1 * ? * *</cron-trigger-value>
-        </cron>
-      </trigger>
-    </scheduler-entry>
-      <requires-namespaced-parameters>false</requires-namespaced-parameters>
-    <system>true</system>
-  </portlet>
-   -->
+  <!--
+<portlet>
+  <portlet-name>publish-scheduler</portlet-name>
+  <scheduler-entry>
+    <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedPublishScheduler</scheduler-event-listener-class>
+    <trigger>
+      <cron>
+        <cron-trigger-value>0 */1 * ? * *</cron-trigger-value>
+      </cron>
+    </trigger>
+  </scheduler-entry>
+    <requires-namespaced-parameters>false</requires-namespaced-parameters>
+  <system>true</system>
+</portlet>
+ -->
 
   <role-mapper>
     <role-name>administrator</role-name>

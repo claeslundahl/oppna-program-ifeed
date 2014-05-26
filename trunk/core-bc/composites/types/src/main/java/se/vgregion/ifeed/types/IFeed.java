@@ -98,15 +98,12 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return f;
     }
 
-    //TODO: Please check this  method. Monica added if statement.
     public void setFilters(Set<IFeedFilter> filters) {
         if(this.filters == null) {
           this.filters = new HashSet<IFeedFilter>();
         }
-
         this.filters.clear();
         this.filters.addAll(filters);
-
     }
 
     public void removeFilter(IFeedFilter filter) {

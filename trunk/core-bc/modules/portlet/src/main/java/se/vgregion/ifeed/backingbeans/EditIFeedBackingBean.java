@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.portlet.PortletRequest;
 import java.io.Serializable;
+import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,10 +48,7 @@ public class EditIFeedBackingBean implements Serializable{
 
     @Value("#{navigationModelBean}")
     private NavigationModelBean navigationModelBean;
-
     private String newOwnershipName;
-
-    private List<String> newOwnershipNames;
 
     public EditIFeedBackingBean() {
     }
@@ -113,11 +111,11 @@ public class EditIFeedBackingBean implements Serializable{
         return userId;
     }
 
-    public IFeedService getiFeedService() {
+    public IFeedService getIFeedService() {
         return iFeedService;
     }
 
-    public void setiFeedService(IFeedService iFeedService) {
+    public void setIFeedService(IFeedService iFeedService) {
         this.iFeedService = iFeedService;
     }
 
@@ -161,15 +159,17 @@ public class EditIFeedBackingBean implements Serializable{
     }
 
     public List<String> completeUserName(String incompleteUserName) {
-        List<Person> people = new ArrayList<Person>();
+        //List<Person> people = new ArrayList<Person>();
+        System.out.println("completeUserName " + incompleteUserName);
 
+        /*
         for (int i = 0; i < 10; i++) {
             Person person = new Person("A" + i, "B" + i, "C" + i, "D" + i, "E" + i);
             people.add(person);
-        }
+        }*/
 
 
-        //List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
+        List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
 
         List<String> result = new ArrayList<String>();
         for (Person person : people) {
@@ -212,14 +212,6 @@ public class EditIFeedBackingBean implements Serializable{
 
     public void setLdapPersonService(LdapPersonService ldapPersonService) {
         this.ldapPersonService = ldapPersonService;
-    }
-
-    public List<String> getNewOwnershipNames() {
-        return newOwnershipNames;
-    }
-
-    public void setNewOwnershipNames(List<String> newOwnershipNames) {
-        this.newOwnershipNames = newOwnershipNames;
     }
 
     public NavigationModelBean getNavigationModelBean() {

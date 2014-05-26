@@ -207,8 +207,8 @@ public class IFeedBackingBean implements Serializable {
 
         IFeed feed = iFeedService.getIFeed(id);
         iFeedModelBean.copyValuesFromIFeed(feed);
-        navigationModelBean.setUiNavigation("ADD_FINAL_STEP");
 
+        navigationModelBean.setUiNavigation("ADD_FINAL_STEP");
     }
 
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:aui="http://liferay.com/faces/aui"
+        xmlns:portlet="http://java.sun.com/portlet_2_0"  >
+
+<h:head>Filter</h:head>
+
+
+    <h:form>
+        <aui:fieldset  column="true">
+
+            <aui:field>
+                Filtertitel:<br></br>
+                <p:inputText></p:inputText>
+            </aui:field>
+            <aui:field>
+                <div class="ifeed-buttons">
+                    <p:commandLink styleClass="rp-link-button rp-link-button-alt"  id="add_filter" value="Lägg till" />
+                </div>
+            </aui:field>
+
+        </aui:fieldset>
+    </h:form>
+
+
+</ui:composition>

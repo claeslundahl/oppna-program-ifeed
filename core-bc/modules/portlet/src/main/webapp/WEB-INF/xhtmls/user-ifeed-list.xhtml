@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:portlet="http://java.sun.com/portlet_2_0">
+
+    <h2>Administrera dokumentflöden</h2>
+    <h:outputText value="Välkommen till iFeed Manager. Här kan du skapa och administrera dokumentpubliceringar.
+            Innehållet i dokumentpubliceringen styrs av vilka metadata man valt att filtrera på.
+            Det val man gjort sparas som ett feed, länken till feedet kan användas för att t.ex visa listan på intranätet,
+             internet eller regionportalen. Man måste spara sina ändringar innan dom slår igenom i feedet."></h:outputText>
+
+    <br></br> <br></br>
+
+    <p:commandLink style="float: right;"
+                   actionListener="#{navigationModelBean.setUiNavigation('ADD_IFEED')}"
+                   styleClass="rp-link-button rp-link-button-alt" value="Lägg till iFeed"
+                   update="ifeed_view" ajax="true" async="true"/>
+
+    <p:commandLink style="float: right;"
+                   actionListener="#{navigationModelBean.setUiNavigation('FIELD_CONFIG')}"
+                   styleClass="rp-link-button rp-link-button-alt" value="Fältinställningar"
+                   update="ifeed_view" ajax="true" async="true"/>
+
+    <br></br> <br></br>
+
+
+    <div class="tabs-min">
+        <p:tabView id="tabView">
+
+            <!-- BEGIN: Tab for users IFeeds list-->
+            <p:tab id="tab1" title="Mina iFeeds">
+                <h:panelGrid columns="2" cellpadding="10">
+
+                    <h:form>
+                        <p:outputPanel>
+                            <p:ajaxStatus style="width:35px;height:35px;" id="ajaxStatusPanel">
+                                <f:facet name="start">
+                                    <h:graphicImage value="http://www.meetgadget.com/images/loading.gif" />
+                                </f:facet>
+
+                                <f:facet name="complete">
+                                    <h:outputText value="" />
+                                </f:facet>
+                            </p:ajaxStatus>
+
+                        </p:outputPanel>
+                        <div class="ifeed-table">
+                            <p:dataTable
+                                    id="data_table"
+                                    var="iFeed"
+                                    rowKey="#{iFeed.id}"
+                                    value="#{iFeedBackingBean.IFeedModelBeans}"
+                                    sortMode="multiple"
+                                    widgetVar="ifeed_table"
+                                    emptyMessage="Inga iFeeds hittades"
+                                    filteredValue="#{iFeedBackingBean.filteredIFeedModelBeans}">
+
+                                <f:facet name="header">
+                                    <p:outputPanel>
+                                        <h:outputText value="Sök i alla fält:" />
+                                        <p:inputText  id="globalFilter" onkeyup="ifeed_table.filter()"/>
+                                    </p:outputPanel>
+                                </f:facet>
+
+
+                                    <f:facet name="header">
+                                        <div class="ifeed-selectonemenu">
+                                        <p:selectOneMenu onchange="ifeed_table.filter()" >
+                                            <f:selectItem itemLabel="NU"  noSelectionOption="true" />
+                                            <f:selectItems value="#{iFeedBackingBean.governance}" />
+                                        </p:selectOneMenu>
+                                        </div>
+                                    </f:facet>
+
+
+
+                                <p:column id="rssColumn">
+                                    <p:commandLink styleClass="link-button-rss"></p:commandLink>
+                                </p:column>
+
+                                <p:column id="nameColumn" filterBy="#{iFeed.name}" sortBy="#{iFeed.name}"
+                                          headerText="Namn" filterMatchMode="contains">
+                                    <p:commandLink update=":ifeed_view" ajax="true" async="true"
+                                                   value="#{iFeed.name}"
+                                                   actionListener="#{iFeedBackingBean.editIFeed(iFeed.id)}"/>
+                                </p:column>
+
+                                <p:column id="ownerIdColumn" filterBy="#{iFeed.ownershipUserIds}"
+                                          sortBy="#{iFeed.ownershipUserIds}"
+                                          headerText="Ägare" filterMatchMode="contains">
+                                    <h:outputText value="#{iFeed.ownershipUserIds}" />
+                                </p:column>
+
+                                <p:column  id="descriptionColumn" filterBy="#{iFeed.description}"
+                                           sortBy="#{iFeed.description}" headerText="Beskrivning"
+                                           filterMatchMode="contains">
+                                    <h:outputText value="#{iFeed.description}" />
+                                </p:column>
+
+                                <p:column id="deleteColumn">
+
+                                    <p:commandLink
+                                            action="#{iFeedBackingBean.removeBook(iFeed.id)}"
+                                            styleClass="link-button-trash"
+                                            update="data_table"
+                                            ajax="true"
+                                            async="true"
+                                            oncomplete="ifeed_table.filter()">
+                                    </p:commandLink>
+
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+
+                    </h:form>
+
+                </h:panelGrid>
+            </p:tab>
+            <!-- END: Tab for users IFeeds list-->
+
+
+            <!-- BEGIN: Tab for all IFeeds list-->
+            <p:tab id="tab2" title="Alla iFeeds">
+                <h:panelGrid columns="2" cellpadding="10">
+                    <h:form style="width: 100% !important;">
+                        <div class="ifeed-table">
+                            <p:dataTable
+                                    id="ifeed_data_table"
+                                    var="iFeed"
+                                    rowKey="#{iFeed.id}"
+                                    value="#{iFeedBackingBean.IFeedModelBeans}"
+                                    widgetVar="iFeedTable"
+                                    emptyMessage="Inga iFeeds hittades"
+                                    filteredValue="#{iFeedBackingBean.filteredIFeedModelBeans}">
+
+                                <f:facet name="header">
+                                    <p:outputPanel>
+                                        <h:outputText value="Sök i alla fält:" />
+                                        <p:inputText  id="ifeedFilter" onkeyup="ifeed_table.filter()"/>
+                                    </p:outputPanel>
+                                </f:facet>
+
+                                <p:column id="rssColumn2" style="width: 18px; min-width: 18px;">
+                                    <p:commandLink styleClass="link-button-rss"></p:commandLink>
+                                </p:column>
+
+                                <p:column id="nameColumn2" filterBy="#{iFeed.name}" sortBy="#{iFeed.name}"
+                                          headerText="Namn" filterMatchMode="contains">
+                                    <h:outputText value="#{iFeed.name}" />
+                                </p:column>
+
+                                <p:column id="ownerIdColumn2" filterBy="#{iFeed.ownershipUserIds}" sortBy="#{iFeed.ownershipUserIds}"
+                                          headerText="Ägare" filterMatchMode="contains">
+                                    <h:outputText value="#{iFeed.ownershipUserIds}" />
+                                </p:column>
+
+                                <p:column  id="descriptionColumn2" filterBy="#{iFeed.description}" sortBy="#{iFeed.description}"
+                                           headerText="Beskrivning" filterMatchMode="contains">
+                                    <h:outputText value="#{iFeed.description}" />
+                                </p:column>
+
+                                <p:column id="deleteColumn2" style="width: 18px; min-width: 18px;"  >
+                                    <p:commandLink
+                                            actionListener="#{removeIfeedBackingBean.removeBook(iFeed.id)}"
+                                            styleClass="link-button-trash"
+                                            update="ifeed_data_table"
+                                            ajax="true"
+                                            async="true"
+                                            oncomplete="ifeed_table.filter()">
+
+                                    </p:commandLink>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                    </h:form>
+                </h:panelGrid>
+            </p:tab>
+            <!-- END: Tab for all IFeeds list-->
+
+        </p:tabView>
+
+    </div>
+
+</f:view>

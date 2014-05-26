@@ -6,71 +6,161 @@
   You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the 
   Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA -->
 
-<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="2.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
-  id="iFeed-core-bc-module-portlet">
-  <portlet>
-    <portlet-name>iFeed</portlet-name>
-    <display-name>iFeed Manager</display-name>
-    <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>VIEW</portlet-mode>
-    </supports>
-    <supported-locale>sv</supported-locale>
-    <resource-bundle>i18n.ifeed-messages</resource-bundle>
-    <portlet-info>
-      <title>iFeed Manager - Administrera dokumentpubliceringar</title>
-      <short-title>iFeed Manager</short-title>
-      <keywords></keywords>
-    </portlet-info>
-    <security-role-ref>
-      <role-name>administrator</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>guest</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>power-user</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>user</role-name>
-    </security-role-ref>
-  </portlet>
-  <portlet>
-    <portlet-name>apelon-scheduler</portlet-name>
-    <display-name>iFeed Apelon Scheduler</display-name>
-	<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
-	<supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>VIEW</portlet-mode>
-	</supports>
-    <portlet-info>
-      <title>iFeed Apelon Scheduler</title>
-      <short-title>iFeed Apelon Scheduler</short-title>
-      <keywords></keywords>
-    </portlet-info>
-  </portlet>
-    <!--
-  <portlet>
-    <portlet-name>publish-scheduler</portlet-name>
-    <portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>VIEW</portlet-mode>
-    </supports>
-    <portlet-info>
-      <title>iFeed Publish Scheduler</title>
-      <short-title>iFeed Publish Scheduler</short-title>
-      <keywords></keywords>
-    </portlet-info>
-  </portlet>
-  -->
-  <!-- Used to get remote user. See more info in JSR-286 Section 21.1. -->
-  <user-attribute>
-    <description>User Login Id</description>
-    <name>user.login.id</name>
-  </user-attribute>
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="3.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+             id="iFeed-core-bc-module-portlet">
+  <!-- <portlet>
+            <portlet-name>iFeed</portlet-name>
+            <display-name>iFeed Manager</display-name>
+            <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+            <expiration-cache>0</expiration-cache>
+            <supports>
+                <mime-type>text/html</mime-type>
+                <portlet-mode>VIEW</portlet-mode>
+            </supports>
+            <supported-locale>sv</supported-locale>
+            <resource-bundle>i18n.ifeed-messages</resource-bundle>
+            <portlet-info>
+                <title>iFeed Manager - Administrera dokumentpubliceringar</title>
+                <short-title>iFeed Manager</short-title>
+                <keywords></keywords>
+            </portlet-info>
+            <security-role-ref>
+                <role-name>administrator</role-name>
+            </security-role-ref>
+            <security-role-ref>
+                <role-name>guest</role-name>
+            </security-role-ref>
+            <security-role-ref>
+                <role-name>power-user</role-name>
+            </security-role-ref>
+            <security-role-ref>
+                <role-name>user</role-name>
+            </security-role-ref>
+        </portlet>-->
+
+    <portlet>
+        <portlet-name>apelon-scheduler</portlet-name>
+        <display-name>iFeed Apelon Scheduler</display-name>
+        <portlet-class>com.liferay.faces.bridge.GenericLiferayFacesPortlet</portlet-class>
+        <!--      <portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>-->
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+        </supports>
+        <portlet-info>
+            <title>iFeed Apelon Scheduler</title>
+            <short-title>iFeed Apelon Scheduler</short-title>
+            <keywords></keywords>
+        </portlet-info>
+    </portlet>
+
+<!--    <portlet>
+        <portlet-name>publish-scheduler</portlet-name>
+        <portlet-class>com.liferay.faces.bridge.GenericLiferayFacesPortlet</portlet-class>
+       <portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>&ndash;&gt;
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+        </supports>
+        <portlet-info>
+            <title>iFeed Publish Scheduler</title>
+            <short-title>iFeed Publish Scheduler</short-title>
+            <keywords></keywords>
+        </portlet-info>
+    </portlet>-->
+
+    <!--Added for jsf-->
+<!--    <portlet>
+        <portlet-name>iFeedJsf</portlet-name>
+        <display-name>iFeedJsf Manager</display-name>
+        <portlet-class>com.liferay.faces.bridge.GenericLiferayFacesPortlet</portlet-class>
+    &lt;!&ndash;    <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>&ndash;&gt;
+        <expiration-cache>0</expiration-cache>
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+        </supports>
+        <supported-locale>sv</supported-locale>
+        <resource-bundle>i18n.ifeed-messages</resource-bundle>
+        <portlet-info>
+            <title>iFeedJsf Manager - Administrera dokumentpubliceringar</title>
+            <short-title>iFeedJsf Manager</short-title>
+            <keywords></keywords>
+        </portlet-info>
+        <security-role-ref>
+            <role-name>administrator</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>guest</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>power-user</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>user</role-name>
+        </security-role-ref>
+    </portlet>-->
+
+
+
+    <portlet>
+
+        <description>iFeedJsf</description>
+        <portlet-name>iFeedJsf</portlet-name>
+        <display-name>iFeedJsf Manager</display-name>
+        <portlet-class>com.liferay.faces.bridge.GenericLiferayFacesPortlet</portlet-class>
+
+        <init-param>
+            <name>javax.portlet.faces.defaultViewId.view</name>
+            <value>/WEB-INF/xhtmls/view.xhtml</value>
+        </init-param>
+        <init-param>
+            <name>javax.portlet.faces.defaultViewId.edit</name>
+            <value>/WEB-INF/xhtmls/edit.xhtml</value>
+        </init-param>
+        <init-param>
+            <name>javax.portlet.faces.defaultViewId.help</name>
+            <value>/WEB-INF/xhtmls/help.xhtml</value>
+        </init-param>
+
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>HELP</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+        </supports>
+
+        <supported-locale>sv</supported-locale>
+        <resource-bundle>i18n.ifeed-messages</resource-bundle>
+
+        <portlet-info>
+            <title>IFeedJsf</title>
+            <short-title>IFeedJsf</short-title>
+            <keywords>IFeedJsf</keywords>
+        </portlet-info>
+
+        <security-role-ref>
+            <role-name>administrator</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>guest</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>power-user</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>user</role-name>
+        </security-role-ref>
+
+    </portlet>
+
+    <!--End - Added for jsf-->
+
+    <!-- Used to get remote user. See more info in JSR-286 Section 21.1. -->
+    <user-attribute>
+        <description>User Login Id</description>
+        <name>user.login.id</name>
+    </user-attribute>
 </portlet-app>

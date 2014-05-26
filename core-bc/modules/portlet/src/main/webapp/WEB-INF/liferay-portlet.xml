@@ -2,13 +2,21 @@
 <!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
 
 <liferay-portlet-app>
-  <portlet>
+<!--  <portlet>
     <portlet-name>iFeed</portlet-name>
     <instanceable>false</instanceable>
       <requires-namespaced-parameters>false</requires-namespaced-parameters>
     <css-class-wrapper>ifeed-portlet</css-class-wrapper>
-  </portlet>
+  </portlet>-->
+    <portlet>
+        <portlet-name>iFeedJsf</portlet-name>
+        <action-url-redirect>true</action-url-redirect>
+        <instanceable>false</instanceable>
+        <requires-namespaced-parameters>false</requires-namespaced-parameters>
+        <header-portlet-css>/css/theme.css</header-portlet-css>
 
+        <add-default-resource>false</add-default-resource>
+    </portlet>
   <portlet>
     <portlet-name>apelon-scheduler</portlet-name>
     <scheduler-entry>

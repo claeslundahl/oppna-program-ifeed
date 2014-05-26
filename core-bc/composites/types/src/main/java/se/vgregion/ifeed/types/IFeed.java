@@ -37,7 +37,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     @Id
     @GeneratedValue
-    private Long id;
+    protected Long id;
 
     @Version
     private Long version;
@@ -61,7 +61,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     // @ElementCollection(fetch = FetchType.EAGER)
     // @CollectionTable(name = "vgr_ifeed_ownership", joinColumns = @JoinColumn(name = "ifeed_id"))
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
-    private Set<Ownership> ownerships = new HashSet<Ownership>();
+    protected Set<Ownership> ownerships = new HashSet<Ownership>();
 
     private String sortField;
     private String sortDirection;
@@ -98,9 +98,15 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return f;
     }
 
+    //TODO: Please check this  method. Monica added if statement.
     public void setFilters(Set<IFeedFilter> filters) {
+        if(this.filters == null) {
+          this.filters = new HashSet<IFeedFilter>();
+        }
+
         this.filters.clear();
         this.filters.addAll(filters);
+
     }
 
     public void removeFilter(IFeedFilter filter) {

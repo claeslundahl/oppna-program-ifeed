@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:portlet="http://java.sun.com/portlet_2_0">
+
+    <portlet:defineObjects />
+
+    <h:head></h:head>
+
+    <div class="vgr-boxed-content rp-user-bookmarks" >
+        <div class="hd"> <span>iFeed Manager</span></div>
+        <div class="bd">
+
+            <h:form id="ifeed_view">
+
+                <!-- Panel for navigation inside IFeed portlet -->
+                <p:panel id="ifeed_panel" style="padding: 0px">
+
+                    <p:panel rendered="#{navigationModelBean.uiNavigation eq 'USER_IFEEDS'}">
+                        <ui:include src="user-ifeed-list.xhtml"/>
+                    </p:panel>
+
+                    <p:panel rendered="#{navigationModelBean.uiNavigation eq 'ADD_IFEED'}">
+                        <ui:include src="add-ifeed.xhtml"/>
+                    </p:panel>
+
+                    <p:panel rendered="#{navigationModelBean.uiNavigation eq 'FIELD_CONFIG'}">
+                        <ui:include src="field-config.xhtml"/>
+                    </p:panel>
+
+                    <p:panel rendered="#{navigationModelBean.uiNavigation eq 'ADD_FINAL_STEP'}">
+                        <ui:include src="add-ifeed-final-step.xhtml"/>
+                    </p:panel>
+
+                </p:panel>
+
+            </h:form>
+        </div>
+    </div>
+
+</f:view>

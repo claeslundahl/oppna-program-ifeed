@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:aui="http://liferay.com/faces/aui"
+        xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head></h:head>
+
+        <h2>Lägg till ett dokumentflöde</h2>
+
+        <p:messages id="error-messages"/>
+    <div class="ifeed-columns-left">
+        <h:outputLabel  value="Namnge dokumentpubliceringen ">
+
+        </h:outputLabel>
+        <p:inputText id="title" name="title" value="#{iFeedModelBean.name}">
+        </p:inputText>
+        <h:outputLabel  value="Beskriv syftet med publiceringen ">
+
+        </h:outputLabel>
+        <div class="ifeed-text-field">
+            <p:inputTextarea autoResize="false"  value="#{iFeedModelBean.description}" maxlength="1000"/>
+
+        </div>
+    </div>
+
+    <div class="ifeed-columns-right ifeed-selectonemenu">
+
+        <h:outputLabel  value="Välj förvaltning"/>
+
+        <p:selectOneMenu id="selectGovernance" >
+            <f:selectItem itemLabel="Select One" itemValue="" />
+            <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+            <f:selectItem itemLabel="PS4" itemValue="PS4" />
+            <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+        </p:selectOneMenu>
+        <h:outputLabel  value="Välj grupptillhörighet"/>
+
+            <p:selectOneMenu id="selectGroupBelonging">
+                <f:selectItem itemLabel="Select One" itemValue="" />
+                <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+                <f:selectItem itemLabel="PS4" itemValue="PS4" />
+                <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+            </p:selectOneMenu>
+
+    </div>
+
+        <aui:button-row >
+            <div class="ifeed-buttons">
+
+                <p:commandLink styleClass="rp-link-button rp-link-button-alt" actionListener="#{editIFeedBackingBean.goBackToIFeedList}" value="Avbryt" update=":ifeed_view"
+                                ajax="true" async="true" />
+
+                <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara och fortsätt"
+                               update=":ifeed_view" actionListener="#{editIFeedBackingBean.addIFeed}" ajax="true" async="true"/>
+            </div>
+        </aui:button-row>
+
+</ui:composition>

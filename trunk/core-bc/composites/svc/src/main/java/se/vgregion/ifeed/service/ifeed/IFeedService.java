@@ -3,6 +3,8 @@ package se.vgregion.ifeed.service.ifeed;
 import java.util.List;
 import java.util.Map;
 
+import com.liferay.portal.kernel.cache.ThreadLocalCachable;
+import org.springframework.stereotype.Service;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;

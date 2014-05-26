@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.types;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Map;
 
 import net.sf.cglib.beans.BeanMap;
 
-public class FieldInf {
+public class FieldInf implements Serializable {
 
     private String id, name, help, type, apelonKey = "";
 

@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.service.ifeed;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
@@ -17,7 +19,7 @@ import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ifeed.types.Ownership;
 
-public class IFeedServiceImpl implements IFeedService {
+public class IFeedServiceImpl implements IFeedService, Serializable {
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
     private JpaRepository<FieldsInf, Long, Long> fieldsInfRepo;
@@ -66,6 +68,7 @@ public class IFeedServiceImpl implements IFeedService {
     @Transactional
     public final void removeIFeed(final Long id) {
         iFeedRepo.remove(id);
+        iFeedRepo.flush();
     }
 
     @Override

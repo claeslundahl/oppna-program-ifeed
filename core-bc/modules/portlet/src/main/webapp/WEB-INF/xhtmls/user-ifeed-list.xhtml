@@ -53,6 +53,7 @@
 
 
                             <p:dataTable
+                                    style="width:100%;"
                                     id="data_table"
                                     var="iFeed"
                                     rowKey="#{iFeed.id}"
@@ -101,6 +102,12 @@
                                     <h:outputText value="#{iFeed.description}" />
                                 </p:column>
 
+                                <p:column  id="groupColumn" filterBy="#{iFeed.description}"
+                                           sortBy="#{iFeed.description}" headerText="Förvaltning/Grupp"
+                                           filterMatchMode="contains">
+                                    <h:outputText value="#{iFeed.description}" />
+                                </p:column>
+
                                 <p:column id="deleteColumn">
 
                                     <p:commandLink
@@ -123,26 +130,11 @@
             <!-- END: Tab for users IFeeds list-->
 
             <!-- BEGIN: Tab for all IFeeds list-->
-            <p:tab id="tab2" title="Mina iFeeds">
+            <p:tab id="tab2" title="Alla IFeeds">
                 <h:panelGrid columns="2" cellpadding="10">
 
-
-                        <p:outputPanel>
-                            <p:ajaxStatus style="width:35px;height:35px;" id="ajaxPanel">
-                                <f:facet name="starting">
-                                    <h:graphicImage value="http://www.meetgadget.com/images/loading.gif" />
-                                </f:facet>
-
-                                <f:facet name="completing">
-                                    <h:outputText value="" />
-                                </f:facet>
-                            </p:ajaxStatus>
-
-                        </p:outputPanel>
-
-
-
                             <p:dataTable
+                                    style="width:100%;"
                                     id="iFeedDataTable"
                                     var="allIFeed"
                                     rowKey="#{allIFeed.id}"
@@ -163,7 +155,7 @@
                                     <div class="ifeed-selectonemenu">
                                         <p:selectOneMenu onchange="ifeed_table.filter()" >
                                             <f:selectItem itemLabel="NU"  noSelectionOption="true" />
-                                            <f:selectItems value="#{iFeedBackingBean.governance}" />
+                                            <f:selectItems value="#m{iFeedBackingBean.governance}" />
                                         </p:selectOneMenu>
                                     </div>
                                 </f:facet>-->
@@ -190,6 +182,14 @@
                                            filterMatchMode="contains">
                                     <h:outputText value="#{allIFeed.description}" />
                                 </p:column>
+
+
+                                <p:column  id="groupIFeedColumn" filterBy="#{allIFeed.description}"
+                                           sortBy="#{allIFeed.description}" headerText="Förvaltning/Grupp"
+                                           filterMatchMode="contains">
+                                    <h:outputText value="#{allIFeed.description}" />
+                                </p:column>
+
 
                                 <p:column id="deleteIFeedColumn">
 

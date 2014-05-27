@@ -15,7 +15,7 @@
     <instanceable>false</instanceable>
     <requires-namespaced-parameters>false</requires-namespaced-parameters>
     <header-portlet-css>/css/theme.css</header-portlet-css>
-    <header-portlet-css>/css/prime-faces.css</header-portlet-css>
+  <!--  <header-portlet-css>/css/prime-faces.css</header-portlet-css>-->
 
     <add-default-resource>false</add-default-resource>
   </portlet>

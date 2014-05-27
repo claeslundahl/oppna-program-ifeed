@@ -157,29 +157,29 @@ public class IFeedBackingBean implements Serializable {
         return userIFeeds;
     }
 
-    public void removeBook(Long id) throws PortalException, SystemException {
+    public void removeBook(IFeed iFeed) throws PortalException, SystemException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         PortletRequest request = (PortletRequest) externalContext.getRequest();
 
         User user = getUser(request);
 
-        IFeed feed = iFeedService.getIFeed(id);
+        IFeed feed = iFeedService.getIFeed(iFeed.getId());
         if (!AccessGuard.mayEditFeed(user, feed)) {
             throw new RuntimeException();
         }
-        iFeedService.removeIFeed(id);
+        iFeedService.removeIFeed(iFeed.getId());
 
         // Remove from memory
-        IFeedModelBean toRemove = new IFeedModelBean();
-        toRemove.setId(id);
-        iFeedModelBeans.remove(toRemove);
+        iFeedModelBeans.remove(iFeed);
+        userIFeedModelBeans.remove(iFeed);
+
 
         try {
             ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
             long companyId = themeDisplay.getCompanyId();
             resourceLocalService.deleteResource(companyId, IFeed.class.getName(),
-                    ResourceConstants.SCOPE_INDIVIDUAL, id);
+                    ResourceConstants.SCOPE_INDIVIDUAL, iFeed.getId());
         } catch (PortalException e) {
             e.printStackTrace();
         } catch (SystemException e) {
@@ -268,6 +268,16 @@ public class IFeedBackingBean implements Serializable {
         this.lists = lists;
     }
 
+    public List<IFeedModelBean> getiFeedModelBeans() {
+        return iFeedModelBeans;
+    }
+
+    public void setiFeedModelBeans(List<IFeedModelBean> iFeedModelBeans) {
+        this.iFeedModelBeans = iFeedModelBeans;
+    }
+
+
+
 /*
     public ResourceLocalService getResourceLocalService() {
         return resourceLocalService;
@@ -287,13 +297,6 @@ public class IFeedBackingBean implements Serializable {
         this.iFeedService = iFeedService;
     }
 
-    public List<IFeedModelBean> getIFeedModelBeans() {
-        return iFeedModelBeans;
-    }
-
-    public void setIFeedModelBeans(List<IFeedModelBean> iFeedModelBeans) {
-        this.iFeedModelBeans = iFeedModelBeans;
-    }
 
 /*    public RemoveIfeedBackingBean getRemoveIfeedBackingBean() {
         return removeIfeedBackingBean;
@@ -312,11 +315,11 @@ public class IFeedBackingBean implements Serializable {
         this.fieldInfs = fieldInfs;
     }
 
-    public IFeedModelBean getiFeedModelBean() {
+    public IFeedModelBean getIFeedModelBean() {
         return iFeedModelBean;
     }
 
-    public void setiFeedModelBean(IFeedModelBean iFeedModelBean) {
+    public void setIFeedModelBean(IFeedModelBean iFeedModelBean) {
         this.iFeedModelBean = iFeedModelBean;
     }
 

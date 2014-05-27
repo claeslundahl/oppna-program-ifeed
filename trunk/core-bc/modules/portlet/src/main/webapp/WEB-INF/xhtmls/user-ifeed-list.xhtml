@@ -25,37 +25,42 @@
 
     <br></br> <br></br>
 
+    <p:outputPanel>
+        <p:ajaxStatus style="width:35px;height:35px;" id="ajaxStatusPanel">
+            <f:facet name="start">
+                <h:graphicImage value="http://www.meetgadget.com/images/loading.gif" />
+            </f:facet>
 
-    <div class="tabs-min">
-        <p:tabView id="tabView">
+            <f:facet name="complete">
+                <h:outputText value="" />
+            </f:facet>
+        </p:ajaxStatus>
+
+    </p:outputPanel>
+
+
+    <div class="tabs-min ifeed-table">
+        <p:tabView id="tabView" >
 
             <!-- BEGIN: Tab for users IFeeds list-->
             <p:tab id="tab1" title="Mina iFeeds">
+            <!--    <f:param name="i" value="1" />-->
                 <h:panelGrid columns="2" cellpadding="10">
 
-                    <h:form>
-                        <p:outputPanel>
-                            <p:ajaxStatus style="width:35px;height:35px;" id="ajaxStatusPanel">
-                                <f:facet name="start">
-                                    <h:graphicImage value="http://www.meetgadget.com/images/loading.gif" />
-                                </f:facet>
 
-                                <f:facet name="complete">
-                                    <h:outputText value="" />
-                                </f:facet>
-                            </p:ajaxStatus>
 
-                        </p:outputPanel>
-                        <div class="ifeed-table">
+
+
+
                             <p:dataTable
                                     id="data_table"
                                     var="iFeed"
                                     rowKey="#{iFeed.id}"
-                                    value="#{iFeedBackingBean.IFeedModelBeans}"
+                                    value="#{iFeedBackingBean.userIFeedModelBeans}"
                                     sortMode="multiple"
                                     widgetVar="ifeed_table"
                                     emptyMessage="Inga iFeeds hittades"
-                                    filteredValue="#{iFeedBackingBean.filteredIFeedModelBeans}">
+                                    filteredValue="#{iFeedBackingBean.filteredUserIFeedModelBeans}">
 
                                 <f:facet name="header">
                                     <p:outputPanel>
@@ -64,17 +69,14 @@
                                     </p:outputPanel>
                                 </f:facet>
 
-
-                                    <f:facet name="header">
-                                        <div class="ifeed-selectonemenu">
+                                <f:facet name="header">
+                                    <div class="ifeed-selectonemenu">
                                         <p:selectOneMenu onchange="ifeed_table.filter()" >
                                             <f:selectItem itemLabel="NU"  noSelectionOption="true" />
                                             <f:selectItems value="#{iFeedBackingBean.governance}" />
                                         </p:selectOneMenu>
-                                        </div>
-                                    </f:facet>
-
-
+                                    </div>
+                                </f:facet>
 
                                 <p:column id="rssColumn">
                                     <p:commandLink styleClass="link-button-rss"></p:commandLink>
@@ -102,9 +104,9 @@
                                 <p:column id="deleteColumn">
 
                                     <p:commandLink
-                                            action="#{iFeedBackingBean.removeBook(iFeed.id)}"
+                                            action="#{iFeedBackingBean.removeBook(iFeed)}"
                                             styleClass="link-button-trash"
-                                            update="data_table"
+                                            update=":ifeed_view"
                                             ajax="true"
                                             async="true"
                                             oncomplete="ifeed_table.filter()">
@@ -112,72 +114,103 @@
 
                                 </p:column>
                             </p:dataTable>
-                        </div>
 
-                    </h:form>
+
+
 
                 </h:panelGrid>
             </p:tab>
             <!-- END: Tab for users IFeeds list-->
 
-
             <!-- BEGIN: Tab for all IFeeds list-->
-            <p:tab id="tab2" title="Alla iFeeds">
+            <p:tab id="tab2" title="Mina iFeeds">
                 <h:panelGrid columns="2" cellpadding="10">
-                    <h:form style="width: 100% !important;">
-                        <div class="ifeed-table">
+
+
+                        <p:outputPanel>
+                            <p:ajaxStatus style="width:35px;height:35px;" id="ajaxPanel">
+                                <f:facet name="starting">
+                                    <h:graphicImage value="http://www.meetgadget.com/images/loading.gif" />
+                                </f:facet>
+
+                                <f:facet name="completing">
+                                    <h:outputText value="" />
+                                </f:facet>
+                            </p:ajaxStatus>
+
+                        </p:outputPanel>
+
+
+
                             <p:dataTable
-                                    id="ifeed_data_table"
-                                    var="iFeed"
-                                    rowKey="#{iFeed.id}"
-                                    value="#{iFeedBackingBean.IFeedModelBeans}"
-                                    widgetVar="iFeedTable"
+                                    id="iFeedDataTable"
+                                    var="allIFeed"
+                                    rowKey="#{allIFeed.id}"
+                                    value="#{iFeedBackingBean.iFeedModelBeans}"
+                                    sortMode="multiple"
+                                    widgetVar="all_ifeed_table"
                                     emptyMessage="Inga iFeeds hittades"
                                     filteredValue="#{iFeedBackingBean.filteredIFeedModelBeans}">
 
                                 <f:facet name="header">
                                     <p:outputPanel>
                                         <h:outputText value="Sök i alla fält:" />
-                                        <p:inputText  id="ifeedFilter" onkeyup="ifeed_table.filter()"/>
+                                        <p:inputText  id="AllIFeedFilter" onkeyup="all_ifeed_table.filter()"/>
                                     </p:outputPanel>
                                 </f:facet>
 
-                                <p:column id="rssColumn2" style="width: 18px; min-width: 18px;">
+                            <!--    <f:facet name="header">
+                                    <div class="ifeed-selectonemenu">
+                                        <p:selectOneMenu onchange="ifeed_table.filter()" >
+                                            <f:selectItem itemLabel="NU"  noSelectionOption="true" />
+                                            <f:selectItems value="#{iFeedBackingBean.governance}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </f:facet>-->
+
+                                <p:column id="rssIFeedColumn">
                                     <p:commandLink styleClass="link-button-rss"></p:commandLink>
                                 </p:column>
 
-                                <p:column id="nameColumn2" filterBy="#{iFeed.name}" sortBy="#{iFeed.name}"
+                                <p:column id="nameIFeedColumn" filterBy="#{allIFeed.name}" sortBy="#{allIFeed.name}"
                                           headerText="Namn" filterMatchMode="contains">
-                                    <h:outputText value="#{iFeed.name}" />
+                                    <p:commandLink update=":ifeed_view" ajax="true" async="true"
+                                                   value="#{allIFeed.name}"
+                                                   actionListener="#{iFeedBackingBean.editIFeed(allIFeed.id)}"/>
                                 </p:column>
 
-                                <p:column id="ownerIdColumn2" filterBy="#{iFeed.ownershipUserIds}" sortBy="#{iFeed.ownershipUserIds}"
+                                <p:column id="ownerIdIFeedColumn" filterBy="#{AllIFeed.ownershipUserIds}"
+                                          sortBy="#{allIFeed.ownershipUserIds}"
                                           headerText="Ägare" filterMatchMode="contains">
-                                    <h:outputText value="#{iFeed.ownershipUserIds}" />
+                                    <h:outputText value="#{allIFeed.ownershipUserIds}" />
                                 </p:column>
 
-                                <p:column  id="descriptionColumn2" filterBy="#{iFeed.description}" sortBy="#{iFeed.description}"
-                                           headerText="Beskrivning" filterMatchMode="contains">
-                                    <h:outputText value="#{iFeed.description}" />
+                                <p:column  id="descriptionIFeedColumn" filterBy="#{allIFeed.description}"
+                                           sortBy="#{allIFeed.description}" headerText="Beskrivning"
+                                           filterMatchMode="contains">
+                                    <h:outputText value="#{allIFeed.description}" />
                                 </p:column>
 
-                                <p:column id="deleteColumn2" style="width: 18px; min-width: 18px;"  >
+                                <p:column id="deleteIFeedColumn">
+
                                     <p:commandLink
-                                            actionListener="#{removeIfeedBackingBean.removeBook(iFeed.id)}"
+                                            action="#{iFeedBackingBean.removeBook(allIFeed)}"
                                             styleClass="link-button-trash"
-                                            update="ifeed_data_table"
+                                            update=":ifeed_view"
                                             ajax="true"
                                             async="true"
-                                            oncomplete="ifeed_table.filter()">
-
+                                            oncomplete="all_ifeed_table.filter()">
                                     </p:commandLink>
-                                </p:column>
 
+                                </p:column>
                             </p:dataTable>
-                        </div>
-                    </h:form>
+
+
+
+
                 </h:panelGrid>
             </p:tab>
+
             <!-- END: Tab for all IFeeds list-->
 
         </p:tabView>

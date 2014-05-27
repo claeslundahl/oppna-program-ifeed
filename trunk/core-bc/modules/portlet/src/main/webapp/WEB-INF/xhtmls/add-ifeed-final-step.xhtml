@@ -53,12 +53,13 @@
     <h:outputText value="Länka till orginaldokument i html-vyn: " /> <h:selectBooleanCheckbox value="#{iFeedModelBean.linkNativeDocument}" /><br></br>
    <br></br>
     <h:outputText value="Lägg till administratör: " />
-
+<div class="autocomplete">
     <p:autoComplete id="createOwnershipInputSimple"
                     value="#{iFeedModelBean.newOwnershipNames}"
                     completeMethod="#{editIFeedBackingBean.completeUserName}"
                     forceSelection="true"
                     multiple="true"/>
+</div>
 
 
   <!--  <p:autoComplete id="createOwnershipInput"

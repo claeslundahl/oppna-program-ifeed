@@ -4,39 +4,43 @@
         xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:p="http://primefaces.org/ui" xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-    <portlet:defineObjects />
+  <portlet:defineObjects/>
 
-    <h:head></h:head>
+  <h:head></h:head>
 
-    <div class="vgr-boxed-content rp-user-bookmarks" >
-        <div class="hd"> <span>iFeed Manager</span></div>
-        <div class="bd">
+  <div class="vgr-boxed-content rp-user-bookmarks">
+    <div class="hd"><span>iFeed Manager</span></div>
+    <div class="bd">
 
-            <h:form id="ifeed_view">
+      <h:form id="ifeed_view">
 
-                <!-- Panel for navigation inside IFeed portlet -->
-                <p:panel id="ifeed_panel" style="padding: 0px">
+        <!-- Panel for navigation inside IFeed portlet -->
+        <p:panel id="ifeed_panel" style="padding: 0px">
 
-                    <p:panel rendered="#{navigationModelBean.uiNavigation eq 'USER_IFEEDS'}">
-                        <ui:include src="user-ifeed-list.xhtml"/>
-                    </p:panel>
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'USER_IFEEDS'}">
+            <ui:include src="user-ifeed-list.xhtml"/>
+          </p:panel>
 
-                    <p:panel rendered="#{navigationModelBean.uiNavigation eq 'ADD_IFEED'}">
-                        <ui:include src="add-ifeed.xhtml"/>
-                    </p:panel>
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'ADD_IFEED'}">
+            <ui:include src="add-ifeed.xhtml"/>
+          </p:panel>
 
-                    <p:panel rendered="#{navigationModelBean.uiNavigation eq 'FIELD_CONFIG'}">
-                        <ui:include src="field-config.xhtml"/>
-                    </p:panel>
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'FIELD_CONFIG'}">
+            <ui:include src="field-config.xhtml"/>
+          </p:panel>
 
-                    <p:panel rendered="#{navigationModelBean.uiNavigation eq 'ADD_FINAL_STEP'}">
-                        <ui:include src="add-ifeed-final-step.xhtml"/>
-                    </p:panel>
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'EDIT_IFEED'}">
+            <ui:include src="edit-ifeed.xhtml"/>
+          </p:panel>
 
-                </p:panel>
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'VIEW_IFEED'}">
+            <ui:include src="view-ifeed.xhtml"/>
+          </p:panel>
 
-            </h:form>
-        </div>
+        </p:panel>
+
+      </h:form>
     </div>
+  </div>
 
 </f:view>

@@ -116,7 +116,7 @@ public class EditIFeedController {
         }
     }
 
-    @ActionMapping(params = "action=editIFeed")
+    @ActionMapping(params = "action=viewIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId, final Model model,
                           final ActionResponse response) {
         IFeed iFeed = iFeedService.getIFeed(feedId);

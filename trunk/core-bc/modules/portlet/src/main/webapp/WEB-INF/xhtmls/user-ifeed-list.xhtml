@@ -87,7 +87,7 @@
                                           headerText="Namn" filterMatchMode="contains">
                                     <p:commandLink update=":ifeed_view" ajax="true" async="true"
                                                    value="#{iFeed.name}"
-                                                   actionListener="#{iFeedBackingBean.editIFeed(iFeed.id)}"/>
+                                                   actionListener="#{iFeedBackingBean.viewIFeed(iFeed.id)}"/>
                                 </p:column>
 
                                 <p:column id="ownerIdColumn" filterBy="#{iFeed.ownershipUserIds}"
@@ -168,7 +168,7 @@
                                           headerText="Namn" filterMatchMode="contains">
                                     <p:commandLink update=":ifeed_view" ajax="true" async="true"
                                                    value="#{allIFeed.name}"
-                                                   actionListener="#{iFeedBackingBean.editIFeed(allIFeed.id)}"/>
+                                                   actionListener="#{iFeedBackingBean.viewIFeed(allIFeed.id)}"/>
                                 </p:column>
 
                                 <p:column id="ownerIdIFeedColumn" filterBy="#{AllIFeed.ownershipUserIds}"

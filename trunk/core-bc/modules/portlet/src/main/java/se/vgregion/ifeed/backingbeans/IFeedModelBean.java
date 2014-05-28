@@ -5,10 +5,8 @@ import net.sf.cglib.beans.BeanMap;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ifeed.types.Ownership;
 
-import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.util.*;
 
@@ -18,8 +16,8 @@ import java.util.*;
 @Component(value = "iFeedModelBean")
 @Scope("session")
 public class IFeedModelBean extends IFeed implements Serializable {
-    private static final long serialVersionUID = -2277251806545192506L;
 
+    private static final long serialVersionUID = -2277251806545192506L;
 
     private String ownershipUserIds;
 
@@ -47,10 +45,14 @@ public class IFeedModelBean extends IFeed implements Serializable {
         }
     }*/
 
+    private void copy(Object from, Object into) {
+        BeanMap fromMap = BeanMap.create(from);
+        BeanMap intoMap = BeanMap.create(into);
+        intoMap.putAll(fromMap);
+    }
+
     public void copyValuesFromIFeed(IFeed iFeed) {
-        BeanMap bm = BeanMap.create(iFeed);
-        BeanMap thisBm = BeanMap.create(this);
-        thisBm.putAll(bm);
+        copy(iFeed, this);
         getOwnerships().addAll(iFeed.getOwnerships());
         newOwnershipNames = new MirrorOwnershipToTextList(getOwnerships());
     }
@@ -134,23 +136,25 @@ public class IFeedModelBean extends IFeed implements Serializable {
 
         for (Object key : bm.keySet()) {
             if (!"class".equals(key)) {
-                Class type = bm.getPropertyType((String) key);
-                if (!type.isPrimitive()) {
-                    Object value = bm.get(key);
-                    if (value instanceof Collection) {
-                        ((Collection) value).clear();
+                try {
+                    Class type = bm.getPropertyType((String) key);
+                    if (!type.isPrimitive()) {
+                        Object value = bm.get(key);
+                        if (value instanceof Collection) {
+                            ((Collection) value).clear();
+                        } else {
+                            bm.put(key, null);
+                        }
                     } else {
-                        bm.put(key, null);
+                        if (type == Long.TYPE) {
+                            bm.put(key, 0l);
+                        }
                     }
-                } else {
-                    if (type == Long.TYPE) {
-                        bm.put(key, 0l);
-                    }
+                } catch (UnsupportedOperationException uoe) {
+                    System.out.println("Key " + key + " caused UnsupportedOperationException");
                 }
             }
         }
-
-
     }
 
     /*
@@ -171,14 +175,18 @@ public class IFeedModelBean extends IFeed implements Serializable {
         return id != null ? id.hashCode() : 0;
     }*/
 
-
-
     public List<String> getNewOwnershipNames() {
         return newOwnershipNames;
     }
 
     public void setNewOwnershipNames(List<String> newOwnershipNames) {
         this.newOwnershipNames = newOwnershipNames;
+    }
+
+    public IFeed toIFeed() {
+        IFeed iFeed = new IFeed();
+        copy(this, iFeed);
+        return iFeed;
     }
 
 }

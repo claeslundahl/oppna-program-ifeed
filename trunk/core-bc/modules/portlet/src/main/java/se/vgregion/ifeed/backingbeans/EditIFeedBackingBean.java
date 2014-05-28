@@ -90,7 +90,7 @@ public class EditIFeedBackingBean implements Serializable {
             e.printStackTrace();
         }
 
-        navigationModelBean.setUiNavigation("ADD_FINAL_STEP");
+        navigationModelBean.setUiNavigation("VIEW_IFEED");
 
      /*   iFeedModelBean.setName("");
         iFeedModelBean.setDescription("");*/
@@ -189,7 +189,7 @@ public class EditIFeedBackingBean implements Serializable {
     public void update() {
         try {
             System.out.println("bean.getOwnershipList().size(): " + iFeedModelBean.getOwnershipList().size());
-            iFeedService.update(iFeedModelBean);
+            iFeedService.update(iFeedModelBean.toIFeed());
             goBackToIFeedList();
         } catch (Exception e) {
             e.printStackTrace();

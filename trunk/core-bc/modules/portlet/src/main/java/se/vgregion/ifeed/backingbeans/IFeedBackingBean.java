@@ -195,7 +195,7 @@ public class IFeedBackingBean implements Serializable {
         return userId;
     }
 
-    public void editIFeed(Long id) throws PortalException, SystemException {
+    public void viewIFeed(Long id) throws PortalException, SystemException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         PortletRequest request = (PortletRequest) externalContext.getRequest();
@@ -205,7 +205,7 @@ public class IFeedBackingBean implements Serializable {
         IFeed feed = iFeedService.getIFeed(id);
         iFeedModelBean.copyValuesFromIFeed(feed);
 
-        navigationModelBean.setUiNavigation("ADD_FINAL_STEP");
+        navigationModelBean.setUiNavigation("VIEW_IFEED");
     }
 
 

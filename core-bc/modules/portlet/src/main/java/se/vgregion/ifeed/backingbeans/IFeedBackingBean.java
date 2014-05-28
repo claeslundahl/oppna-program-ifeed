@@ -36,6 +36,7 @@ import java.util.Map;
 @Component(value = "iFeedBackingBean")
 @Scope("view")
 public class IFeedBackingBean implements Serializable {
+
     private ThemeDisplay themeDisplay;
     private boolean pageNavigation = false;
 
@@ -57,9 +58,6 @@ public class IFeedBackingBean implements Serializable {
     private List<FieldInf> fieldInfs;
     private String fieldInfString;
     private List<String> governance;
-
-
-
 
     @Value("#{navigationModelBean}")
     private NavigationModelBean navigationModelBean;
@@ -85,7 +83,6 @@ public class IFeedBackingBean implements Serializable {
         getAllIFeeds();
         getUserIFeeds();
     }
-
 
 
     public List<IFeed> getAllIFeeds() {
@@ -130,7 +127,7 @@ public class IFeedBackingBean implements Serializable {
         List<IFeed> userIFeeds = null;
         try {
             userIFeeds = iFeedService.getUserIFeeds(getRemoteUserId(request));
-                } catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -198,7 +195,7 @@ public class IFeedBackingBean implements Serializable {
         return userId;
     }
 
-    public void editIFeed(Long id)throws PortalException, SystemException {
+    public void editIFeed(Long id) throws PortalException, SystemException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         PortletRequest request = (PortletRequest) externalContext.getRequest();
@@ -276,8 +273,6 @@ public class IFeedBackingBean implements Serializable {
         this.iFeedModelBeans = iFeedModelBeans;
     }
 
-
-
 /*
     public ResourceLocalService getResourceLocalService() {
         return resourceLocalService;
@@ -286,8 +281,6 @@ public class IFeedBackingBean implements Serializable {
     public void setResourceLocalService(ResourceLocalService resourceLocalService) {
         this.resourceLocalService = resourceLocalService;
     }*/
-
-
 
     public IFeedService getIFeedService() {
         return iFeedService;

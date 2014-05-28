@@ -73,6 +73,14 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
+    public final IFeed update(final IFeed iFeed) {
+        IFeed result = iFeedRepo.merge(iFeed);
+        iFeedRepo.flush();
+        return result;
+    }
+
+    @Override
+    @Transactional
     public final IFeed updateIFeed(final IFeed iFeed) {
         IFeed oldIFeed = iFeedRepo.find(iFeed.getId());
         if (oldIFeed == null || filterChanged(oldIFeed, iFeed)) {

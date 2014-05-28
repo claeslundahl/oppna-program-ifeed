@@ -24,17 +24,14 @@ import javax.faces.event.ActionEvent;
 import javax.portlet.PortletRequest;
 import java.io.Serializable;
 import java.security.acl.Owner;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Monica on 2014-03-28.
  */
 @Component(value = "editIFeedBackingBean")
 @Scope("request")
-public class EditIFeedBackingBean implements Serializable{
+public class EditIFeedBackingBean implements Serializable {
 
     @Autowired
     private IFeedService iFeedService;
@@ -53,7 +50,7 @@ public class EditIFeedBackingBean implements Serializable{
     public EditIFeedBackingBean() {
     }
 
-    public void addIFeed(){
+    public void addIFeed() {
 
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
@@ -75,7 +72,7 @@ public class EditIFeedBackingBean implements Serializable{
         ownership2.setUserId("Jane Doe");
         iFeed.getOwnerships().add(ownership2);
 
-        for(Ownership ownership1 : iFeed.getOwnerships()){
+        for (Ownership ownership1 : iFeed.getOwnerships()) {
             String id = ownership1.getUserId();
         }
 
@@ -162,20 +159,17 @@ public class EditIFeedBackingBean implements Serializable{
         //List<Person> people = new ArrayList<Person>();
         System.out.println("completeUserName " + incompleteUserName);
 
-        /*
-        for (int i = 0; i < 10; i++) {
-            Person person = new Person("A" + i, "B" + i, "C" + i, "D" + i, "E" + i);
-            people.add(person);
-        }*/
+        try {
+            List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
+            List<String> result = new ArrayList<String>();
+            for (Person person : people) {
+                result.add(person.getUserName());
+            }
+            return result;
 
-
-        List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
-
-        List<String> result = new ArrayList<String>();
-        for (Person person : people) {
-            result.add(person.getUserName());
+        } catch (Exception e) {
+            return Arrays.asList("a", "b", "c");
         }
-        return result;
     }
 
     private String fetchNameOfPersonIfMatch(String key) {
@@ -192,10 +186,20 @@ public class EditIFeedBackingBean implements Serializable{
     }
 
 
-    public void goBackToIFeedList(){
+    public void update() {
+        try {
+            System.out.println("bean.getOwnershipList().size(): " + iFeedModelBean.getOwnershipList().size());
+            iFeedService.update(iFeedModelBean);
+            goBackToIFeedList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void goBackToIFeedList() {
         navigationModelBean.setUiNavigation("USER_IFEEDS");
         iFeedModelBean.clearBean();
-
     }
 
     public String getNewOwnershipName() {

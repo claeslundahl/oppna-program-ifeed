@@ -29,8 +29,9 @@ public class IFeedModelBean extends IFeed implements Serializable {
 
     private String newOwnershipName;
 
-    private List<String> newOwnershipNames = new ArrayList<String>();
+    private List<String> newOwnershipNames = new MirrorOwnershipToTextList(ownerships);
 
+    /*
     public void copyNamesToNewOwnershipNames() {
         for (Ownership ownership : getOwnershipList()) {
             newOwnershipNames.add(ownership.getName());
@@ -44,12 +45,14 @@ public class IFeedModelBean extends IFeed implements Serializable {
             ownership.setName(name);
             getOwnershipList().add(ownership);
         }
-    }
+    }*/
 
     public void copyValuesFromIFeed(IFeed iFeed) {
         BeanMap bm = BeanMap.create(iFeed);
         BeanMap thisBm = BeanMap.create(this);
         thisBm.putAll(bm);
+        getOwnerships().addAll(iFeed.getOwnerships());
+        newOwnershipNames = new MirrorOwnershipToTextList(getOwnerships());
     }
 
     //List for display purposes

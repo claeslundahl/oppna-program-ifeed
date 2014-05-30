@@ -1007,9 +1007,12 @@ margin-bottom: 5px;*/
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
-    padding: 3px;
-    margin-top: 2px;
+    padding: 10px;
+    margin-top: 42px;
     margin-bottom: 5px;
+    clear: both;
+    margin-right: 8px;
+    overflow: hidden;
 }
 
 .inline .aui h2{
@@ -1973,5 +1976,15 @@ body .ui-selectlistbox .wijmo-wijsuperpanel-hbarcontainer.ui-widget-header {
 }
 
 
+/*------------------ PrimeFaces panel grid -------------------------*/
 
+.panel-grid .ui-panelgrid td {
+    background-color: #eef5fa;
+    border: 0px;
+}
+
+
+.button-holder {
+    margin: 16px 0 !important;
+}
 

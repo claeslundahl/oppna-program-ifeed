@@ -1,64 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:p="http://primefaces.org/ui"
-        xmlns:aui="http://liferay.com/faces/aui"
-        xmlns:portlet="http://java.sun.com/portlet_2_0"  >
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:aui="http://liferay.com/faces/aui"
+                xmlns:portlet="http://java.sun.com/portlet_2_0"  >
 
-    <div class="border">
+    <div style="overflow: hidden;">
 
-        <h:outputText value="Titel: " />
-        <p:inplace id="title3" editor="true">
-            <p:inputText value="#{iFeedModelBean.name}" required="true" label="text"/></p:inplace>
-        <br></br>
+        <div style="float: left;">
+            <h2>#{iFeedModelBean.name}</h2>
+        </div>
 
-
-
-        <h:outputText value="Beskrivning: " />
-        <p:inplace id="description3" editor="true">
-
-            <p:inputText value="#{iFeedModelBean.description}"
-                         required="true" label="text"/>
-        </p:inplace>
-        <h:outputText value="Id: #{iFeedModelBean.userId}"></h:outputText>
-<br></br>
-        <h:outputText value="Länkar till dokumentlista: Atom Rss Html Json EPI-konfiguration (JSON) "/>
-
-
-    </div>
-
-    <p:dataList value="#{iFeedModelBean.getOwnershipList()}" var="item" type="ordered" id="ownershipList3">
-        <f:facet name="header">
-            Basic
-        </f:facet>
-        #{item.name}
-        <p:commandLink styleClass="delete-link"  actionListener="#{iFeedModelBean.ownerships.remove(item)}" update="ownershipList3" />
-    </p:dataList>
-
-    <aui:button-row >
-        <div class="ifeed-buttons">
+        <div class="ifeed-buttons" style="float: right">
             <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
-                           ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}" >
-          </p:commandLink>
-
+                           ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
+            </p:commandLink>
             <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Ändra" update=":ifeed_view"
                            ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('EDIT_IFEED')}">
-         </p:commandLink>
+            </p:commandLink>
         </div>
-    </aui:button-row>
+<div class="border">
+        <div style="clear: both; float: left;">
+            <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
+            <h:outputText value="#{iFeedModelBean.description}" label="text"/>
+            <br></br>
+            <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
+            <h:outputText value="Atom Rss Html Json EPI-konfiguration (JSON)"></h:outputText>
+            <br></br>
+            <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: " />
+            <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }" />
+        </div>
 
+        <div style="float: right;">
+            <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
+            <h:outputText value="#{iFeedModelBean.userId}"></h:outputText>
+            <br></br>
+            <h:outputText style="font-weight: bold;" value="Ägare: "/>
+            <h:outputText value="#{iFeed.ownershipUserIds}" />
+            <br></br>
+            <h:outputText style="font-weight: bold;" value="Filter: " />
+        </div>
+</div>
+    </div>
 
-
-    <h:outputText value="Länka till orginaldokument i html-vyn: " /> <h:selectBooleanCheckbox value="#{iFeedModelBean.linkNativeDocument}" /><br></br>
-   <br></br>
-    <h:outputText value="Lägg till administratör: " />
-
-
-
-    <br></br><br></br>
-
-
-   <br></br>
+    <br></br>
 
 </ui:composition>

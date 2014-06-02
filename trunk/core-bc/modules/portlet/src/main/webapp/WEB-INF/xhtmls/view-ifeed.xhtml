@@ -21,7 +21,7 @@
             </p:commandLink>
         </div>
 <div class="border">
-        <div style="clear: both; float: left;">
+        <div style="clear: both;" class="ifeed-columns-left">
             <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
             <h:outputText value="#{iFeedModelBean.description}" label="text"/>
             <br></br>
@@ -32,7 +32,7 @@
             <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }" />
         </div>
 
-        <div style="float: right;">
+        <div class="ifeed-columns-right">
             <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
             <h:outputText value="#{iFeedModelBean.userId}"></h:outputText>
             <br></br>
@@ -45,5 +45,21 @@
     </div>
 
     <br></br>
+
+    <div    class="ifeedDocList"
+            columnes="dc.title|Titel|left|70,dc.title|Titel|left|70"
+            fontSize="auto"
+            defaultsortcolumn="dc.title"
+            defaultsortorder="asc"
+            showTableHeader="yes"
+            linkOriginalDoc="no"
+            limit="0"
+            hiderightcolumn="yes"
+            feedid="#{iFeedModelBean.toSerializedText()}">
+    </div><noscript><iframe src='portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
+</iframe>
+    </noscript>
+    <script type="text/javascript" src="http://portalen-test.vgregion.se/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js"></script>
+
 
 </ui:composition>

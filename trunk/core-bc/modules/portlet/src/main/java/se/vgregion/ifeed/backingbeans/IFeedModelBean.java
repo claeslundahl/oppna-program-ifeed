@@ -4,6 +4,7 @@ package se.vgregion.ifeed.backingbeans;
 import net.sf.cglib.beans.BeanMap;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.Ownership;
 
@@ -187,6 +188,10 @@ public class IFeedModelBean extends IFeed implements Serializable {
         IFeed iFeed = new IFeed();
         copy(this, iFeed);
         return iFeed;
+    }
+
+    public String toSerializedText() {
+        return CommonUtils.toString(toIFeed());
     }
 
 }

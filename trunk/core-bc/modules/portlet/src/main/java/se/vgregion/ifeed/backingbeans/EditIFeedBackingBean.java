@@ -225,4 +225,5 @@ public class EditIFeedBackingBean implements Serializable {
     public void setNavigationModelBean(NavigationModelBean navigationModelBean) {
         this.navigationModelBean = navigationModelBean;
     }
+
 }

@@ -136,6 +136,7 @@ public class EditIFeedBackingBean implements Serializable {
         Set<Ownership> target = iFeedModelBean.getOwnerships();
         Ownership ownership = new Ownership();
         ownership.setName(newOwnershipName);
+        ownership.setIfeed(iFeedModelBean);
         target.add(ownership);
     }
 
@@ -185,6 +186,9 @@ public class EditIFeedBackingBean implements Serializable {
         return "";
     }
 
+    public List asList(Collection c) {
+        return new ArrayList(c);
+    }
 
     public void update() {
         try {
@@ -200,6 +204,31 @@ public class EditIFeedBackingBean implements Serializable {
     public void goBackToIFeedList() {
         navigationModelBean.setUiNavigation("USER_IFEEDS");
         iFeedModelBean.clearBean();
+    }
+
+    public void addNewOwnershipName() {
+        if (newOwnershipName == null || "".equals(newOwnershipName)) {
+            return;
+        }
+        Ownership item = new Ownership();
+        item.setUserId(newOwnershipName);
+        iFeedModelBean.getOwnerships().add(item);
+        item.setIfeed(iFeedModelBean);
+        newOwnershipName = "";
+    }
+
+    public void removeOwnership(Ownership ownership) {
+        List<Ownership> workList = new ArrayList<Ownership>(iFeedModelBean.getOwnerships());
+
+        for (int i = workList.size() - 1; i >= 0; i--) {
+            Ownership o = workList.get(i);
+            if (o.getUserId().equals(ownership.getUserId())) {
+                workList.remove(i);
+            }
+        }
+
+        iFeedModelBean.getOwnerships().clear();
+        iFeedModelBean.getOwnerships().addAll(workList);
     }
 
     public String getNewOwnershipName() {

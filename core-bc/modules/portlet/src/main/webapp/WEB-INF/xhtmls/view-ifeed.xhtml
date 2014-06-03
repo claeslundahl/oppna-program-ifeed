@@ -4,62 +4,64 @@
                 xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:aui="http://liferay.com/faces/aui"
-                xmlns:portlet="http://java.sun.com/portlet_2_0"  >
+                xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-    <div style="overflow: hidden;">
+  <div style="overflow: hidden;">
 
-        <div style="float: left;">
-            <h2>#{iFeedModelBean.name}</h2>
-        </div>
-
-        <div class="ifeed-buttons" style="float: right">
-            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
-                           ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
-            </p:commandLink>
-            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Ändra" update=":ifeed_view"
-                           ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('EDIT_IFEED')}">
-            </p:commandLink>
-        </div>
-<div class="border">
-        <div style="clear: both;" class="ifeed-columns-left">
-            <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
-            <h:outputText value="#{iFeedModelBean.description}" label="text"/>
-            <br></br>
-            <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
-            <h:outputText value="Atom Rss Html Json EPI-konfiguration (JSON)"></h:outputText>
-            <br></br>
-            <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: " />
-            <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }" />
-        </div>
-
-        <div class="ifeed-columns-right">
-            <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
-            <h:outputText value="#{iFeedModelBean.userId}"></h:outputText>
-            <br></br>
-            <h:outputText style="font-weight: bold;" value="Ägare: "/>
-            <h:outputText value="#{iFeed.ownershipUserIds}" />
-            <br></br>
-            <h:outputText style="font-weight: bold;" value="Filter: " />
-        </div>
-</div>
+    <div style="float: left;">
+      <h2>#{iFeedModelBean.name}</h2>
     </div>
 
-    <br></br>
+    <div class="ifeed-buttons" style="float: right">
+      <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
+                     ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
+      </p:commandLink>
+      <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Ändra" update=":ifeed_view"
+                     ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('EDIT_IFEED')}">
+      </p:commandLink>
+    </div>
+    <div class="border">
+      <div style="clear: both;" class="ifeed-columns-left">
+        <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
+        <h:outputText value="#{iFeedModelBean.description}" label="text"/>
+        <br></br>
+        <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
+        <h:outputText value="Atom Rss Html Json EPI-konfiguration (JSON)"></h:outputText>
+        <br></br>
+        <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
+        <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"/>
+      </div>
 
-    <div    class="ifeedDocList"
-            columnes="dc.title|Titel|left|70,dc.title|Titel|left|70"
-            fontSize="auto"
-            defaultsortcolumn="dc.title"
-            defaultsortorder="asc"
-            showTableHeader="yes"
-            linkOriginalDoc="no"
-            limit="0"
-            hiderightcolumn="yes"
-            feedid="#{iFeedModelBean.toSerializedText()}">
-    </div><noscript><iframe src='portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
-</iframe>
-    </noscript>
-    <script type="text/javascript" src="http://portalen-test.vgregion.se/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js"></script>
+      <div class="ifeed-columns-right">
+        <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
+        <h:outputText value="#{iFeedModelBean.userId}"></h:outputText>
+        <br></br>
+        <h:outputText style="font-weight: bold;" value="Ägare: "/>
+        <h:outputText value="#{iFeed.ownershipUserIds}"/>
+        <br></br>
+        <h:outputText style="font-weight: bold;" value="Filter: "/>
+      </div>
+    </div>
+  </div>
 
+  <br></br>
 
+  <div class="ifeedDocList"
+       columnes="dc.title|Titel|left|100"
+       fontSize="auto"
+       defaultsortcolumn="dc.title"
+       defaultsortorder="asc"
+       showTableHeader="yes"
+       linkOriginalDoc="no"
+       limit="0"
+       hiderightcolumn="yes"
+       feedid="#{iFeedModelBean.toSerializedText()}">
+  </div>
+  <noscript>
+    <iframe src='http://portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc' id='iframenoscript'
+            name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
+    </iframe>
+  </noscript>
+  <script type="text/javascript"
+          src="http://portalen-test.vgregion.se/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js"></script>
 </ui:composition>

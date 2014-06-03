@@ -4,164 +4,209 @@
                 xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:aui="http://liferay.com/faces/aui"
-                xmlns:portlet="http://java.sun.com/portlet_2_0"  >
+                xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-    <p:messages id="error-messagess"/>
+  <p:messages id="error-messagess"/>
 
-    <div class="ifeed-columns-left">
-        <h:outputLabel  value="Titel:">
+  <div class="ifeed-columns-left">
+    <h:outputLabel value="Titel:">
 
-        </h:outputLabel>
-        <p:inputText id="editTitle" name="title" value="#{iFeedModelBean.name}">
-        </p:inputText>
-        <h:outputLabel  value="Beskrivning:"></h:outputLabel>
-        <div class="ifeed-text-field">
-            <p:inputTextarea autoResize="false"  value="#{iFeedModelBean.description}" maxlength="1000"/>
-        </div>
-
-
-    </div>
-    <div class="ifeed-columns-right">
-
-        <h:outputLabel style="display: inline;" value="Länka till orginaldokument i html-vyn:"></h:outputLabel>
-        <!--<h:selectBooleanCheckbox value="#m{iFeedModelBean.linkNativeDocument}" /><br></br>
-        <br></br>-->
-        <p:selectBooleanButton id="booleanButton" value="#{iFeedModelBean.linkNativeDocument}" onLabel="Ja" offLabel="Nej" style="width:60px" />
-        <br></br>
-        <h:outputLabel  value="Lägg till administratör:"></h:outputLabel>
-        <div class="autocomplete">
-            <p:autoComplete id="createOwnershipInputSimple"
-                            value="#{iFeedModelBean.newOwnershipNames}"
-                            completeMethod="#{editIFeedBackingBean.completeUserName}"
-                            forceSelection="true"
-                            multiple="true"/>
-        </div>
-
-        <br></br>
-        <h:outputLabel  value="Tillagda filter:"></h:outputLabel>
-        <div class="autocomplete">
-            <p:autoComplete id="createFilter"
-                            value="#{iFeedModelBean.newOwnershipNames}"
-                            completeMethod="#{editIFeedBackingBean.completeUserName}"
-                            forceSelection="true"
-                            multiple="true"
-                            dropdown="true"/>
-        </div>
-        <div class="vgr-fieldset">
-            <p:fieldset legend="Lägg till ett filter" toggleable="true" collapsed="true" toggleSpeed="500">
-
-                <div class="border"  >
-
-                    <div class="vgr-accordion">
-                        <p:accordionPanel activeIndex="-2"  multiple="true" value="#{iFeedBackingBean.fieldInfs}" var="fieldInf" dynamic="true" id="two">
-
-                            <p:tab title="#{fieldInf.name}" id="three">
-                                <h:panelGrid columns="2" cellpadding="10" id="four">
-                                    <p:dataTable id="five" var="child" value="#{fieldInf.children}" >
-
-                                        <p:column>
-                                            <p:commandLink styleClass="link-button-help" update=":ifeed_view" ajax="true" async="true"/>
-                                        </p:column>
-
-                                        <p:column>
-                                            <p:commandLink styleClass="link-button-add"  id="add_filter_btn" value="" type="button"></p:commandLink>
-                                            <p:overlayPanel appendToBody="true" id="filter_panel" for="add_filter_btn" hideEffect="fade" dynamic="true">
-                                                <aui:fieldset  column="true">
-
-                                                    <aui:field>
-                                                        Skriv något: <p:inputText></p:inputText>
-                                                    </aui:field>
-                                                    <aui:field>
-                                                        <div class="ifeed-buttons">
-                                                            <p:commandLink styleClass="rp-link-button rp-link-button-alt"  id="add_filter" value="Lägg till" />
-                                                        </div>
-                                                    </aui:field>
-
-                                                </aui:fieldset>
-
-                                            </p:overlayPanel>
-                                        </p:column>
-
-                                        <p:column >
-                                            <h:outputText value="#{child.name}" />
-                                        </p:column>
-
-                                    </p:dataTable>
-                                </h:panelGrid>
-                            </p:tab>
-
-                        </p:accordionPanel>
-                    </div>
-                </div>
-            </p:fieldset>
-        </div>
+    </h:outputLabel>
+    <p:inputText id="editTitle" name="title" value="#{iFeedModelBean.name}">
+    </p:inputText>
+    <h:outputLabel value="Beskrivning:"></h:outputLabel>
+    <div class="ifeed-text-field">
+      <p:inputTextarea autoResize="false" value="#{iFeedModelBean.description}" maxlength="1000"/>
     </div>
 
 
-    <!--  <p:dataList value="#m{iFeedModelBean.getOwnershipList()}" var="item" type="ordered" id="ownershipList">
-          <f:facet name="header">
-              Basic
-          </f:facet>
-          #m{item.name}
-          <p:commandLink styleClass="delete-link"  actionListener="#m{iFeedModelBean.ownerships.remove(item)}" update="ownershipList" />
-      </p:dataList>-->
+  </div>
+  <div class="ifeed-columns-right">
 
-    <aui:button-row >
-        <div class="ifeed-buttons">
-            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
-                           ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}" >
-            </p:commandLink>
+    <h:outputLabel style="display: inline;" value="Länka till orginaldokument i html-vyn:"></h:outputLabel>
+    <!--<h:selectBooleanCheckbox value="#m{iFeedModelBean.linkNativeDocument}" /><br></br>
+    <br></br>-->
+    <p:selectBooleanButton id="booleanButton" value="#{iFeedModelBean.linkNativeDocument}" onLabel="Ja" offLabel="Nej"
+                           style="width:60px"/>
+    <br></br>
+    <h:outputLabel value="Lägg till administratör:"></h:outputLabel>
+    <div class="autocomplete">
+      <p:autoComplete id="createOwnershipInputSimple"
+                      value="#{iFeedModelBean.newOwnershipNames}"
+                      completeMethod="#{editIFeedBackingBean.completeUserName}"
+                      forceSelection="true"
+                      multiple="true"/>
+    </div>
 
-            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
-                           ajax="true" async="true" actionListener="#{editIFeedBackingBean.update}">
-            </p:commandLink>
-        </div>
-    </aui:button-row>
 
-    <!--  <p:autoComplete id="createOwnershipInput"
-                      value="#m{editIFeedBackingBean.newOwnershipName}"
-                      completeMethod="#m{editIFeedBackingBean.completeUser}"
-                      var="person"
-                      itemLabel="#m{person.getNiceName()}"
-                      itemValue="#m{person}"
-                      forceSelection="true">
-          <f:facet name="itemtip">
-              <h:panelGrid columns="2" cellpadding="2">
-                  <h:outputText value="Förnamn:" />
-                  <h:outputText value="#m{person.firstName}" />
-                  <h:outputText value="Efternamn:" />
-                  <h:outputText value="#m{person.lastName}" />
-              </h:panelGrid>
-          </f:facet>
-      </p:autoComplete>-->
 
-    <!-- <p:commandLink value="Lägg till" styleClass="rp-link-button rp-link-button-alt" actionListener="#m{editIFeedBackingBean.addOwnership()}" />-->
+    <p:autoComplete id="adminInput"
+                    value="#{iFeedModelBean.userId}"
+                    completeMethod="#{editIFeedBackingBean.completeUserName}"
+                    forceSelection="true"
+                    update="ownerships"/>
+
+    <div class="autocomplete" id="ownerships">
+
+  <span>
+    <h:outputText value="Administratörer: "/>
+    <p:autoComplete id="addAdminInput"
+                    value="#{editIFeedBackingBean.newOwnershipName}"
+                    completeMethod="#{editIFeedBackingBean.completeUserName}"
+                    forceSelection="true"
+                    multiple="true"/>
+                    update="ownerships"/>
+
+    <p:commandLink styleClass="rp-link-buttonVV rp-link-button-altVV" value="+" update=":ifeed_view"
+                   ajax="true" async="true" actionListener="#{editIFeedBackingBean.addNewOwnershipName}">
+    </p:commandLink>
+
+  </span>
+
+      <ui:repeat value="#{editIFeedBackingBean.asList(iFeedModelBean.ownerships)}" var="o">
+
+        <p:commandLink styleClass="rp-link-buttonVV" value="#{o.userId} [x]" update=":ifeed_view"
+                       ajax="true" async="true" actionListener="#{editIFeedBackingBean.removeOwnership(o)}">
+        </p:commandLink>
+
+      </ui:repeat>
+
+
+    </div>
+
+
+
 
     <br></br>
-
-    <h2>Min träfflista</h2>
-
-    <div class="ifeed-table">
-        <p:dataTable
-                id="ifeedFilterTable"
-                var="iFeed"
-                value="#{iFeedBackingBean.iFeedModelBeans}"
-                widgetVar="ifeed_result_table"
-                emptyMessage="Inga iFeeds hittades">
-
-            <p:column id="infoColumn">
-                <p:commandLink styleClass="link-button-help"></p:commandLink>
-            </p:column>
-
-            <p:column id="titleColumn" headerText="Namn">
-                <h:outputText value="#{iFeed.name}" />
-            </p:column>
-
-            <p:column id="dateIdColumn" headerText="Ägare ändring">
-                <h:outputText value="#{iFeed.ownershipUserIds}" />
-            </p:column>
-
-        </p:dataTable>
+    <h:outputLabel value="Tillagda filter:"></h:outputLabel>
+    <div class="autocomplete">
+      <p:autoComplete id="createFilter"
+                      value="#{iFeedModelBean.newOwnershipNames}"
+                      completeMethod="#{editIFeedBackingBean.completeUserName}"
+                      forceSelection="true"
+                      multiple="true"
+                      dropdown="true"/>
     </div>
+    <div class="vgr-fieldset">
+      <p:fieldset legend="Lägg till ett filter" toggleable="true" collapsed="true" toggleSpeed="500">
+
+        <div class="border">
+
+          <div class="vgr-accordion">
+            <p:accordionPanel activeIndex="-2" multiple="true" value="#{iFeedBackingBean.fieldInfs}" var="fieldInf"
+                              dynamic="true" id="two">
+
+              <p:tab title="#{fieldInf.name}" id="three">
+                <h:panelGrid columns="2" cellpadding="10" id="four">
+                  <p:dataTable id="five" var="child" value="#{fieldInf.children}">
+
+                    <p:column>
+                      <p:commandLink styleClass="link-button-help" update=":ifeed_view" ajax="true" async="true"/>
+                    </p:column>
+
+                    <p:column>
+                      <p:commandLink styleClass="link-button-add" id="add_filter_btn" value=""
+                                     type="button"></p:commandLink>
+                      <p:overlayPanel appendToBody="true" id="filter_panel" for="add_filter_btn" hideEffect="fade"
+                                      dynamic="true">
+                        <aui:fieldset column="true">
+
+                          <aui:field>
+                            Skriv något:
+                            <p:inputText></p:inputText>
+                          </aui:field>
+                          <aui:field>
+                            <div class="ifeed-buttons">
+                              <p:commandLink styleClass="rp-link-button rp-link-button-alt" id="add_filter"
+                                             value="Lägg till"/>
+                            </div>
+                          </aui:field>
+
+                        </aui:fieldset>
+
+                      </p:overlayPanel>
+                    </p:column>
+
+                    <p:column>
+                      <h:outputText value="#{child.name}"/>
+                    </p:column>
+
+                  </p:dataTable>
+                </h:panelGrid>
+              </p:tab>
+
+            </p:accordionPanel>
+          </div>
+        </div>
+      </p:fieldset>
+    </div>
+  </div>
+
+
+  <!--  <p:dataList value="#m{iFeedModelBean.getOwnershipList()}" var="item" type="ordered" id="ownershipList">
+        <f:facet name="header">
+            Basic
+        </f:facet>
+        #m{item.name}
+        <p:commandLink styleClass="delete-link"  actionListener="#m{iFeedModelBean.ownerships.remove(item)}" update="ownershipList" />
+    </p:dataList>-->
+
+  <aui:button-row>
+    <div class="ifeed-buttons">
+      <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
+                     ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
+      </p:commandLink>
+
+      <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
+                     ajax="true" async="true" actionListener="#{editIFeedBackingBean.update}">
+      </p:commandLink>
+    </div>
+  </aui:button-row>
+
+  <!--  <p:autoComplete id="createOwnershipInput"
+                    value="#m{editIFeedBackingBean.newOwnershipName}"
+                    completeMethod="#m{editIFeedBackingBean.completeUser}"
+                    var="person"
+                    itemLabel="#m{person.getNiceName()}"
+                    itemValue="#m{person}"
+                    forceSelection="true">
+        <f:facet name="itemtip">
+            <h:panelGrid columns="2" cellpadding="2">
+                <h:outputText value="Förnamn:" />
+                <h:outputText value="#m{person.firstName}" />
+                <h:outputText value="Efternamn:" />
+                <h:outputText value="#m{person.lastName}" />
+            </h:panelGrid>
+        </f:facet>
+    </p:autoComplete>-->
+
+  <!-- <p:commandLink value="Lägg till" styleClass="rp-link-button rp-link-button-alt" actionListener="#m{editIFeedBackingBean.addOwnership()}" />-->
+
+  <br></br>
+
+  <h2>Min träfflista</h2>
+
+  <div class="ifeed-table">
+    <p:dataTable
+            id="ifeedFilterTable"
+            var="iFeed"
+            value="#{iFeedBackingBean.iFeedModelBeans}"
+            widgetVar="ifeed_result_table"
+            emptyMessage="Inga iFeeds hittades">
+
+      <p:column id="infoColumn">
+        <p:commandLink styleClass="link-button-help"></p:commandLink>
+      </p:column>
+
+      <p:column id="titleColumn" headerText="Namn">
+        <h:outputText value="#{iFeed.name}"/>
+      </p:column>
+
+      <p:column id="dateIdColumn" headerText="Ägare ändring">
+        <h:outputText value="#{iFeed.ownershipUserIds}"/>
+      </p:column>
+
+    </p:dataTable>
+  </div>
 
 </ui:composition>

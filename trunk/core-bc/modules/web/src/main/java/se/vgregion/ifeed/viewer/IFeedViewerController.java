@@ -6,8 +6,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.BeanMap;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +76,16 @@ public class IFeedViewerController {
             }
         }
         return true;
+    }
+
+    @RequestMapping(value = "/meta")
+    public String getIFeedByParams(@RequestParam(value = "instance") String instance, Model model,
+                           @RequestParam(value = "by", required = false) String sortField,
+                           @RequestParam(value = "dir", required = false) String sortDirection,
+                           @RequestParam(value = "startBy", required = false) Integer startBy,
+                           @RequestParam(value = "endBy", required = false) Integer endBy,
+                           @RequestParam(value = "fromPage", required = false) String fromPage) {
+        return getIFeed(instance, model, sortField, sortDirection, startBy, endBy, fromPage);
     }
 
     @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata")

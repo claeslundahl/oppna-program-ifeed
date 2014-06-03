@@ -122,8 +122,19 @@ public class Util {
                 + "&dir=" + tableDef.getDefaultSortOrder()
                 + "&startBy=" + startBy + "&endBy=" + endBy;*/
 
+        /*
         String url = "/iFeed-web/documentlists/"
                 + tableDef.getFeedId() + "/metadata.json?by="
+                + tableDef.getDefaultSortColumn()
+                + "&dir=" + tableDef.getDefaultSortOrder()
+                + "&startBy=" + startBy + "&endBy=" + endBy + "&fromPage="
+                + UriUtils.encode(Window.Location.getProtocol() + "//"
+                + Window.Location.getHostName() + ":"
+                + Window.Location.getPort()
+                + Window.Location.getPath());*/
+
+        String url = "/iFeed-web/meta.json?instance="
+                + tableDef.getFeedId() + "&by="
                 + tableDef.getDefaultSortColumn()
                 + "&dir=" + tableDef.getDefaultSortOrder()
                 + "&startBy=" + startBy + "&endBy=" + endBy + "&fromPage="
@@ -179,13 +190,17 @@ public class Util {
                 if (host == null || "".equals(host.trim())) {
                     host = sibling.getInnerHTML();
                 }
-                host = host.substring(host.indexOf("src='") + 5, host.indexOf("/iFeed-web/"));
+                host = host.substring(host.indexOf("src=") + 5, host.indexOf("/iFeed-web/"));
                 url = host + url;
+            }
+            if (!url.startsWith("http://")) {
+                url = "http://" + url;
             }
         }
         if (url == null || "".equals(url)) {
             url = "http://ifeed.vgregion.se";
         }
+        log("using url " + url);
         return url;
     }
 }

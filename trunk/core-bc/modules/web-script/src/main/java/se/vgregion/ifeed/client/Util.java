@@ -26,16 +26,11 @@ public class Util {
             Arrays.asList("dc.date.issued", "dc.date.validfrom", "dc.date.validto")
     );
 
-    // "2014-03-11T10:21:38Z"
-    //static DateTimeFormat sdf = DateTimeFormat.getFormat("yyyy-MM-dd");
-
     static String currentTextDate;
 
     static {
         currentTextDate = sdf.format(new Date());
     }
-
-    static String validToKey = "dc.date.validto", validFromKey = "dc.date.validfrom";
 
     /**
      * Formats a time stamp to something more friendly to the swedish-reading user.
@@ -169,9 +164,7 @@ public class Util {
                 url = host + url;
             }
         }*/
-
         url = getIfeedHome(tableDef) + url;
-
         return url;
     }
 
@@ -179,6 +172,7 @@ public class Util {
         String url = "";
         Element element = tableDef.getElement();
         com.google.gwt.dom.client.Element sibling = element.getNextSiblingElement();
+
         if (sibling != null && sibling.getTagName().equalsIgnoreCase("noscript")) {
             com.google.gwt.dom.client.Element iframe = sibling.getFirstChildElement();
             if (iframe != null) {
@@ -197,10 +191,13 @@ public class Util {
                 url = "http://" + url;
             }
         }
+
         if (url == null || "".equals(url)) {
             url = "http://ifeed.vgregion.se";
+            // url = "http://vgas0565.vgregion.se:8081";
         }
-        log("using url " + url);
+        //log("using url " + url);
         return url;
     }
+
 }

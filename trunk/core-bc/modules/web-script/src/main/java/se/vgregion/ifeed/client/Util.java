@@ -173,7 +173,7 @@ public class Util {
         Element element = tableDef.getElement();
         com.google.gwt.dom.client.Element sibling = element.getNextSiblingElement();
 
-        if (sibling != null && sibling.getTagName().equalsIgnoreCase("noscript")) {
+        /*if (sibling != null && sibling.getTagName().equalsIgnoreCase("noscript")) {
             com.google.gwt.dom.client.Element iframe = sibling.getFirstChildElement();
             if (iframe != null) {
                 String host = iframe.getAttribute("src");
@@ -190,7 +190,7 @@ public class Util {
             if (!url.startsWith("http://")) {
                 url = "http://" + url;
             }
-        }
+        }*/
 
         if (url == null || "".equals(url)) {
             url = "http://ifeed.vgregion.se";

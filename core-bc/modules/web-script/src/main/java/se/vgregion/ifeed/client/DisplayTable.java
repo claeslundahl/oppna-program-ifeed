@@ -141,14 +141,17 @@ public class DisplayTable extends Composite {
                     data.get(tableDef.isLinkOriginalDoc() ? "dc.identifier.native" : "url")
             );
             anchor.setTarget("_blank");
-            impl.setWidget(row, c++, anchor);
+            impl.setWidget(row, c, anchor);
             impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-link-td");
+            impl.getFlexCellFormatter().addStyleName(row, c, first.getName());
+            c++;
 
             for (int i = 1; i < columns.size(); i++) {
                 ColumnDef cd = columns.get(i);
                 String text = Util.formatValueForDisplay(data, cd.getName());
                 impl.setText(row, c, text);
                 impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-td");
+                impl.getFlexCellFormatter().addStyleName(row, c, cd.getName());
                 c++;
             }
             row++;

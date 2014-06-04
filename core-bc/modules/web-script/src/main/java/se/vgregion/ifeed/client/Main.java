@@ -78,10 +78,12 @@ public class Main implements EntryPoint {
             if (centercolinner != null) {
                 centercolinner.getStyle().setWidth(660, Style.Unit.PX);
             }
-            List<Element> docLists = ElementUtil.findByCssClass(RootPanel.getBodyElement(), "doc-list");
-            for (Element docList : docLists) {
+
+            // From the 'beginning', in the original js-script, this where done:
+            //List<Element> docLists = ElementUtil.findByCssClass(RootPanel.getBodyElement(), "doc-list");
+            /*for (Element docList : docLists) {
                 docList.getStyle().setWidth(100, Style.Unit.PC);
-            }
+            }*/
         }
     }
 

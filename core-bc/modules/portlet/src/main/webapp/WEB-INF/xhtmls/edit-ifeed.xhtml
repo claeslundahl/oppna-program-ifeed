@@ -29,6 +29,7 @@
     <p:selectBooleanButton id="booleanButton" value="#{iFeedModelBean.linkNativeDocument}" onLabel="Ja" offLabel="Nej"
                            style="width:60px"/>
     <br></br>
+<!--
     <h:outputLabel value="Lägg till administratör:"></h:outputLabel>
     <div class="autocomplete">
       <p:autoComplete id="createOwnershipInputSimple"
@@ -37,25 +38,29 @@
                       forceSelection="true"
                       multiple="true"/>
     </div>
+-->
 
 
-
-    <p:autoComplete id="adminInput"
+    <h:outputLabel value="Ägare:"></h:outputLabel>
+<!--
+    <p:autoComplete id="ownerInput"
                     value="#{iFeedModelBean.userId}"
                     completeMethod="#{editIFeedBackingBean.completeUserName}"
                     forceSelection="true"
                     update="ownerships"/>
+-->
 
     <div class="autocomplete" id="ownerships">
 
   <span>
     <h:outputText value="Administratörer: "/>
+<!--
     <p:autoComplete id="addAdminInput"
                     value="#{editIFeedBackingBean.newOwnershipName}"
                     completeMethod="#{editIFeedBackingBean.completeUserName}"
                     forceSelection="true"
-                    multiple="true"/>
                     update="ownerships"/>
+-->
 
     <p:commandLink styleClass="rp-link-buttonVV rp-link-button-altVV" value="+" update=":ifeed_view"
                    ajax="true" async="true" actionListener="#{editIFeedBackingBean.addNewOwnershipName}">
@@ -79,6 +84,7 @@
 
     <br></br>
     <h:outputLabel value="Tillagda filter:"></h:outputLabel>
+<!--
     <div class="autocomplete">
       <p:autoComplete id="createFilter"
                       value="#{iFeedModelBean.newOwnershipNames}"
@@ -87,6 +93,7 @@
                       multiple="true"
                       dropdown="true"/>
     </div>
+-->
     <div class="vgr-fieldset">
       <p:fieldset legend="Lägg till ett filter" toggleable="true" collapsed="true" toggleSpeed="500">
 

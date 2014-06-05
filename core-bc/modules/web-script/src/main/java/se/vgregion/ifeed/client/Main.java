@@ -104,7 +104,7 @@ public class Main implements EntryPoint {
         panel.add(new Image(images.loading()));
         JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
 
-        requestBuilder.requestObject(Util.getServiceUrl(tableDef, 0, 100), new AsyncCallback<JsArray<JavaScriptObject>>() {
+        requestBuilder.requestObject(Util.getServiceUrl(tableDef, 0, batchSize), new AsyncCallback<JsArray<JavaScriptObject>>() {
 
             @Override
             public void onFailure(Throwable caught) {

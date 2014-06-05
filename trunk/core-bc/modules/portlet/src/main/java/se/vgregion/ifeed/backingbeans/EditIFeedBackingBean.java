@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ifeed.types.Ownership;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
@@ -46,6 +47,25 @@ public class EditIFeedBackingBean implements Serializable {
     @Value("#{navigationModelBean}")
     private NavigationModelBean navigationModelBean;
     private String newOwnershipName;
+
+    @Value("#{filterModelBean}")
+    private FilterModelBean filterModelBean;
+
+    public FilterModelBean getFilterModelBean() {
+        return filterModelBean;
+    }
+
+    public void setFilterModelBean(FilterModelBean filterModelBean) {
+        this.filterModelBean = filterModelBean;
+    }
+
+    public IFeedService getiFeedService() {
+        return iFeedService;
+    }
+
+    public void setiFeedService(IFeedService iFeedService) {
+        this.iFeedService = iFeedService;
+    }
 
     public EditIFeedBackingBean() {
     }
@@ -254,5 +274,17 @@ public class EditIFeedBackingBean implements Serializable {
     public void setNavigationModelBean(NavigationModelBean navigationModelBean) {
         this.navigationModelBean = navigationModelBean;
     }
+
+
+    public void addFilter() {
+        if (filterModelBean.getFilterValue() == null || "".equals(filterModelBean.getFilterValue().trim())) {
+            return;
+        }
+        IFeedFilter filter = new IFeedFilter(filterModelBean.getFilterValue(), filterModelBean.getFieldInf().getName());
+        iFeedModelBean.addFilter(filter);
+        filterModelBean.setFilterValue(null);
+        filterModelBean.setFieldInf(null);
+    }
+
 
 }

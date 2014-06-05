@@ -9,21 +9,20 @@
 <h:head>Filter</h:head>
 
 
-    <h:form>
-        <aui:fieldset  column="true">
+  <h:form>
+    <p:dialog  header="Basic Dialog" widgetVar="filterDialog" minHeight="40">
+      <h:form id="dialogForm">
+        <p:inputText rendered="#{filterModelBean.fieldInf.type != 'd:date'}" value="#{filterModelBean.filterValue}"  id="filtedrText" />
 
-            <aui:field>
-                Filtertitel:<br></br>
-                <p:inputText></p:inputText>
-            </aui:field>
-            <aui:field>
-                <div class="ifeed-buttons">
-                    <p:commandLink styleClass="rp-link-button rp-link-button-alt"  id="add_filter" value="Lägg till" />
-                </div>
-            </aui:field>
-
-        </aui:fieldset>
-    </h:form>
+        <div>
+          <p:calendar rendered="#{filterModelBean.fieldInf.type eq 'd:date'}" id="inlineDate" mode="inline" locale="sv_SE"/>
+        </div>
+        <p:commandLink styleClass="rp-link-button rp-link-button-alt" id="addFidlterToDB" value="Lägg till"
+                       onclick="filterDialog.hide();" action="#{editIFeedBackingBean.addFilter()}" >
+        </p:commandLink>
+      </h:form>
+    </p:dialog>
+  </h:form>
 
 
 </ui:composition>

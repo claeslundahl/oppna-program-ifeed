@@ -54,6 +54,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     }
 
     @Override
+    public List<IFeed> getIFeedsByFilter(Filter filter) {
+        List<Object> values = new ArrayList<Object>();
+        String jpql = filter.toJpqlQuery(values);
+        return (List<IFeed>) iFeedRepo.findByQuery(jpql, values.toArray());
+    }
+
+    @Override
     public final IFeed getIFeed(final Long id) {
         return iFeedRepo.find(id);
     }

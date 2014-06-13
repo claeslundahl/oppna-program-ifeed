@@ -47,6 +47,9 @@ public class EntryPopupPanel extends PopupPanel {
         plate.getFlexCellFormatter().getElement(row++,1).getStyle().setWidth(70, Style.Unit.PC);
         plate.setText(row, 0, "Publicerat för enhet:");
         plate.setText(row++, 1, Util.formatValueForDisplay(entry, "dc.publisher.forunit"));
+        //dc.creator.function
+        plate.setText(row, 0, "Innehållsansvarig:");
+        plate.setText(row++, 1, Util.formatValueForDisplay(entry, "dc.creator.document")); //dc.creator.function DC.creator.document
         plate.setText(row, 0, "Godkänt av:");
         plate.setText(row++, 1, Util.formatValueForDisplay(entry, "dc.contributor.acceptedby.role"));
         plate.setText(row, 0, "Typ av dokument:");

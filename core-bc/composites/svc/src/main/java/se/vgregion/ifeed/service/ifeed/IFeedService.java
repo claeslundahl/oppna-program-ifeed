@@ -16,6 +16,8 @@ public interface IFeedService {
 
     List<IFeed> getUserIFeeds(String userId);
 
+    List<IFeed> getIFeedsByFilter(Filter filter);
+
     IFeed getIFeed(Long id);
 
     IFeed addIFeed(IFeed iFeed);

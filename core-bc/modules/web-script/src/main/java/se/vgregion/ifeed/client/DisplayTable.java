@@ -72,6 +72,15 @@ public class DisplayTable extends Composite {
         addTextAlignmentToColumns();
     }
 
+    public void displayAjaxLoading() {
+        Image image = new Image(images.ajaxLoader());
+        impl.setWidget(0, 0, image);
+    }
+
+    public void hideAjaxLoading() {
+        impl.setWidget(0, 0, new SimplePanel());
+    }
+
     private void ifMetadataSaysSoTryToApplyFontSize() {
         if (!tableDef.getFontSize().equals("inherit") && !tableDef.getFontSize().equals("auto")) {
             try {
@@ -84,9 +93,10 @@ public class DisplayTable extends Composite {
     }
 
     private int ifMetadataSaysSoRenderColumnHeadersAndReturnRow(int row) {
-        if (!tableDef.isShowTableHeader()) {
+        if (row > 0 || !tableDef.isShowTableHeader()) {
             return row;
         }
+
         impl.setText(0, 0, " ");
         int c = 1;
         for (final ColumnDef cd : tableDef.getColumnDefs()) {
@@ -143,7 +153,7 @@ public class DisplayTable extends Composite {
             anchor.setTarget("_blank");
             impl.setWidget(row, c, anchor);
             impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-link-td");
-            impl.getFlexCellFormatter().addStyleName(row, c, first.getName());
+            impl.getFlexCellFormatter().addStyleName(row, c, nameToCssClass(first.getName()));
             c++;
 
             for (int i = 1; i < columns.size(); i++) {
@@ -151,11 +161,18 @@ public class DisplayTable extends Composite {
                 String text = Util.formatValueForDisplay(data, cd.getName());
                 impl.setText(row, c, text);
                 impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-td");
-                impl.getFlexCellFormatter().addStyleName(row, c, cd.getName());
+                impl.getFlexCellFormatter().addStyleName(row, c, nameToCssClass(cd.getName()));
                 c++;
             }
             row++;
         }
+    }
+
+    private String nameToCssClass(String name) {
+        if (isBlanc(name)) {
+            return "";
+        }
+        return "ifeed-field-" + name.replace('.', '-');
     }
 
     private void addColumnWidth() {

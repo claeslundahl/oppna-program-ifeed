@@ -57,7 +57,7 @@
         <p:accordionPanel activeIndex="null"  multiple="true" value="#{iFeedBackingBean.fieldInfs}" var="fieldInf" dynamic="true" id="filterAccordion">
           <p:tab title="#{fieldInf.name}" id="filterTab">
 
-            <p:dataTable id="filterTable" var="child" value="#{fieldInf.children}" >
+            <p:dataTable  id="filterTable" var="child" value="#{fieldInf.children}" >
 
               <p:column style="width: 10px;">
                 <p:commandLink styleClass="link-button-help" update=":ifeed_view" ajax="true" async="true" />
@@ -68,23 +68,28 @@
               <p:column style="width: 10px;">
 
                 <p:commandLink styleClass="link-button-add" actionListener="#{filterModelBean.setFieldInf(child)}"
-                                id="addFilterButton" value="" type="button"/>
+                               id="addFilterButton" value="" type="button"/>
 
-                     <p:overlayPanel  appendToBody="false"
-                                      id="filterPanel2"
-                                      at="right bottom"
-                                      for="addFilterButton"
-                                      hideEffect="fade"
-                                      dynamic="true">
+                <p:overlayPanel
+                        appendToBody="false"
+                        id="filterPanel2"
+                        at="right bottom"
+                        for="addFilterButton"
+                        hideEffect="fade"
+                        dynamic="true">
 
-                         <p:inputText value="#{filterModelBean.filterValue}"  id="filterText" />
+                  <div> #{child.name}: </div>
+                  <p:inputText rendered="#{child.getType() != 'd:date'}" value="#{filterModelBean.newFilterValue}"  id="filterText" />
 
-                         <p:commandLink styleClass="rp-link-button rp-link-button-alt" id="addFilterToDB" value="Lägg till"
-                                        action="#{editIFeedBackingBean.addFilter()}" >
-                         </p:commandLink>
-                     </p:overlayPanel>
+                  <p:calendar rendered="#{child.getType() eq 'd:date'}" id="inlineDate" mode="inline" locale="sv_SE"/>
+                  <div>
+                    <p:commandLink styleClass="rp-link-button rp-link-button-alt" id="addFilterToDB" value="Lägg till"
+                                   ajax="false" actionListener="#{editIFeedBackingBean.addFilter()}" oncomplete="overlay.hide();">
+                    </p:commandLink>
+                  </div>
+                </p:overlayPanel>
               </p:column>
-              <!--rendered="#{child.getType() != 'd:date'}"-->
+
               <p:column >
                 <h:outputText value="#{child.name}" />
               </p:column>
@@ -97,9 +102,6 @@
       </div>
     </p:fieldset>
   </div>
-
-
-
 
 
   <h2>Min träfflista</h2>
@@ -129,7 +131,7 @@
 
 
 
-  <ui:include src="add-filter-dialog.xhtml"></ui:include>
+  <!-- <ui:include src="add-filter-dialog.xhtml"></ui:include>-->
 
 
   <!-- Primefaces translation to Swedish in the calendar-->

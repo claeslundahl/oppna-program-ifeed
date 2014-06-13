@@ -34,7 +34,7 @@ public class Main implements EntryPoint {
 
     private static List<Element> ifeedDocLists;
 
-    private static int batchSize = 300;
+    private static int batchSize = 200;
 
     /**
      * Here the execution of the code starts.
@@ -49,6 +49,7 @@ public class Main implements EntryPoint {
     }
 
     private void fetchNext() {
+        // Util.log("fetchNext start " + ifeedDocLists.size());
         if (ifeedDocLists.isEmpty()) {
             return;
         }
@@ -57,6 +58,7 @@ public class Main implements EntryPoint {
         hideRightEpiServerColumn(tableDef);
         tableDefs.add(tableDef);
         fetch(tableDef);
+        //Util.log("fetchNext end " + ifeedDocLists.size());
     }
 
     private void hideRightEpiServerColumn(TableDef tableDef) {
@@ -70,14 +72,14 @@ public class Main implements EntryPoint {
         }
          */
         if (tableDef.isHideRightColumn()) {
-            Element rightcol = DOM.getElementById("");
+            Element rightcol = DOM.getElementById("rightcol");
             if (rightcol != null) {
                 rightcol.getStyle().setDisplay(Style.Display.NONE);
             }
             Element centercolinner = DOM.getElementById("centercolinner");
-            if (centercolinner != null) {
+            /*if (centercolinner != null) {
                 centercolinner.getStyle().setWidth(660, Style.Unit.PX);
-            }
+            }*/
 
             // From the 'beginning', in the original js-script, this where done:
             //List<Element> docLists = ElementUtil.findByCssClass(RootPanel.getBodyElement(), "doc-list");
@@ -86,9 +88,6 @@ public class Main implements EntryPoint {
             }*/
         }
     }
-
-
-
 
     private void fetch(final TableDef tableDef) {
         try {
@@ -104,6 +103,8 @@ public class Main implements EntryPoint {
         panel.add(new Image(images.loading()));
         JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
 
+        //Util.log("First fetch for feed " + tableDef.getFeedId() + ", batchSize " + batchSize);
+
         requestBuilder.requestObject(Util.getServiceUrl(tableDef, 0, batchSize), new AsyncCallback<JsArray<JavaScriptObject>>() {
 
             @Override
@@ -114,18 +115,19 @@ public class Main implements EntryPoint {
 
             @Override
             public void onSuccess(JsArray<JavaScriptObject> response) {
-                List<Entry> entries = new ArrayList<Entry>();
-                for (int i = 0; i < response.length(); i++) {
-                    Entry entry = response.get(i).cast();
-                    entries.add(entry);
+                List<Entry> entries = toEntries(response);
+                boolean areThereMoore;
+                if (whenOverFetchLimitThenTruncate(tableDef, entries)) {
+                    areThereMoore = false;
+                } else {
+                    areThereMoore = areThereMooreToFetch(entries);
                 }
 
-                boolean croped = cropDataWhenTooMuch(tableDef, entries);
                 panel.clear();
                 DisplayTable displayTable = new DisplayTable(tableDef, entries);
                 panel.add(displayTable);
 
-                if (!croped && entries.size() == batchSize) {
+                if (areThereMoore) {
                     fetch(tableDef, displayTable, batchSize);
                 } else {
                     fetchNext();
@@ -135,7 +137,9 @@ public class Main implements EntryPoint {
         });
     }
 
-    private boolean cropDataWhenTooMuch(TableDef tableDef, List<Entry> entries) {
+
+    private boolean areThereMooreToFetch(List<Entry> entries) {
+        /*
         if (tableDef.getLimit() == 0) {
             return false;
         }
@@ -143,43 +147,64 @@ public class Main implements EntryPoint {
             entries.removeAll(entries.subList(tableDef.getLimit(), entries.size()));
             return true;
         }
-        return false;
+        return false;*/
+        //Util.log("entries.size(): " + entries.size() + " batchSize: " + batchSize);
+        return entries.size() == batchSize;
     }
 
     private void fetch(final TableDef tableDef, final DisplayTable displayTable, final int startAt) {
         final HTMLPanel panel = HTMLPanel.wrap(tableDef.getElement());
-        //panel.add(new Image(images.loading()));
         JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
-
         final int endAt = startAt + batchSize;
+        //Util.log("endAt " + endAt + " startAt " + startAt + " batchSize " + batchSize);
+        displayTable.displayAjaxLoading();
 
         requestBuilder.requestObject(Util.getServiceUrl(tableDef, startAt, endAt), new AsyncCallback<JsArray<JavaScriptObject>>() {
-
             @Override
             public void onFailure(Throwable caught) {
                 Util.log(caught);
+                displayTable.hideAjaxLoading();
             }
 
             @Override
             public void onSuccess(JsArray<JavaScriptObject> response) {
-                List<Entry> entries = new ArrayList<Entry>();
-                for (int i = 0; i < response.length(); i++) {
-                    Entry entry = response.get(i).cast();
-                    entries.add(entry);
-                }
-
+                List<Entry> entries = toEntries(response);
+                //Util.log("Fetched count " + entries.size());
                 displayTable.getData().addAll(entries);
 
-                if (!cropDataWhenTooMuch(tableDef, displayTable.getData()) && entries.size() == batchSize) {
+                if (!whenOverFetchLimitThenTruncate(tableDef, displayTable.getData()) && areThereMooreToFetch(entries)) {
                     fetch(tableDef, displayTable, endAt);
                 } else {
+                    //Util.log("Stops getting for current feed, " + tableDef.getFeedId() + ", entries.size() " + entries.size());
+                    //Util.log("displayTable.getElement().getChild(1).getChildCount(): " + displayTable.getElement().getChild(1).getChildCount());
                     fetchNext();
                 }
-
                 displayTable.render();
+                displayTable.hideAjaxLoading();
             }
 
         });
+    }
+
+    private List<Entry> toEntries(JsArray<JavaScriptObject> response) {
+        List<Entry> entries = new ArrayList<Entry>();
+        for (int i = 0; i < response.length(); i++) {
+            Entry entry = response.get(i).cast();
+            entries.add(entry);
+        }
+        return entries;
+    }
+
+    private boolean whenOverFetchLimitThenTruncate(TableDef tableDef, List entries) {
+        if (tableDef.getLimit() > 0 && tableDef.getLimit() <= entries.size()) {
+            int limit = tableDef.getLimit();
+            limit = Math.min(limit, entries.size());
+            List retainees = entries.subList(0, limit);
+            entries.retainAll(retainees);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

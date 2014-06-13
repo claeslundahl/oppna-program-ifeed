@@ -43,4 +43,11 @@ public interface Images extends ClientBundle {
     @Source("sortdesc.gif")
     ImageResource sortdesc();
 
+    /**
+     * Depicts something that sorts asc.
+     * @return a resource describing the image.
+     */
+    @Source("ajax-loader.gif")
+    ImageResource ajaxLoader();
+
 }

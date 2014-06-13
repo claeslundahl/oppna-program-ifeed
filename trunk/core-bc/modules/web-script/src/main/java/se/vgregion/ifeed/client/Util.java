@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
 import com.google.gwt.safehtml.shared.UriUtils;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 
@@ -77,7 +78,7 @@ public class Util {
             return false;
         }
         timeStampAsText = timeStampAsText.substring(0, Math.max(Math.min(timeStampAsText.length(), 10), 0));
-        return timeStampAsText.compareTo(currentTextDate) < 0;
+        return timeStampAsText.compareTo(currentTextDate) <= 0;
     }
 
     /**
@@ -192,9 +193,15 @@ public class Util {
             }
         }*/
 
+        Element dataUrl = DOM.getElementById("ifeed-data");
+        if (dataUrl != null) {
+            url = dataUrl.getAttribute("location");
+        }
+
         if (url == null || "".equals(url)) {
             url = "http://ifeed.vgregion.se";
-            // url = "http://vgas0565.vgregion.se:8081";
+            //url = "http://vgas0565.vgregion.se:8081";
+            //url = "http://loocalhost:8081";
         }
         //log("using url " + url);
         return url;

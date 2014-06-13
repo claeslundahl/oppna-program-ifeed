@@ -7,6 +7,17 @@
 <html>
 	<head>
 		<link href="${pageContext.request.contextPath}/resources/style.css" rel="stylesheet" type="text/css">
+
+        <style type="text/css">
+
+            td {
+                border-style: solid;
+                border-width: thin;
+                border-color: gray;
+            }
+
+        </style>
+
 	</head>
 	<body>
 		<table class="doc-list">
@@ -16,7 +27,7 @@
 		    </tr>
 			<c:forEach items="${keys}" var="key">
 				<tr>
-                    <td>${key}</td>
+                    <td><a href="${key}" target="_blank">${key}</a></td>
                     <td>${values[key]}</td>
 				</tr>
 			</c:forEach>

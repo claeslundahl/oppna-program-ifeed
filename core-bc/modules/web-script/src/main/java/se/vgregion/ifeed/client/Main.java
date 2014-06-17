@@ -124,8 +124,10 @@ public class Main implements EntryPoint {
                 }
 
                 panel.clear();
-                DisplayTable displayTable = new DisplayTable(tableDef, entries);
+                //Display displayTable = new Display(tableDef, entries);
+                Display displayTable = new Display(tableDef, new EventedList<Entry>());
                 panel.add(displayTable);
+                displayTable.getData().addAll(entries);
 
                 if (areThereMoore) {
                     fetch(tableDef, displayTable, batchSize);
@@ -152,7 +154,7 @@ public class Main implements EntryPoint {
         return entries.size() == batchSize;
     }
 
-    private void fetch(final TableDef tableDef, final DisplayTable displayTable, final int startAt) {
+    private void fetch(final TableDef tableDef, final Display displayTable, final int startAt) {
         final HTMLPanel panel = HTMLPanel.wrap(tableDef.getElement());
         JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
         final int endAt = startAt + batchSize;
@@ -179,7 +181,7 @@ public class Main implements EntryPoint {
                     //Util.log("displayTable.getElement().getChild(1).getChildCount(): " + displayTable.getElement().getChild(1).getChildCount());
                     fetchNext();
                 }
-                displayTable.render();
+                //displayTable.render();
                 displayTable.hideAjaxLoading();
             }
 

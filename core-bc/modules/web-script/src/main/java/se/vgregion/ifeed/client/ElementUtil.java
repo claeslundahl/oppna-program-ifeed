@@ -73,6 +73,7 @@ public class ElementUtil {
         tableDef.setFeedId(from.getAttribute("feedid"));
         tableDef.setFontSize(from.getAttribute("fontSize"));
         tableDef.setHideRightColumn("yes".equals(from.getAttribute("hiderightcolumn")));
+        tableDef.setLinkOriginalDoc("yes".equals(from.getAttribute("linkoriginaldoc")));
         String limitText = from.getAttribute("limit");
         tableDef.setLimit(limitText == null ? 0 : Integer.parseInt(limitText));
         tableDef.createColumnDefs(from.getAttribute("columnes"));

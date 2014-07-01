@@ -17,6 +17,7 @@ import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.push.IFeedPublisher;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.VgrDepartment;
 
 public class IFeedServiceImplTest {
 
@@ -29,8 +30,8 @@ public class IFeedServiceImplTest {
 	public void setUp() throws Exception {
 		iFeedRepoParam = mock(JpaRepository.class);
 		iFeedPublisher = mock(IFeedPublisher.class);
-
-		service = new IFeedServiceImpl(iFeedRepoParam, iFeedPublisher, fieldsInfParam);
+        JpaRepository<VgrDepartment, Long, Long> departmentRepo = mock(JpaRepository.class);
+        service = new IFeedServiceImpl(iFeedRepoParam, iFeedPublisher, fieldsInfParam, departmentRepo);
 	}
 
 	@Test

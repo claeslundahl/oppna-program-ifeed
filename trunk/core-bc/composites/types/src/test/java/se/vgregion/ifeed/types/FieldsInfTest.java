@@ -18,13 +18,25 @@ public class FieldsInfTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void getFieldInfs() throws IOException {
         FieldsInf fi = new FieldsInf();
         fi.setText(loadFieldsConfigText());
         List<FieldInf> result = fi.getFieldInfs();
         System.out.println(result + " \n\n" + result.size());
         Assert.assertTrue(!result.isEmpty());
+    }
+
+    @Test
+    public void putFieldInfInto() throws IOException {
+        FieldsInf fi = new FieldsInf();
+        fi.setText(loadFieldsConfigText());
+        List<FieldInf> result = fi.getFieldInfs();
+
+        IFeedFilter filter = new IFeedFilter();
+        filter.setFilterKey("DC.title");
+        fi.putFieldInfInto(filter);
+        System.out.println(filter.getFieldInf().getName());
     }
 
     private String loadFieldsConfigText() throws IOException {

@@ -9,27 +9,29 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.push.IFeedPublisher;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.FieldsInf;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
-import se.vgregion.ifeed.types.Ownership;
+import se.vgregion.ifeed.service.solr.SolrFacetUtil;
+import se.vgregion.ifeed.types.*;
 
 public class IFeedServiceImpl implements IFeedService, Serializable {
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
     private JpaRepository<FieldsInf, Long, Long> fieldsInfRepo;
+
+    private JpaRepository<VgrDepartment, Long, Long> departmentRepo;
     private IFeedPublisher iFeedPublisher;
+    private String solrServiceUrl;
 
     public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam, IFeedPublisher iFeedPublisher,
-            JpaRepository<FieldsInf, Long, Long> fieldsInfRepo) {
+                            JpaRepository<FieldsInf, Long, Long> fieldsInfRepo, JpaRepository<VgrDepartment, Long, Long> departmentRepo) {
         iFeedRepo = iFeedRepoParam;
         this.iFeedPublisher = iFeedPublisher;
         this.fieldsInfRepo = fieldsInfRepo;
+        this.departmentRepo = departmentRepo;
     }
 
     public IFeedServiceImpl() {
@@ -42,13 +44,47 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     }
 
     @Override
+    public List<VgrDepartment> getVgrDepartments() {
+        Collection<VgrDepartment> result = departmentRepo.findByQuery("select distinct o from " + VgrDepartment.class.getSimpleName() + " o left join fetch o.vgrGroups");
+        return new ArrayList<VgrDepartment>(result);
+    }
+
+    @Override
+    @Transactional
+    public VgrDepartment save(VgrDepartment department) {
+        try {
+            if (department.getId() == null) {
+                VgrDepartment result = departmentRepo.persist(department);
+                departmentRepo.flush();
+                return result;
+            }
+            return departmentRepo.merge(department);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void delete(VgrDepartment department) {
+        try {
+            departmentRepo.remove(department.getId());
+            departmentRepo.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public final List<IFeed> getUserIFeeds(final String userId) {
         ArrayList<IFeed> result = new ArrayList<IFeed>(
                 iFeedRepo
                         .findByQuery(
                                 "SELECT distinct ifeed FROM IFeed ifeed "
                                         + "WHERE ifeed.userId=?1 or ifeed.id in (select o.ifeedId from Ownership o where o.userId=?2)",
-                                new Object[] { userId, userId }));
+                                new Object[]{userId, userId}));
 
         return result;
     }
@@ -143,7 +179,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         Collection<IFeedFilter> newFilters = iFeed.getFilters();
         if (!(equals(oldIFeed.getName(), iFeed.getName())
                 && equals(oldIFeed.getLinkNativeDocument(), iFeed.getLinkNativeDocument()) && equals(
-                    oldIFeed.getDescription(), iFeed.getDescription()))) {
+                oldIFeed.getDescription(), iFeed.getDescription()))) {
             return true;
         }
 
@@ -221,6 +257,27 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     public void setiFeedPublisher(IFeedPublisher iFeedPublisher) {
         this.iFeedPublisher = iFeedPublisher;
+    }
+
+    public JpaRepository<VgrDepartment, Long, Long> getDepartmentRepo() {
+        return departmentRepo;
+    }
+
+    public void setDepartmentRepo(JpaRepository<VgrDepartment, Long, Long> departmentRepo) {
+        this.departmentRepo = departmentRepo;
+    }
+
+    public String getSolrServiceUrl() {
+        return solrServiceUrl;
+    }
+
+    public void setSolrServiceUrl(String solrServiceUrl) {
+        this.solrServiceUrl = solrServiceUrl;
+    }
+
+    @Override
+    public List<String> fetchFilterSuggestion(IFeed feed, String fieldId) {
+        return SolrFacetUtil.fetchFacets(getSolrServiceUrl(), feed, fieldId);
     }
 
 }

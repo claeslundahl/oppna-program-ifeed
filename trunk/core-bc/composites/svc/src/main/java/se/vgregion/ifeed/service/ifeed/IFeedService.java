@@ -9,10 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.VgrDepartment;
 
 public interface IFeedService {
 
     List<IFeed> getIFeeds();
+
+    List<VgrDepartment> getVgrDepartments();
+
+    VgrDepartment save(VgrDepartment department);
+
+    void delete(VgrDepartment department);
 
     List<IFeed> getUserIFeeds(String userId);
 
@@ -36,4 +43,6 @@ public interface IFeedService {
     void storeFieldsInf(FieldsInf inf);
 
     Map<String, FieldInf> mapFieldInfToId();
+
+    List<String> fetchFilterSuggestion(IFeed feed, String fieldId);
 }

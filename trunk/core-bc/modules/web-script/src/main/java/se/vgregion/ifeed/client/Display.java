@@ -103,6 +103,8 @@ public class Display extends EventedListGrid<Entry> {
                             List<Entry> sorted = getSortedData();
                             Display.this.getData().clear();
                             Display.this.getData().addAll(sorted);
+                            //impl.removeRow(0);
+                            ifMetadataSaysSoRenderColumnHeadersAndReturnRow(0);
                             showDefaultCursor();
                         }
                     };

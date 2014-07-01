@@ -10,7 +10,7 @@ import net.sf.cglib.beans.BeanMap;
 
 public class FieldInf implements Serializable {
 
-    private String id, name, help, type, apelonKey = "";
+    private String id, name, help, type, apelonKey = "", value;
 
     private final List<FieldInf> children = new ArrayList<FieldInf>();
 
@@ -119,4 +119,11 @@ public class FieldInf implements Serializable {
         this.expanded = expanded;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

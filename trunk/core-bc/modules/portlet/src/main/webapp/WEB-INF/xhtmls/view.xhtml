@@ -17,6 +17,10 @@
         <!-- Panel for navigation inside IFeed portlet -->
         <p:panel id="ifeed_panel" style="padding: 0px">
 
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'ADMIN_DEPARTMENTS'}">
+            <ui:include src="admin-departments.xhtml"/>
+          </p:panel>
+
           <p:panel rendered="#{navigationModelBean.uiNavigation eq 'USER_IFEEDS'}">
             <ui:include src="user-ifeed-list.xhtml"/>
           </p:panel>

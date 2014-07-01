@@ -35,6 +35,10 @@
     <constructor-arg value="${ifeed.json}" />
   </bean>
 
+  <bean id="solrServiceUrl" class="java.lang.String">
+    <constructor-arg value="${solr.service}" />
+  </bean>
+
   <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer" scope="prototype">
     <constructor-arg type="java.lang.String" value="${solr.service}" />
     <property name="requestWriter">
@@ -53,14 +57,20 @@
     <property name="iFeedRepo" ref="iFeedRepo" />
     <property name="iFeedPublisher" ref="iFeedPublisher" />
     <property name="fieldsInfRepo" ref="fieldsInfRepo" />
+    <property name="departmentRepo" ref="departmentRepo" />
+    <property name="solrServiceUrl" value="${solr.service}" />
   </bean>
 
   <bean id="iFeedRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.IFeed" />
   </bean>
-  
+
   <bean id="fieldsInfRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.FieldsInf" />
+  </bean>
+
+  <bean id="departmentRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
+    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.VgrDepartment" />
   </bean>
 
   <bean id="metadataRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">

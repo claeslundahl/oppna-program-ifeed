@@ -17,34 +17,122 @@
                      ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
       </p:commandLink>
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Ändra" update=":ifeed_view"
-                     ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('EDIT_IFEED')}">
+                     rendered="#{not app.inEditMode and app.mayEditFeed(request, iFeedModelBean)}"
+                     ajax="true" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
+      </p:commandLink>
+      <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Stäng ändringsläge" update=":ifeed_view"
+                     rendered="#{app.inEditMode}"
+                     ajax="true" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
+      </p:commandLink>
+      <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
+                     ajax="true" async="true" actionListener="#{app.update()}">
       </p:commandLink>
     </div>
-    <div class="border">
+
+    <div class="border" style="clear:both">
       <div style="clear: both;" class="ifeed-columns-left">
         <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
-        <h:outputText value="#{iFeedModelBean.description}" label="text"/>
+        <h:outputText value="#{iFeedModelBean.description}" label="text" rendered="#{not app.inEditMode}"/>
+        <h:inputText value="#{iFeedModelBean.description}" label="text" rendered="#{app.inEditMode}"></h:inputText>
+
         <br></br>
         <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
         <h:outputText value="Atom Rss Html Json EPI-konfiguration (JSON)"></h:outputText>
         <br></br>
         <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
-        <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"/>
+        <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"
+                      rendered="#{not app.inEditMode}"/>
+        <h:selectBooleanCheckbox value="#{iFeedModelBean.linkNativeDocument}" rendered="#{app.inEditMode}" ajax="true"/>
       </div>
 
       <div class="ifeed-columns-right">
         <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
-        <h:outputText value="#{iFeedModelBean.userId}"></h:outputText>
+        <h:outputText value="#{iFeedModelBean.id}"></h:outputText>
         <br></br>
         <h:outputText style="font-weight: bold;" value="Ägare: "/>
-        <h:outputText value="#{iFeed.ownershipUserIds}"/>
+        <h:outputText value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
+                      rendered="#{not app.inEditMode}"/>
+        <p:autoComplete id="createOwnershipInput"
+                        value="#{iFeedModelBean.userId}"
+                        completeMethod="#{app.completeUserName}"
+                        forceSelection="true"
+                        rendered="#{app.inEditMode}"
+                        multiple="false"/>
+
         <br></br>
-        <h:outputText style="font-weight: bold;" value="Filter: "/>
       </div>
     </div>
+
   </div>
 
-  <br></br>
+  <ui:include src="show-department-and-group.xhtml"/>
+
+  <div>
+    <span style="font-weight: bold;background-color: rgb(40, 101, 173); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+          class="ltr-flowing-item border">
+      Administratörer:
+    </span>
+    <span class="ltr-flowing-item">
+      <p:autoComplete id="createNewAdminInput"
+                      value="#{app.newOwnershipUserId}"
+                      completeMethod="#{app.completeUserName}"
+                      forceSelection="true"
+                      rendered="#{app.inEditMode}"
+                      styleClass="createNewAdminInput"
+                      style="background: aliceblue; height: 24px; top: 4px; *display: inline; display: inline-block; zoom: 1;"
+                      multiple="false"/>
+
+      <p:commandLink styleClass="ltr-flowing-item border"
+                     style="background-color: green; color: black; font-family:monospace; *display: inline; display: inline-block; zoom: 1;"
+                     value="->"
+                     update=":ifeed_view"
+                     rendered="#{app.inEditMode}"
+                     ajax="true" async="true" actionListener="#{app.createNewOwnership()}">
+      </p:commandLink>
+    </span>
+
+    <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="item" id="owners" varStatus="status">
+    <span class="ltr-flowing-item border"
+          style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
+      <span class="name">#{app.fetchLdapPersonFullName(item.userId)} (#{item.userId})</span>
+      <span class="remove">
+        <p:commandLink value="X" update=":ifeed_view"
+                       rendered="#{app.inEditMode}"
+                       styleClass=""
+                       ajax="true" async="true" actionListener="#{iFeedModelBean.getOwnershipsAsList().remove(item)}">
+        </p:commandLink>
+      </span>
+    </span>
+    </ui:repeat>
+  </div>
+
+  <div>
+    <span style="font-weight: bold;background-color: rgb(40, 101, 173); color:white; white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;"
+          class="border">
+      Filter:
+    </span>
+    <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="item" varStatus="status">
+    <span class="ltr-flowing-item border"
+          style="font-weight: bold;background-color: rgb(93, 101, 110); color:white; white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
+      <span class="name">#{item.fieldInf.name}</span>
+      <span class="name-value-delimiter">:</span>
+      <span>#{item.filterQuery}</span>
+      <span class="remove">
+        <p:commandLink styleClass="" value="X" update=":ifeed_view"
+                       style="color: white;"
+                       rendered="#{app.inEditMode}"
+                       ajax="true" async="true" actionListener="#{iFeedModelBean.removeFilter(item)}">
+        </p:commandLink>
+      </span>
+    </span>
+    </ui:repeat>
+  </div>
+
+  <div>
+    <ui:include rendered="#{app.inEditMode}" src="add-filter.xhtml"/>
+  </div>
+
+  <h3>Resultat</h3>
 
   <div class="ifeedDocList"
        columnes="dc.title|Titel|left|100"
@@ -58,14 +146,19 @@
        feedid="#{iFeedModelBean.toSerializedText()}">
   </div>
   <noscript>
-    <iframe src='http://portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc' id='iframenoscript'
+    <iframe src='http://portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc'
+            id='iframenoscript'
             name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
     </iframe>
   </noscript>
 
   <script id="ifeed-data"
-          location="http://vgwb0046.vgregion.se:8880"
           type="text/javascript"
-          src='http://vgwb0046.vgregion.se:8880/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js'></script>
+          location="http://vgwb0046.vgregion.se:8880"
+          src='http://vgwb0046.vgregion.se:8880/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js'>
+  </script>
+
+
+  <ui:include src="select-department-dialog.xhtml"/>
 
 </ui:composition>

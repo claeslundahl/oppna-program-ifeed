@@ -7,5 +7,7 @@
     <class>se.vgregion.ifeed.types.IFeedFilter</class>
     <class>se.vgregion.ifeed.types.Metadata</class>
     <class>se.vgregion.ifeed.types.Ownership</class>
+    <class>se.vgregion.ifeed.types.VgrDepartment</class>
+    <class>se.vgregion.ifeed.types.VgrGroup</class>
   </persistence-unit>
 </persistence>

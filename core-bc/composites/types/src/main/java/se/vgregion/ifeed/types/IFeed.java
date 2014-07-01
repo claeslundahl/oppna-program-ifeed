@@ -9,20 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 
@@ -45,7 +32,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
     // @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
-    private Set<IFeedFilter> filters;
+    protected
+    Set<IFeedFilter> filters;
 
     private String name;
 
@@ -57,6 +45,11 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     @Transient
     private String creatorName;
+
+    private VgrDepartment department;
+
+    @ManyToOne
+    private VgrGroup group;
 
     // @ElementCollection(fetch = FetchType.EAGER)
     // @CollectionTable(name = "vgr_ifeed_ownership", joinColumns = @JoinColumn(name = "ifeed_id"))
@@ -72,7 +65,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         if (filters == null) {
             return Collections.emptySet();
         }
-        return Collections.unmodifiableSet(filters);
+        //return Collections.unmodifiableSet(filters);
+        return filters;
     }
 
     public boolean addFilter(IFeedFilter filter) {
@@ -231,4 +225,19 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         this.linkNativeDocument = linkNativeDocument;
     }
 
+    public VgrDepartment getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(VgrDepartment department) {
+        this.department = department;
+    }
+
+    public VgrGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(VgrGroup group) {
+        this.group = group;
+    }
 }

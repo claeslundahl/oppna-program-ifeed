@@ -1,0 +1,34 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:portlet="http://java.sun.com/portlet_2_0">
+
+
+
+  <p:panel styleClass="filter-root" id="add-ifeed-filters" rendered="#{app.inEditMode}">
+    <h3>Lägg till nytt filter</h3>
+    <ui:repeat value="#{app.filters}" var="ifeedFilter" varStatus="status">
+      <span class="">
+      <p:commandLink styleClass="border" value="#{ifeedFilter.name} #{ifeedFilter.expanded ? '(-)': '(+)'}"
+                     update=":ifeed_view"
+                     style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;"
+                     ajax="true" async="true"
+                     actionListener="#{ifeedFilter.setExpanded(!ifeedFilter.isExpanded())}">
+      </p:commandLink>
+
+        <ui:repeat value="#{ifeedFilter.children}" var="child" rendered="#{ifeedFilter.expanded}">
+          <p:commandLink styleClass="border" value="#{child.name}"
+                         update=":ifeed_view"
+                         style="white-space: nowrap; background-color: yellow; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;"
+                         ajax="true" async="true"
+                         actionListener="#{app.setNewFilter(child)}">
+          </p:commandLink>
+        </ui:repeat>
+
+      </span>
+    </ui:repeat>
+  </p:panel>
+
+  <ui:include src="add-filter-dialog.xhtml"></ui:include>
+
+</f:view>

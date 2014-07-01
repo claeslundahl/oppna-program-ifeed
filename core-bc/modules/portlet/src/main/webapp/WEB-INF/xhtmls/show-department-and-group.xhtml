@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:aui="http://liferay.com/faces/aui"
+                xmlns:portlet="http://java.sun.com/portlet_2_0">
+
+  <h:outputText
+          style="font-weight: bold;background-color: rgb(40, 101, 173); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+          rendered="#{not app.inEditMode}"
+          styleClass="border"
+          value="Förvaltning / Grupp: "/>
+
+  <p:commandLink styleClass="border" value="Ändra Förvaltning / Grupp: " update=":ifeed_view"
+                 style="font-weight: bold;background-color: rgb(40, 101, 173); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+                 rendered="#{app.inEditMode}"
+                 ajax="false" async="true" actionListener="#{app.setSelectableDepartments(app.getVgrDepartments())}">
+  </p:commandLink>
+
+  <h:outputText
+          style="font-weight: bold;background-color: red; color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+          rendered="#{iFeedModelBean.department == null}"
+          styleClass="border"
+          value="Ingen förvaltning är vald"/>
+
+  <h:outputText
+          style="font-weight: bold;background-color: rgb(93, 101, 110); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+          rendered="#{iFeedModelBean.department != null}"
+          styleClass="border"
+          value="#{iFeedModelBean.department.name}"/>
+
+  <h:outputText
+          style="font-weight: bold;background-color: blue; color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+          styleClass="border"
+          value="/"/>
+
+  <h:outputText
+          style="font-weight: bold;background-color: rgb(93, 101, 110); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+          rendered="#{iFeedModelBean.group != null}"
+          styleClass="border"
+          value="#{iFeedModelBean.group.name}"/>
+
+  <h:outputText
+          style="font-weight: bold;background-color: red; color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+          rendered="#{iFeedModelBean.group == null}"
+          styleClass="border"
+          value="Ingen grupp är vald"/>
+
+</ui:composition>

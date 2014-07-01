@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ifeed.types.Ownership;
 
 import java.io.Serializable;
@@ -54,6 +55,8 @@ public class IFeedModelBean extends IFeed implements Serializable {
     }
 
     public void copyValuesFromIFeed(IFeed iFeed) {
+        ownershipsAsList = null;
+        filtersAsList = null;
         copy(iFeed, this);
         getOwnerships().addAll(iFeed.getOwnerships());
         newOwnershipNames = new MirrorOwnershipToTextList(getOwnerships());
@@ -188,6 +191,9 @@ public class IFeedModelBean extends IFeed implements Serializable {
     public IFeed toIFeed() {
         IFeed iFeed = new IFeed();
         copy(this, iFeed);
+        for (Ownership ownership : iFeed.getOwnerships()) {
+            ownership.setIfeed(iFeed);
+        }
         return iFeed;
     }
 
@@ -221,4 +227,34 @@ public class IFeedModelBean extends IFeed implements Serializable {
         return " %$&+,/:;=?@<>#%".indexOf(ch) >= 0;
     }
 
+    private List<IFeedFilter> filtersAsList;
+
+    public List<IFeedFilter> getFiltersAsList() {
+        if (filtersAsList == null) {
+            filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
+        }
+        return filtersAsList;
+    }
+
+    private List<Ownership> ownershipsAsList;
+
+    public List<Ownership> getOwnershipsAsList() {
+        if (ownershipsAsList == null) {
+            ownershipsAsList = new CollectionAsList<Ownership>(getOwnerships());
+        }
+        return ownershipsAsList;
+    }
+
+    @Override
+    public void removeFilter(IFeedFilter filter) {
+        super.removeFilter(filter);
+        filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
+    }
+
+    @Override
+    public boolean addFilter(IFeedFilter filter) {
+        boolean result = super.addFilter(filter);
+        filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
+        return result;
+    }
 }

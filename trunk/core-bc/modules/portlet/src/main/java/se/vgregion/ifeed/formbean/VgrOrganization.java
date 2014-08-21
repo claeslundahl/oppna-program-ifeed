@@ -2,9 +2,13 @@ package se.vgregion.ifeed.formbean;
 
 import se.vgregion.ifeed.el.Json;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class VgrOrganization extends BaseVgrOrganization {
+
+    private boolean open;
 
     public VgrOrganization() {
         super();
@@ -24,6 +28,8 @@ public class VgrOrganization extends BaseVgrOrganization {
         return getCn();
     }
 
+    private List<VgrOrganization> children = new ArrayList<VgrOrganization>();
+
     /*
     public String getId() {
         String result = getDn();
@@ -42,6 +48,18 @@ public class VgrOrganization extends BaseVgrOrganization {
 
     public String getId() {
         return Json.toJson(id);
+    }
+
+    public List<VgrOrganization> getChildren() {
+        return children;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
     public static class Id extends BaseVgrOrganization {

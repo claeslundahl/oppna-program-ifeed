@@ -3,8 +3,7 @@ package se.vgregion.ifeed.client;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.junit.Test;
-
-import java.util.regex.Pattern;
+import se.vgregion.ifeed.client.ColumnDef;
 
 /**
  * Created by clalu4 on 2014-03-14.

@@ -46,6 +46,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @Transient
     private String creatorName;
 
+    @ManyToOne
     private VgrDepartment department;
 
     @ManyToOne

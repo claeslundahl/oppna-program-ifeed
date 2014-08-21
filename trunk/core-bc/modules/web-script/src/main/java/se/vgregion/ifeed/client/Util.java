@@ -1,7 +1,5 @@
 package se.vgregion.ifeed.client;
 
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
 import com.google.gwt.safehtml.shared.UriUtils;

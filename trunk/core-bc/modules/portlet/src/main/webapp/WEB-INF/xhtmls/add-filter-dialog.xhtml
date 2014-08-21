@@ -10,26 +10,34 @@
 
     <span style="background-color:#111;opacity: 0.65;*background:none;position:absolute;z-index: 99;top:0px;left:0px;width:100%;"></span>
 
-    <div style="position:fixed;background-color:white;top:25%;width:400px;height:400px;border:1px solid #000;z-index: 100;">
+    <div class="ifeed-border rp-ifeed-popup" style-foo="position:fixed;background-color:white;top:25%;min-width:400px;max-width:800px;min-height:400px;max-height:600px;border:1px solid #000;z-index: 100;overflow-y:auto;">
 
-      <h4>#{app.newFilter.name}</h4>
+      <h2>#{app.newFilter.name}</h2>
 
       <div class="box">
         #{app.newFilter.help}
       </div>
 
+      <div class="rp-filter-value-input">
+
       <h:inputText value="#{app.newFilter.value}"
-                   rendered="#{app.newFilter.type != 'd:text_fix' and app.newFilter.type != 'd:date' and app.newFilter.type != 'd:ldap_value' and app.newFilter.type != 'd:text_facet'}">
+                   rendered="#{app.newFilter.type != 'd:datetime' and app.newFilter.type != 'd:text_fix' and app.newFilter.type != 'd:date' and app.newFilter.type != 'd:ldap_value' and app.newFilter.type != 'd:text_facet' and app.newFilter.type != 'd:ldap_org_value'}">
       </h:inputText>
+
+      <p:panel rendered="#{app.newFilter.type == 'd:ldap_org_value'}">
+        <ui:include src="organization-tree.xhtml" />
+      </p:panel>
+
+      <p:dataTable rendered="#{null}"></p:dataTable>
 
       <p:calendar rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
                   navigator="false"
                   readOnlyInput="false"
                   value="#{app.newFilter.value}"
+                  lang="sv_SE"
                   pattern="yyyy-MM-dd">
         <f:converter converterId="textDateConverter"/>
       </p:calendar>
-
 
       <p:autoComplete value="#{app.newFilter.value}"
                       rendered="#{app.newFilter.type == 'd:ldap_value'}"
@@ -43,8 +51,7 @@
                       rendered="#{app.newFilter.type == 'd:text_facet'}"
                       completeMethod="#{app.newFilterSuggestion}"
                       forceSelection="false"
-                      style="z-index: 101"
-                      styleClass="background: aliceblue; height: 24px; top: 4px; position: relative;"
+                      style="z-index: 101; background: aliceblue; height: 24px; top: 4px; position: relative;"
                       multiple="false"/>
 
       <h:selectOneMenu value="#{app.newFilter.value}"
@@ -52,7 +59,9 @@
         <f:selectItems value="#{app.getVocabulary(app.newFilter.apelonKey)}"/>
       </h:selectOneMenu>
 
-      <div>
+      </div>
+
+      <div class="box">
         <p:commandLink styleClass="rp-link-button rp-link-button-alt"
                        value="Avbryt"
                        ajax="true"
@@ -73,6 +82,5 @@
     </div>
 
   </p:panel>
-
 
 </ui:composition>

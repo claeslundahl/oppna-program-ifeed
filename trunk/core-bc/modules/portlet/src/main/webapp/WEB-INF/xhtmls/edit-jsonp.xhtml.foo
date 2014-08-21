@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:aui="http://liferay.com/faces/aui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:portlet="http://java.sun.com/portlet_2_0">
+
+  <h:panelGrid id="panel" columns="3" border="1" cellpadding="0" cellspacing="2" styleClass="rp-table">
+    <h:outputText value="Antal rader" />
+    <h:selectOneMenu value="#{tableDef.limit}">
+      <f:selectItem itemValue="0" itemLabel="Ingen begränsning" />
+      <f:selectItems value="#{fn:split('5,10,20,30,40,50,60,70,80,90,100,150,200', ',')}" />
+      <f:ajax render="ifeed_view"/>
+    </h:selectOneMenu>
+    <h:outputText value="Välj antal rader du vill begränsa listan till" />
+
+    <h:outputText value="Dölj EPI högerkolumn " />
+    <h:selectBooleanCheckbox value="#{tableDef.hideRightColumn}" />
+    <h:outputText value="Vill du dölja högerkolumnen i EPI-server för att få mer plats?">
+      <f:ajax render="ifeed_view"/>
+    </h:outputText>
+
+    <h:outputText value="Välj sortering" />
+    <h:selectOneMenu style="text-align:left;"
+                     update=":ifeed_view"
+                     ajax="true"
+                     id="foo"
+                     value="#{tableDef.defaultSortColumn}"
+                     >
+      <f:selectItems value="#{tableDef.columnDefs}"
+                     var="i" itemLabel="#{i.name}" itemValue="#{i.name}" />
+      <f:ajax render="ifeed_view"/>
+    </h:selectOneMenu>
+
+    <h:outputText value="Välj sorteringskolumn samt om sortering skall ske stigande eller fallande" />
+
+    <h:outputText value="Visa tabellhuvud" />
+    <h:outputText value="Vill du visa tabellhuvudet (rubrikerna för kolumnerna)?" />
+
+    <h:outputText value="Teckenstorlek" />
+    <h:outputText value="Välj teckenstorlek för listan" />
+
+    <h:outputText value="Länka till orginaldokument" />
+    <h:outputText value="" />
+  </h:panelGrid>
+
+
+</ui:composition>

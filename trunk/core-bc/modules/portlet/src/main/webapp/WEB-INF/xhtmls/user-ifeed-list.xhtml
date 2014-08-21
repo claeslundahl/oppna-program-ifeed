@@ -21,11 +21,13 @@
     <p:commandLink style="float: right;"
                    actionListener="#{navigationModelBean.setUiNavigation('ADMIN_DEPARTMENTS')}"
                    styleClass="rp-link-button rp-link-button-alt" value="Förvalta förvaltningar"
+                   rendered="#{app.isSuperUser()}"
                    update="ifeed_view" ajax="true" async="true"/>
 
     <p:commandLink style="float: right;"
                    actionListener="#{navigationModelBean.setUiNavigation('FIELD_CONFIG')}"
                    styleClass="rp-link-button rp-link-button-alt" value="Fältinställningar"
+                   rendered="#{app.isSuperUser()}"
                    update="ifeed_view" ajax="true" async="true"/>
 
     <br></br> <br></br>

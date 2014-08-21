@@ -24,7 +24,6 @@
     <pluginManagement>
       <plugins>
 
-        <!--
         <plugin>
           <groupId>org.zeroturnaround</groupId>
           <artifactId>jrebel-maven-plugin</artifactId>
@@ -38,7 +37,6 @@
             </execution>
           </executions>
         </plugin>
-        -->
 
         <plugin>
           <groupId>com.mycila.maven-license-plugin</groupId>

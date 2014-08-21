@@ -4,21 +4,30 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ResourceLocalService;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
+import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
 import se.vgregion.ifeed.types.*;
+import se.vgregion.ldap.HasCommonLdapFields;
+import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -46,6 +55,20 @@ public class Application {
     @Autowired
     private MetadataService metadataService;
 
+    //@Resource(name = "iFeedAtomFeed")
+    @Autowired
+    private UriTemplate iFeedAtomFeed;
+    //@Resource(name = "rssIFeedAtomFeed")
+    @Autowired
+    private UriTemplate rssIFeedAtomFeed;
+    //@Resource(name = "iFeedWebFeed")
+    @Autowired
+    private UriTemplate iFeedWebFeed;
+    //@Resource(name = "iFeedJsonFeed")
+    @Autowired
+    private UriTemplate iFeedJsonFeed;
+
+
     private String solrServiceUrl;
 
     private VgrGroup group;
@@ -71,6 +94,11 @@ public class Application {
     private List<FieldInf> filters;
 
     private List<VgrDepartment> selectableDepartments;
+
+    private VgrOrganization organizationToChoose;
+
+    @Autowired
+    private LdapSupportService ldapOrganizationService;
 
     public List<IFeed> list() {
         return iFeedService.getIFeedsByFilter(filter);
@@ -224,14 +252,8 @@ public class Application {
         return result;
     }
 
-
     public List<VgrDepartment> getVgrDepartments() {
         return iFeedService.getVgrDepartments();
-    }
-
-    // valueChangeListener
-    public void dateFilterEventHandler(ValueChangeEvent valueChangeEvent) {
-        //valueChangeEvent.get
     }
 
     public FieldInf getNewFilter() {
@@ -288,6 +310,32 @@ public class Application {
         return AccessGuard.mayEditFeed(getUser(request), feed);
     }
 
+    public boolean isSuperUser() {
+        try {
+            return AccessGuard.mayEditAllFeeds(getCurrentUser());
+        } catch (SystemException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private User getCurrentUser() {
+        User u = null;
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = fc.getExternalContext();
+        if (externalContext.getUserPrincipal() == null){
+            System.out.println("current principal is null");
+        }
+        else{
+            Long id = Long.parseLong(externalContext.getUserPrincipal().getName());
+            try {
+                u = UserLocalServiceUtil.getUserById(id);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return u;
+    }
+
     public void removeDepartmentsGroup(VgrGroup item) {
         department.getVgrGroups().remove(item);
     }
@@ -318,7 +366,6 @@ public class Application {
         cancelGroup();
     }
 
-
     public List<String> newFilterSuggestion(String value) {
         final Set<IFeedFilter> presentFilters = new HashSet<IFeedFilter>(iFeedModelBean.getFilters());
         IFeedFilter currentDraft = new IFeedFilter(value + "*", newFilter.getId());
@@ -347,8 +394,52 @@ public class Application {
         selectableDepartments = null;
     }
 
-    public void foo(Object o) {
-        System.out.println(o);
+    public UriTemplate getiFeedAtomFeed() {
+        return iFeedAtomFeed;
+    }
+
+    public void setiFeedAtomFeed(UriTemplate iFeedAtomFeed) {
+        this.iFeedAtomFeed = iFeedAtomFeed;
+    }
+
+    public UriTemplate getRssIFeedAtomFeed() {
+        return rssIFeedAtomFeed;
+    }
+
+    public void setRssIFeedAtomFeed(UriTemplate rssIFeedAtomFeed) {
+        this.rssIFeedAtomFeed = rssIFeedAtomFeed;
+    }
+
+    public UriTemplate getiFeedWebFeed() {
+        return iFeedWebFeed;
+    }
+
+    public void setiFeedWebFeed(UriTemplate iFeedWebFeed) {
+        this.iFeedWebFeed = iFeedWebFeed;
+    }
+
+    public UriTemplate getiFeedJsonFeed() {
+        return iFeedJsonFeed;
+    }
+
+    public void setiFeedJsonFeed(UriTemplate iFeedJsonFeed) {
+        this.iFeedJsonFeed = iFeedJsonFeed;
+    }
+
+    public java.net.URI getAtomFeedLink() {
+        return iFeedAtomFeed.expand(iFeedModelBean.getId(), iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection());
+    }
+
+    public java.net.URI getRssFeedLink() {
+        return rssIFeedAtomFeed.expand(iFeedModelBean.getId(), iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection());
+    }
+
+    public java.net.URI getWebFeedLink() {
+        return iFeedWebFeed.expand(iFeedModelBean.getId(), iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection());
+    }
+
+    public java.net.URI getJsonFeedLink() {
+        return iFeedJsonFeed.expand(iFeedModelBean.getId(), iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection());
     }
 
 }

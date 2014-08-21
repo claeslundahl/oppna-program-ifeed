@@ -19,6 +19,7 @@
         <th class="filter-result-h">Ägare</th>
         <th class="filter-result-h">Beskrivning</th>
         <th class="filter-result-h">Förvaltning</th>
+        <th class="filter-result-h">Grupp</th>
         <th class="filter-result-d">D!</th>
       </tr>
       <tr>
@@ -38,15 +39,33 @@
           </h:inputText>
         </th>
         <th class="filter-result-h">
-          <p:selectOneMenu style="text-align:left;"
-                           valueChangeListener="#{app.foo}"
+          <h:selectOneMenu style="text-align:left;"
+                           converter="departmentConverter"
+                           update=":ifeed_view"
+                           ajax="true"
+                           id="holaBandola"
                            value="#{filter.department}">
+            <f:selectItem itemLabel="-" itemValue="#{null}" />
             <f:selectItems value="#{app.getVgrDepartments()}"
                            var="i" itemLabel="#{i.name}" itemValue="#{i}" />
             <f:ajax render="ifeed_view"/>
-          </p:selectOneMenu>
-
+          </h:selectOneMenu>
         </th>
+
+        <th class="filter-result-h">
+          <h:selectOneMenu style="text-align:left;"
+                           converter="groupConverter"
+                           update=":ifeed_view"
+                           ajax="true"
+                           rendered="#{filter.department != null}"
+                           value="#{filter.group}">
+            <f:selectItem itemLabel="-" itemValue="#{null}" />
+            <f:selectItems value="#{filter.department.vgrGroups}"
+                           var="i" itemLabel="#{i.name}" itemValue="#{i}" />
+            <f:ajax render="ifeed_view"/>
+          </h:selectOneMenu>
+        </th>
+
         <th class="filter-result-d">
         </th>
       </tr>
@@ -62,6 +81,7 @@
           <td>${item.userId}</td>
           <td>${item.description}</td>
           <td>${item.department != null ? item.department.name : '-'}</td>
+          <td>${item.group != null ? item.group.name : '-'}</td>
           <td>
             <p:commandLink
                     action="#{iFeedBackingBean.removeBook(item)}"

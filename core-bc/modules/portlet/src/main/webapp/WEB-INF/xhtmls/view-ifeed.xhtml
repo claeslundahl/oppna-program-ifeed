@@ -37,7 +37,14 @@
 
         <br></br>
         <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
-        <h:outputText value="Atom Rss Html Json EPI-konfiguration (JSON)"></h:outputText>
+
+
+        <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a>
+        <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a>
+        <a href="#{app.getWebFeedLink()}" target="_blank">Html</a>
+        <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a>
+        <a href="${showEditJsonpUrl}" class="rp-overlay-link">EPI-konfiguration (JSON)</a>
+
         <br></br>
         <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
         <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"
@@ -69,22 +76,21 @@
 
   <div>
     <span style="font-weight: bold;background-color: rgb(40, 101, 173); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
-          class="ltr-flowing-item border">
+          class="ltr-flowing-item ifeed-border">
       Administratörer:
     </span>
-    <span class="ltr-flowing-item">
+    <span>
       <p:autoComplete id="createNewAdminInput"
                       value="#{app.newOwnershipUserId}"
                       completeMethod="#{app.completeUserName}"
                       forceSelection="true"
                       rendered="#{app.inEditMode}"
-                      styleClass="createNewAdminInput"
-                      style="background: aliceblue; height: 24px; top: 4px; *display: inline; display: inline-block; zoom: 1;"
+                      styleClass="createNewAdminInput master-item"
                       multiple="false"/>
 
-      <p:commandLink styleClass="ltr-flowing-item border"
-                     style="background-color: green; color: black; font-family:monospace; *display: inline; display: inline-block; zoom: 1;"
-                     value="->"
+      <p:commandLink styleClass="ltr-flowing-item ifeed-border"
+                     style="background-color: green; color: black;"
+                     value="Lägg till"
                      update=":ifeed_view"
                      rendered="#{app.inEditMode}"
                      ajax="true" async="true" actionListener="#{app.createNewOwnership()}">
@@ -92,8 +98,7 @@
     </span>
 
     <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="item" id="owners" varStatus="status">
-    <span class="ltr-flowing-item border"
-          style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
+    <span class="ltr-flowing-item ifeed-border sub-item">
       <span class="name">#{app.fetchLdapPersonFullName(item.userId)} (#{item.userId})</span>
       <span class="remove">
         <p:commandLink value="X" update=":ifeed_view"
@@ -107,12 +112,11 @@
   </div>
 
   <div>
-    <span style="font-weight: bold;background-color: rgb(40, 101, 173); color:white; white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;"
-          class="border">
+    <span class="ltr-flowing-item ifeed-border main-item" style="font-weight: bold;">
       Filter:
     </span>
     <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="item" varStatus="status">
-    <span class="ltr-flowing-item border"
+    <span class="ltr-flowing-item ifeed-border sub-item"
           style="font-weight: bold;background-color: rgb(93, 101, 110); color:white; white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
       <span class="name">#{item.fieldInf.name}</span>
       <span class="name-value-delimiter">:</span>
@@ -121,7 +125,8 @@
         <p:commandLink styleClass="" value="X" update=":ifeed_view"
                        style="color: white;"
                        rendered="#{app.inEditMode}"
-                       ajax="true" async="true" actionListener="#{iFeedModelBean.removeFilter(item)}">
+                       ajax="true" async="true"
+                       actionListener="#{iFeedModelBean.removeFilter(item)}">
         </p:commandLink>
       </span>
     </span>

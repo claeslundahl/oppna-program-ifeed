@@ -10,27 +10,25 @@
 
     <span style="background-color:#111;opacity: 0.65;*background:none;position:absolute;z-index: 99;top:0px;left:0px;width:100%;"></span>
 
-    <div style="position:fixed;background-color:white;top:25%;width:400px;height:400px;border:1px solid #000;z-index: 100;">
+    <div class="rp-ifeed-popup">
 
-      <h4>Välj</h4>
+      <h4 class="rp-ifeed-popup-head">Välj</h4>
 
       <ui:repeat value="#{app.selectableDepartments}" var="selectableDepartment">
 
-        <p:commandLink styleClass="ltr-flowing-item border"
+        <p:commandLink styleClass="ltr-flowing-item main-item"
                        value="#{selectableDepartment.name} #{selectableDepartment.open ? '(-)' : '(+)'}"
                        update=":ifeed_view"
-                       style="font-weight: bold;background-color: rgb(93, 101, 110); color:white; white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;"
                        rendered="#{app.inEditMode}"
                        ajax="false" async="true"
-                       actionListener="#{selectableDepartment.setOpen(!selectableDepartment.isOpen())}">
+                       actionListener="#{selectableDepartment.setOpen(not (selectableDepartment.open))}">
         </p:commandLink>
 
         <ui:repeat value="#{selectableDepartment.getVgrGroups()}" var="selectableGroup"
                    rendered="#{selectableDepartment.open}">
-          <p:commandLink styleClass="ltr-flowing-item border"
+          <p:commandLink styleClass="ltr-flowing-item sub-item"
                          value="#{selectableGroup.name}"
                          update=":ifeed_view"
-                         style="font-weight: bold;background-color: blue; color:white; white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;"
                          rendered="#{app.inEditMode}"
                          ajax="false" async="true"
                          actionListener="#{app.putDepartmentAndGroup(selectableDepartment, selectableGroup)}">

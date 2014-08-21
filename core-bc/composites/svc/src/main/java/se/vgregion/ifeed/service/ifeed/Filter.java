@@ -19,9 +19,11 @@ public class Filter extends IFeed {
         addConditionIfAnyValue("o.name like ?", getName(), condition, values);
         addConditionIfAnyValue("o.userId like ?", getUserId(), condition, values);
         addConditionIfAnyValue("o.description like ?", getDescription(), condition, values);
+        addConditionIfAnyValue("o.department.id = ?", getDepartment() != null ? getDepartment().getId() : null, condition, values);
 
-        addConditionIfAnyValue("o.department = ?", getDepartment(), condition, values);
-        addConditionIfAnyValue("o.group = ?", getGroup(), condition, values);
+        if (getGroup() != null) {
+            addConditionIfAnyValue("o.group.id = ?", getGroup().getId(), condition, values);
+        }
 
         if (!values.isEmpty()) {
             sb.append(" where ");
@@ -31,11 +33,14 @@ public class Filter extends IFeed {
         return sb.toString();
     }
 
-
     private void addConditionIfAnyValue(String jpql, Object value, List<Object> sb, List<Object> values) {
         if (!isBlank(value)) {
             sb.add(jpql);
-            values.add("%" + value + "%");
+            if (value instanceof String){
+                values.add("%" + value + "%");
+            } else {
+                values.add(value);
+            }
         }
     }
 

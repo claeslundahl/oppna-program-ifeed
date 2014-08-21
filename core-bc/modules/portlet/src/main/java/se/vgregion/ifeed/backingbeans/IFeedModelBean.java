@@ -202,6 +202,11 @@ public class IFeedModelBean extends IFeed implements Serializable {
         return result;
     }
 
+    public String toSerializedText(Serializable o) throws UnsupportedEncodingException {
+        String result = encode(CommonUtils.toString(o));
+        return result;
+    }
+
 
     public static String encode(String input) {
         StringBuilder resultStr = new StringBuilder();

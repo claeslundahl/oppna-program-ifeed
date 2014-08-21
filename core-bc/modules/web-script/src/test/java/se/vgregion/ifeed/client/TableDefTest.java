@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by clalu4 on 2014-03-14.

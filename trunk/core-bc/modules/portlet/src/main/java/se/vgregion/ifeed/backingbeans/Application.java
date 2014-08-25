@@ -31,6 +31,8 @@ import javax.annotation.Resource;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -67,6 +69,7 @@ public class Application {
     //@Resource(name = "iFeedJsonFeed")
     @Autowired
     private UriTemplate iFeedJsonFeed;
+
 
 
     private String solrServiceUrl;
@@ -318,7 +321,7 @@ public class Application {
         }
     }
 
-    private User getCurrentUser() {
+    public User getCurrentUser() {
         User u = null;
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext externalContext = fc.getExternalContext();
@@ -440,6 +443,28 @@ public class Application {
 
     public java.net.URI getJsonFeedLink() {
         return iFeedJsonFeed.expand(iFeedModelBean.getId(), iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection());
+    }
+
+    public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
+        List<SelectItemGroup> result = new ArrayList<SelectItemGroup>();
+        if (filters == null) {
+            this.filters = iFeedService.getFieldInfs();
+        }
+        for (FieldInf parent : getFilters()) {
+            SelectItemGroup group = new SelectItemGroup(parent.getName());
+            SelectItem[] selectItems = new SelectItem[parent.getChildren().size()];
+            int c = 0;
+            for (FieldInf child : parent.getChildren()) {
+                selectItems[c++] = new SelectItem(child.getId(), child.getName());
+            }
+            group.setSelectItems(selectItems);
+            result.add(group);
+        }
+        return result;
+    }
+
+    public void showMyFeeds() {
+        filter.setCreatorName(getCurrentUser().getScreenName());
     }
 
 }

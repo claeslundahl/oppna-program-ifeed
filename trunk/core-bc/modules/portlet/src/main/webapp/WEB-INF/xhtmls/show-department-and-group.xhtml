@@ -5,43 +5,45 @@
                 xmlns:portlet="http://java.sun.com/portlet_2_0">
 
   <h:outputText
-          style="font-weight: bold;background-color: rgb(40, 101, 173); color:white;"
+          styleOld="font-weight: bold;background-color: rgb(40, 101, 173); color:white;"
+          style="font-weight: bold;"
           rendered="#{not app.inEditMode}"
-          styleClass="ltr-flowing-item ifeed-border"
+          styleClassOld="ltr-flowing-item ifeed-border"
           value="Förvaltning / Grupp: "/>
 
-  <p:commandLink styleClass="ifeed-border ltr-flowing-item" value="Ändra Förvaltning / Grupp: " update=":ifeed_view"
-                 style="font-weight: bold;background-color: rgb(40, 101, 173); color:white;"
+  <p:commandLink styleClassOld="ifeed-border ltr-flowing-item" value="Ändra Förvaltning / Grupp: " update=":ifeed_view"
+                 styleOld="font-weight: bold;background-color: rgb(40, 101, 173); color:white;"
+                 style="font-weight: bold;"
                  rendered="#{app.inEditMode}"
                  ajax="false" async="true" actionListener="#{app.setSelectableDepartments(app.getVgrDepartments())}">
   </p:commandLink>
 
   <h:outputText
-          style="font-weight: bold;background-color: red; color:white;"
+          styleOld="font-weight: bold;background-color: red; color:white;"
           rendered="#{iFeedModelBean.department == null}"
-          styleClass="ltr-flowing-item ifeed-border"
+          styleClassOld="ltr-flowing-item ifeed-border"
           value="Ingen förvaltning är vald"/>
 
   <h:outputText
-          style="font-weight: bold;background-color: rgb(93, 101, 110); color:white;"
+          styleOld="font-weight: bold;background-color: rgb(93, 101, 110); color:white;"
           rendered="#{iFeedModelBean.department != null}"
-          styleClass="ltr-flowing-item ifeed-border"
+          styleClassOld="ltr-flowing-item ifeed-border"
           value="#{iFeedModelBean.department.name}"/>
 
   <h:outputText
-          styleClass="ltr-flowing-item ifeed-border main-item"
+          styleClassOld="ltr-flowing-item ifeed-border main-item"
           value="/"/>
 
   <h:outputText
-          style="font-weight: bold;background-color: rgb(93, 101, 110); color:white;"
+          styleOld="font-weight: bold;background-color: rgb(93, 101, 110); color:white;"
           rendered="#{iFeedModelBean.group != null}"
-          styleClass="ltr-flowing-item ifeed-border"
+          styleClassOld="ltr-flowing-item ifeed-border"
           value="#{iFeedModelBean.group.name}"/>
 
   <h:outputText
-          style="font-weight: bold;background-color: red; color:white; clear:left;"
+          styleOld="font-weight: bold;background-color: red; color:white; clear:left;"
           rendered="#{iFeedModelBean.group == null}"
-          styleClass="ltr-flowing-item ifeed-border"
+          styleClassOld="ltr-flowing-item ifeed-border"
           value="Ingen grupp är vald"/>
 
 </ui:composition>

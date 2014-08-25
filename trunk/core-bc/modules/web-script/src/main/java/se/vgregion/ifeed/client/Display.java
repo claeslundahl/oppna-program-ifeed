@@ -7,6 +7,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import se.vgregion.ifeed.shared.ColumnDef;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -3,6 +3,7 @@ package se.vgregion.ifeed.client;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.junit.Test;
+import se.vgregion.ifeed.shared.ColumnDef;
 
 import java.util.List;
 

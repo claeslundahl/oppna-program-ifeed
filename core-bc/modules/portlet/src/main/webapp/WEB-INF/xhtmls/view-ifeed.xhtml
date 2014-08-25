@@ -14,6 +14,7 @@
 
     <div class="ifeed-buttons" style="float: right">
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
+                     rendered="#{app.inEditMode}"
                      ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
       </p:commandLink>
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Ändra" update=":ifeed_view"
@@ -25,6 +26,7 @@
                      ajax="true" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
       </p:commandLink>
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
+                     rendered="#{app.isInEditMode()}"
                      ajax="true" async="true" actionListener="#{app.update()}">
       </p:commandLink>
     </div>
@@ -43,7 +45,13 @@
         <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a>
         <a href="#{app.getWebFeedLink()}" target="_blank">Html</a>
         <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a>
-        <a href="${showEditJsonpUrl}" class="rp-overlay-link">EPI-konfiguration (JSON)</a>
+        <!--<a href="${showEditJsonpUrl}" class="rp-overlay-link">EPI-konfiguration (JSON)</a>-->
+        <p:commandLink value="EPI-konfiguration (JSON)"
+                       actionListener="#{tableDef.setFeedId(iFeedModelBean.id)}"
+                       ajax="true"
+                       update=":ifeed_view"
+                       immediate="true">
+        </p:commandLink>
 
         <br></br>
         <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
@@ -56,7 +64,7 @@
         <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
         <h:outputText value="#{iFeedModelBean.id}"></h:outputText>
         <br></br>
-        <h:outputText style="font-weight: bold;" value="Ägare: "/>
+        <span><i class="icon-user"></i>&#160;Ägare:</span>
         <h:outputText value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
                       rendered="#{not app.inEditMode}"/>
         <p:autoComplete id="createOwnershipInput"
@@ -67,17 +75,13 @@
                         multiple="false"/>
 
         <br></br>
+        <ui:include src="show-department-and-group.xhtml"/>
       </div>
-    </div>
 
-  </div>
-
-  <ui:include src="show-department-and-group.xhtml"/>
-
-  <div>
-    <span style="font-weight: bold;background-color: rgb(40, 101, 173); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
-          class="ltr-flowing-item ifeed-border">
-      Administratörer:
+      <div style="clear: left;">
+    <span styleOld="font-weight: bold;background-color: rgb(40, 101, 173); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+          class="ltr-flowing-item">
+      <i class="icon-user"></i>&#160;Administratörer:
     </span>
     <span>
       <p:autoComplete id="createNewAdminInput"
@@ -88,8 +92,8 @@
                       styleClass="createNewAdminInput master-item"
                       multiple="false"/>
 
-      <p:commandLink styleClass="ltr-flowing-item ifeed-border"
-                     style="background-color: green; color: black;"
+      <p:commandLink styleClass="ltr-flowing-item"
+                     styleOld="background-color: green; color: black;"
                      value="Lägg till"
                      update=":ifeed_view"
                      rendered="#{app.inEditMode}"
@@ -97,8 +101,8 @@
       </p:commandLink>
     </span>
 
-    <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="item" id="owners" varStatus="status">
-    <span class="ltr-flowing-item ifeed-border sub-item">
+        <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="item" id="owners" varStatus="status">
+    <span class="ltr-flowing-item">
       <span class="name">#{app.fetchLdapPersonFullName(item.userId)} (#{item.userId})</span>
       <span class="remove">
         <p:commandLink value="X" update=":ifeed_view"
@@ -108,8 +112,13 @@
         </p:commandLink>
       </span>
     </span>
-    </ui:repeat>
+        </ui:repeat>
+      </div>
+
+    </div>
+
   </div>
+
 
   <div>
     <span class="ltr-flowing-item ifeed-border main-item" style="font-weight: bold;">
@@ -137,31 +146,8 @@
     <ui:include rendered="#{app.inEditMode}" src="add-filter.xhtml"/>
   </div>
 
-  <h3>Resultat</h3>
 
-  <div class="ifeedDocList"
-       columnes="dc.title|Titel|left|100"
-       fontSize="auto"
-       defaultsortcolumn="dc.title"
-       defaultsortorder="asc"
-       showTableHeader="yes"
-       linkOriginalDoc="no"
-       limit="500"
-       hiderightcolumn="yes"
-       feedid="#{iFeedModelBean.toSerializedText()}">
-  </div>
-  <noscript>
-    <iframe src='http://portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc'
-            id='iframenoscript'
-            name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
-    </iframe>
-  </noscript>
-
-  <script id="ifeed-data"
-          type="text/javascript"
-          location="http://vgwb0046.vgregion.se:8880"
-          src='http://vgwb0046.vgregion.se:8880/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js'>
-  </script>
+  <ui:include src="results.xhtml"/>
 
 
   <ui:include src="select-department-dialog.xhtml"/>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+        rendered="#{not iFeedModelBean.getFilters().isEmpty()}"
+        xmlns:portlet="http://java.sun.com/portlet_2_0">
+
+  <h3>Resultat</h3>
+
+  <div class="ifeedDocList"
+       columnes="dc.title|Titel|left|100"
+       fontSize="auto"
+       defaultsortcolumn="dc.title"
+       defaultsortorder="asc"
+       showTableHeader="yes"
+       linkOriginalDoc="no"
+       limit="500"
+       hiderightcolumn="yes"
+       feedid="#{iFeedModelBean.toSerializedText()}">
+  </div>
+  <noscript>
+    <iframe src='http://portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc'
+            id='iframenoscript'
+            name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
+    </iframe>
+  </noscript>
+
+  <script id="ifeed-data"
+          type="text/javascript"
+          location="http://vgwb0046.vgregion.se:8880"
+          src='http://vgwb0046.vgregion.se:8880/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js'>
+
+  </script>
+
+  <script id="ifeed-data" type="text/javascript">
+    if (&#33;window['se_vgregion_ifeed_Module2'])
+        window.se_vgregion_ifeed_Module2 = se_vgregion_ifeed_Module;
+
+    if (window.se_vgregion_ifeed_Module2 != se_vgregion_ifeed_Module) {
+        console.log('Kör initieringen igen.');
+        se_vgregion_ifeed_Module2();
+        console.log('Det blev inget fel... ivf.');
+    }
+  </script>
+
+</ui:composition>

@@ -8,6 +8,7 @@ import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ifeed.types.Ownership;
+import se.vgregion.ifeed.types.VgrDepartment;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -23,6 +24,8 @@ public class IFeedModelBean extends IFeed implements Serializable {
     private static final long serialVersionUID = -2277251806545192506L;
 
     private String ownershipUserIds;
+
+    private IFeed initalFeed;
 
     public IFeedModelBean() {
 
@@ -58,8 +61,12 @@ public class IFeedModelBean extends IFeed implements Serializable {
         ownershipsAsList = null;
         filtersAsList = null;
         copy(iFeed, this);
+        getOwnerships().clear();
         getOwnerships().addAll(iFeed.getOwnerships());
         newOwnershipNames = new MirrorOwnershipToTextList(getOwnerships());
+        setGroup(iFeed.getGroup());
+        setDepartment(iFeed.getDepartment());
+        setInitalFeed(iFeed);
     }
 
     //List for display purposes
@@ -191,9 +198,16 @@ public class IFeedModelBean extends IFeed implements Serializable {
     public IFeed toIFeed() {
         IFeed iFeed = new IFeed();
         copy(this, iFeed);
-        for (Ownership ownership : iFeed.getOwnerships()) {
-            ownership.setIfeed(iFeed);
+        for (Ownership ownership : getOwnerships()) {
+            Ownership no = new Ownership();
+            copy(ownership, no);
+            no.setIfeed(iFeed);
+            no.setIfeedId(iFeed.getId());
+            iFeed.getOwnerships().add(no);
         }
+        /*iFeed.getOwnerships().addAll(getOwnerships());*/
+        iFeed.setDepartment(getDepartment());
+        iFeed.setGroup(getGroup());
         return iFeed;
     }
 
@@ -261,5 +275,21 @@ public class IFeedModelBean extends IFeed implements Serializable {
         boolean result = super.addFilter(filter);
         filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
         return result;
+    }
+
+    @Override
+    public void setDepartment(VgrDepartment department) {
+        if (department == null) {
+            setGroup(null);
+        }
+        super.setDepartment(department);
+    }
+
+    public IFeed getInitalFeed() {
+        return initalFeed;
+    }
+
+    public void setInitalFeed(IFeed initalFeed) {
+        this.initalFeed = initalFeed;
     }
 }

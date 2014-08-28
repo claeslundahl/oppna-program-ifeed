@@ -194,7 +194,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return ownerships;
     }
 
-    public void setOwnerships(Set<Ownership> ownerships) {
+    private void setOwnerships(Set<Ownership> ownerships) {
         this.ownerships = ownerships;
     }
 

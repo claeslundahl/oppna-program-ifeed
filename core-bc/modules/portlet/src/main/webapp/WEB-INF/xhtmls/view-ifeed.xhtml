@@ -14,20 +14,19 @@
 
     <div class="ifeed-buttons" style="float: right">
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
-                     rendered="#{app.inEditMode}"
-                     ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
+                     ajax="false" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
       </p:commandLink>
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Ändra" update=":ifeed_view"
                      rendered="#{not app.inEditMode and app.mayEditFeed(request, iFeedModelBean)}"
-                     ajax="true" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
+                     ajax="false" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
       </p:commandLink>
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Stäng ändringsläge" update=":ifeed_view"
                      rendered="#{app.inEditMode}"
-                     ajax="true" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
+                     ajax="false" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
       </p:commandLink>
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
                      rendered="#{app.isInEditMode()}"
-                     ajax="true" async="true" actionListener="#{app.update()}">
+                     ajax="false" async="true" actionListener="#{app.update()}">
       </p:commandLink>
     </div>
 
@@ -54,17 +53,7 @@
         </p:commandLink>
 
         <br></br>
-        <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
-        <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"
-                      rendered="#{not app.inEditMode}"/>
-        <h:selectBooleanCheckbox value="#{iFeedModelBean.linkNativeDocument}" rendered="#{app.inEditMode}" ajax="true"/>
-      </div>
-
-      <div class="ifeed-columns-right">
-        <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
-        <h:outputText value="#{iFeedModelBean.id}"></h:outputText>
-        <br></br>
-        <span><i class="icon-user"></i>&#160;Ägare:</span>
+        <span style="font-weight: bold;"><i class="icon-user"></i>&#160;Ägare:</span>
         <h:outputText value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
                       rendered="#{not app.inEditMode}"/>
         <p:autoComplete id="createOwnershipInput"
@@ -73,16 +62,29 @@
                         forceSelection="true"
                         rendered="#{app.inEditMode}"
                         multiple="false"/>
+      </div>
+
+      <div class="ifeed-columns-right">
+        <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
+        <h:outputText value="#{iFeedModelBean.id}"></h:outputText>
+        <br></br>
+
+        <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
+        <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"
+                      rendered="#{not app.inEditMode}"/>
+        <h:selectBooleanCheckbox value="#{iFeedModelBean.linkNativeDocument}" rendered="#{app.inEditMode}" ajax="true"/>
+
 
         <br></br>
         <ui:include src="show-department-and-group.xhtml"/>
       </div>
 
       <div style="clear: left;">
-    <span styleOld="font-weight: bold;background-color: rgb(40, 101, 173); color:white; clear:left; *display: inline; display: inline-block; zoom: 1;"
+    <span style="font-weight: bold;"
           class="ltr-flowing-item">
       <i class="icon-user"></i>&#160;Administratörer:
     </span>
+        <h:panelGroup id="iFeedDetailsAdmin">
     <span>
       <p:autoComplete id="createNewAdminInput"
                       value="#{app.newOwnershipUserId}"
@@ -95,24 +97,27 @@
       <p:commandLink styleClass="ltr-flowing-item"
                      styleOld="background-color: green; color: black;"
                      value="Lägg till"
-                     update=":ifeed_view"
+                     update="iFeedDetailsAdmin"
                      rendered="#{app.inEditMode}"
                      ajax="true" async="true" actionListener="#{app.createNewOwnership()}">
       </p:commandLink>
     </span>
 
-        <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="item" id="owners" varStatus="status">
-    <span class="ltr-flowing-item">
-      <span class="name">#{app.fetchLdapPersonFullName(item.userId)} (#{item.userId})</span>
-      <span class="remove">
-        <p:commandLink value="X" update=":ifeed_view"
-                       rendered="#{app.inEditMode}"
-                       styleClass=""
-                       ajax="true" async="true" actionListener="#{iFeedModelBean.getOwnershipsAsList().remove(item)}">
-        </p:commandLink>
-      </span>
-    </span>
-        </ui:repeat>
+          <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="item" id="owners" varStatus="status">
+          <span class="ltr-flowing-item">
+            <span class="name">#{app.fetchLdapPersonFullName(item.userId)} (#{item.userId})</span>
+            <span class="remove">
+              <p:commandLink value="X" update=":ifeed_view"
+                             rendered="#{app.inEditMode}"
+                             styleClass=""
+                             ajax="true" async="true"
+                             actionListener="#{iFeedModelBean.getOwnershipsAsList().remove(item)}">
+              </p:commandLink>
+            </span>
+          </span>
+          </ui:repeat>
+        </h:panelGroup>
+
       </div>
 
     </div>
@@ -150,6 +155,6 @@
   <ui:include src="results.xhtml"/>
 
 
-  <ui:include src="select-department-dialog.xhtml"/>
+  <!--<ui:include src="select-department-dialog.xhtml"/>-->
 
 </ui:composition>

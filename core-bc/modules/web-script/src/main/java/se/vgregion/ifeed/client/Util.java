@@ -194,6 +194,11 @@ public class Util {
         Element dataUrl = DOM.getElementById("ifeed-data");
         if (dataUrl != null) {
             url = dataUrl.getAttribute("location");
+        } else {
+            Element dataUrl2 = DOM.getElementById("ifeed-data2");
+            if (dataUrl2 != null) {
+                url = dataUrl2.getInnerText().trim();
+            }
         }
 
         if (url == null || "".equals(url)) {

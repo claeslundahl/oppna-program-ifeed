@@ -51,6 +51,9 @@ public class EditIFeedBackingBean implements Serializable {
     @Value("#{filterModelBean}")
     private FilterModelBean filterModelBean;
 
+    @Value("#{app}")
+    private Application app;
+
     public FilterModelBean getFilterModelBean() {
         return filterModelBean;
     }
@@ -71,54 +74,41 @@ public class EditIFeedBackingBean implements Serializable {
     }
 
     public void addIFeed() {
-
+        //iFeedModelBean.clearBean();
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
 
-        IFeed iFeed = new IFeed();
-        iFeed.setName(iFeedModelBean.getName());
+        IFeed iFeed = iFeedModelBean.toIFeed();
+        /*iFeed.setName(iFeedModelBean.getName());
         iFeed.setDescription(iFeedModelBean.getDescription());
-        iFeed.setUserId(getRemoteUserId(portletRequest));
+        iFeed.setUserId(app.getCurrentUser().getScreenName());*/
 
+        /*
         Ownership ownership = new Ownership();
         ownership.setIfeed(iFeed);
-        ownership.setUserId(getRemoteUserId(portletRequest));
+        ownership.setUserId(app.getCurrentUser().getScreenName());
         iFeed.getOwnerships().add(ownership);
+        */
+        iFeed.setUserId(app.getCurrentUser().getScreenName());
 
-        // For testing purposes. TODO: remove this when ready...
-        Ownership ownership2 = new Ownership();
-
-        ownership2.setIfeed(iFeed);
-        ownership2.setUserId("Jane Doe");
-        iFeed.getOwnerships().add(ownership2);
-
-        for (Ownership ownership1 : iFeed.getOwnerships()) {
-            String id = ownership1.getUserId();
-        }
-
-        iFeed = iFeedService.addIFeed(iFeed);
         try {
+            iFeed = iFeedService.addIFeed(iFeed);
+            iFeedModelBean.copyValuesFromIFeed(iFeed);
             ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
             long companyId = themeDisplay.getCompanyId();
             long userId = themeDisplay.getUserId();
             resourceLocalService.addResources(companyId, 0, userId, IFeed.class.getName(), iFeed.getId().longValue(), false, false, true);
         } catch (PortalException e) {
-
             e.printStackTrace();
         } catch (SystemException e) {
-
             e.printStackTrace();
         }
 
         navigationModelBean.setUiNavigation("VIEW_IFEED");
-
-     /*   iFeedModelBean.setName("");
-        iFeedModelBean.setDescription("");*/
-
     }
 
 
-    private String getRemoteUserId(PortletRequest request) {
+    /*private String getRemoteUserId(PortletRequest request) {
         @SuppressWarnings("unchecked")
         Map<String, ?> userInfo = (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
         String userId = "";
@@ -126,7 +116,7 @@ public class EditIFeedBackingBean implements Serializable {
             userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
         }
         return userId;
-    }
+    }*/
 
     public IFeedService getIFeedService() {
         return iFeedService;

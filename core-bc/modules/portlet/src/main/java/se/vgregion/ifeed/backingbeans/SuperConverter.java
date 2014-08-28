@@ -1,54 +1,58 @@
 package se.vgregion.ifeed.backingbeans;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.types.VgrDepartment;
+import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+import se.vgregion.ifeed.types.VgrGroup;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
-@FacesConverter(value = "departmentConverter")
-public class DepartmentConverter implements Converter {
+public abstract class SuperConverter<T extends AbstractEntity> implements Converter {
 
-    private static Map<Long, VgrDepartment> cache = new HashMap<Long, VgrDepartment>();
+    //private Map<Long, T> cache = new HashMap<Long, T>();
+
+    private static final WeakHashMap cache = new WeakHashMap();
+
+    protected String ownClassName = getClass().getSimpleName();
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component,
-            String value) {
+                              String value) {
         if (value == null || "-".equals(value)) {
             return null;
         }
 
-        Long id = Long.parseLong(value);
+        //String id = ownClassName + Long.parseLong(value);
+        String id = toKey(value);
 
         if (!cache.containsKey(id)) {
             /*VgrDepartment vgrDepartment = new VgrDepartment();
             vgrDepartment.setId(Long.parseLong(value));
             return vgrDepartment;*/
-            throw new NullPointerException("Did not find a matching VgrDepartment for id " + id + " in cache.");
+            throw new NullPointerException("Did not find a matching entity for id " + id + " in cache.");
         } else {
             return cache.get(id);
         }
     }
- 
+
     @Override
     public String getAsString(FacesContext context, UIComponent component,
-            Object value) {
+                              Object value) {
         if (value == null) {
             return null;
         }
-        VgrDepartment department = (VgrDepartment) value;
-        cache.put(department.getId(), department);
+        T department = (T) value;
+        String id = toKey(department.getId());
+        cache.put(id, department);
         return department.getId() + "";
     }
- 
+
+    private String toKey(Object id) {
+        return ownClassName + ":" + id;
+    }
+
 }

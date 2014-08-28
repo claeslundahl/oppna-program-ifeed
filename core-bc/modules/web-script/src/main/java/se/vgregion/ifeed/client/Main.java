@@ -4,12 +4,17 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -36,20 +41,43 @@ public class Main implements EntryPoint {
 
     private static int batchSize = 200;
 
+    HandlerRegistration handler;
+
     /**
      * Here the execution of the code starts.
      */
     @Override
     public void onModuleLoad() {
-        Element body = RootPanel.getBodyElement();
+        final Element body = RootPanel.getBodyElement();
         if (body == null) Window.alert("Did not find the body!");
         List<Element> result = ElementUtil.findByCssClass(body, "ifeedDocList");
         ifeedDocLists = result;
         fetchNext();
+
+        com.google.gwt.dom.client.Element rerunIfeedLoadingElement = Document.get().getElementById("rerun-ifeed-loading");
+        if (rerunIfeedLoadingElement != null) {
+            Button rerunIfeedLoadingButton = Button.wrap(rerunIfeedLoadingElement);
+            Util.log("rerunIfeedLoadingButton");
+            Util.log(rerunIfeedLoadingButton);
+            if (rerunIfeedLoadingButton != null) {
+                if (handler != null) {
+                    handler.removeHandler();
+                }
+                handler = rerunIfeedLoadingButton.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        List<Element> oldElements = ElementUtil.findByCssClass(body, "doc-list");
+                        for (Element oldElement : oldElements) {
+                            oldElement.removeFromParent();
+                        }
+                        onModuleLoad();
+                    }
+                });
+            }
+        }
     }
 
     private void fetchNext() {
-        // Util.log("fetchNext start " + ifeedDocLists.size());
         if (ifeedDocLists.isEmpty()) {
             return;
         }
@@ -58,7 +86,6 @@ public class Main implements EntryPoint {
         hideRightEpiServerColumn(tableDef);
         tableDefs.add(tableDef);
         fetch(tableDef);
-        //Util.log("fetchNext end " + ifeedDocLists.size());
     }
 
     private void hideRightEpiServerColumn(TableDef tableDef) {

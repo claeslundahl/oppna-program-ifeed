@@ -14,7 +14,7 @@
   <br></br> <br></br>
 
   <p:commandLink style="float: right;"
-                 actionListener="#{navigationModelBean.setUiNavigation('ADD_IFEED')}"
+                 actionListener="#{app.goToAddIfeed()}"
                  styleClass="rp-link-button rp-link-button-alt" value="Lägg till iFeed"
                  update="ifeed_view" ajax="true" async="true"/>
 
@@ -43,7 +43,7 @@
           action="#{filter.setUserId(null)}"
           update=":ifeed_view"
           ajax="false"
-          value="Visa allas"
+          value="Visa alla"
           styleClass="rp-link-button rp-link-button-alt"
           async="true">
   </p:commandLink>

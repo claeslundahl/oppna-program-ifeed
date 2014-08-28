@@ -6,8 +6,9 @@
 
 
   <p:panel styleClass="filter-root" id="add-ifeed-filters" rendered="#{app.inEditMode}">
-    <h3>Lägg till nytt filter</h3>
-    <ui:repeat value="#{app.filters}" var="ifeedFilter" varStatus="status">
+    <h3>Lägg till nytt filter #{app == null or app.getFilters() == null}</h3>
+
+    <ui:repeat value="#{app.getFilters()}" var="ifeedFilter" varStatus="status">
       <span class="">
       <p:commandLink styleClass="main-item ltr-flowing-item" value="#{ifeedFilter.name} #{ifeedFilter.expanded ? '(-)': '(+)'}"
                      update=":ifeed_view"

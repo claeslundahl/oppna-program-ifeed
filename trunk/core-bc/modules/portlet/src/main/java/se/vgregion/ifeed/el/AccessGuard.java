@@ -34,7 +34,10 @@ public class AccessGuard {
 			throw new RuntimeException(se);
 		}
         String screenName = user.getScreenName();
-		if (screenName.equals(feed.getUserId())) {
+        if (feed.getUserId() == null) {
+            return true;
+        }
+        if (screenName.equals(feed.getUserId())) {
 			return true;
 		}
 

@@ -7,31 +7,39 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import java.util.HashMap;
+import java.util.Map;
 
 @FacesConverter(value = "groupConverter")
-public class GroupConverter implements Converter {
+public class GroupConverter /* extends SuperConverter<VgrGroup>*/ implements Converter {
+
+    private static Map<Long, VgrGroup> cache = new HashMap<Long, VgrGroup>();
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component,
-            String value) {
+                              String value) {
         if (value == null || "-".equals(value)) {
             return null;
         }
 
-        VgrGroup vgrGroup = new VgrGroup();
-        vgrGroup.setId(Long.parseLong(value));
+        Long id = Long.parseLong(value);
 
-        return vgrGroup;
+        if (!cache.containsKey(id)) {
+            throw new NullPointerException("Did not find a matching VgrGroup for id " + id + " in cache.");
+        } else {
+            return cache.get(id);
+        }
     }
- 
+
     @Override
     public String getAsString(FacesContext context, UIComponent component,
-            Object value) {
+                              Object value) {
         if (value == null) {
             return null;
         }
-        VgrGroup group = (VgrGroup) value;
-        return group.getId() + "";
+        VgrGroup department = (VgrGroup) value;
+        cache.put(department.getId(), department);
+        return department.getId() + "";
     }
  
 }

@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.backingbeans;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,6 @@ public class NavigationModelBean implements Serializable {
     //For ui navigation purposes
     private String uiNavigation = "USER_IFEEDS";
 
-
     public String getUiNavigation() {
         return uiNavigation;
     }
@@ -23,4 +23,5 @@ public class NavigationModelBean implements Serializable {
     public void setUiNavigation(String uiNavigation) {
         this.uiNavigation = uiNavigation;
     }
+
 }

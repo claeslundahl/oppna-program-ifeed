@@ -70,8 +70,6 @@ public class Application {
     @Autowired
     private UriTemplate iFeedJsonFeed;
 
-
-
     private String solrServiceUrl;
 
     private VgrGroup group;
@@ -102,6 +100,15 @@ public class Application {
 
     @Autowired
     private LdapSupportService ldapOrganizationService;
+
+    public Application() {
+    }
+
+    @PostConstruct
+    public void init() {
+        filter.setUserId(getCurrentUser().getScreenName());
+        filters = iFeedService.getFieldInfs();
+    }
 
     public List<IFeed> list() {
         return iFeedService.getIFeedsByFilter(filter);
@@ -139,11 +146,23 @@ public class Application {
     }
 
     public void viewIFeed(Long id) throws PortalException, SystemException {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        PortletRequest request = (PortletRequest) externalContext.getRequest();
-        User user = getUser(request);
+        //FacesContext facesContext = FacesContext.getCurrentInstance();
+        //ExternalContext externalContext = facesContext.getExternalContext();
+        //PortletRequest request = (PortletRequest) externalContext.getRequest();
+        //User user = getUser(request);
         IFeed feed = iFeedService.getIFeed(id);
+
+        /*for (Ownership ownership : feed.getOwnerships()) {
+            assert ownership != null;
+        }
+
+        for (IFeedFilter feedFilter : feed.getFilters()) {
+            assert feedFilter != null;
+        }
+
+        if (feed.getDepartment() != null) {
+            feed.getDepartment().getVgrGroups();
+        }*/
 
         List<FieldsInf> fieldsInfs = iFeedService.getFieldsInfs();
         this.fieldsInf = fieldsInfs.get(fieldsInfs.size() - 1);
@@ -310,6 +329,9 @@ public class Application {
     }
 
     public boolean mayEditFeed(PortletRequest request, IFeed feed) throws SystemException, PortalException {
+        if (iFeedModelBean.getInitalFeed() != null && iFeedModelBean.getInitalFeed().getId().equals(feed.getId())) {
+            return AccessGuard.mayEditFeed(getUser(request), iFeedModelBean.getInitalFeed());
+        }
         return AccessGuard.mayEditFeed(getUser(request), feed);
     }
 
@@ -465,6 +487,12 @@ public class Application {
 
     public void showMyFeeds() {
         filter.setCreatorName(getCurrentUser().getScreenName());
+    }
+
+    public void goToAddIfeed() {
+        iFeedModelBean.clearBean();
+        navigationModelBean.setUiNavigation("ADD_IFEED");
+        setInEditMode(true);
     }
 
 }

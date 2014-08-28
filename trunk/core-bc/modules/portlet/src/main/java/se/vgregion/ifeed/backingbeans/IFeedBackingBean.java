@@ -102,7 +102,8 @@ public class IFeedBackingBean implements Serializable {
                 IFeedModelBean iFeedModelBean1 = new IFeedModelBean();
                 iFeedModelBean1.setDescription(iFeed.getDescription());
                 iFeedModelBean1.setName(iFeed.getName());
-                iFeedModelBean1.setOwnerships(iFeed.getOwnerships());
+                //iFeedModelBean1.setOwnerships(iFeed.getOwnerships());
+                iFeedModelBean1.getOwnerships().addAll(iFeed.getOwnerships());
                 iFeedModelBean1.setId(iFeed.getId());
 
                 iFeedModelBeans.add(iFeedModelBean1);
@@ -138,7 +139,8 @@ public class IFeedBackingBean implements Serializable {
                 IFeedModelBean iFeedModelBean1 = new IFeedModelBean();
                 iFeedModelBean1.setDescription(iFeed.getDescription());
                 iFeedModelBean1.setName(iFeed.getName());
-                iFeedModelBean1.setOwnerships(iFeed.getOwnerships());
+                //iFeedModelBean1.setOwnerships(iFeed.getOwnerships());
+                iFeedModelBean1.getOwnerships().addAll(iFeed.getOwnerships());
                 iFeedModelBean1.setId(iFeed.getId());
 
                 userIFeedModelBeans.add(iFeedModelBean1);
@@ -196,15 +198,11 @@ public class IFeedBackingBean implements Serializable {
     }
 
     public void viewIFeed(Long id) throws PortalException, SystemException {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        PortletRequest request = (PortletRequest) externalContext.getRequest();
-
-        User user = getUser(request);
-
+        //FacesContext facesContext = FacesContext.getCurrentInstance();
+        //ExternalContext externalContext = facesContext.getExternalContext();
+        //PortletRequest request = (PortletRequest) externalContext.getRequest();
         IFeed feed = iFeedService.getIFeed(id);
         iFeedModelBean.copyValuesFromIFeed(feed);
-
         navigationModelBean.setUiNavigation("VIEW_IFEED");
     }
 

@@ -80,6 +80,8 @@
     <div class="hd"><span>iFeed Manager</span></div>
     <div class="bd">
 
+      <button id="rerun-ifeed-loading" style="display: none;"></button>
+
       <h:form id="ifeed_view">
 
         <!-- Panel for navigation inside IFeed portlet -->
@@ -118,7 +120,6 @@
   </div>
 
   <script type="text/javascript">
-    console.log('Before reging the sv_SE calendar translation.');
     PrimeFaces.locales ['sv_SE'] = {
       closeText: 'Stäng',
       prevText: 'Föregående',
@@ -145,7 +146,6 @@
       day: 'dag',
       allDayText: 'Hela dagen'
     };
-    console.log('After reging the sv_SE calendar translation.');
   </script>
 
 </f:view>

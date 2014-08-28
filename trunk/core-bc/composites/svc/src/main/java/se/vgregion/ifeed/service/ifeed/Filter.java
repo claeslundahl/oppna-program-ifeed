@@ -30,7 +30,7 @@ public class Filter extends IFeed {
             sb.append(join(condition, " and "));
         }
 
-        return sb.toString();
+        return sb.toString() + " order by o.name";
     }
 
     private void addConditionIfAnyValue(String jpql, Object value, List<Object> sb, List<Object> values) {

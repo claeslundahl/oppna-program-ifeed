@@ -43,13 +43,12 @@
                            ajax="true"
                            id="holaBandola"
                            value="#{filter.department}">
-            <f:selectItem itemLabel="-" itemValue="#{null}" />
+            <f:selectItem itemLabel="-" itemValue="#{null}"/>
             <f:selectItems value="#{app.getVgrDepartments()}"
-                           var="i" itemLabel="#{i.name}" itemValue="#{i}" />
+                           var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
             <f:ajax render="ifeed_view"/>
           </h:selectOneMenu>
         </th>
-
         <th class="filter-result-h">
           <h:selectOneMenu style="text-align:left;"
                            converter="groupConverter"
@@ -57,13 +56,12 @@
                            ajax="true"
                            rendered="#{filter.department != null}"
                            value="#{filter.group}">
-            <f:selectItem itemLabel="-" itemValue="#{null}" />
+            <f:selectItem itemLabel="-" itemValue="#{null}"/>
             <f:selectItems value="#{filter.department.vgrGroups}"
-                           var="i" itemLabel="#{i.name}" itemValue="#{i}" />
+                           var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
             <f:ajax render="ifeed_view"/>
           </h:selectOneMenu>
         </th>
-
         <th class="filter-result-d">
         </th>
       </tr>

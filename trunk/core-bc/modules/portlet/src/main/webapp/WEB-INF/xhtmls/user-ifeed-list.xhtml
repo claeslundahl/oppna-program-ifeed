@@ -31,7 +31,7 @@
                  update="ifeed_view" ajax="true" async="true"/>
 
   <p:commandLink
-          action="#{filter.setUserId(app.getCurrentUser().getScreenName())}"
+          actionListener="#{app.setFilterUserId(app.getCurrentUser().getScreenName())}"
           update=":ifeed_view"
           ajax="false"
           value="Visa mina"
@@ -40,7 +40,7 @@
   </p:commandLink>
 
   <p:commandLink
-          action="#{filter.setUserId(null)}"
+          actionListener="#{app.setFilterUserId(null)}"
           update=":ifeed_view"
           ajax="false"
           value="Visa alla"

@@ -28,6 +28,7 @@ import se.vgregion.ldap.person.Person;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -100,6 +101,7 @@ public class Application {
 
     @Autowired
     private LdapSupportService ldapOrganizationService;
+    private List<IFeed> page;
 
     public Application() {
     }
@@ -108,17 +110,31 @@ public class Application {
     public void init() {
         filter.setUserId(getCurrentUser().getScreenName());
         filters = iFeedService.getFieldInfs();
+        if (filter != null){
+            updateQuery();
+            System.out.println("Hej Knekt! foo boo");
+        }
     }
 
     public List<IFeed> list() {
         return iFeedService.getIFeedsByFilter(filter);
     }
 
+    public List<IFeed> updateQuery() {
+        try {
+            List<IFeed> result = iFeedService.getIFeedsByFilter(filter);
+            int start = Math.min(getCurrentSpanStart(), result.size());
+            int end = Math.min(getCurrentSpanEnd(), result.size());
+            page = result.subList(start, end);
+            return page;
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getLocalizedMessage()));
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<IFeed> page() {
-        List<IFeed> result = iFeedService.getIFeedsByFilter(filter);
-        int start = Math.min(getCurrentSpanStart(), result.size());
-        int end = Math.min(getCurrentSpanEnd(), result.size());
-        return result.subList(start, end);
+        return page;
     }
 
     private int getCurrentSpanStart() {
@@ -216,10 +232,12 @@ public class Application {
     }
 
     public void createNewOwnership() {
-        Ownership ownership = new Ownership();
-        ownership.setUserId(newOwnershipUserId);
-        ownership.setIfeedId(iFeedModelBean.getId());
-        iFeedModelBean.getOwnershipsAsList().add(ownership);
+        if (newOwnershipUserId != null && !newOwnershipUserId.trim().isEmpty()) {
+            Ownership ownership = new Ownership();
+            ownership.setUserId(newOwnershipUserId);
+            ownership.setIfeedId(iFeedModelBean.getId());
+            iFeedModelBean.getOwnershipsAsList().add(ownership);
+        }
     }
 
     public void update() {
@@ -494,5 +512,12 @@ public class Application {
         navigationModelBean.setUiNavigation("ADD_IFEED");
         setInEditMode(true);
     }
+
+    public void setFilterUserId(String id) {
+        filter.setUserId(id);
+        updateQuery();
+    }
+
+
 
 }

@@ -45,7 +45,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     public List<VgrDepartment> getVgrDepartments() {
-        Collection<VgrDepartment> result = departmentRepo.findByQuery("select distinct o from " + VgrDepartment.class.getSimpleName() + " o left join fetch o.vgrGroups");
+        Collection<VgrDepartment> result = departmentRepo.findByQuery("select distinct o from " + VgrDepartment.class.getSimpleName() + " o left join fetch o.vgrGroups g order by o.name, g.name");
         return new ArrayList<VgrDepartment>(result);
     }
 

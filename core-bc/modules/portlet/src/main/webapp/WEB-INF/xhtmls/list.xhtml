@@ -5,11 +5,12 @@
         xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
         xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-  <h:head>
+  <h:head></h:head>
 
-  </h:head>
+  <h:messages />
 
-  <div class="ui-datatable-tablewrapper">
+  <h:panelGroup id="resultGroup">
+    <div class="ui-datatable-tablewrapper">
     <table class="rp-table">
       <thead>
       <tr>
@@ -22,18 +23,18 @@
       </tr>
       <tr>
         <th class="filter-result-h">
-          <h:inputText value="${filter.name}">
-            <f:ajax render="ifeed_view"/>
+          <h:inputText value="${filter.name}" listener="#{app.updateQuery}">
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
           </h:inputText>
         </th>
         <th class="filter-result-h">
           <h:inputText value="${filter.userId}">
-            <f:ajax render="ifeed_view"/>
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
           </h:inputText>
         </th>
         <th class="filter-result-h">
           <h:inputText value="${filter.description}">
-            <f:ajax render="ifeed_view"/>
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
           </h:inputText>
         </th>
         <th class="filter-result-h">
@@ -41,17 +42,18 @@
                            converter="departmentConverter"
                            update=":ifeed_view"
                            ajax="true"
-                           id="holaBandola"
+                           id="filterOnDepartment"
                            value="#{filter.department}">
             <f:selectItem itemLabel="-" itemValue="#{null}"/>
             <f:selectItems value="#{app.getVgrDepartments()}"
                            var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-            <f:ajax render="ifeed_view"/>
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
           </h:selectOneMenu>
         </th>
         <th class="filter-result-h">
           <h:selectOneMenu style="text-align:left;"
                            converter="groupConverter"
+                           id="filterOnGroup"
                            update=":ifeed_view"
                            ajax="true"
                            rendered="#{filter.department != null}"
@@ -59,7 +61,7 @@
             <f:selectItem itemLabel="-" itemValue="#{null}"/>
             <f:selectItems value="#{filter.department.vgrGroups}"
                            var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-            <f:ajax render="ifeed_view"/>
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
           </h:selectOneMenu>
         </th>
         <th class="filter-result-d">
@@ -84,7 +86,7 @@
                     styleClass="link-button-trash"
                     update=":ifeed_view"
                     ajax="false"
-                    rendered="#{app.mayEditFeed(request, item)}"
+                    rendered="#{item != null and app.mayEditFeed(request, item)}"
                     onclick="confirm('Är du säker du vill radera den här posten?')"
                     async="true">
             </p:commandLink>
@@ -94,4 +96,5 @@
       </tbody>
     </table>
   </div>
+  </h:panelGroup>
 </f:view>

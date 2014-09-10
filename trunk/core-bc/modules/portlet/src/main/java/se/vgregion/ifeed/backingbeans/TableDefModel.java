@@ -71,6 +71,14 @@ public class TableDefModel extends IfeedDynamicTableDef {
         return result;
     }
 
+    @Override
+    public String getFeedId() {
+        if (app.getIFeedModelBean() != null) {
+            return app.getIFeedModelBean().getId() + "";
+        }
+        return super.getFeedId();
+    }
+
     private static <T> T format(T s) {
         if (s == null) {
             throw new NullPointerException();

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import se.vgregion.ifeed.controller.EditIFeedController;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.VgrDepartment;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -20,5 +21,13 @@ import java.util.List;
 @Component(value = "filter")
 @Scope("session")
 public class FilterModel extends Filter {
+
+    @Override
+    public void setDepartment(VgrDepartment department) {
+        if (department == null) {
+            setGroup(null);
+        }
+        super.setDepartment(department);
+    }
 
 }

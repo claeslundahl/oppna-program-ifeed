@@ -16,6 +16,9 @@ public class SolrQueryEscaper {
     private static final String[] SPECIAL_CHAR_PAIR_ESCAPED = { "\\&&", "\\||" };
 
     public static String escape(String query) {
+        if (query == null) {
+            query = "";
+        }
         StringBuilder sb = new StringBuilder(query.length());
 
         for (char ch : query.toCharArray()) {

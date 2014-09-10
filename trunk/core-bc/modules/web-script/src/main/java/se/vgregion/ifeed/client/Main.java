@@ -57,8 +57,7 @@ public class Main implements EntryPoint {
         com.google.gwt.dom.client.Element rerunIfeedLoadingElement = Document.get().getElementById("rerun-ifeed-loading");
         if (rerunIfeedLoadingElement != null) {
             Button rerunIfeedLoadingButton = Button.wrap(rerunIfeedLoadingElement);
-            Util.log("rerunIfeedLoadingButton");
-            Util.log(rerunIfeedLoadingButton);
+            //Util.log("rerunIfeedLoadingButton"); Util.log(rerunIfeedLoadingButton);
             if (rerunIfeedLoadingButton != null) {
                 if (handler != null) {
                     handler.removeHandler();

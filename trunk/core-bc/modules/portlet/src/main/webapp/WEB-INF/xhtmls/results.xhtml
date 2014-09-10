@@ -10,7 +10,7 @@
     <h3>Resultat</h3>
 
     <div class="ifeedDocList"
-         columnes="dc.title|Titel|left|100"
+         columnes="dc.title|Titel|left|,dc.date.issued|Publicerat|left|"
          fontSize="auto"
          defaultsortcolumn="dc.title"
          defaultsortorder="asc"
@@ -27,18 +27,17 @@
       </iframe>
     </noscript>
 
-    <script id="ifeed-data"
-            type="text/javascript"
-            location="http://vgwb0046.vgregion.se:8880"
-            src='http://vgwb0046.vgregion.se:8880/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js'>
-
-    </script>
-
-    <span style="display:none" id="ifeed-data2">http://vgwb0046.vgregion.se:8880</span>
-
-    <script id="ifeed-data" type="text/javascript">
+    <script type="text/javascript">
       var button = document.getElementById('rerun-ifeed-loading');
       if (button) button.click();
     </script>
   </h:panelGroup>
+
+  <span style="display:none" id="ifeed-data2">http://vgwb0046.vgregion.se:8880</span>
+  <script id="ifeed-data"
+          type="text/javascript"
+          location="http://vgwb0046.vgregion.se:8880"
+          src='http://vgwb0046.vgregion.se:8880/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js'>
+  </script>
+
 </ui:composition>

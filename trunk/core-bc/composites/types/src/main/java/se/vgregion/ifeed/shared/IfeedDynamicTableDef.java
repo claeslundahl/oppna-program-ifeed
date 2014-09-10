@@ -1,12 +1,14 @@
 package se.vgregion.ifeed.shared;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by clalu4 on 2014-08-21.
  */
-public class IfeedDynamicTableDef {
+public class IfeedDynamicTableDef implements Serializable {
 
     private String fontSize;
     private String defaultSortColumn;

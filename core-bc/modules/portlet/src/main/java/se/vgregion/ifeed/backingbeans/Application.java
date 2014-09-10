@@ -6,6 +6,7 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.service.ResourceLocalService;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
+import com.sun.faces.component.visit.FullVisitContext;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
+import se.vgregion.ifeed.shared.IfeedDynamicTableDef;
 import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.HasCommonLdapFields;
 import se.vgregion.ldap.LdapSupportService;
@@ -29,6 +31,11 @@ import se.vgregion.ldap.person.Person;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.visit.VisitCallback;
+import javax.faces.component.visit.VisitContext;
+import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -92,12 +99,16 @@ public class Application {
 
     @Value("#{navigationModelBean}")
     private NavigationModelBean navigationModelBean;
+
     private FieldsInf fieldsInf;
+
     private List<FieldInf> filters;
 
     private List<VgrDepartment> selectableDepartments;
 
     private VgrOrganization organizationToChoose;
+
+    //@Value("#{tableDef}")    private TableDefModel tableDef;
 
     @Autowired
     private LdapSupportService ldapOrganizationService;
@@ -110,7 +121,7 @@ public class Application {
     public void init() {
         filter.setUserId(getCurrentUser().getScreenName());
         filters = iFeedService.getFieldInfs();
-        if (filter != null){
+        if (filter != null) {
             updateQuery();
             System.out.println("Hej Knekt! foo boo");
         }
@@ -284,14 +295,6 @@ public class Application {
         return vocabulary;
     }
 
-    public List<String> completeFixText(String apelonKey, String textToComplete) {
-        List<String> result = new ArrayList<String>();
-        result.add("foo");
-        result.add("bar");
-        result.add("baz");
-        return result;
-    }
-
     public List<VgrDepartment> getVgrDepartments() {
         return iFeedService.getVgrDepartments();
     }
@@ -320,8 +323,13 @@ public class Application {
         this.department = department;
     }
 
+    public void editDepartment(VgrDepartment department) {
+        setDepartment(department);
+        navigationModelBean.setUiNavigation("EDIT_DEPARTMENT");
+    }
+
     public void createNewDepartment() {
-        setDepartment(new VgrDepartment());
+        editDepartment(new VgrDepartment());
     }
 
     public void saveDepartment() {
@@ -336,6 +344,7 @@ public class Application {
 
     public void cancelDepartment() {
         department = null;
+        navigationModelBean.setUiNavigation("ADMIN_DEPARTMENTS");
     }
 
     public List<VgrDepartment> getDepartments() {
@@ -365,10 +374,9 @@ public class Application {
         User u = null;
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext externalContext = fc.getExternalContext();
-        if (externalContext.getUserPrincipal() == null){
+        if (externalContext.getUserPrincipal() == null) {
             System.out.println("current principal is null");
-        }
-        else{
+        } else {
             Long id = Long.parseLong(externalContext.getUserPrincipal().getName());
             try {
                 u = UserLocalServiceUtil.getUserById(id);
@@ -392,7 +400,8 @@ public class Application {
     }
 
     public void createGroup() {
-        group = new VgrGroup();
+        //group = new VgrGroup();
+        getDepartment().getVgrGroups().add(new VgrGroup());
     }
 
     public void cancelGroup() {
@@ -519,5 +528,36 @@ public class Application {
     }
 
 
+    public UIComponent findComponent(final String id) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot root = context.getViewRoot();
+        final UIComponent[] found = new UIComponent[1];
+        final List<String> idPath = new ArrayList<String>();
+        root.visitTree(new FullVisitContext(context), new VisitCallback() {
+            @Override
+            public VisitResult visit(VisitContext context, UIComponent component) {
+                if (component.getId().equals(id)) {
+                    found[0] = component;
+                    return VisitResult.COMPLETE;
+                }
+                return VisitResult.ACCEPT;
+            }
+        });
+        String longId = findComponentLongId(found[0]);
+        System.out.println(longId);
+        return found[0];
+    }
 
+    public String findComponentLongId(UIComponent component) {
+        if (component.getParent() == null) {
+            return "";
+        }
+        return findComponentLongId(component.getParent()) + ":" + component.getId();
+    }
+
+
+
+    public IFeedModelBean getIFeedModelBean() {
+        return iFeedModelBean;
+    }
 }

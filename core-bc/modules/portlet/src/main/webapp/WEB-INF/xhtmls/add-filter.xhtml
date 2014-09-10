@@ -4,31 +4,47 @@
         xmlns:portlet="http://java.sun.com/portlet_2_0">
 
 
-
   <p:panel styleClass="filter-root" id="add-ifeed-filters" rendered="#{app.inEditMode}">
-    <h3>Lägg till nytt filter #{app == null or app.getFilters() == null}</h3>
+    <h3>Lägg till nytt filter</h3>
 
-    <ui:repeat value="#{app.getFilters()}" var="ifeedFilter" varStatus="status">
-      <span class="">
-      <p:commandLink styleClass="main-item ltr-flowing-item" value="#{ifeedFilter.name} #{ifeedFilter.expanded ? '(-)': '(+)'}"
-                     update=":ifeed_view"
-                     ajax="true"
-                     async="true"
-                     actionListener="#{ifeedFilter.setExpanded(!ifeedFilter.isExpanded())}">
-      </p:commandLink>
+    <table class="ifeed-filters">
+      <ui:repeat value="#{app.getFilters()}" var="ifeedFilter" varStatus="status">
+        <tr>
+          <td colspan="2">
+            <p:commandLink styleClassFoo="main-item ltr-flowing-item"
+                           value="#{ifeedFilter.name} #{ifeedFilter.expanded ? '(-)': '(+)'}"
+                           update=":ifeed_view"
+                           ajax="true"
+                           async="true"
+                           title="#{ifeedFilter.help}"
+                           actionListener="#{ifeedFilter.setExpanded(!ifeedFilter.isExpanded())}">
+            </p:commandLink>
+          </td>
+        </tr>
 
-        <ui:repeat value="#{ifeedFilter.children}" var="child" rendered="#{ifeedFilter.expanded}">
-          <p:commandLink styleClass="sub-item ltr-flowing-item" value="#{child.name}"
-                         update=":ifeed_view"
-                         ajax="true" async="true"
-                         actionListener="#{app.setNewFilter(child)}">
-          </p:commandLink>
-        </ui:repeat>
+        <ui:fragment rendered="#{ifeedFilter.expanded}">
+          <ui:repeat value="#{ifeedFilter.children}" var="child" varStatus="vs4filterLoop">
+            <tr>
+              <ui:fragment rendered="#{vs4filterLoop.index == 0}">
+                <td rowspan="#{ifeedFilter.children.size()}"></td>
+              </ui:fragment>
+              <td>
+                <p:commandLink styleClassFoo="sub-item ltr-flowing-item" value="#{child.name}"
+                               update=":ifeed_view"
+                               ajax="true" async="true"
+                               title="#{child.help}"
+                               actionListener="#{app.setNewFilter(child)}">
+                </p:commandLink>
+              </td>
+            </tr>
+          </ui:repeat>
+        </ui:fragment>
 
-      </span>
-    </ui:repeat>
+
+      </ui:repeat>
+    </table>
   </p:panel>
 
-  <ui:include src="add-filter-dialog.xhtml"></ui:include>
+
 
 </f:view>

@@ -24,4 +24,8 @@ public class NavigationModelBean implements Serializable {
         this.uiNavigation = uiNavigation;
     }
 
+
+
+
+
 }

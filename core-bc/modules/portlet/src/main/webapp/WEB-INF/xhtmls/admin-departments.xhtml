@@ -33,12 +33,12 @@
       </tr>
       </thead>
       <tbody class="ui-datatable-data ui-widget-content">
-      <ui:repeat value="#{app.getVgrDepartments()}" var="department" id="departments" varStatus="status">
+      <ui:repeat value="#{app.getVgrDepartments()}" var="department" varStatus="status">
         <tr class="ui-widget-content #{status.even ? 'ui-datatable-even' : 'ui-datatable-odd'}">
           <td>
             <p:commandLink update=":ifeed_view" ajax="false" async="true"
                            value="#{department.name}"
-                           actionListener="#{app.setDepartment(department)}"/>
+                           actionListener="#{app.editDepartment(department)}"/>
           </td>
           <td>${department.description}</td>
           <td>
@@ -51,7 +51,6 @@
           </td>
           <td>${department.id}</td>
           <td>
-
             <p:commandLink
                     action="#{app.deleteDepartment(department)}"
                     styleClass="link-button-trash"
@@ -65,83 +64,5 @@
       </tbody>
     </table>
   </div>
-
-  <p:panel rendered="#{app.department != null}">
-    <span style="background-color:#111;opacity: 0.65;*background:none;position:absolute;z-index: 99;top:0px;left:0px;width:100%;"></span>
-
-    <div style="position:fixed;background-color:white;top:25%;width:400px;height:400px;border:1px solid #000;z-index: 100;">
-      <h4>Namn</h4>
-      <h:inputText value="#{app.department.name}" style="width: 90%;"></h:inputText>
-      <h4>Beskrivning</h4>
-      <h:inputTextarea value="#{app.department.description}" style="width: 90%;"></h:inputTextarea>
-
-      <div>
-      <span class="border"
-            style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
-        Grupper
-        <p:commandLink value="(Lägg till)" update=":ifeed_view"
-                       styleClass=""
-                       ajax="true" async="true"
-                       rendered="#{app.group == null}"
-                       actionListener="#{app.createGroup()}">
-        </p:commandLink>
-        :
-      </span>
-
-        <p:panel rendered="#{app.group != null}">
-          <h:inputText value="#{app.group.name}" rendered="#{app.group != null}"
-                       style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
-          </h:inputText>
-
-          <div style="*display: inline; display: inline-block; zoom: 1; position: absolute; right: 1px;">
-            <p:commandLink value="Ångra" update=":ifeed_view"
-                           ajax="true" async="true"
-                           rendered="#{app.group != null}"
-                           styleClass="rp-link-button"
-                           style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px; background-color:red;"
-                           actionListener="#{app.cancelGroup()}">
-            </p:commandLink>
-
-            <p:commandLink value="Ok" update=":ifeed_view"
-                           ajax="true" async="true"
-                           rendered="#{app.group != null}"
-                           styleClass="rp-link-button"
-                           style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px; background-color:green;"
-                           actionListener="#{app.insertGroup()}">
-            </p:commandLink>
-          </div>
-        </p:panel>
-
-        <ui:repeat value="#{app.department.getVgrGroups()}" var="group">
-              <span class="ltr-flowing-item border"
-                    style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
-                #{group.name}
-                        <p:commandLink value="X" update=":ifeed_view"
-                                       styleClass=""
-                                       ajax="true" async="true"
-                                       actionListener="#{app.removeDepartmentsGroup(group)}">
-                        </p:commandLink>
-              </span>
-        </ui:repeat>
-
-        <div style="position: absolute; left: 10px; bottom: 10px;">
-          <p:commandLink update=":ifeed_view" ajax="false" async="true"
-                         value="Spara"
-                         styleClass="rp-link-button rp-link-button-alt"
-                         style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px; background-color:green;"
-                         actionListener="#{app.saveDepartment()}"/>
-
-          <p:commandLink update=":ifeed_view" ajax="false" async="true"
-                         value="Avbryt"
-                         styleClass="rp-link-button rp-link-button-alt"
-                         style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px; background-color:green;"
-                         actionListener="#{app.cancelDepartment()}"/>
-        </div>
-
-      </div>
-
-    </div>
-
-  </p:panel>
 
 </f:view>

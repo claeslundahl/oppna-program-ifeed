@@ -6,81 +6,29 @@
                 xmlns:aui="http://liferay.com/faces/aui"
                 xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-  <p:panel rendered="#{app.newFilter != null and app.inEditMode}">
+<p:panel rendered="#{app.newFilter != null and app.inEditMode}">
 
-    <span style="background-color:#111;opacity: 0.65;*background:none;position:absolute;z-index: 99;top:0px;left:0px;width:100%;"></span>
 
-    <div class="ifeed-border rp-ifeed-popup" style="max-width:600px;">
 
-      <h2>#{app.newFilter.name}</h2>
+<div class="main" role="main">
+  <!-- A modal with its content -->
+  <section class="semantic-content" id="modal-text" tabindex="-1"
+           role="dialog" aria-labelledby="modal-label" aria-hidden="true">
 
-      <div class="box">
-        #{app.newFilter.help}
+    <div class="modal-inner">
+      <header id="modal-label">Lägg till filter</header>
+      <div class="modal-content">
+        <!-- The modals content -->
+        <ui:include src="add-filter-content.xhtml"/>
       </div>
-
-      <div class="rp-filter-value-input">
-
-      <h:inputText value="#{app.newFilter.value}"
-                   rendered="#{app.newFilter.type != 'd:datetime' and app.newFilter.type != 'd:text_fix' and app.newFilter.type != 'd:date' and app.newFilter.type != 'd:ldap_value' and app.newFilter.type != 'd:text_facet' and app.newFilter.type != 'd:ldap_org_value'}">
-      </h:inputText>
-
-      <p:panel rendered="#{app.newFilter.type == 'd:ldap_org_value'}">
-        <ui:include src="organization-tree.xhtml" />
-      </p:panel>
-
-      <p:dataTable rendered="#{null}"></p:dataTable>
-
-      <p:calendar rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
-                  navigator="false"
-                  readOnlyInput="false"
-                  value="#{app.newFilter.value}"
-                  lang="sv_SE"
-                  pattern="yyyy-MM-dd">
-        <f:converter converterId="textDateConverter"/>
-      </p:calendar>
-
-      <p:autoComplete value="#{app.newFilter.value}"
-                      rendered="#{app.newFilter.type == 'd:ldap_value'}"
-                      completeMethod="#{app.completeUserName}"
-                      forceSelection="true"
-                      style="z-index: 101"
-                      styleClass="background: aliceblue; height: 24px; top: 4px; position: relative;"
-                      multiple="false"/>
-
-      <p:autoComplete value="#{app.newFilter.value}"
-                      rendered="#{app.newFilter.type == 'd:text_facet'}"
-                      completeMethod="#{app.newFilterSuggestion}"
-                      forceSelection="false"
-                      style="z-index: 101; background: aliceblue; height: 24px; top: 4px; position: relative;"
-                      multiple="false"/>
-
-      <h:selectOneMenu value="#{app.newFilter.value}"
-                       rendered="#{app.newFilter.type == 'd:text_fix'}">
-        <f:selectItems value="#{app.getVocabulary(app.newFilter.apelonKey)}"/>
-      </h:selectOneMenu>
-
-      </div>
-
-      <div class="box">
-        <p:commandLink styleClass="rp-link-button rp-link-button-alt"
-                       value="Avbryt"
-                       ajax="true"
-                       async="true"
-                       update=":ifeed_view"
-                       actionListener="#{app.cancelNewFilter(app.newFilter)}">
-        </p:commandLink>
-
-        <p:commandLink styleClass="rp-link-button rp-link-button-alt"
-                       value="Lägg till"
-                       ajax="true"
-                       async="true"
-                       update=":ifeed_view"
-                       actionListener="#{app.addNewFilter(app.newFilter)}">
-        </p:commandLink>
-      </div>
-
+      <footer><!-- Footer --></footer>
     </div>
 
-  </p:panel>
+    <a href="#!" class="modal-close" title="Close this modal" data-close="Close" data-dismiss="modal">×</a>
+  </section>
+</div>
+<a href="#modal-text" class="call-modal" title="Clicking this link shows the modal">Text</a>
+
+</p:panel>
 
 </ui:composition>

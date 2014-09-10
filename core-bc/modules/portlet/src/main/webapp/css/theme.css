@@ -403,15 +403,14 @@ body .ui-dialog .ui-dialog-buttonpane {
     margin-right: auto;
 }
 
-body .ui-dialog .ui-dialog-content {
+/*body .ui-dialog .ui-dialog-content {
     width: 300px;
     text-align: center;
 }
 
 body .ui-dialog {
     width: 300px;
-
-}
+}*/
 
 body .ui-widget-content {
     background-color: #FFFFFF;
@@ -1005,7 +1004,7 @@ margin-bottom: 5px;*/
     -webkit-border-radius: 3px;
     border-radius: 3px;
     padding: 10px;
-    margin-top: 42px;
+    margin-top: 5px;
     margin-bottom: 5px;
     clear: both;
     margin-right: 8px;

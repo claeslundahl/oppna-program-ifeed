@@ -4,13 +4,8 @@
                 xmlns:aui="http://liferay.com/faces/aui"
                 xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-  <h:outputText
-          styleOld="font-weight: bold;background-color: rgb(40, 101, 173); color:white;"
-          style="font-weight: bold;"
-          styleClassOld="ltr-flowing-item ifeed-border"
-          value="Förvaltning / Grupp: "/>
-
-  <h:panelGroup id="viewIfeedDepartmentAndGroup" rendered="#{app.isInEditMode()}">
+  <h:outputText style="font-weight: bold;" value="Förvaltning: "/>
+  <h:panelGroup id="viewIfeedDepartment" rendered="#{app.isInEditMode()}">
     <h:selectOneMenu style="text-align:left;"
                      converter="departmentConverter"
                      update="viewIfeedDepartmentAndGroup"
@@ -22,9 +17,14 @@
       <f:selectItem itemLabel="-" itemValue="#{null}"/>
       <f:selectItems value="#{app.getVgrDepartments()}"
                      var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-      <f:ajax render="viewIfeedDepartmentAndGroup" />
+      <f:ajax render="viewIfeedDepartment"/>
+      <f:ajax render="viewIfeedGroup"/>
     </h:selectOneMenu>
-    <h:outputText value="/"/>
+  </h:panelGroup>
+
+  <h:outputText style="font-weight: bold;" value="Grupp: " rendered="#{app.isInEditMode()}"/>
+
+  <h:panelGroup id="viewIfeedGroup" rendered="#{app.isInEditMode()}">
     <h:selectOneMenu style="text-align:left;"
                      converter="groupConverter"
                      update="viewIfeedDepartmentAndGroup"
@@ -34,34 +34,19 @@
       <f:selectItem itemLabel="-" itemValue="#{null}"/>
       <f:selectItems value="#{iFeedModelBean.department.vgrGroups}"
                      var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-      <f:ajax render="viewIfeedDepartmentAndGroup" />
+      <f:ajax render="viewIfeedDepartment"/>
+      <f:ajax render="viewIfeedGroup"/>
     </h:selectOneMenu>
   </h:panelGroup>
 
+  <h:outputText
+          rendered="#{!app.isInEditMode() and iFeedModelBean.department != null and !app.isInEditMode()}"
+          value="#{iFeedModelBean.department.name}"/>
 
-  <!--<p:commandLink value="Ändra Förvaltning / Grupp: " update=":ifeed_view"
-                 style="font-weight: bold;"
-                 rendered="#{app.inEditMode}"
-                 ajax="false" async="true" actionListener="#{app.setSelectableDepartments(app.getVgrDepartments())}">
-  </p:commandLink>
+  <h:outputText style="font-weight: bold;" value="Grupp:" rendered="#{!app.isInEditMode()}"/>
 
   <h:outputText
-          rendered="#{iFeedModelBean.department == null}"
-          value="Ingen förvaltning är vald"/>
--->
-
-  <h:panelGroup rendered="#{!app.isInEditMode()}">
-    <h:outputText
-            rendered="#{iFeedModelBean.group != null and !app.isInEditMode()}"
-            value="#{iFeedModelBean.group.name}"/>
-    <h:outputText value="/"/>
-    <h:outputText
-            rendered="#{iFeedModelBean.department != null and !app.isInEditMode()}"
-            value="#{iFeedModelBean.department.name}"/>
-  </h:panelGroup>
-
-  <!--  <h:outputText
-            rendered="#{iFeedModelBean.group == null}"
-            value="Ingen grupp är vald"/>-->
+          rendered="#{!app.isInEditMode() and iFeedModelBean.group != null and !app.isInEditMode()}"
+          value="#{iFeedModelBean.group.name}"/>
 
 </ui:composition>

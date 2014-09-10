@@ -7,24 +7,24 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
       xmlns:tp="http://ifeed.vgregion.com/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-  <p:treeTable value="#{vgrOrganizationsHome.getRoot()}" var="document" styleClass="rp-table" id="selectVgrOrganizationTree">
+  <p:treeTable value="#{vgrOrganizationsHome.getRoot()}" var="document123" styleClass="rp-table" id="selectVgrOrganizationTree">
     <f:facet name="header">
       Välj enhetens Hsa-Id som sökvärde: #{app.newFilter.value}
     </f:facet>
-    <p:column headerText="Öppna (genom att klicka på) namnet">
+    <p:column headerText="Öppna (genom att klicka på) namnet" id="open-column">
       <p:commandLink update="selectVgrOrganizationTree" title="Öppna"
-                     value="#{document.getLabel()}"
+                     value="#{document123.getLabel()}"
                      ajax="true"
-                     rendered="#{document.leaf == true or document.leaf == null}"
-                     actionListener="#{vgrOrganizationsHome.loadChildren(document)}">
+                     rendered="#{document123.leaf == true or document123.leaf == null}"
+                     actionListener="#{vgrOrganizationsHome.loadChildren(document123)}">
       </p:commandLink>
-      #{document.leaf == false ? document.getLabel() : ''}
+      #{document123.leaf == false ? document123.getLabel() : ''}
     </p:column>
-    <p:column headerText="Välj (genom att klicka) Hsa-Id">
+    <p:column headerText="Välj (genom att klicka) Hsa-Id" id="select-column">
       <p:commandLink update="selectVgrOrganizationTree" title="Välj"
-                     value="#{document.getHsaIdentity()}"
+                     value="#{document123.getHsaIdentity()}"
                      ajax="true"
-                     actionListener="#{app.newFilter.setValue(document.getHsaIdentity())}">
+                     actionListener="#{app.newFilter.setValue(document123.getHsaIdentity())}">
       </p:commandLink>
     </p:column>
   </p:treeTable>

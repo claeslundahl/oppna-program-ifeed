@@ -29,6 +29,7 @@ public class ColumnDef {
 
     public void setName(String name) {
         this.name = name;
+        System.out.println("asdf " + name);
     }
 
     public String getLabel() {

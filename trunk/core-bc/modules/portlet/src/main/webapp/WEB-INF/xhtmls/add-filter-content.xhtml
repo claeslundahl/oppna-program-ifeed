@@ -9,9 +9,12 @@
   <p:panel rendered="#{app.newFilter != null and app.inEditMode}">
     <div>
       <h:panelGrid columns="1" border="0" cellpadding="5" cellspacing="2">
-        <h3>#{app.newFilter.name}</h3>
+        <h3 id="new-filter-name">#{app.newFilter.name}</h3>
         <div class="box">
-          #{app.newFilter.help}
+          <h:panelGrid rendered="#{not empty app.newFilter.help}">
+            <img src="/rp-bootstrap-theme/images/icons/info.png" />
+            #{app.newFilter.help}
+          </h:panelGrid>
         </div>
         <div id="rp-filter-value-input">
           <h:inputText value="#{app.newFilter.value}"
@@ -71,6 +74,9 @@
       </h:panelGrid>
 
     </div>
+    <script type="text/javascript">
+      document.getElementById('new-filter-name').scrollIntoView(true);
+    </script>
   </p:panel>
 
 </ui:composition>

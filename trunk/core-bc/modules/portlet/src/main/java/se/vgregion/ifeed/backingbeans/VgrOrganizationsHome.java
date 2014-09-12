@@ -36,20 +36,29 @@ public class VgrOrganizationsHome implements Serializable {
         org.setDn("Ou=org");
         List<VgrOrganization> result = ldapOrganizationService.findChildNodes(org);
         return result;
+        /*loadChildren(org);
+        return org.getChildren();*/
     }
 
     public void loadChildren(VgrOrganization ofThisOrg) {
         ofThisOrg.setOpen(!ofThisOrg.isOpen());
         if (!ofThisOrg.isOpen()) {
-            ofThisOrg.getChildren().clear();
-        } else {
+            //ofThisOrg.getChildren().clear();
+        } else /*if (ofThisOrg.getChildren() == null || ofThisOrg.getChildren().isEmpty())*/ {
             VgrOrganization vo = new VgrOrganization();
             vo.setDn(ofThisOrg.getDn());
             List<VgrOrganization> result = ldapOrganizationService.findChildNodes(vo);
+            for (VgrOrganization child : result) {
+                VgrOrganization vo2 = new VgrOrganization();
+                vo2.setDn(child.getDn());
+                child.getChildren().addAll(ldapOrganizationService.findChildNodes(vo2));
+                child.setLeaf(child.getChildren().isEmpty());
+                //loadChildren(child);
+            }
             ofThisOrg.getChildren().clear();
             ofThisOrg.getChildren().addAll(result);
             toTreeNodes(organizations, root);
-            ofThisOrg.setLeaf(!result.isEmpty());
+            ofThisOrg.setLeaf(result.isEmpty());
         }
     }
 

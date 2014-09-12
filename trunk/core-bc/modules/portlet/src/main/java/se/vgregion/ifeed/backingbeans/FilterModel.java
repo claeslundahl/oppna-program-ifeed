@@ -2,6 +2,7 @@ package se.vgregion.ifeed.backingbeans;
 
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import org.apache.commons.collections.BeanMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,20 @@ public class FilterModel extends Filter {
             setGroup(null);
         }
         super.setDepartment(department);
+    }
+
+    public void clear() {
+        BeanMap bm = new BeanMap(this);
+        for (Object key : bm.keySet()) {
+            String name = (String) key;
+            if (bm.getWriteMethod(name) != null) {
+                try {
+                    bm.put(name, null);
+                } catch (Exception e) {
+
+                }
+            }
+        }
     }
 
 }

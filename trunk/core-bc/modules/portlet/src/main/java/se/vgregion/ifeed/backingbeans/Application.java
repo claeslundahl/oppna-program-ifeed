@@ -527,6 +527,11 @@ public class Application {
         updateQuery();
     }
 
+    public void clearFilter() {
+        filter.clear();
+        updateQuery();
+    }
+
 
     public UIComponent findComponent(final String id) {
         FacesContext context = FacesContext.getCurrentInstance();

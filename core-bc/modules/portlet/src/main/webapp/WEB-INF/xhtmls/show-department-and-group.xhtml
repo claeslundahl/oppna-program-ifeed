@@ -4,8 +4,9 @@
                 xmlns:aui="http://liferay.com/faces/aui"
                 xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-  <h:outputText style="font-weight: bold;" value="Förvaltning: "/>
   <h:panelGroup id="viewIfeedDepartment" rendered="#{app.isInEditMode()}">
+    <h:outputText style="font-weight: bold;" value="Förvaltning: "/>
+    <br/>
     <h:selectOneMenu style="text-align:left;"
                      converter="departmentConverter"
                      update="viewIfeedDepartmentAndGroup"
@@ -22,9 +23,9 @@
     </h:selectOneMenu>
   </h:panelGroup>
 
-  <h:outputText style="font-weight: bold;" value="Grupp: " rendered="#{app.isInEditMode()}"/>
-
   <h:panelGroup id="viewIfeedGroup" rendered="#{app.isInEditMode()}">
+    <h:outputText style="font-weight: bold;" value="Grupp: " rendered="#{app.isInEditMode()}"/>
+    <br/>
     <h:selectOneMenu style="text-align:left;"
                      converter="groupConverter"
                      update="viewIfeedDepartmentAndGroup"
@@ -39,14 +40,17 @@
     </h:selectOneMenu>
   </h:panelGroup>
 
-  <h:outputText
-          rendered="#{!app.isInEditMode() and iFeedModelBean.department != null and !app.isInEditMode()}"
-          value="#{iFeedModelBean.department.name}"/>
+  <h:panelGroup rendered="#{!app.isInEditMode() and iFeedModelBean.department != null and !app.isInEditMode()}">
+    <h:outputText style="font-weight: bold;" value="Förvaltning: "/>
+    <br/>
+    <h:outputText value="#{iFeedModelBean.department.name}"/>
+  </h:panelGroup>
 
-  <h:outputText style="font-weight: bold;" value="Grupp:" rendered="#{!app.isInEditMode()}"/>
-
-  <h:outputText
-          rendered="#{!app.isInEditMode() and iFeedModelBean.group != null and !app.isInEditMode()}"
-          value="#{iFeedModelBean.group.name}"/>
+  <h:panelGroup rendered="#{!app.isInEditMode() and iFeedModelBean.department != null and !app.isInEditMode()}">
+    <h:outputText style="font-weight: bold;" value="Grupp:" rendered="#{!app.isInEditMode()}"/><br/>
+    <h:outputText
+            rendered="#{!app.isInEditMode() and iFeedModelBean.group != null and !app.isInEditMode()}"
+            value="#{iFeedModelBean.group.name}"/>
+  </h:panelGroup>
 
 </ui:composition>

@@ -9,7 +9,14 @@
   <div style="overflow: hidden;">
 
     <div style="float: left;">
-      <h2>#{iFeedModelBean.name}</h2>
+      <h2>#{iFeedModelBean.name}
+
+        <h:panelGroup rendered="#{not empty iFeedModelBean.id}">(
+          <h:outputText value="Id: "></h:outputText>
+          <h:outputText value="#{iFeedModelBean.id}"></h:outputText>
+          )
+        </h:panelGroup>
+      </h2>
     </div>
 
     <div class="ifeed-buttons" style="float: right">
@@ -32,67 +39,84 @@
     </div>
 
     <h:panelGroup styleClass="border" style="display:block;" id="basicFeedInfo">
-      <h:panelGrid style="clear:both; border-spacing: 15px; border-collapse: separate;" columns="4" cellspacing="15">
-        <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
-        <h:outputText value="#{iFeedModelBean.description}" label="text" rendered="#{not app.inEditMode}"/>
-        <h:inputText value="#{iFeedModelBean.description}" label="text" rendered="#{app.inEditMode}"></h:inputText>
-
-        <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
-
-
+      <h:panelGrid style="clear:both; border-spacing: 10px; border-collapse: separate;" columns="2" cellspacing="10">
         <h:panelGroup>
-          <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a>
-          <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a>
-          <a href="#{app.getWebFeedLink()}" target="_blank">Html</a>
-          <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a>
-          <p:commandLink value="EPI-konfiguration (JSON)"
-                         actionListener="#{navigationModelBean.setUiNavigation('EDIT_JSONP')}"
-                         ajax="true"
-                         update=":ifeed_view"
-                         immediate="true">
-          </p:commandLink>
+          <h:outputText style="font-weight: bold;" value="Namn: "></h:outputText>
+          <br/>
+          <h:outputText value="#{iFeedModelBean.name}" label="text" rendered="#{not app.inEditMode}"/>
+          <h:inputText value="#{iFeedModelBean.name}" label="text" rendered="#{app.inEditMode}"></h:inputText>
         </h:panelGroup>
 
-        <span style="font-weight: bold;"><i class="icon-user"></i>&#160;Ägare:</span>
-        <h:outputText value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
-                      rendered="#{not app.inEditMode}"/>
-        <p:autoComplete id="createOwnershipInput"
-                        value="#{iFeedModelBean.userId}"
+        <h:panelGroup>
+          <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
+          <br/>
+          <h:outputText value="#{iFeedModelBean.description}" label="text" rendered="#{not app.inEditMode}"/>
+          <h:inputText value="#{iFeedModelBean.description}" label="text" rendered="#{app.inEditMode}"></h:inputText>
+        </h:panelGroup>
+
+        <h:panelGroup>
+          <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
+          <br/>
+          <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"
+                        rendered="#{not app.inEditMode}"/>
+          <h:selectBooleanCheckbox value="#{iFeedModelBean.linkNativeDocument}" rendered="#{app.inEditMode}"
+                                   ajax="true"/>
+        </h:panelGroup>
+
+        <h:panelGroup>
+          <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
+          <br/>
+          <h:panelGroup>
+            <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a>
+            <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a>
+            <a href="#{app.getWebFeedLink()}" target="_blank">Html</a>
+            <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a>
+            <p:commandLink value="EPI-konfiguration (JSON)"
+                           actionListener="#{navigationModelBean.setUiNavigation('EDIT_JSONP')}"
+                           ajax="true"
+                           update=":ifeed_view"
+                           immediate="true">
+            </p:commandLink>
+          </h:panelGroup>
+        </h:panelGroup>
+
+
+        <ui:include src="show-department-and-group.xhtml"/>
+
+        <h:panelGroup>
+          <span style="font-weight: bold; margin-left: 10px;"><i class="icon-user"></i>&#160;Ägare:</span><br/>
+          <h:outputText value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
+                        rendered="#{not app.inEditMode}"/>
+          <p:autoComplete id="createOwnershipInput"
+                          value="#{iFeedModelBean.userId}"
+                          completeMethod="#{app.completeUserName}"
+                          forceSelection="true"
+                          rendered="#{app.inEditMode}"
+                          multiple="false"/>
+        </h:panelGroup>
+
+
+      </h:panelGrid>
+
+      <div style="margin-left: 10px;">
+        <div style="font-weight: bold;"><i class="icon-user"></i>&#160;Administratörer:</div>
+
+        <p:autoComplete id="createNewAdminInput"
+                        value="#{app.newOwnershipUserId}"
                         completeMethod="#{app.completeUserName}"
                         forceSelection="true"
                         rendered="#{app.inEditMode}"
+                        styleClass="createNewAdminInput master-item"
                         multiple="false"/>
 
+        <p:commandLink styleClass="ltr-flowing-item"
+                       value="Lägg till"
+                       update="basicFeedInfo"
+                       rendered="#{app.inEditMode}"
+                       ajax="true" async="true" actionListener="#{app.createNewOwnership()}">
+        </p:commandLink>
 
-        <h:outputText style="font-weight: bold;" value="Id: "></h:outputText>
-        <h:outputText value="#{iFeedModelBean.id}"></h:outputText>
-        <ui:include src="show-department-and-group.xhtml"/>
-
-        <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
-        <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"
-                      rendered="#{not app.inEditMode}"/>
-        <h:selectBooleanCheckbox value="#{iFeedModelBean.linkNativeDocument}" rendered="#{app.inEditMode}" ajax="true"/>
-
-      </h:panelGrid>
-      <hr color="black" noshade="true" />
-      <span style="font-weight: bold; margin-left: 15px;"><i class="icon-user"></i>&#160;Administratörer:</span>
-
-      <p:commandLink styleClass="ltr-flowing-item"
-                     value="Lägg till"
-                     update="basicFeedInfo"
-                     rendered="#{app.inEditMode}"
-                     ajax="true" async="true" actionListener="#{app.createNewOwnership()}">
-      </p:commandLink>
-
-      <p:autoComplete id="createNewAdminInput"
-                      value="#{app.newOwnershipUserId}"
-                      completeMethod="#{app.completeUserName}"
-                      forceSelection="true"
-                      rendered="#{app.inEditMode}"
-                      styleClass="createNewAdminInput master-item"
-                      multiple="false"/>
-
-      <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="item" id="owners" varStatus="status">
+        <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="item" id="owners" varStatus="status">
           <span class="ltr-flowing-item">
             <span class="name">#{app.fetchLdapPersonFullName(item.userId)} (#{item.userId})</span>
             <span class="remove">
@@ -104,13 +128,14 @@
               </p:commandLink>
             </span>
           </span>
-      </ui:repeat>
+        </ui:repeat>
+      </div>
     </h:panelGroup>
   </div>
 
 
   <div>
-    <h3>
+    <h3 style="display: inline;">
       Filter:
     </h3>
     <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="item" varStatus="status">

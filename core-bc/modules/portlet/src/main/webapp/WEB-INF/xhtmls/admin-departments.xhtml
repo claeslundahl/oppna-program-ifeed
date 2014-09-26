@@ -32,7 +32,7 @@
       </tr>
       </thead>
       <tbody class="ui-datatable-data ui-widget-content">
-      <ui:repeat value="#{app.getVgrDepartments()}" var="department" varStatus="status">
+      <ui:repeat value="#{app.getVgrDepartments()}" var="department" varStatus="status" id="departmentsLoop">
         <tr class="ui-widget-content #{status.even ? 'ui-datatable-even' : 'ui-datatable-odd'}">
           <td>
             <p:commandLink update=":ifeed_view" ajax="false" async="true"

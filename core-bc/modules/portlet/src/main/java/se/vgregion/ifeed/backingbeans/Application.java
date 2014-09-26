@@ -65,6 +65,9 @@ public class Application {
     @Autowired
     private MetadataService metadataService;
 
+    @Autowired
+    private IFeedBackingBean iFeedBackingBean;
+
     //@Resource(name = "iFeedAtomFeed")
     @Autowired
     private UriTemplate iFeedAtomFeed;
@@ -244,10 +247,19 @@ public class Application {
 
     public void createNewOwnership() {
         if (newOwnershipUserId != null && !newOwnershipUserId.trim().isEmpty()) {
-            Ownership ownership = new Ownership();
-            ownership.setUserId(newOwnershipUserId);
-            ownership.setIfeedId(iFeedModelBean.getId());
-            iFeedModelBean.getOwnershipsAsList().add(ownership);
+            boolean addedAsOwnerAllready = false;
+            for (Ownership ownership : iFeedModelBean.getOwnerships()) {
+                if (ownership.getUserId().equals(newOwnershipUserId)) {
+                    addedAsOwnerAllready = true;
+                }
+            }
+            if (!addedAsOwnerAllready) {
+                Ownership ownership = new Ownership();
+                ownership.setUserId(newOwnershipUserId);
+                newOwnershipUserId = "";
+                ownership.setIfeedId(iFeedModelBean.getId());
+                iFeedModelBean.getOwnershipsAsList().add(ownership);
+            }
         }
     }
 
@@ -255,8 +267,11 @@ public class Application {
         try {
             System.out.println("bean.getOwnershipList().size(): " + iFeedModelBean.getOwnershipList().size());
             IFeed feed = iFeedModelBean.toIFeed();
-            iFeedService.update(feed);
-            navigationModelBean.setUiNavigation("USER_IFEEDS");
+            IFeed updated = iFeedService.update(feed);
+            iFeedModelBean.copyValuesFromIFeed(updated);
+            iFeedBackingBean.viewIFeed(updated.getId());
+            setInEditMode(false);
+            updateQuery();
         } catch (Exception e) {
             LOGGER.error("Trying to update IFeed failed. " + iFeedModelBean == null
                     ? "iFeedModelBean where null." : "iFeedModelBean.id = " + iFeedModelBean.getId(), e);
@@ -533,6 +548,41 @@ public class Application {
     }
 
 
+    public String fixDublicateIdProblem() {
+        FacesContext.getCurrentInstance().getViewRoot().setTransient(true);
+        return "";
+    }
+
+    public String traverse() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot root = context.getViewRoot();
+        final Set<String> passed = new TreeSet<String>();
+        root.visitTree(new FullVisitContext(context), new VisitCallback() {
+            @Override
+            public VisitResult visit(VisitContext context, UIComponent component) {
+                if (passed.contains(component.getId() + "")) {
+                    passed.add(component.getId() + "(DUBBEL)");
+                    if ("j_idt192".equals(component.getId())) {
+                        System.out.println("Found the shit!");
+                    }
+                } else {
+                    passed.add(component.getId() + "");
+                }
+
+                return VisitResult.ACCEPT;
+            }
+        });
+
+        return passed.toString();
+    }
+
+    long count;
+
+    public long nextCount() {
+        return count++;
+    }
+
+
     public UIComponent findComponent(final String id) {
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
@@ -559,7 +609,6 @@ public class Application {
         }
         return findComponentLongId(component.getParent()) + ":" + component.getId();
     }
-
 
 
     public IFeedModelBean getIFeedModelBean() {

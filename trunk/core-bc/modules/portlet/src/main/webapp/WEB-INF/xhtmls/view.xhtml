@@ -255,6 +255,10 @@
         <!-- Panel for navigation inside IFeed portlet -->
         <p:panel id="ifeed_panel" style="padding: 0px">
 
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'EDIT_JSONP'}">
+            <ui:include src="edit-jsonp.xhtml"/>
+          </p:panel>
+
           <p:panel rendered="#{navigationModelBean.uiNavigation eq 'ADMIN_DEPARTMENTS'}">
             <ui:include src="admin-departments.xhtml"/>
           </p:panel>
@@ -281,10 +285,6 @@
 
           <p:panel rendered="#{navigationModelBean.uiNavigation eq 'VIEW_IFEED'}">
             <ui:include src="view-ifeed.xhtml"/>
-          </p:panel>
-
-          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'EDIT_JSONP'}">
-            <ui:include src="edit-jsonp.xhtml"/>
           </p:panel>
 
         </p:panel>

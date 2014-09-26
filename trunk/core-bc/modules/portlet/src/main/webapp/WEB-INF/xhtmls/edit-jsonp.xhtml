@@ -6,6 +6,7 @@
               xmlns:fn="http://java.sun.com/jsp/jstl/functions"
               xmlns:portlet="http://java.sun.com/portlet_2_0">
 
+  <!-- #{app.fixDublicateIdProblem()} -->
 
   <h:panelGroup id="editJsonpDialogWindowFirst">
     <div>
@@ -98,25 +99,25 @@
         </tr>
         </thead>
 
-        <ui:repeat value="#{tableDef.getColumnDefs()}" var="colDef123">
+        <ui:repeat value="#{tableDef.getColumnDefs()}" var="colDef123" varStatus="colDefVarStatus">
           <tr>
             <td>
-              <h:selectOneMenu style="text-align:left;" value="#{colDef123.name}">
+              <h:selectOneMenu style="text-align:left;" value="#{colDef123.name}" id="name_#{colDefVarStatus.index}">
                 <f:selectItems value="#{app.fieldInfsAsSelectItemGroups()}" itemVar="f"
                                itemValue="#{f.value}" itemLabel="#{f.label}"/>
-                <f:ajax event="change" render=":ifeed_view" execute="@form"/>
+                <f:ajax event="change" render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
               </h:selectOneMenu>
 
             </td>
 
             <td>
-              <h:inputText value="#{colDef123.label}">
+              <h:inputText value="#{colDef123.label}" id="label_#{colDefVarStatus.index}">
                 <f:ajax event="change" render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
               </h:inputText>
             </td>
 
             <td>
-              <h:selectOneMenu style="text-align:left;" value="#{colDef123.alignment}">
+              <h:selectOneMenu style="text-align:left;" value="#{colDef123.alignment}" id="alignment_#{colDefVarStatus.index}">
                 <f:selectItem itemValue="left" itemLabel=" Vänsterställd kolumn "/>
                 <f:selectItem itemValue="right" itemLabel="Högerställd kolumn"/>
                 <f:selectItem itemValue="center" itemLabel="Centrerad kolumn"/>
@@ -125,13 +126,14 @@
             </td>
 
             <td>
-              <h:inputText value="#{colDef123.width}">
+              <h:inputText value="#{colDef123.width}" id="width_#{colDefVarStatus.index}">
                 <f:ajax event="change" render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
               </h:inputText>
             </td>
 
             <td>
               <h:commandLink styleClass="ui-commandlink ui-widget link-button-trash" value=" "
+                             id="trash_#{colDefVarStatus.index}"
                              action="#{tableDef.getColumnDefs().remove(colDef123)}">
                 <f:ajax render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
               </h:commandLink>
@@ -157,7 +159,9 @@
       <p:commandButton value="Stäng"
                        styleClass="rp-link-button rp-link-button-alt"
                        actionListener="#{navigationModelBean.setUiNavigation('VIEW_IFEED')}"
-                       ajax="false">
+                       id="closeEditJsonpViewLink"
+                       update=":ifeed_view"
+                       ajax="true">
       </p:commandButton>
     </div>
 

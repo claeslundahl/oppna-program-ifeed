@@ -71,7 +71,7 @@
 		    		
 		    		<div class="aui-field-multi-element">
 			    		<aui:select name="sortColumn" label="">
-							<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status">
+							<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status" id="iterateGetFieldInfs">
 								<optgroup label="${field.name}">
 									<c:forEach items="${field.filterCriteriaTypes}" var="option" varStatus="status2">
 									    <c:if test="${field.inHtmlView}">

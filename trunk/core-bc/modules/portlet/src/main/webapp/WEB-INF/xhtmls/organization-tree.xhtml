@@ -13,7 +13,7 @@
     <f:facet name="header">
       Välj enhetens Hsa-Id som sökvärde: #{app.newFilter.value}
     </f:facet>
-    <p:column headerText="Öppna (genom att klicka på) namnet" id="open-column">
+    <p:column headerText="Öppna (genom att klicka på) namnet" id="columnForClickInOrgTable#{app.nextCount()}">
 
       <h:panelGroup rendered="#{not document123.leaf and not document123.open}">
         <img src="/rp-bootstrap-theme/images/arrows/rp-arrow-right.png"/>

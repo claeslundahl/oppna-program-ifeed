@@ -8,7 +8,7 @@
     <h3>Lägg till nytt filter</h3>
 
     <table class="ifeed-filters">
-      <ui:repeat value="#{app.getFilters()}" var="ifeedFilter" varStatus="status">
+      <ui:repeat value="#{app.getFilters()}" var="ifeedFilter" varStatus="status" id="getFiltersLoop">
         <tr>
           <td colspan="2">
             <span title="#{ifeedFilter.help}" class="ifeed-filter-add"> </span>

@@ -12,6 +12,8 @@ public class EntryPopupPanel extends PopupPanel {
 
     private Entry entry;
 
+    FlexTable plate = new FlexTable();
+
     /**
      * Constructs an instance. Doing all the layout at once.
      * @param entry the data to render.
@@ -20,7 +22,6 @@ public class EntryPopupPanel extends PopupPanel {
         super();
         this.entry = entry;
 
-        FlexTable plate = new FlexTable();
         plate.addStyleName("ifeed-popup-inf");
 
         SimplePanel sp = new SimplePanel();
@@ -38,22 +39,15 @@ public class EntryPopupPanel extends PopupPanel {
         plate.getElement().getStyle().setMargin(2, Style.Unit.PX);
         plate.getFlexCellFormatter().setColSpan(row++, 0, 2);
 
-        //plate.setWidget(row, 0, new HTML("<hr/>"));
-        //plate.getFlexCellFormatter().setColSpan(row++, 0, 2);
-
-        plate.setText(row, 0, "Beskrivning:");
-        plate.getFlexCellFormatter().getElement(row,0).getStyle().setWidth(30, Style.Unit.PC);
-        plate.setText(row, 1, Util.formatValueForDisplay(entry, "dc.description"));
-        plate.getFlexCellFormatter().getElement(row++,1).getStyle().setWidth(70, Style.Unit.PC);
-        plate.setText(row, 0, "Publicerat för enhet:");
-        plate.setText(row++, 1, Util.formatValueForDisplay(entry, "dc.publisher.forunit"));
-        //dc.creator.function
-        plate.setText(row, 0, "Innehållsansvarig:");
-        plate.setText(row++, 1, Util.formatValueForDisplay(entry, "dc.creator.document")); //dc.creator.function DC.creator.document
-        plate.setText(row, 0, "Godkänt av:");
-        plate.setText(row++, 1, Util.formatValueForDisplay(entry, "dc.contributor.acceptedby.role"));
-        plate.setText(row, 0, "Typ av dokument:");
-        plate.setText(row++, 1, Util.formatValueForDisplay(entry, "dc.type.document.structure"));
+        addLabelAndDocumentMeta("Publicerat för enhet", "DC.publisher.forunit", row++);
+        addLabelAndDocumentMeta("Beskrivning", "DC.description", row++);
+        addLabelAndDocumentMeta("Innehållsansvarig", "DC.creator.document", row++);
+        addLabelAndDocumentMeta("Innehållsansvarig, roll", "DC.creator.function", row++);
+        addLabelAndDocumentMeta("Godkänt av", "DC.contributor.acceptedby", row++);
+        addLabelAndDocumentMeta("Godkänt av, roll", "DC.contributor.acceptedby.role", row++);
+        addLabelAndDocumentMeta("Giltig fr o m", "DC.date.validfrom", row++);
+        addLabelAndDocumentMeta("Giltig t o m", "DC.date.validto", row++);
+        addLabelAndDocumentMeta("Dokumentstruktur VGR", "DC.type.document.structure", row++);
 
         plate.getElement().getStyle().setWidth(500d, Style.Unit.PX);
         plate.getElement().getStyle().setBackgroundColor("white");
@@ -68,6 +62,15 @@ public class EntryPopupPanel extends PopupPanel {
         }, MouseOutEvent.getType());
 
         add(sp);
+    }
+
+    private void addLabelAndDocumentMeta(String explainingText, String keyToGetWithFromDocument, int row) {
+        keyToGetWithFromDocument = keyToGetWithFromDocument.toLowerCase();
+        plate.setText(row, 0, explainingText + ": ");
+        plate.getFlexCellFormatter().getElement(row, 0).getStyle().setWidth(30, Style.Unit.PC);
+        plate.getFlexCellFormatter().getElement(row, 0).getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+        plate.setText(row, 1, Util.formatValueForDisplay(entry, keyToGetWithFromDocument));
+        plate.getFlexCellFormatter().getElement(row, 1).getStyle().setWidth(70, Style.Unit.PC);
     }
 
 }

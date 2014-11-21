@@ -66,11 +66,14 @@ public class EntryPopupPanel extends PopupPanel {
 
     private void addLabelAndDocumentMeta(String explainingText, String keyToGetWithFromDocument, int row) {
         keyToGetWithFromDocument = keyToGetWithFromDocument.toLowerCase();
-        plate.setText(row, 0, explainingText + ": ");
-        plate.getFlexCellFormatter().getElement(row, 0).getStyle().setWidth(30, Style.Unit.PC);
-        plate.getFlexCellFormatter().getElement(row, 0).getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
-        plate.setText(row, 1, Util.formatValueForDisplay(entry, keyToGetWithFromDocument));
-        plate.getFlexCellFormatter().getElement(row, 1).getStyle().setWidth(70, Style.Unit.PC);
+        String propertyValue = Util.formatValueForDisplay(entry, keyToGetWithFromDocument);
+        if (propertyValue != null && !propertyValue.trim().isEmpty()) {
+            plate.setText(row, 0, explainingText + ": ");
+            plate.getFlexCellFormatter().getElement(row, 0).getStyle().setWidth(30, Style.Unit.PC);
+            plate.getFlexCellFormatter().getElement(row, 0).getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
+            plate.setText(row, 1, propertyValue);
+            plate.getFlexCellFormatter().getElement(row, 1).getStyle().setWidth(70, Style.Unit.PC);
+        }
     }
 
 }

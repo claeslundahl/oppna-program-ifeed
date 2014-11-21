@@ -293,6 +293,9 @@ public class IFeedViewerController {
             fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
             for (FieldInf fieldInf : fieldInfs) {
                 for (FieldInf child : fieldInf.getChildren()) {
+                    if (child.getId().equals("dcterms.audience") || child.getName().equals("dcterms.audience")){
+                        System.out.println("Hittade dcterms.audience inf");
+                    }
                     String childId = child.getId();
                     if (StringUtils.hasText(childId)) { // If it has an id it is not just a caption
                         // Does the document have any value for this field?

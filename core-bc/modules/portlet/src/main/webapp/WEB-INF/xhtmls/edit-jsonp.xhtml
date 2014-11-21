@@ -30,20 +30,20 @@
         </h:selectBooleanCheckbox>
         <h:outputText value="Vill du dölja högerkolumnen i EPI-server för att få mer plats?"/>
 
-        <h:outputText value="Välj sortering"/>
+        <h:outputText value="Välj sorterings-fält"/>
         <h:selectOneMenu style="text-align:left;" value="#{tableDef.defaultSortColumn}" id="defaultSortColumn1">
           <f:selectItems value="#{app.fieldInfsAsSelectItemGroups()}"/>
           <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
         </h:selectOneMenu>
-        <h:outputText value="Välj sorteringskolumn samt om sortering skall ske stigande eller fallande"/>
+        <h:outputText value="Välj sorteringskolumn"/>
 
-        <h:outputText value=""/>
+        <h:outputText value="Välj sorterings-ordning"/>
         <h:selectOneMenu style="text-align:left;" value="#{tableDef.defaultSortOrder}" id="defaultSortOrder1">
-          <f:selectItem itemLabel="Upp" itemValue="asc"/>
-          <f:selectItem itemLabel="Ned" itemValue="desc"/>
+          <f:selectItem itemLabel="Stigande (a - ö)" itemValue="asc"/>
+          <f:selectItem itemLabel="Fallande (ö - a)" itemValue="desc"/>
           <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
         </h:selectOneMenu>
-        <h:outputText value=""/>
+        <h:outputText value="Välj om sortering skall ske stigande eller fallande"/>
 
         <h:outputText value="Visa tabellhuvud"/>
         <h:selectBooleanCheckbox value="#{tableDef.showTableHeader}" id="showTableHeader1">

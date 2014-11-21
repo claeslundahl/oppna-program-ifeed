@@ -8,17 +8,18 @@
   <h:panelGroup rendered="#{not iFeedModelBean.getFilters().isEmpty()}">
 
     <h3>Resultat</h3>
-
-    <div class="ifeedDocList"
-         columnes="dc.title|Titel|left|,dc.date.issued|Publicerat|left|"
-         fontSize="auto"
-         defaultsortcolumn="dc.title"
-         defaultsortorder="asc"
-         showTableHeader="yes"
-         linkOriginalDoc="no"
-         limit="500"
-         hiderightcolumn="yes"
-         feedid="#{iFeedModelBean.toSerializedText()}">
+    <div id="aroundResult">
+        <div class="ifeedDocList"
+             columnes="dc.title|Titel|left|,dc.date.issued|Publicerat|left|"
+             fontSize="auto"
+             defaultsortcolumn="dc.title"
+             defaultsortorder="asc"
+             showTableHeader="yes"
+             linkOriginalDoc="no"
+             limit="500"
+             hiderightcolumn="yes"
+             feedid="#{iFeedModelBean.toSerializedText()}">
+        </div>
     </div>
     <noscript>
       <iframe src='http://portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc'
@@ -29,7 +30,15 @@
 
     <script type="text/javascript">
       var button = document.getElementById('rerun-ifeed-loading');
-      if (button) button.click();
+      if (button) {
+        var tables = $('.doc-list');
+        if (tables.length == 0) {
+            //var aroundResult = document.getElementById("aroundResult");
+            //aroundResult.parentNode.removeChild(aroundResult);
+            if (typeof console === "undefined") {} else console.log('Button is clicked!');
+            button.click();
+        }
+      }
     </script>
   </h:panelGroup>
 

@@ -18,9 +18,9 @@ public class IfeedDynamicTableDef implements Serializable {
 
     private int limit;
 
-    private boolean showTableHeader;
+    private boolean showTableHeader = true;
     private boolean linkOriginalDoc;
-    private boolean hideRightColumn;
+    private boolean hideRightColumn = true;
 
     private final List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
 

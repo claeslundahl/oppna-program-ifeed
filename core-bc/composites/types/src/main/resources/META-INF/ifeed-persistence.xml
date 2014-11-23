@@ -4,11 +4,8 @@
 	version="2.0">
   <persistence-unit name="ifeed_pu">
     <class>se.vgregion.ifeed.types.IFeed</class>
-    <class>se.vgregion.ifeed.types.FieldsInf</class>
     <class>se.vgregion.ifeed.types.IFeedFilter</class>
     <class>se.vgregion.ifeed.types.Metadata</class>
     <class>se.vgregion.ifeed.types.Ownership</class>
-    <class>se.vgregion.ifeed.types.VgrDepartment</class>
-    <class>se.vgregion.ifeed.types.VgrGroup</class>
   </persistence-unit>
 </persistence>

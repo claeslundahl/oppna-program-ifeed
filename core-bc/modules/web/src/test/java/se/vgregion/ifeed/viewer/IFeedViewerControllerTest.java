@@ -13,8 +13,10 @@ import org.apache.solr.common.SolrDocumentList;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
+import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
@@ -43,7 +45,7 @@ public class IFeedViewerControllerTest {
         String sortDirection = "asc";
         IFeed feed = new IFeed();
         feed.setId(listId);
-        // IFeed retrievedFeed = iFeedService.getIFeedById(listId);
+        // IFeed retrievedFeed = iFeedService.getIFeed(listId);
         when(iFeedService.getIFeed(listId)).thenReturn(feed);
 
         // To avoid null-pointer
@@ -52,7 +54,7 @@ public class IFeedViewerControllerTest {
 
         when(solrServer.query(any(IFeedSolrQuery.class))).thenReturn(queryResponse);
 
-        String result = controller.getIFeedById(listId, model, sortField, sortDirection, null, null, null);
+        String result = controller.getIFeed(listId, model, sortField, sortDirection);
         verify(iFeedService).getIFeed(listId);
         Assert.assertEquals("documentList", result);
     }
@@ -64,13 +66,6 @@ public class IFeedViewerControllerTest {
 
         String result = controller.details(documentId, model);
         Assert.assertEquals("documentDetails", result);
-
-
-        String foo = "<iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/91940/?by=dc.title&amp;dir=asc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>\n" +
-                "</iframe>";
-
-        System.out.println(foo.substring(foo.indexOf("src='") + 5, foo.indexOf("/iFeed-web/")));
-
     }
 
     /*@Test

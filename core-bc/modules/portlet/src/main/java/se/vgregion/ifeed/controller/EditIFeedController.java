@@ -116,7 +116,7 @@ public class EditIFeedController {
         }
     }
 
-    @ActionMapping(params = "action=viewIFeed")
+    @ActionMapping(params = "action=editIFeed")
     public void editIFeed(@RequestParam(required = true) final Long feedId, final Model model,
                           final ActionResponse response) {
         IFeed iFeed = iFeedService.getIFeed(feedId);
@@ -188,8 +188,7 @@ public class EditIFeedController {
         }
         model.addAttribute("hits", new SearchResultList(result));
         model.addAttribute("maxHits", iFeedSolrQuery.getRows() - 1);
-        String vgrOrganizationJson = getVgrOrganizationJson(pr.getNamespace());
-        model.addAttribute("vgrOrganizationJson", vgrOrganizationJson);
+        model.addAttribute("vgrOrganizationJson", getVgrOrganizationJson(pr.getNamespace()));
         model.addAttribute("fields", getFieldInfs());
         model.addAttribute("fieldsMap", mapFieldInfToId());
         model.addAttribute("queryUrl", result.getQueryUrl());
@@ -289,8 +288,6 @@ public class EditIFeedController {
         // System.out.println("Datumet blev: " + date);
         // }
 
-        filterFormBean.setFilterValue(replace(filterFormBean.getFilterValue(), charDecodeing));
-        
         iFeed.addFilter(new IFeedFilter(null, filterFormBean.getFilterValue(), filterFormBean.getFilterTypeId()));
 
         // Fix here!
@@ -334,7 +331,7 @@ public class EditIFeedController {
 
     @ActionMapping(params = "action=removeFilter")
     public void removeFilter(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
-                             // @RequestParam("filter") final FilterType.Filter filter,
+                             @RequestParam("filter") final FilterType.Filter filter,
                              @RequestParam("filterQuery") final String filterQuery,
                              @RequestParam("filterKey") final String filterKey, final Model model) {
 
@@ -342,7 +339,7 @@ public class EditIFeedController {
 
         // System.out.println("removeFilter " + filter + " filterQuery ");
 
-        iFeed.removeFilter(new IFeedFilter(filterQuery, filterKey));
+        iFeed.removeFilter(new IFeedFilter(filter, filterQuery, filterKey));
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
@@ -365,12 +362,11 @@ public class EditIFeedController {
     @ActionMapping(params = "action=addOwner")
     public void addOwner(final ActionResponse response, @ModelAttribute("ifeed") final IFeed iFeed,
                          @RequestParam("ownerId") final String ownerId, final Model model) {
-        if (ownerId != null && !"".equals(ownerId)) {
-            Ownership ownership = new Ownership();
-            ownership.setUserId(ownerId);
-            ownership.setName(fetchNameOfPersonIfMatch(ownerId));
-            iFeed.getOwnerships().add(ownership);
-        }
+        Ownership ownership = new Ownership();
+        ownership.setUserId(ownerId);
+        ownership.setName(fetchNameOfPersonIfMatch(ownerId));
+        iFeed.getOwnerships().add(ownership);
+
         model.addAttribute("ifeed", iFeed);
         response.setRenderParameter("view", "showEditIFeedForm");
     }
@@ -380,7 +376,6 @@ public class EditIFeedController {
         sessionStatus.setComplete();
     }
 
-    /*
     @ResourceMapping("findPeople")
     public void searchPeople(@RequestParam final String filterValue, ResourceResponse response) {
         List<Person> people = ldapPersonService.getPeople(filterValue, 10);
@@ -389,6 +384,8 @@ public class EditIFeedController {
             response.setContentType("application/json");
             new ObjectMapper().writeValue(out, people);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -415,18 +412,15 @@ public class EditIFeedController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
-    public static String replace(String s, Map<String, String> map) {
-        if (s == null) {
-            return null;
-        }
+    private String replace(String s, Map<String, String> map) {
         for (String k : map.keySet()) {
             s = s.replaceAll(Pattern.quote(k), map.get(k));
         }
         return s;
     }
-/*
+
     @ResourceMapping("findOrgs")
     public void searchOrg(@RequestParam String parentOrg, @RequestParam String url, ResourceResponse response)
             throws IOException {
@@ -506,7 +500,6 @@ public class EditIFeedController {
 
         return result;
     }
-    */
 
     /**
      * Concatenates several strings and places another string between each of those.
@@ -551,12 +544,17 @@ public class EditIFeedController {
     }
 
     public void addDataTo(VgrOrganization vo, String portletUrl, String type) throws UnsupportedEncodingException {
+        // ns = ns + "/findOrgs?parentOrg=";
+        // if (ns.contains("parentOrg")) {
+        // ns = ns.substring(0, ns.indexOf("parentOrg")) + "parentOrg";
+        // }
+        // vo.setIo(ns + "&parentOrg=" + URLEncoder.encode(vo.getDn(), "UTF-8") + "&url=" + ns);
         vo.setIo(portletUrl + "&parentOrg=" + URLEncoder.encode(vo.getDn(), "UTF-8") + "&url="
                 + URLEncoder.encode(portletUrl, "UTF-8"));
         vo.setType("io");
         vo.setLeaf(ldapOrganizationService.findChildNodes(vo).isEmpty());
         vo.setType(type);
-        vo.setDn(EditIFeedController.replace(vo.getDn(), EditIFeedController.charEncodeing));
+        vo.setDn(replace(vo.getDn(), charEncodeing));
     }
 
     @ModelAttribute("filters")
@@ -662,7 +660,6 @@ public class EditIFeedController {
 
         return fieldInfs;
     }
-
 
     public static List<FieldInf> getFieldInfsCache() {
         return fieldInfs;

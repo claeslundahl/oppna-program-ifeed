@@ -258,7 +258,7 @@ public class EditIFeedControllerTest {
         controller.setMetadataService(metadataService);
         model.addAttribute("newFilter", new FieldInf());
 
-        controller.removeFilter(response, iFeed, filterQuery, "foo.bar.baz", model);
+        controller.removeFilter(response, iFeed, filter, filterQuery, "foo.bar.baz", model);
 
         verify(iFeed).removeFilter(any(IFeedFilter.class));
     }
@@ -281,7 +281,7 @@ public class EditIFeedControllerTest {
         when(actionResponse.getPortletOutputStream()).thenReturn(os);
 
         controller.setLdapPersonService(ldapPersonService);
-        // controller.searchPeople(filterValue, actionResponse);
+        controller.searchPeople(filterValue, actionResponse);
     }
 
     @Test

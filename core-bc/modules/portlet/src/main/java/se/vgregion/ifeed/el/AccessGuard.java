@@ -7,10 +7,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.print.attribute.standard.Severity;
-
 public class AccessGuard {
 
 	public static boolean haveRole(User user, String nameOfAccessRole) throws SystemException {
@@ -34,25 +30,20 @@ public class AccessGuard {
 			if (mayEditAllFeeds(user)) {
 				return true;
 			}
-            String screenName = user.getScreenName();
-            if (feed.getUserId() == null) {
-                return true;
-            }
-            if (screenName.equals(feed.getUserId())) {
-                return true;
-            }
-
-            for (Ownership ownership : feed.getOwnerships()) {
-                if (user.getScreenName().equals(ownership.getUserId())) {
-                    return true;
-                }
-            }
-
-            return false;
-		} catch (Exception se) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, se.getMessage(), se.getLocalizedMessage()));
+		} catch (SystemException se) {
 			throw new RuntimeException(se);
 		}
+		if (user.getScreenName().equals(feed.getUserId())) {
+			return true;
+		}
+
+		for (Ownership ownership : feed.getOwnerships()) {
+			if (user.getScreenName().equals(ownership.getUserId())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

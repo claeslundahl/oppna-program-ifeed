@@ -155,10 +155,8 @@ AUI().add('vgr-ifeed-config',function(A) {
 					},
 					
 					_initMetadataTooltip: function() {
-					/*
-					  try {
 						var instance = this;
-						console.log('instance', instance);
+						
 						//Tooltip for metadata
 						instance.tooltipMetadata = new A.Tooltip({
 					    trigger: '#' + instance.get(PORTLET_WRAP).get(ID) + ' .' + CSS_CLASS_METADATA_NODE_TOOLTIP,
@@ -201,10 +199,7 @@ AUI().add('vgr-ifeed-config',function(A) {
 						    }
 					    }
 					  }).render();
-						}catch(eee) {
-						   console.log('eee', eee);
-						}
-						*/
+						
 					},
 					
 					_onEditTriggersClick: function(e) {
@@ -235,7 +230,7 @@ AUI().add('vgr-ifeed-config',function(A) {
 	},1, {
 		requires: [
 			'aui-base',
-			'aui-editable-deprecated',
+			'aui-editable',
 			'aui-io',
 			'aui-tooltip',
 			'aui-tree-view'

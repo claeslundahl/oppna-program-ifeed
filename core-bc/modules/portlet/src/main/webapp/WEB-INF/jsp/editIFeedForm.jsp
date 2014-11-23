@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%@ taglib uri="http://java.sun.com/portlet" prefix="portlet"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
@@ -24,17 +24,11 @@
 <script type="text/javascript" src="js/local.js"></script>
 --%>
 
-<portlet:defineObjects />
-
+<%--<portlet:defineObjects />--%>
 <liferay-theme:defineObjects />
 <portlet:resourceURL id="findPeople" var="findPeople" />
 <portlet:resourceURL id="findOrgs" var="findOrgs" />
-
-<portlet:resourceURL var="findOrganizationByHsaId">
-    <portlet:param name="callback" value="window.updateSelectedHsaIdName" />
-    <portlet:param name="hsaId" value="XhsaIdX" />
-    <portlet:param name="maxHits" value="100" />
-</portlet:resourceURL>
+<portlet:resourceURL id="findOrganizationByHsaId" var="findOrganizationByHsaId" />
 
 <portlet:resourceURL var="metdataTooltipURL" id="metadata"  />
 
@@ -43,7 +37,7 @@
   <portlet:param name="feedId" value="${iFeed.id}" />
 </portlet:actionURL>
 
-<portlet:actionURL name="addFilter" var="addFilterURL">
+<portlet:actionURL name="addFilter" var="addFilterURL3">
   <portlet:param name="action" value="addFilter" />
 </portlet:actionURL>
 
@@ -113,7 +107,7 @@
       </div>
     </div>
   </aui:column>
-  <aui:column columnWidth="65">
+  <aui:column columnWidth="66">
     
     <div class="ifeed-meta-item ifeed-meta-inline">
       <div class="ifeed-meta-label">Id:</div>

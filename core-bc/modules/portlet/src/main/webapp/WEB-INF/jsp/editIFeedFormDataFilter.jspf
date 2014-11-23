@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
@@ -17,7 +17,7 @@
 
 <liferay-ui:panel-container>
 	<liferay-ui:panel title="Nytt filter" collapsible="false" extended="true">
-		<aui:form action="${addFilterURL}" method="post">
+		<form action="${addFilterUrl}" method="post">
 			<aui:input name="filterTypeId" type="hidden" value="${newFilter.id}" />
 			<div id="<portlet:namespace />filter-value-box">
 				<c:choose>
@@ -30,7 +30,7 @@
 					</c:when>
 					<c:when test="${newFilter.type == 'd:date'}">
 						<aui:field-wrapper label="${newFilter.name}">
-							<liferay-ui:input-date yearParam="validFromYear"
+							<liferay-ui:input-date yearRangeStart="1990" yearRangeEnd="2020" yearParam="validFromYear"
 								monthParam="validFromMonth" dayParam="validFromDay" firstDayOfWeek="1"
 								yearValue="${filterFormBean.validFromYear}" monthValue="${filterFormBean.validFromMonth }"
 								dayValue="${filterFormBean.validFromDay }" />
@@ -97,9 +97,8 @@
 				<c:if test="${not empty newFilter.help}">
 					<div class="aui-widget-bd portlet-msg-info">${newFilter.help}</div>
 				</c:if>
-			</c:if>      
-      
-		</aui:form>
+			</c:if>
+		</form>
 	</liferay-ui:panel>
   
 	<liferay-ui:panel title="Valda filter" collapsible="false" extended="true">

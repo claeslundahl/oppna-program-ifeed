@@ -2,7 +2,10 @@ package se.vgregion.ifeed.types;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -18,10 +21,6 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 
 	private String filterKey;
 
-    @Transient
-    private FieldInf fieldInf;
-
-    @Deprecated
 	@Enumerated(EnumType.STRING)
 	private FilterType.Filter filter;
 
@@ -29,16 +28,11 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 		// To make Hibernate happy
 	}
 
-    public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
-        this.filter = filter;
-        this.filterQuery = filterQuery;
-        this.filterKey = filterKey;
-    }
-
-    public IFeedFilter(String filterQuery, String filterKey) {
-        this.filterQuery = filterQuery;
-        this.filterKey = filterKey;
-    }
+	public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
+		this.filter = filter;
+		this.filterQuery = filterQuery;
+		this.filterKey = filterKey;
+	}
 
 	public FilterType.Filter getFilter() {
 		return filter;
@@ -61,11 +55,4 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 		this.filterKey = filterKey;
 	}
 
-    public FieldInf getFieldInf() {
-        return fieldInf;
-    }
-
-    public void setFieldInf(FieldInf fieldInf) {
-        this.fieldInf = fieldInf;
-    }
 }

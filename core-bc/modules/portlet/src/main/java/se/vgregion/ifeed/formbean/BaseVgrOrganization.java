@@ -12,7 +12,7 @@ public class BaseVgrOrganization implements Serializable, HasCommonLdapFields {
     private String cn;
     private String type;
     private String hsaIdentity;
-    private Boolean leaf;
+    private boolean leaf;
 
     public BaseVgrOrganization() {
 
@@ -75,11 +75,11 @@ public class BaseVgrOrganization implements Serializable, HasCommonLdapFields {
         this.hsaIdentity = hsaIdentity;
     }
 
-    public Boolean getLeaf() {
+    public boolean isLeaf() {
         return leaf;
     }
 
-    public void setLeaf(Boolean leaf) {
+    public void setLeaf(boolean leaf) {
         this.leaf = leaf;
     }
 

@@ -19,7 +19,7 @@
 	          			Metadata
 					</a> 
 					<c:choose>
-						<c:when test="${not empty(item['dc.identifier.native']) and vgr:getLocalValue().linkNativeDocument}">
+						<c:when test="${not empty(item['dc.identifier.native']) and feed.linkNativeDocument}">
 							<a class="document" target="_blank" href="${fn:replace(fn:replace(item['dc.identifier.native'], '[', ''), ']', '')}">${item['dc.title']}</a>
 						</c:when>
 						<c:otherwise>

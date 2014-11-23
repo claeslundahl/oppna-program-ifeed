@@ -6,20 +6,12 @@
 
   <uri>http://se.vgregion.ifeed.viewer/1.0</uri>
 
-    <function>
-        <description>Encodes to url-friendly text.</description>
-        <display-name>urlEncode</display-name>
-        <name>urlEncode</name>
-        <function-class>java.net.URLEncoder</function-class>
-        <function-signature>java.lang.String encode(java.lang.String, java.lang.String)</function-signature>
-    </function>
-
-    <function>
-        <description>Gets a value bound to the thread.</description>
-        <display-name>getLocalValue</display-name>
-        <name>getLocalValue</name>
-        <function-class>se.vgregion.ifeed.viewer.Util</function-class>
-        <function-signature>java.lang.Object getLocalValue()</function-signature>
-    </function>
+  <function>
+    <description>Encodes to url-friendly text.</description>
+    <display-name>urlEncode</display-name>
+    <name>urlEncode</name>
+    <function-class>java.net.URLEncoder</function-class>
+    <function-signature>java.lang.String encode(java.lang.String, java.lang.String)</function-signature>
+  </function>
   
 </taglib>

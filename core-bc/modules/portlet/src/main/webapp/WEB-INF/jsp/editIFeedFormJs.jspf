@@ -65,8 +65,7 @@
   window.fetchOrgNameWithSelectedHsaId = function() {
     try {
       var inputFindExpression = "<portlet:namespace />filterValue";
-      var hsaIdInput = document.getElementById(inputFindExpression).getElementsByTagName('input')[0];
-      var hsaId = hsaIdInput.value;
+      var hsaId = document.getElementById(inputFindExpression).value;
       var path = '${findOrganizationByHsaId}&callback=window.updateSelectedHsaIdName&hsaId=' + hsaId;
       path += '&maxHits=100';
       var ldapOrgLabel = document.getElementById('ldapOrgLabel');
@@ -77,20 +76,14 @@
     }
   }
 
-// få se ifall det finns någon deprecated version av det här.
 
-  AUI().ready('aui-autocomplete-deprecated', function(A) {
-    //var inputFindExpression = "#<portlet:namespace />filterValue";
-    var inputFindExpression = "<portlet:namespace />filterValue";
+  AUI().ready('aui-autocomplete', function(A) {
+    var inputFindExpression = "#<portlet:namespace />filterValue";
 
     if(window.filterType == 'd:ldap_value') {
       var datasource = function(request) {
         var items = null;
-        var ve = document.getElementById(inputFindExpression);
-        var v = ve.getElementsByTagName('input')[0].value;
-        //var tmpUrl =   '${findPeople}&<portlet:namespace />filterValue=' + A.one(inputFindExpression).get('value') + "*";
-        var tmpUrl =   '${findPeople}&<portlet:namespace />filterValue=' + v + "*";
-          A.io.request('${findPeople}&<portlet:namespace />filterValue=' + v + "*", {
+          A.io.request('${findPeople}&filterValue=' + A.one(inputFindExpression).get('value') + "*", {
             cache: false,
             sync: true,
             timeout: 1000,
@@ -108,8 +101,7 @@
           });
         return items;
       };
-
-      var autoComplete = new A.AutoCompleteDeprecated({
+      var autoComplete = new A.AutoComplete({
           dataSource: datasource,
           schema: {
             resultListLocator: 'list',
@@ -137,10 +129,10 @@
     }
   });
 
-  //var tree2ChildrenJson = '${vgrOrganizationJson}';
-  //var tree2Children = A.JSON.parse(tree2ChildrenJson);
-  var tree2Children = ${vgrOrganizationJson};
-  window.tree2Children = tree2Children;
+  var tree2ChildrenJson = '${vgrOrganizationJson}';
+
+  var tree2Children = A.JSON.parse(tree2ChildrenJson);
+
   function putIo(orgs) {
     if (!(orgs instanceof Array)) orgs = [orgs];
     for(var i = 0; i < orgs.length; i++) {
@@ -158,14 +150,11 @@
     return s;
   }
 
-  function onOrgSelect(org, label) {
+  function onOrgSelect(org) {
     try{
-      //var input = document.getElementById('<portlet:namespace />filterValue');
-      var input = document.getElementById('<portlet:namespace />filterValue').getElementsByTagName('input')[0];
-      input.value = org;
-
-      var ldapOrgLabel = document.getElementById('ldapOrgLabel');
-      ldapOrgLabel.innerHTML = label;
+      var input = document.getElementById('<portlet:namespace />filterValue');
+      input.value = org.query;
+      fetchOrgNameWithSelectedHsaId();
     }catch(e) {
       alert('onOrgSelect: ' + e.message);
     }
@@ -174,9 +163,7 @@
   if (document.getElementById('tree'))
   window.tree2 = new A.TreeView({
     after : { lastSelectedChange : function(e){
-      var jsonId = e.newVal.get('id');
-      eval('var obj = ' + jsonId + ';');
-      onOrgSelect(obj.hsaIdentity, obj.label);
+      onOrgSelect(e.newVal._originalConfig);
     }},
     width: 200,
     type: 'normal',
@@ -232,10 +219,10 @@
           ['AK', 'Alaska', 'The Land of the Midnight Sun'],
           ['AZ', 'Arizona', 'The Grand Canyon State']];
 
-        AUI().ready('aui-autocomplete-deprecated', function (A) {
+        AUI().ready('aui-autocomplete', function (A) {
 
           window.process = function(data) {
-             // try {
+              try {
                   function replaceAll(s, ss, ns) {
                       var re = s;
                       do {
@@ -254,31 +241,27 @@
                   url = url.replace('&sort=dc.title+asc', '');
 
                   window.foo = function(r) {
-                    //try {
+                    try {
                       var d = locate(r);
                       for (var i = 0; i < d.length; i++) {
                           var item = [d[i],d[i],d[i]];
                           window.stuff.push(item);
                       }
                       var e = {data:window.stuff};
-                      var payload = {};
-                      e.details = [payload];
                       window.auto.dataSource._defDataFn(e);
-                    try {
                     } catch(e) {
-                      alert('problem in function foo. \n' + e.message);
+                      alert(e.message);
                     }
                   };
 
                   jsonp(document.body, url);
-              try {
               } catch(e) {
                   alert(e.message);
               }
               return window.stuff;
           };
 
-          window.auto = new A.AutoCompleteDeprecated({
+          window.auto = new A.AutoComplete({
             dataSource: window.process,
             schema: {
               resultFields: ['key', 'name', 'description']

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%--<%@ taglib uri="http://java.sun.com/portlet" prefix="portlet"%>--%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
@@ -10,6 +10,7 @@
 <%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security"%>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 <%@ taglib uri="/WEB-INF/tld/field-infs.tld" prefix="fi"%>
+<%@ taglib prefix="portlet" uri="http://java.sun.com/portlet" %>
 
 <portlet:resourceURL id="updateJsonpEmbedCode" var="updateJsonpEmbedCodeURL" />
 
@@ -20,7 +21,7 @@
 </div>
 --%>
 
-<aui:form action="${updateJsonpEmbedCodeURL}" cssClass="ifeed-jsonp-form" name="jsonpForm">
+<form id="<portlet:namespace />jsonpForm" action="${updateJsonpEmbedCodeURL}" cssClass="ifeed-jsonp-form" name="jsonpForm">
 
 	<liferay-ui:panel-container cssClass="ifeed-jspon-container">
 	    <liferay-ui:panel title="Inst&auml;llningar f&ouml;r listan" collapsible="true" extended="true" cssClass="ifeed-jsonp-settings">
@@ -71,7 +72,7 @@
 		    		
 		    		<div class="aui-field-multi-element">
 			    		<aui:select name="sortColumn" label="">
-							<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status" id="iterateGetFieldInfs">
+							<c:forEach items="${fi:getFieldInfs()}" var="field" varStatus="status">
 								<optgroup label="${field.name}">
 									<c:forEach items="${field.filterCriteriaTypes}" var="option" varStatus="status2">
 									    <c:if test="${field.inHtmlView}">
@@ -197,7 +198,7 @@
 		</liferay-ui:panel>
 	</liferay-ui:panel-container>
 
-</aui:form>
+</form>
 
 <liferay-util:html-bottom>
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/ifeed-jsonp-builder.js?id=<%= System.currentTimeMillis() %>"></script>

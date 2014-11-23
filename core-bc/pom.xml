@@ -11,12 +11,12 @@ Generation time : 2011-01-14 11:17:18 CET
   <parent>
     <groupId>se.vgregion.iFeed</groupId>
     <artifactId>iFeed-system</artifactId>
-    <version>1.12-SNAPSHOT</version>
+    <version>1.10</version>
   </parent>
   <groupId>se.vgregion.iFeed</groupId>
   <artifactId>iFeed-core-bc</artifactId>
   <packaging>pom</packaging>
-  <version>1.12-SNAPSHOT</version>
+  <version>1.10</version>
   <name>${project.artifactId}</name>
 
   <modules>
@@ -27,8 +27,7 @@ Generation time : 2011-01-14 11:17:18 CET
     <module>composites/ldap</module>
     <module>modules/portlet</module>
     <module>modules/intsvc</module>
-    <module>modules/web</module>
-    <module>modules/web-script</module>
+	<module>modules/web</module>
   </modules>
 
   <dependencies>

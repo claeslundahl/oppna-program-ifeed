@@ -120,33 +120,6 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
         return result;
     }
 
-    public void putFieldInfInto(IFeedFilter item) {
-        item.setFieldInf(getInfByFilterKey(item.getFilterKey()));
-    }
-
-    public void putFieldInfInto(Iterable<IFeedFilter> items) {
-        for (IFeedFilter item : items) {
-            putFieldInfInto(item);
-        }
-    }
-
-    FieldInf getInfByFilterKey(String id) {
-        return getInfByFilterKey(getFieldInfs(), id);
-    }
-
-    FieldInf getInfByFilterKey(List<FieldInf> infs, String id) {
-        for (FieldInf fi : infs) {
-            if (fi.getId().equalsIgnoreCase(id)) {
-                return fi;
-            }
-            FieldInf result = getInfByFilterKey(fi.getChildren(), id);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
-    }
-
     @Override
     public int compareTo(FieldsInf o) {
         return (int) (id - o.id);

@@ -6,7 +6,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
-import se.vgregion.ifeed.types.IFeed;
 
 public class CommonUtilsTest {
 
@@ -30,13 +29,6 @@ public class CommonUtilsTest {
 
         Assert.assertFalse(CommonUtils.isNull(1));
         Assert.assertFalse(CommonUtils.isNull("boo bar baz"));
-    }
-
-    @Test
-    public void serialize() {
-        IFeed ifeed = new IFeed();
-        String s = CommonUtils.toString(ifeed);
-        IFeed unpacked = (IFeed) CommonUtils.toObject(s);
     }
 
 }

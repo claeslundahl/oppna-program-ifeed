@@ -21,7 +21,6 @@
     <property name="jpaVendorAdapter" ref="jpaVendor" />
     <property name="jpaPropertyMap">
       <map>
-        <!--<entry key="hibernate.hbm2ddl.auto" value="false" />-->
         <entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
         <entry key="hibernate.format_sql" value="${hibernate.database.showsql}" />
       </map>
@@ -31,11 +30,9 @@
   <bean id="jpaVendor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
     <property name="database" value="${hibernate.vendor.database}" />
     <property name="databasePlatform" value="${hibernate.vendor.databaseDialect}" />
-    <!--<property name="generateDdl" value="false" />-->
     <property name="generateDdl" value="${hibernate.vendor.generateDdl}" />
-    <property name="showSql" value="true" />
-    <!--<property name="showSql" value="${hibernate.database.showsql}" />-->
-
+    <property name="showSql" value="${hibernate.database.showsql}" />
+    
   </bean>
 
   <!-- Used to be more explicit in what we need to set up the jpa context. The real datasource is configured in a separate 

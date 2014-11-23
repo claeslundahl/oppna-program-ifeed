@@ -53,17 +53,4 @@ public class Person {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public String getNiceName() {
-        return handleNullPretty(getFirstName())
-                + " " + handleNullPretty(getLastName())
-                + " (" + handleNullPretty(getUserName()) + ")";
-    }
-
-    private String handleNullPretty(String s) {
-        if (s == null) {
-            return "";
-        }
-        return s;
-    }
-
 }

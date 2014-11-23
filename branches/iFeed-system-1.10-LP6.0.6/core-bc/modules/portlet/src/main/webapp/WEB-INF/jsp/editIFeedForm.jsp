@@ -37,7 +37,7 @@
   <portlet:param name="feedId" value="${iFeed.id}" />
 </portlet:actionURL>
 
-<portlet:actionURL name="addFilter" var="addFilterURL3">
+<portlet:actionURL name="addFilter" var="addFilterURL">
   <portlet:param name="action" value="addFilter" />
 </portlet:actionURL>
 
@@ -177,7 +177,10 @@
 <liferay-util:html-top>
   <%@ include file="ifeed_css.jsp"%>
   <c:if test="${guard:mayEditFeed(user, ifeed)}">
+    <%-- Failovers :) --%>
+    <script type="text/javascript" src="${request.contextPath}/js/vgr-ifeed-config.js"></script>
     <script type="text/javascript" src="${renderRequest.contextPath}/js/vgr-ifeed-config.js"></script>
+    <script type="text/javascript" src="<%= request.getContextPath()%>/js/vgr-ifeed-config.js"></script>
   </c:if>
 </liferay-util:html-top>
 

@@ -17,7 +17,7 @@
 
 <liferay-ui:panel-container>
 	<liferay-ui:panel title="Nytt filter" collapsible="false" extended="true">
-		<form action="${addFilterUrl}" method="post">
+		<form action="${addFilterURL}" method="post">
 			<aui:input name="filterTypeId" type="hidden" value="${newFilter.id}" />
 			<div id="<portlet:namespace />filter-value-box">
 				<c:choose>

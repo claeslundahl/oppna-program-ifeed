@@ -32,7 +32,8 @@ public class RemoveIFeedControllerTest {
         IFeed feed = new IFeed();
         feed.setUserId("screenName");
         when(service.getIFeed(100l)).thenReturn(feed);
-        ThemeDisplay themeDisplay = mock(ThemeDisplay.class);
+        final ThemeDisplay themeDisplay = mock(ThemeDisplay.class);
+
         ActionRequest request = mock(ActionRequest.class);
         when(request.getAttribute(WebKeys.THEME_DISPLAY)).thenReturn(themeDisplay);
 
@@ -41,11 +42,16 @@ public class RemoveIFeedControllerTest {
             User getUser(ActionRequest request) throws PortalException, SystemException {
                 return user;
             }
+
+            @Override
+            ThemeDisplay getThemeDisplay() {
+                return themeDisplay;
+            }
         };
 
         PortletRequest portletRequest = mock(PortletRequest.class);
 
-        rifc.removeBook(100l, request, portletRequest);
+        rifc.removeBook(100l, request, portletRequest, themeDisplay);
 
         Mockito.verify(service, times(1)).getIFeed(Matchers.anyLong());
         Mockito.verify(service, times(1)).getIFeed(Matchers.eq(100l));

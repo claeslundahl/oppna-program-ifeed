@@ -46,6 +46,16 @@ public class AddIFeedControllerTest {
 				User user = Mockito.mock(User.class);
 				return user;
 			}
+
+			@Override
+			long getCompanyId(PortletRequest portletRequest) {
+				return -1;
+			}
+
+			@Override
+			long getUserId(PortletRequest portletRequest) {
+				return -2;
+			}
 		};
 		response = mock(RenderResponse.class);
 	}
@@ -91,7 +101,8 @@ public class AddIFeedControllerTest {
 		newFeed.setId(101l);
 		when(iFeedService.addIFeed(any(IFeed.class))).thenReturn(newFeed);
 
-		controller.addIFeed(model, iFeedIn, bindingResult, request, actionResponse);
+		PortletRequest portletRequest = mock(PortletRequest.class);
+		controller.addIFeed(model, iFeedIn, bindingResult, request, actionResponse, portletRequest);
 		verify(model).addAttribute(eq("ifeed"), eq(newFeed));
 	}
 

@@ -3,6 +3,8 @@ package se.vgregion.ifeed.controller;
 import javax.portlet.ActionRequest;
 import javax.portlet.PortletRequest;
 
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +41,7 @@ public class RemoveIFeedController {
 	}
 
 	@ActionMapping(params = "action=removeIFeed")
-	public void removeBook(@RequestParam final Long feedId, final ActionRequest request, final PortletRequest pr)
+	public void removeBook(@RequestParam final Long feedId, final ActionRequest request, final PortletRequest pr, ThemeDisplay themeDisplay)
 	        throws PortalException, SystemException {
 		User user = getUser(request);
 		IFeed feed = iFeedService.getIFeed(feedId);
@@ -48,10 +50,13 @@ public class RemoveIFeedController {
 		}
 		iFeedService.removeIFeed(feedId);
 		try {
-			ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+			//ServiceContext serviceContext = new ServiceContext();
+			//ThemeDisplay themeDisplay = getThemeDisplay();
+			/*ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);*/
+
 			long companyId = themeDisplay.getCompanyId();
 			resourceLocalService.deleteResource(companyId, IFeed.class.getName(),
-			        ResourceConstants.SCOPE_INDIVIDUAL, feedId);
+					ResourceConstants.SCOPE_INDIVIDUAL, feedId);
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,4 +65,10 @@ public class RemoveIFeedController {
 			e.printStackTrace();
 		}
 	}
+
+	ThemeDisplay getThemeDisplay() {
+		ServiceContext sc = new ServiceContext();
+		return sc.getThemeDisplay();
+	}
+
 }

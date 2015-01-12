@@ -217,6 +217,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     public void storeFieldsInf(FieldsInf inf) {
         fieldsInfRepo.store(inf);
+        fieldsInfRepo.flush();
     }
 
     @Transactional

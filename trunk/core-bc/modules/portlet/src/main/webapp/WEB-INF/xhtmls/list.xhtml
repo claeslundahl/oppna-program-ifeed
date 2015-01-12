@@ -95,6 +95,15 @@
       </ui:repeat>
       </tbody>
     </table>
+        Sida #{app.currentPage + 1} av #{app.getMaxPageCount()}
+        <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                       value="Föregående sida"
+                       rendered="#{app.currentPage > 0}"
+                       actionListener="#{app.previousPage()}"/>
+        <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                       value="Nästa sida"
+                       rendered="#{app.getMaxPageCount() > (app.currentPage + 1)}"
+                       actionListener="#{app.nextPage()}"/>
   </div>
   </h:panelGroup>
 </f:view>

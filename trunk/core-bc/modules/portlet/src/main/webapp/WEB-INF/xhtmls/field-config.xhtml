@@ -13,12 +13,11 @@
 
             </div>
             <aui:button-row>
-                <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara"
-                                ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}"/>
-
+                <p:commandButton styleClass="rp-link-button rp-link-button-alt" value="Spara"
+                                ajax="false" async="false" actionListener="#{iFeedBackingBean.saveFieldInfString()}"/>
 
                 <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
-               ajax="true" async="true" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
+               ajax="false" async="false" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
 
                </p:commandLink>
             </aui:button-row>

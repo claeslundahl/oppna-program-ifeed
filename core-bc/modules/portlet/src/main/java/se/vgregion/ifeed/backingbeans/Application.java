@@ -7,8 +7,6 @@ import com.liferay.portal.service.ResourceLocalService;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.sun.faces.component.visit.FullVisitContext;
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +15,18 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
+import se.vgregion.ifeed.formbean.SearchResultList;
 import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
-import se.vgregion.ifeed.service.solr.SolrFacetUtil;
-import se.vgregion.ifeed.shared.IfeedDynamicTableDef;
+import se.vgregion.ifeed.service.solr.IFeedResults;
+import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.*;
-import se.vgregion.ldap.HasCommonLdapFields;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
@@ -38,11 +35,10 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
-import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -54,6 +50,8 @@ public class Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
+    @Value("${ifeed.metadata.base.url}")
+    private String metadataBaseUrl;
     @Autowired
     private IFeedService iFeedService;
     @Autowired
@@ -64,10 +62,10 @@ public class Application {
     private IFeedModelBean iFeedModelBean;
     @Autowired
     private MetadataService metadataService;
-
     @Autowired
     private IFeedBackingBean iFeedBackingBean;
-
+    @Autowired
+    IFeedSolrQuery iFeedSolrQuery;
     //@Resource(name = "iFeedAtomFeed")
     @Autowired
     private UriTemplate iFeedAtomFeed;
@@ -116,6 +114,7 @@ public class Application {
     @Autowired
     private LdapSupportService ldapOrganizationService;
     private List<IFeed> page;
+    private IFeedResults currentResult = new IFeedResults();
 
     public Application() {
     }
@@ -126,7 +125,6 @@ public class Application {
         filters = iFeedService.getFieldInfs();
         if (filter != null) {
             updateQuery();
-            System.out.println("Hej Knekt! foo boo");
         }
     }
 
@@ -145,6 +143,32 @@ public class Application {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getLocalizedMessage()));
             throw new RuntimeException(e);
         }
+    }
+
+    public void nextPage() {
+        if (currentPage < getMaxPageCount()) {
+            currentPage++;
+            updateQuery();
+        }
+    }
+
+    public void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            updateQuery();
+        }
+    }
+
+    public int getMaxPageCount() {
+        return getMaxPageCountImp(list(), pageSize);
+    }
+
+    static int getMaxPageCountImp(Collection list, int pageSize) {
+        int r = list.size() / pageSize;
+        if (list.size() % pageSize > 0) {
+            r++;
+        }
+        return r;
     }
 
     public List<IFeed> page() {
@@ -193,17 +217,19 @@ public class Application {
         if (feed.getDepartment() != null) {
             feed.getDepartment().getVgrGroups();
         }*/
+        iFeedModelBean.copyValuesFromIFeed(feed);
 
         List<FieldsInf> fieldsInfs = iFeedService.getFieldsInfs();
-        this.fieldsInf = fieldsInfs.get(fieldsInfs.size() - 1);
-
-        iFeedModelBean.copyValuesFromIFeed(feed);
-        fieldsInf.putFieldInfInto(iFeedModelBean.getFilters());
+        if (!fieldsInfs.isEmpty()) {
+            this.fieldsInf = fieldsInfs.get(fieldsInfs.size() - 1);
+            fieldsInf.putFieldInfInto(iFeedModelBean.getFilters());
+        }
 
         this.filters = iFeedService.getFieldInfs();
 
         navigationModelBean.setUiNavigation("VIEW_IFEED");
         setInEditMode(false);
+        findResultsByCurrentFeedConditions();
     }
 
     User getUser(PortletRequest request) throws PortalException, SystemException {
@@ -291,6 +317,7 @@ public class Application {
         fieldInf.setExpanded(false);
         fieldInf.setValue("");
         newFilter = null;
+        findResultsByCurrentFeedConditions();
     }
 
     public void addNewFilter(FieldInf fieldInf) {
@@ -401,6 +428,11 @@ public class Application {
         }
         return u;
     }
+
+    public void findResultsByCurrentFeedConditions() {
+        this.currentResult = iFeedSolrQuery.getIFeedResults(getIFeedModelBean());
+    }
+
 
     public void removeDepartmentsGroup(VgrGroup item) {
         department.getVgrGroups().remove(item);
@@ -614,4 +646,32 @@ public class Application {
     public IFeedModelBean getIFeedModelBean() {
         return iFeedModelBean;
     }
+
+    public IFeedResults getCurrentResult() {
+        return currentResult;
+    }
+
+    public void setCurrentResult(IFeedResults currentResult) {
+        this.currentResult = currentResult;
+    }
+
+    public String getMetadataBaseUrl() {
+        return metadataBaseUrl;
+    }
+
+    public void setMetadataBaseUrl(String metadataBaseUrl) {
+        this.metadataBaseUrl = metadataBaseUrl;
+    }
+
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+    public String toStringDate(Object date) {
+        if (date instanceof Date) {
+            return format.format(date);
+        }
+        String s = (String) date;
+        s = s.substring(0, 10);
+        return s;
+    }
+
 }

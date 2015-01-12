@@ -20,10 +20,35 @@
             <guest-defaults>
                 <action-key>VIEW</action-key>
             </guest-defaults>
-            <guest-unsupported />
+            <guest-unsupported/>
         </permissions>
 
     </portlet-resource>
+
+
+    <portlet-resource>
+        <portlet-name>iFeed</portlet-name>
+
+        <permissions>
+            <supports>
+                <action-key>ADD_TO_PAGE</action-key>
+                <action-key>CONFIGURATION</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <community-defaults>
+                <action-key>VIEW</action-key>
+            </community-defaults>
+            <guest-defaults>
+                <action-key>VIEW</action-key>
+            </guest-defaults>
+            <guest-unsupported/>
+        </permissions>
+
+    </portlet-resource>
+
+
+
+
     <model-resource>
         <model-name>se.vgregion.ifeed.types</model-name>
         <portlet-ref>

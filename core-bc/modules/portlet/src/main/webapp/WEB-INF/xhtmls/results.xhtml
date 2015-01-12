@@ -1,52 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-  <h:panelGroup rendered="#{not iFeedModelBean.getFilters().isEmpty()}">
-
-    <h3>Resultat</h3>
-    <div id="aroundResult">
-        <div class="ifeedDocList"
-             columnes="dc.title|Titel|left|,dc.date.issued|Publicerat|left|"
-             fontSize="auto"
-             defaultsortcolumn="dc.title"
-             defaultsortorder="asc"
-             showTableHeader="yes"
-             linkOriginalDoc="no"
-             limit="500"
-             hiderightcolumn="yes"
-             feedid="#{iFeedModelBean.toSerializedText()}">
+    <h:panelGroup rendered="#{not iFeedModelBean.getFilters().isEmpty()}">
+        <h3>Resultat</h3>
+        <div id="aroundResult" class="ui-datatable-tablewrapper">
+            <table class="rp-table feed-list">
+                <thead>
+                    <tr>
+                        <th>Titel</th>
+                        <th>Publiceringsdatum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <ui:repeat value="#{app.getCurrentResult()}" var="resultItem">
+                    <tr>
+                        <td>
+                            <a href="#{app.metadataBaseUrl}?documentId=#{resultItem['dc.source.documentid']}" target="_blank">
+                                #{resultItem['dc.title']}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#{app.metadataBaseUrl}?documentId=#{resultItem['dc.source.documentid']}" target="_blank">
+                                <h:outputText value="#{app.toStringDate(resultItem['dc.date.issued'])}"></h:outputText>
+                            </a>
+                        </td>
+                    </tr>
+                </ui:repeat>
+                </tbody>
+            </table>
         </div>
-    </div>
-    <noscript>
-      <iframe src='http://portalen-test.vgregion.se/iFeed-web/documentlists/7368856/?by=dc.title&amp;dir=asc'
-              id='iframenoscript'
-              name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
-      </iframe>
-    </noscript>
-
-    <script type="text/javascript">
-      var button = document.getElementById('rerun-ifeed-loading');
-      if (button) {
-        var tables = $('.doc-list');
-        if (tables.length == 0) {
-            //var aroundResult = document.getElementById("aroundResult");
-            //aroundResult.parentNode.removeChild(aroundResult);
-            if (typeof console === "undefined") {} else console.log('Button is clicked!');
-            button.click();
-        }
-      }
-    </script>
-  </h:panelGroup>
-
-  <span style="display:none" id="ifeed-data2">http://vgwb0046.vgregion.se:8880</span>
-  <script id="ifeed-data"
-          type="text/javascript"
-          location="http://vgwb0046.vgregion.se:8880"
-          src='http://vgwb0046.vgregion.se:8880/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js'>
-  </script>
-
+    </h:panelGroup>
 </ui:composition>

@@ -109,8 +109,10 @@ AUI().add('vgr-ifeed-config',function(A) {
 						
 						// Bind edit triggers
 						var portletWrap = instance.get(PORTLET_WRAP);
-						var editTriggers = portletWrap.all('.' + CSS_CLASS_EDIT_TRIGGER);
-						editTriggers.on('click', instance._onEditTriggersClick, instance);
+						if (portletWrap) {
+							var editTriggers = portletWrap.all('.' + CSS_CLASS_EDIT_TRIGGER);
+							editTriggers.on('click', instance._onEditTriggersClick, instance);
+						}
 					},
 					
 					_initEditables: function() {

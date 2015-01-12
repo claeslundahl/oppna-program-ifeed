@@ -274,6 +274,13 @@ public class IFeedViewerController {
      */
     @RequestMapping(value = "/documents/{documentId}/metadata")
     public String details(@PathVariable String documentId, Model model) {
+        if (documentId.startsWith("[")) {
+            if (documentId.endsWith("]")) {
+                documentId = documentId.substring(1, documentId.length() - 1);
+            } else {
+                throw new RuntimeException("Strange document id " + documentId);
+            }
+        }
         // We are flexible here; "workspace://SpacesStore/" is added if it isn't provided and vice versa.
         String fullId;
         if (documentId.contains("workspace://SpacesStore/")) {
@@ -293,7 +300,7 @@ public class IFeedViewerController {
             fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
             for (FieldInf fieldInf : fieldInfs) {
                 for (FieldInf child : fieldInf.getChildren()) {
-                    if (child.getId().equals("dcterms.audience") || child.getName().equals("dcterms.audience")){
+                    if (child.getId().equals("dcterms.audience") || child.getName().equals("dcterms.audience")) {
                         System.out.println("Hittade dcterms.audience inf");
                     }
                     String childId = child.getId();

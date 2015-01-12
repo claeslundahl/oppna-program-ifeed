@@ -326,13 +326,34 @@ public class IFeedBackingBean implements Serializable {
         return resourceLocalService;
     }
 
-    public String getFieldInfString() {
+    public void saveFieldInfString() {
+        FieldsInf inf = new FieldsInf();
+        inf.setText(fieldInfString);
+        FieldsInf latest = getLatestFieldInf();
+        if (latest != null) {
+            inf.setVersion(getLatestFieldInf().getVersion() + 1);
+        } else {
+            inf.setVersion(0l);
+        }
+        iFeedService.storeFieldsInf(inf);
+        this.navigationModelBean.setUiNavigation("USER_IFEEDS");
+    }
 
+    private FieldsInf getLatestFieldInf() {
         List<FieldsInf> infs = iFeedService.getFieldsInfs();
         if (infs.isEmpty()) {
-            return "";
+            return null;
         }
-        fieldInfString = infs.get(infs.size() - 1).getText();
+        return infs.get(infs.size() - 1);
+    }
+
+    public String getFieldInfString() {
+        FieldsInf f = getLatestFieldInf();
+        if (f == null) {
+            fieldInfString = "";
+        } else {
+            fieldInfString = f.getText();
+        }
         return fieldInfString;
 
     }

@@ -121,7 +121,9 @@ public class Application {
 
     @PostConstruct
     public void init() {
-        filter.setUserId(getCurrentUser().getScreenName());
+        if (getCurrentUser() != null){
+            filter.setUserId(getCurrentUser().getScreenName());
+        }
         filters = iFeedService.getFieldInfs();
         if (filter != null) {
             updateQuery();
@@ -130,6 +132,11 @@ public class Application {
 
     public List<IFeed> list() {
         return iFeedService.getIFeedsByFilter(filter);
+    }
+
+    public List<IFeed> updateFilterQuery() {
+        setCurrentPage(0);
+        return updateQuery();
     }
 
     public List<IFeed> updateQuery() {
@@ -571,12 +578,12 @@ public class Application {
 
     public void setFilterUserId(String id) {
         filter.setUserId(id);
-        updateQuery();
+        updateFilterQuery();
     }
 
     public void clearFilter() {
         filter.clear();
-        updateQuery();
+        updateFilterQuery();
     }
 
 

@@ -14,7 +14,10 @@ import javax.print.attribute.standard.Severity;
 public class AccessGuard {
 
 	public static boolean haveRole(User user, String nameOfAccessRole) throws SystemException {
-		for (Role role : user.getRoles()) {
+        if (user == null) {
+            return false;
+        }
+        for (Role role : user.getRoles()) {
 			if (nameOfAccessRole.equals(role.getName())) {
 				return true;
 			}

@@ -18,6 +18,8 @@ import se.vgregion.ldap.LdapSupportService;
 public class VgrOrganizationsHome implements Serializable {
     // Kopierat från VgrOrganizationHome...
 
+    private String lastHsaIdClicked;
+
     private TreeNode root = new DefaultTreeNode("Root", null);
 
     private List<VgrOrganization> organizations;
@@ -38,6 +40,26 @@ public class VgrOrganizationsHome implements Serializable {
         return result;
         /*loadChildren(org);
         return org.getChildren();*/
+    }
+
+    public void loadChildrenFlat(VgrOrganization ofThisOrg) {
+        loadChildren(ofThisOrg);
+        setLastHsaIdClicked(ofThisOrg.getHsaIdentity());
+        int index = organizations.indexOf(ofThisOrg) + 1;
+        for (VgrOrganization vgrOrganization : ofThisOrg.getChildren()) {
+            vgrOrganization.setLevel(ofThisOrg.getLevel() + 1);
+        }
+        organizations.addAll(index, ofThisOrg.getChildren());
+    }
+
+    public void closeChildrenFlat(VgrOrganization ofThisOrg) {
+        //int index = organizations.indexOf(ofThisOrg);
+        setLastHsaIdClicked(ofThisOrg.getHsaIdentity());
+        ofThisOrg.setOpen(false);
+        organizations.removeAll(ofThisOrg.getChildren());
+        for (VgrOrganization vgrOrganization : ofThisOrg.getChildren()) {
+            closeChildrenFlat(vgrOrganization);
+        }
     }
 
     public void loadChildren(VgrOrganization ofThisOrg) {
@@ -84,4 +106,19 @@ public class VgrOrganizationsHome implements Serializable {
         return result;
     }
 
- }
+    public List<VgrOrganization> getOrganizations() {
+        return organizations;
+    }
+
+    public void setOrganizations(List<VgrOrganization> organizations) {
+        this.organizations = organizations;
+    }
+
+    public String getLastHsaIdClicked() {
+        return lastHsaIdClicked;
+    }
+
+    public void setLastHsaIdClicked(String lastHsaIdClicked) {
+        this.lastHsaIdClicked = lastHsaIdClicked;
+    }
+}

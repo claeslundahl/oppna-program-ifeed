@@ -23,18 +23,18 @@
       </tr>
       <tr>
         <th class="filter-result-h">
-          <h:inputText value="${filter.name}" listener="#{app.updateQuery}">
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
+          <h:inputText value="${filter.name}" listener="#{app.updateFilterQuery}">
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
           </h:inputText>
         </th>
         <th class="filter-result-h">
           <h:inputText value="${filter.userId}">
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
           </h:inputText>
         </th>
         <th class="filter-result-h">
           <h:inputText value="${filter.description}">
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
           </h:inputText>
         </th>
         <th class="filter-result-h">
@@ -47,7 +47,7 @@
             <f:selectItem itemLabel="-" itemValue="#{null}"/>
             <f:selectItems value="#{app.getVgrDepartments()}"
                            var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
           </h:selectOneMenu>
         </th>
         <th class="filter-result-h">
@@ -61,7 +61,7 @@
             <f:selectItem itemLabel="-" itemValue="#{null}"/>
             <f:selectItems value="#{filter.department.vgrGroups}"
                            var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateQuery}" />
+            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
           </h:selectOneMenu>
         </th>
         <th class="filter-result-d">

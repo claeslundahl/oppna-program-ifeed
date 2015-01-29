@@ -1,46 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:tp="http://ifeed.vgregion.com/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core">
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:tp="http://ifeed.vgregion.com/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-<div style="display: inline-block; height: 300px; overflow-y: auto; overflow-x: hidden; width: 100%">
-  <p:treeTable value="#{vgrOrganizationsHome.getRoot()}" var="document123" styleClass="rp-table"
-               id="selectVgrOrganizationTree">
-    <f:facet name="header">
-      Välj enhetens Hsa-Id som sökvärde: #{app.newFilter.value}
-    </f:facet>
-    <p:column headerText="Öppna (genom att klicka på) namnet" id="columnForClickInOrgTable#{app.nextCount()}">
+    <style>
+        .organization-tree .toggle-symbol.minimized {
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+        }
 
-      <h:panelGroup rendered="#{not document123.leaf and not document123.open}">
-        <img src="/rp-bootstrap-theme/images/arrows/rp-arrow-right.png"/>
-      </h:panelGroup>
+        .organization-tree .toggle-symbol.expanded {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+        }
 
-      <h:panelGroup rendered="#{not document123.leaf and document123.open}">
-        <img src="/rp-bootstrap-theme/images/arrows/rp-arrow-down.png"/>
-      </h:panelGroup>
+        .organization-tree .toggle-symbol {
+        -webkit-transition: all 200ms;
+        -moz-transition: all 200ms;
+        -ms-transition: all 200ms;
+        -o-transition: all 200ms;
+        transition: all 200ms;
+        }
 
-      #{document123.leaf ? document123.getLabel() : ''}
+        .organization-tree .toggle-symbol {
+        background: #006699;
+        color: #ffffff;
+        padding: 3px 3px;
+        height: 10px;
+        width: 10px;
+        }
+        .organization-tree .toggle-expanded {
+        background: #006699;
+        width: 20px;
+        }
+        .hsa-id {
+        overflow: hidden;
+        white-space: nowrap;
+        }
+    </style>
 
-      <p:commandLink update="selectVgrOrganizationTree" title="Öppna"
-                     value="#{document123.getLabel()}"
-                     ajax="true"
-                     rendered="#{not document123.leaf}"
-                     actionListener="#{vgrOrganizationsHome.loadChildren(document123)}">
-      </p:commandLink>
 
-    </p:column>
-    <p:column headerText="Välj (genom att klicka) Hsa-Id" id="select-column">
-      <p:commandLink update="selectVgrOrganizationTree" title="Välj"
-                     value="#{document123.getHsaIdentity()}"
-                     ajax="true"
-                     actionListener="#{app.newFilter.setValue(document123.getHsaIdentity())}">
-      </p:commandLink>
-    </p:column>
-  </p:treeTable>
+    <div class="organization-tree">
+        <h:panelGroup id="organizations">
+            <table class="rp-table">
+                <thead>
+                <tr>
+                    <td colspan="21">
+                        Organisationsdel #{(app.newFilter.value != '') ? '' : 'app.newFilter.value'}
+                        <h:panelGroup rendered="#{not empty app.newFilter.value}">
+                            (Valt värde: #{(app.newFilter.value)})
+                        </h:panelGroup>
+                    </td>
+                    <td>Hsa-Id</td>
+                </tr>
+                </thead>
+                <tbody>
+
+                <ui:repeat value="#{vgrOrganizationsHome.organizations}" var="organization" id="selectVgrOrganizationTree" varStatus="st">
+                    <tr>
+                        <td colspan="#{(organization.level + 1)}" class="indention" style="width: #{(organization.level + 1)*5}%; border: none; white-space: nowrap;">
+                            #{(st.index + 1)}. #{(organization.getHsaIdentity() eq app.newFilter.value) ? '*' : ''}
+                        </td>
+                        <td class="toggle-expanded"  style="width:6%" align="center">
+                            <h:commandLink title="Öppna"
+                                           rendered="#{not organization.leaf and not organization.open}"
+                                           actionListener="#{vgrOrganizationsHome.loadChildrenFlat(organization)}">
+                                <f:ajax render="@form" action="click" />
+                                <img class="toggle-symbol minimized" src="#{request.contextPath}/img/white-cross.png"/>
+                            </h:commandLink>
+
+                            <h:commandLink title="Stäng"
+                                           rendered="#{not organization.leaf and organization.open}"
+                                           actionListener="#{vgrOrganizationsHome.closeChildrenFlat(organization)}">
+                                <f:ajax render="@form" action="click" />
+                                <img class="toggle-symbol expanded" src="#{request.contextPath}/img/white-cross.png"/>
+                            </h:commandLink>
+                        </td>
+                        <td colspan="#{20 - (organization.level + 1)}">
+                            #{organization.getLabel()}
+                        </td>
+                        <td id="#{organization.getHsaIdentity()}" class="hsa-id">
+                            <h:commandLink update="selectVgrOrganizationTree" title="Välj"
+                                           value="#{organization.getHsaIdentity()}"
+                                           style="#{(organization.getHsaIdentity() eq app.newFilter.value) ? 'font-weight: bold;' : ''}"
+                                           actionListener="#{app.newFilter.setValue(organization.getHsaIdentity())}">
+                                <f:ajax render="@form" action="click" />
+                            </h:commandLink>
+                        </td>
+                    </tr>
+                </ui:repeat>
+                </tbody>
+            </table>
+            <h:outputScript>
+                function on() {
+                var lastlyPushed = document.getElementById('#{vgrOrganizationsHome.lastHsaIdClicked}');
+                if (lastlyPushed){
+                //console.log("Hittade", '#{vgrOrganizationsHome.lastHsaIdClicked}');
+                lastlyPushed.scrollIntoView({block: "end", behavior: "smooth"});
+                } else {
+                //console.log("Hittade inte ", '#{vgrOrganizationsHome.lastHsaIdClicked}');
+                }
+                }
+                setTimeout(on, 100);
+            </h:outputScript>
+        </h:panelGroup>
+    </div>
+
 </div>
-
-</html>

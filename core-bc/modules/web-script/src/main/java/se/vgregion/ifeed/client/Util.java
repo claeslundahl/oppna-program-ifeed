@@ -172,25 +172,6 @@ public class Util {
         Element element = tableDef.getElement();
         com.google.gwt.dom.client.Element sibling = element.getNextSiblingElement();
 
-        /*if (sibling != null && sibling.getTagName().equalsIgnoreCase("noscript")) {
-            com.google.gwt.dom.client.Element iframe = sibling.getFirstChildElement();
-            if (iframe != null) {
-                String host = iframe.getAttribute("src");
-                host = host.substring(0, host.indexOf("/iFeed-web/"));
-                url = host + url;
-            } else {
-                String host = sibling.getInnerText();
-                if (host == null || "".equals(host.trim())) {
-                    host = sibling.getInnerHTML();
-                }
-                host = host.substring(host.indexOf("src=") + 5, host.indexOf("/iFeed-web/"));
-                url = host + url;
-            }
-            if (!url.startsWith("http://")) {
-                url = "http://" + url;
-            }
-        }*/
-
         Element dataUrl = DOM.getElementById("ifeed-data");
         if (dataUrl != null) {
             url = dataUrl.getAttribute("location");
@@ -198,15 +179,13 @@ public class Util {
             Element dataUrl2 = DOM.getElementById("ifeed-data2");
             if (dataUrl2 != null) {
                 url = dataUrl2.getInnerText().trim();
+            } else {
             }
         }
 
         if (url == null || "".equals(url)) {
             url = "http://ifeed.vgregion.se";
-            //url = "http://vgas0565.vgregion.se:8081";
-            //url = "http://loocalhost:8081";
         }
-        //log("using url " + url);
         return url;
     }
 

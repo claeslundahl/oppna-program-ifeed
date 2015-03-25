@@ -21,6 +21,9 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
     @Transient
     private FieldInf fieldInf;
 
+    @Transient
+    private Object filterQueryForDisplay;
+
     @Deprecated
 	@Enumerated(EnumType.STRING)
 	private FilterType.Filter filter;
@@ -48,7 +51,11 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 		return filterQuery;
 	}
 
-	@Override
+    public void setFilterQuery(String filterQuery) {
+        this.filterQuery = filterQuery;
+    }
+
+    @Override
 	public String toString() {
 		return new ToStringBuilder(this).append(filter).append(filterQuery).toString();
 	}
@@ -67,5 +74,13 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 
     public void setFieldInf(FieldInf fieldInf) {
         this.fieldInf = fieldInf;
+    }
+
+    public Object getFilterQueryForDisplay() {
+        return filterQueryForDisplay;
+    }
+
+    public void setFilterQueryForDisplay(Object filterQueryForDisplay) {
+        this.filterQueryForDisplay = filterQueryForDisplay;
     }
 }

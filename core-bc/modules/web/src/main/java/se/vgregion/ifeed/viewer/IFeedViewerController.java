@@ -1,15 +1,5 @@
 package se.vgregion.ifeed.viewer;
 
-import static se.vgregion.common.utils.CommonUtils.getEnum;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.BeanMap;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
@@ -35,6 +19,13 @@ import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
+
+import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 /**
  * Controller to view feeds.
@@ -157,7 +148,7 @@ public class IFeedViewerController {
             Long id = Long.parseLong(listIdOrSerializedInstance);
             return getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage);
         } else {
-            IFeed ifeed = (IFeed) CommonUtils.toObject(listIdOrSerializedInstance);
+            IFeed ifeed = IFeed.fromJson(listIdOrSerializedInstance);
             return getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage);
         }
     }

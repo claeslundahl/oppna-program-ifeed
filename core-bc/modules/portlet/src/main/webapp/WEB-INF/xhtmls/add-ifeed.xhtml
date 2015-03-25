@@ -8,68 +8,70 @@
   <h2>Lägg till ett dokumentflöde</h2>
 
   <p:messages id="error-messages"/>
-  <div class="ifeed-columns-left">
-    <h:outputLabel value="Namnge dokumentpubliceringen ">
 
-    </h:outputLabel>
-    <p:inputText id="title" name="title" value="#{iFeedModelBean.name}">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span4 first">
+                <h:outputLabel value="Namnge dokumentpubliceringen" />
+                <h:inputText id="title" name="title" value="#{iFeedModelBean.name}" />
+            </div>
+            <div class="span4">
+                <h:outputLabel value="Beskriv syftet med publiceringen "/>
+                <h:inputTextarea autoResize="false" value="#{iFeedModelBean.description}" maxlength="1000" />
+            </div>
+            <div class="span4 last">
+                <h:panelGroup id="addIfeedDepartmentAndGroup" layout="block">
+                    <h:outputLabel value="Välj förvaltning" for="selectGovernance"/>
 
-    </p:inputText>
+                    <h:selectOneMenu converter="departmentConverter"
+                                     update="addIfeedDepartmentAndGroup"
+                                     ajax="true"
+                                     id="selectGovernance"
+                                     immediate="true"
+                                     value="#{iFeedModelBean.department}">
+                        <f:selectItem itemLabel="-" itemValue="#{null}"/>
+                        <f:selectItems value="#{app.getVgrDepartments()}"
+                                       var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
+                        <f:ajax render="addIfeedDepartmentAndGroup" />
+                    </h:selectOneMenu>
 
-    <h:outputLabel value="Beskriv syftet med publiceringen "/>
-    <div class="ifeed-text-field">
-      <p:inputTextarea autoResize="false" value="#{iFeedModelBean.description}" maxlength="1000">
+                    <h:outputLabel value="Välj grupptillhörighet"/>
 
-      </p:inputTextarea>
+                    <h:selectOneMenu converter="groupConverter"
+                                     update="addIfeedDepartmentAndGroup"
+                                     ajax="true"
+                                     rendered="#{iFeedModelBean.department != null}"
+                                     value="#{iFeedModelBean.group}">
+                        <f:selectItem itemLabel="-" itemValue="#{null}"/>
+                        <f:selectItems value="#{iFeedModelBean.department.vgrGroups}"
+                                       var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
+                        <f:ajax render="addIfeedDepartmentAndGroup" />
+                    </h:selectOneMenu>
+
+                    <h:selectOneMenu converter="groupConverter"
+                                     update="addIfeedDepartmentAndGroup"
+                                     disabled="true"
+                                     rendered="#{iFeedModelBean.department == null}">
+                        <f:selectItem itemLabel="-" itemValue="#{null}"/>
+                    </h:selectOneMenu>
+
+
+                </h:panelGroup>
+            </div>
+        </div>
     </div>
 
-  </div>
-
-  <h:panelGroup id="addIfeedDepartmentAndGroup">
-    <div class="ifeed-columns-right ifeed-selectonemenu">
-
-      <h:outputLabel value="Välj förvaltning"/>
 
 
-      <h:selectOneMenu style="text-align:left;"
-                       converter="departmentConverter"
-                       update="addIfeedDepartmentAndGroup"
-                       ajax="true"
-                       id="selectGovernance"
-                       immediate="true"
-                       value="#{iFeedModelBean.department}">
-        <f:selectItem itemLabel="-" itemValue="#{null}"/>
-        <f:selectItems value="#{app.getVgrDepartments()}"
-                       var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-        <f:ajax render="addIfeedDepartmentAndGroup" />
-      </h:selectOneMenu>
-
-      <h:outputLabel value="Välj grupptillhörighet"/>
-
-      <h:selectOneMenu style="text-align:left;"
-                       converter="groupConverter"
-                       update="addIfeedDepartmentAndGroup"
-                       ajax="true"
-                       rendered="#{iFeedModelBean.department != null}"
-                       value="#{iFeedModelBean.group}">
-        <f:selectItem itemLabel="-" itemValue="#{null}"/>
-        <f:selectItems value="#{iFeedModelBean.department.vgrGroups}"
-                       var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-        <f:ajax render="addIfeedDepartmentAndGroup" />
-      </h:selectOneMenu>
-    </div>
-  </h:panelGroup>
 
   <aui:button-row>
-    <div class="ifeed-buttons">
-
-      <p:commandLink styleClass="rp-link-button rp-link-button-alt"
+      <p:commandLink styleClass="rp-link-button secondary"
                      actionListener="#{editIFeedBackingBean.goBackToIFeedList}" value="Avbryt" update=":ifeed_view"
                      ajax="false" async="true"/>
 
       <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara och fortsätt"
                      update=":ifeed_view" actionListener="#{editIFeedBackingBean.addIFeed}" ajax="false" async="true"/>
-    </div>
+
   </aui:button-row>
 
 </ui:composition>

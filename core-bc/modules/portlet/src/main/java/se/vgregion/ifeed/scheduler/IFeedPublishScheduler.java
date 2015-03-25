@@ -1,23 +1,20 @@
 package se.vgregion.ifeed.scheduler;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageListener;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.service.push.IFeedPublisher;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
 
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageListener;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @author Anders Asplund - Callista Enterprise
@@ -27,7 +24,6 @@ public class IFeedPublishScheduler implements MessageListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedPublishScheduler.class);
 
     private ApplicationContext context;
-    private IFeedPublisher iFeedPublisher;
     private IFeedService iFeedService;
     private IFeedSolrQuery iFeedSolrQuery;
 
@@ -52,12 +48,11 @@ public class IFeedPublishScheduler implements MessageListener {
                         iFeed.getName(), iFeed.getId() });
                 LOGGER.debug("Sending feed {} (id: {}) to PuSH server.",
                         new Object[] { iFeed.getName(), iFeed.getId() });
-                iFeedPublisher.addIFeed(iFeed);
                 modifiedIFeeds.add(iFeed);
             }
         }
 
-        if (modifiedIFeeds.size() > 0 && iFeedPublisher.publish()) {
+        if (modifiedIFeeds.size() > 0) {
             for (IFeed iFeed : modifiedIFeeds) {
                 iFeedService.updateIFeed(iFeed);
             }
@@ -68,7 +63,6 @@ public class IFeedPublishScheduler implements MessageListener {
      *
      */
     private void initBeans() {
-        iFeedPublisher = context.getBean(IFeedPublisher.class);
         iFeedService = context.getBean(IFeedService.class);
         iFeedSolrQuery = context.getBean(IFeedSolrQuery.class);
     }

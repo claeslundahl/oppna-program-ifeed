@@ -1,21 +1,13 @@
 package se.vgregion.ifeed.service.ifeed;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
-import se.vgregion.ifeed.service.push.IFeedPublisher;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
 import se.vgregion.ifeed.types.*;
+
+import java.io.Serializable;
+import java.util.*;
 
 public class IFeedServiceImpl implements IFeedService, Serializable {
 
@@ -23,13 +15,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     private JpaRepository<FieldsInf, Long, Long> fieldsInfRepo;
 
     private JpaRepository<VgrDepartment, Long, Long> departmentRepo;
-    private IFeedPublisher iFeedPublisher;
     private String solrServiceUrl;
 
-    public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam, IFeedPublisher iFeedPublisher,
+    public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam,
                             JpaRepository<FieldsInf, Long, Long> fieldsInfRepo, JpaRepository<VgrDepartment, Long, Long> departmentRepo) {
         iFeedRepo = iFeedRepoParam;
-        this.iFeedPublisher = iFeedPublisher;
         this.fieldsInfRepo = fieldsInfRepo;
         this.departmentRepo = departmentRepo;
     }
@@ -165,12 +155,6 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
         IFeed mergedIfeed = iFeedRepo.merge(oldIFeed);
 
-        try {
-            iFeedPublisher.addIFeed(mergedIfeed);
-            iFeedPublisher.publish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         mergedIfeed.setTimestamp();
         mergedIfeed = iFeedRepo.merge(mergedIfeed);
         return mergedIfeed;
@@ -252,14 +236,6 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     public void setFieldsInfRepo(JpaRepository<FieldsInf, Long, Long> fieldsInfRepo) {
         this.fieldsInfRepo = fieldsInfRepo;
-    }
-
-    public IFeedPublisher getiFeedPublisher() {
-        return iFeedPublisher;
-    }
-
-    public void setiFeedPublisher(IFeedPublisher iFeedPublisher) {
-        this.iFeedPublisher = iFeedPublisher;
     }
 
     public JpaRepository<VgrDepartment, Long, Long> getDepartmentRepo() {

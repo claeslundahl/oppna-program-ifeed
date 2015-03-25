@@ -7,7 +7,7 @@
     <h:head></h:head>
     <h2>Fältinställningar</h2>
 
-        <h:form styleClass="edit-bookmark-form clearfix" id="field-config">
+        <h:form styleClass="clearfix" id="field-config">
             <div class="ifeed-text-field">
             <p:inputTextarea rows="8" cols="200" style="width: 97%;" value="#{iFeedBackingBean.fieldInfString}"> </p:inputTextarea>
 
@@ -16,10 +16,10 @@
                 <p:commandButton styleClass="rp-link-button rp-link-button-alt" value="Spara"
                                 ajax="false" async="false" actionListener="#{iFeedBackingBean.saveFieldInfString()}"/>
 
-                <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Avbryt" update=":ifeed_view"
+                <p:commandButton styleClass="rp-link-button secondary" value="Avbryt" update=":ifeed_view"
                ajax="false" async="false" actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
 
-               </p:commandLink>
+               </p:commandButton>
             </aui:button-row>
         </h:form>
 

@@ -30,5 +30,8 @@
         <view-handler>org.primefaces.application.DialogViewHandler</view-handler>
     </application>-->
 
+    <lifecycle>
+        <phase-listener>se.vgregion.ifeed.jsf.ContentTypePhaseListener</phase-listener>
+    </lifecycle>
 
 </faces-config>

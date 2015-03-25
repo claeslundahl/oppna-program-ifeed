@@ -5,105 +5,112 @@
         xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
         xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-  <h:head></h:head>
+    <h:head></h:head>
 
-  <h:messages />
+    <h:messages/>
 
-  <h:panelGroup id="resultGroup">
-    <div class="ui-datatable-tablewrapper">
-    <table class="rp-table feed-list">
-      <thead>
-      <tr>
-        <th class="filter-result-h">Namn</th>
-        <th class="filter-result-h">Ägare</th>
-        <th class="filter-result-h">Beskrivning</th>
-        <th class="filter-result-h">Förvaltning</th>
-        <th class="filter-result-h">Grupp</th>
-        <th class="filter-result-d">Ta bort</th>
-      </tr>
-      <tr>
-        <th class="filter-result-h">
-          <h:inputText value="${filter.name}" listener="#{app.updateFilterQuery}">
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
-          </h:inputText>
-        </th>
-        <th class="filter-result-h">
-          <h:inputText value="${filter.userId}">
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
-          </h:inputText>
-        </th>
-        <th class="filter-result-h">
-          <h:inputText value="${filter.description}">
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
-          </h:inputText>
-        </th>
-        <th class="filter-result-h">
-          <h:selectOneMenu style="text-align:left;"
-                           converter="departmentConverter"
-                           update=":ifeed_view"
-                           ajax="true"
-                           id="filterOnDepartment"
-                           value="#{filter.department}">
-            <f:selectItem itemLabel="-" itemValue="#{null}"/>
-            <f:selectItems value="#{app.getVgrDepartments()}"
-                           var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
-          </h:selectOneMenu>
-        </th>
-        <th class="filter-result-h">
-          <h:selectOneMenu style="text-align:left;"
-                           converter="groupConverter"
-                           id="filterOnGroup"
-                           update=":ifeed_view"
-                           ajax="true"
-                           rendered="#{filter.department != null}"
-                           value="#{filter.group}">
-            <f:selectItem itemLabel="-" itemValue="#{null}"/>
-            <f:selectItems value="#{filter.department.vgrGroups}"
-                           var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
-            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}" />
-          </h:selectOneMenu>
-        </th>
-        <th class="filter-result-d">
-        </th>
-      </tr>
-      </thead>
-      <tbody class="ui-datatable-data ui-widget-content">
-      <ui:repeat value="#{app.page()}" var="item" id="hitlist" varStatus="status">
-        <tr class="ui-widget-content #{status.even ? 'ui-datatable-even' : 'ui-datatable-odd'}">
-          <td>
+    <h:panelGroup id="resultGroup">
+        <div class="ui-datatable-tablewrapper">
+            <table class="rp-table feed-list">
+                <thead>
+                <tr>
+                    <th class="filter-result-h">Namn</th>
+                    <th class="filter-result-h">Ägare</th>
+                    <th class="filter-result-h">Beskrivning</th>
+                    <th class="filter-result-h">Förvaltning</th>
+                    <th class="filter-result-h">Grupp</th>
+                    <th class="filter-result-h">Id</th>
+                    <th class="filter-result-d">Ta bort</th>
+                </tr>
+                <tr>
+                    <th class="filter-result-h">
+                        <h:inputText value="${filter.name}" listener="#{app.updateFilterQuery}">
+                            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
+                        </h:inputText>
+                    </th>
+                    <th class="filter-result-h">
+                        <h:inputText value="${filter.userId}">
+                            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
+                        </h:inputText>
+                    </th>
+                    <th class="filter-result-h">
+                        <h:inputText value="${filter.description}">
+                            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
+                        </h:inputText>
+                    </th>
+                    <th class="filter-result-h">
+                        <h:selectOneMenu style="text-align:left;"
+                                         converter="departmentConverter"
+                                         update=":ifeed_view"
+                                         ajax="true"
+                                         id="filterOnDepartment"
+                                         value="#{filter.department}">
+                            <f:selectItem itemLabel="-" itemValue="#{null}"/>
+                            <f:selectItems value="#{app.getVgrDepartments()}"
+                                           var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
+                            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
+                        </h:selectOneMenu>
+                    </th>
+                    <th class="filter-result-h">
+                        <h:selectOneMenu style="text-align:left;"
+                                         converter="groupConverter"
+                                         id="filterOnGroup"
+                                         update=":ifeed_view"
+                                         ajax="true"
+                                         rendered="#{filter.department != null}"
+                                         value="#{filter.group}">
+                            <f:selectItem itemLabel="-" itemValue="#{null}"/>
+                            <f:selectItems value="#{filter.department.vgrGroups}"
+                                           var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
+                            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
+                        </h:selectOneMenu>
+                    </th>
+                    <th class="filter-result-h">
+                        <h:inputText value="${filter.idAsText}" size="8" style="width: 50px;">
+                            <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
+                        </h:inputText>
+                    </th>
+                    <th class="filter-result-d">
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="ui-datatable-data ui-widget-content">
+                <ui:repeat value="#{app.page()}" var="item" id="hitlist" varStatus="status">
+                    <tr class="ui-widget-content #{status.even ? 'ui-datatable-even' : 'ui-datatable-odd'}">
+                        <td>
+                            <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                                           value="#{item.name}"
+                                           actionListener="#{app.viewIFeed(item.id)}"/>
+                        </td>
+                        <td>${item.userId}</td>
+                        <td>${item.description}</td>
+                        <td>${item.department != null ? item.department.name : '-'}</td>
+                        <td>${item.group != null ? item.group.name : '-'}</td>
+                        <td>${item.id}</td>
+                        <td>
+                            <p:commandLink
+                                    action="#{iFeedBackingBean.removeBook(item)}"
+                                    styleClass="link-button-trash"
+                                    update=":ifeed_view"
+                                    ajax="false"
+                                    rendered="#{item != null and app.mayEditFeed(request, item)}"
+                                    onclick="confirm('Är du säker du vill radera den här posten?')"
+                                    async="true">
+                            </p:commandLink>
+                        </td>
+                    </tr>
+                </ui:repeat>
+                </tbody>
+            </table>
+            Sida #{app.currentPage + 1} av #{app.getMaxPageCount()}
             <p:commandLink update=":ifeed_view" ajax="false" async="true"
-                           value="#{item.name}"
-                           actionListener="#{app.viewIFeed(item.id)}"/>
-          </td>
-          <td>${item.userId}</td>
-          <td>${item.description}</td>
-          <td>${item.department != null ? item.department.name : '-'}</td>
-          <td>${item.group != null ? item.group.name : '-'}</td>
-          <td>
-            <p:commandLink
-                    action="#{iFeedBackingBean.removeBook(item)}"
-                    styleClass="link-button-trash"
-                    update=":ifeed_view"
-                    ajax="false"
-                    rendered="#{item != null and app.mayEditFeed(request, item)}"
-                    onclick="confirm('Är du säker du vill radera den här posten?')"
-                    async="true">
-            </p:commandLink>
-          </td>
-        </tr>
-      </ui:repeat>
-      </tbody>
-    </table>
-        Sida #{app.currentPage + 1} av #{app.getMaxPageCount()}
-        <p:commandLink update=":ifeed_view" ajax="false" async="true"
-                       value="Föregående sida"
-                       rendered="#{app.currentPage > 0}"
-                       actionListener="#{app.previousPage()}"/>
-        <p:commandLink update=":ifeed_view" ajax="false" async="true"
-                       value="Nästa sida"
-                       rendered="#{app.getMaxPageCount() > (app.currentPage + 1)}"
-                       actionListener="#{app.nextPage()}"/>
-  </div>
-  </h:panelGroup>
+                           value="Föregående sida"
+                           rendered="#{app.currentPage > 0}"
+                           actionListener="#{app.previousPage()}"/>
+            <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                           value="Nästa sida"
+                           rendered="#{app.getMaxPageCount() > (app.currentPage + 1)}"
+                           actionListener="#{app.nextPage()}"/>
+        </div>
+    </h:panelGroup>
 </f:view>

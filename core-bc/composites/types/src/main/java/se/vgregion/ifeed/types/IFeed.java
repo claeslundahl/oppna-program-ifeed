@@ -1,19 +1,14 @@
 package se.vgregion.ifeed.types;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.apache.commons.lang.builder.CompareToBuilder;
+import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 import javax.persistence.*;
-
-import org.apache.commons.lang.builder.CompareToBuilder;
-
-import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+import java.io.Serializable;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "vgr_ifeed")
@@ -94,8 +89,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     public void setFilters(Set<IFeedFilter> filters) {
-        if(this.filters == null) {
-          this.filters = new HashSet<IFeedFilter>();
+        if (this.filters == null) {
+            this.filters = new HashSet<IFeedFilter>();
         }
         this.filters.clear();
         this.filters.addAll(filters);
@@ -103,6 +98,12 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     public void removeFilter(IFeedFilter filter) {
         filters.remove(filter);
+    }
+
+    public void removeFilter(int index) {
+        List<IFeedFilter> temp = new ArrayList<IFeedFilter>(filters);
+        temp.remove(index);
+        filters.retainAll(temp);
     }
 
     public void removeFilters() {
@@ -241,4 +242,15 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     public void setGroup(VgrGroup group) {
         this.group = group;
     }
+
+    public String toJson() {
+        Gson gson = new GsonBuilder().create();
+        return gson.toJson(this);
+    }
+
+    public static IFeed fromJson(String ifeed) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(ifeed, IFeed.class);
+    }
+
 }

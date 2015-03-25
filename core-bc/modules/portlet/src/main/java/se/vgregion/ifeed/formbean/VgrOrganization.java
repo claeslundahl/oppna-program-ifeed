@@ -10,6 +10,8 @@ public class VgrOrganization extends BaseVgrOrganization {
 
     private boolean open;
 
+    private boolean added;
+
     private int level;
 
     public VgrOrganization() {
@@ -70,6 +72,14 @@ public class VgrOrganization extends BaseVgrOrganization {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public boolean isAdded() {
+        return added;
+    }
+
+    public void setAdded(boolean added) {
+        this.added = added;
     }
 
     public static class Id extends BaseVgrOrganization {

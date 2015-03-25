@@ -16,7 +16,8 @@
         <requires-namespaced-parameters>false</requires-namespaced-parameters>
         <header-portlet-css>/css/theme.css</header-portlet-css>
         <!--  <header-portlet-css>/css/prime-faces.css</header-portlet-css>-->
-
+        <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.nocache.js</footer-portlet-javascript>
+        <css-class-wrapper>ifeed-portlet</css-class-wrapper>
         <add-default-resource>false</add-default-resource>
     </portlet>
 

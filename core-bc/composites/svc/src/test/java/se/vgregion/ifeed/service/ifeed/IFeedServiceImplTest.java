@@ -1,37 +1,32 @@
 package se.vgregion.ifeed.service.ifeed;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
+import se.vgregion.ifeed.types.FieldsInf;
+import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.VgrDepartment;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
-import se.vgregion.ifeed.service.push.IFeedPublisher;
-import se.vgregion.ifeed.types.FieldsInf;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.VgrDepartment;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class IFeedServiceImplTest {
 
 	IFeedServiceImpl service;
 	private JpaRepository<IFeed, Long, Long> iFeedRepoParam;
 	private JpaRepository<FieldsInf, Long, Long> fieldsInfParam;
-	private IFeedPublisher iFeedPublisher;
 
 	@Before
 	public void setUp() throws Exception {
 		iFeedRepoParam = mock(JpaRepository.class);
-		iFeedPublisher = mock(IFeedPublisher.class);
         JpaRepository<VgrDepartment, Long, Long> departmentRepo = mock(JpaRepository.class);
-        service = new IFeedServiceImpl(iFeedRepoParam, iFeedPublisher, fieldsInfParam, departmentRepo);
+        service = new IFeedServiceImpl(iFeedRepoParam, fieldsInfParam, departmentRepo);
 	}
 
 	@Test

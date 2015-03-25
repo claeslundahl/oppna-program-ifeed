@@ -41,24 +41,25 @@
         </table>
       </p:panel>
 
-      <p:panel>
+      <div class="clearfix">
 
         <p:commandLink value="Lägg till grupp" update=":ifeed_view"
-                       styleClass="rp-link-button rp-link-button-alt"
+                       styleClass="rp-link-button secondary"
                        ajax="false" async="true"
                        actionListener="#{app.createGroup()}">
         </p:commandLink>
+
+          <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                         value="Avbryt"
+                         styleClass="rp-link-button secondary"
+                         actionListener="#{app.cancelDepartment()}"/>
 
         <p:commandLink update=":ifeed_view" ajax="false" async="true"
                        value="Spara"
                        styleClass="rp-link-button rp-link-button-alt"
                        actionListener="#{app.saveDepartment()}"/>
 
-        <p:commandLink update=":ifeed_view" ajax="false" async="true"
-                       value="Avbryt"
-                       styleClass="rp-link-button rp-link-button-alt"
-                       actionListener="#{app.cancelDepartment()}"/>
-      </p:panel>
+      </div>
 
     </h:panelGrid>
 

@@ -701,8 +701,18 @@ body .ui-widget-header .ui-state-active {
 
 
 .link-button-trash {
-    display:block;
+    display: inline;
     background-image: url(/rp-bootstrap-theme/images/icons/blue_trash.png);
+    background-repeat: no-repeat;
+    height: 18px;
+    width: 18px;
+    min-width: 18px;
+}
+
+.edit a.link-button-edit {
+    display: inline-block;
+    vertical-align: middle;
+    background-image: url('/iFeed-portlet/img/edit.png');
     background-repeat: no-repeat;
     height: 18px;
     width: 18px;
@@ -910,6 +920,9 @@ margin-bottom: 5px;*/
     float: right;
 }
 
+.secondary {
+   background:lightgray;
+}
 
 /*---------------- Primefaces accordion --------------------*/
 

@@ -55,7 +55,6 @@
 
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
     <property name="iFeedRepo" ref="iFeedRepo" />
-    <property name="iFeedPublisher" ref="iFeedPublisher" />
     <property name="fieldsInfRepo" ref="fieldsInfRepo" />
     <property name="departmentRepo" ref="departmentRepo" />
     <property name="solrServiceUrl" value="${solr.service}" />
@@ -106,11 +105,6 @@
         <value>HosPersKat</value>
       </set>
     </property>
-  </bean>
-
-  <bean id="iFeedPublisher" class="se.vgregion.ifeed.service.push.IFeedPublisher" scope="prototype">
-    <constructor-arg value="${push.service}" />
-    <property name="ifeedAtomFeed" ref="iFeedAtomFeed" />
   </bean>
 
   <bean class="org.springframework.web.client.RestTemplate">

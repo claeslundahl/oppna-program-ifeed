@@ -11,6 +11,18 @@
 
   <style type="text/css">
 
+    .ifeed-filters .icon-chevron-right, .ifeed-filters .icon-chevron-down,
+    .organization-tree .icon-chevron-right, .organization-tree .icon-chevron-down {
+      text-decoration:none;
+      padding: 5px;
+    }
+    .hsa-id {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+
+
     .rp-ifeed-popup h2, .rp-ifeed-popup .box, .rp-ifeed-popup .rp-filter-value-input {
       padding: 10px;
     }
@@ -142,6 +154,21 @@
       width: 50pc;
     }
 
+    td.framed {
+      border: lightgrey solid thin;
+    }
+
+    td.framed>* {
+        padding: 10px;
+      display:block;
+
+    }
+
+    table.framed {
+      border-collapse: separate;
+      border-spacing: 10px;
+    }
+
     .ifeed-field-dc-date-issued {
       white-space: nowrap;
     }
@@ -149,6 +176,8 @@
     .ifeed-filters td {
       min-width:20px;
     }
+
+
 
     .align-top-table rp-table {
       border: none !important;

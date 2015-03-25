@@ -271,6 +271,12 @@ public class IFeedModelBean extends IFeed implements Serializable {
     }
 
     @Override
+    public void removeFilter(int index) {
+        super.removeFilter(index);
+        filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
+    }
+
+    @Override
     public boolean addFilter(IFeedFilter filter) {
         boolean result = super.addFilter(filter);
         filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
@@ -291,5 +297,11 @@ public class IFeedModelBean extends IFeed implements Serializable {
 
     public void setInitalFeed(IFeed initalFeed) {
         this.initalFeed = initalFeed;
+    }
+
+
+    @Override
+    public String toJson() {
+        return toIFeed().toJson();
     }
 }

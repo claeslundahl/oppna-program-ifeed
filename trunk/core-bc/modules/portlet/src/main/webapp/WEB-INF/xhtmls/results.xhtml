@@ -8,32 +8,33 @@
                 xmlns:portlet="http://java.sun.com/portlet_2_0">
 
     <h:panelGroup rendered="#{not iFeedModelBean.getFilters().isEmpty()}">
-        <h3>Resultat</h3>
-        <div id="aroundResult" class="ui-datatable-tablewrapper">
-            <table class="rp-table feed-list">
-                <thead>
-                    <tr>
-                        <th>Titel</th>
-                        <th>Publiceringsdatum</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <ui:repeat value="#{app.getCurrentResult()}" var="resultItem">
-                    <tr>
-                        <td>
-                            <a href="#{app.metadataBaseUrl}?documentId=#{resultItem['dc.source.documentid']}" target="_blank">
-                                #{resultItem['dc.title']}
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#{app.metadataBaseUrl}?documentId=#{resultItem['dc.source.documentid']}" target="_blank">
-                                <h:outputText value="#{app.toStringDate(resultItem['dc.date.issued'])}"></h:outputText>
-                            </a>
-                        </td>
-                    </tr>
-                </ui:repeat>
-                </tbody>
-            </table>
+
+        <h:panelGroup rendered="#{app.inEditMode}" styleClass="ifeed-step" layout="block">
+            <span>Din träfflista</span>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{!app.inEditMode}" layout="block">
+            <h2>Resultat</h2>
+            <h:selectBooleanCheckbox value="#{app.limitOnResultCount}" />
+        </h:panelGroup>
+
+
+
+        <div class="#{app.inEditMode ? 'ifeed-filter-box' : ''}">
+            <div
+                    class="ifeedDocList"
+                    columnes="dc.title|Titel (autokomplettering)|left|,dc.date.issued|Publicerad|left|"
+                    fontSize="auto"
+                    defaultsortcolumn="dc.title"
+                    defaultsortorder="asc"
+                    showTableHeader="yes"
+                    linkOriginalDoc="no"
+                    limit="#{app.limitOnResultCount ? '100' : '0'}"
+                    hiderightcolumn="yes"
+                    feedid='#{iFeedModelBean.toJson()}'>
+            </div>
         </div>
+    <div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>
+    <button id="rerun-ifeed-loading" style="display:none;">Should be hidden</button>
     </h:panelGroup>
 </ui:composition>

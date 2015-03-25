@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class Filter extends IFeed {
 
+    private String idAsText;
+
     public String toJpqlQuery(List<Object> values) {
         StringBuilder sb = new StringBuilder();
 
@@ -20,6 +22,7 @@ public class Filter extends IFeed {
         addConditionIfAnyValue("o.userId like ?", getUserId(), condition, values);
         addConditionIfAnyValue("o.description like ?", getDescription(), condition, values);
         addConditionIfAnyValue("o.department.id = ?", getDepartment() != null ? getDepartment().getId() : null, condition, values);
+        addConditionIfAnyValue("o.id = ?", getId(), condition, values);
 
         if (getGroup() != null) {
             addConditionIfAnyValue("o.group.id = ?", getGroup().getId(), condition, values);
@@ -78,4 +81,24 @@ public class Filter extends IFeed {
         return sb.toString();
     }
 
+    public String getIdAsText() {
+        if (idAsText == null  && id != null) {
+            return id.toString();
+        }
+        return idAsText;
+    }
+
+    public void setIdAsText(String idAsText) {
+        if ("".equals(idAsText)) {
+            setId(null);
+        }
+        Long id = null;
+        try {
+            id = Long.parseLong(idAsText);
+            setId(id);
+            this.idAsText = idAsText;
+        } catch (Exception e) {
+            System.out.println(idAsText + " is not a long value.");
+        }
+    }
 }

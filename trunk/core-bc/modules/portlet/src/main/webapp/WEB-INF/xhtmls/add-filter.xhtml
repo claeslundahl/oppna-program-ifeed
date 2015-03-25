@@ -3,50 +3,53 @@
         xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
         xmlns:portlet="http://java.sun.com/portlet_2_0">
 
+    <h:panelGroup id="add_ifeed_filters" rendered="#{app.inEditMode}" layout="block">
 
-  <p:panel styleClass="filter-root" id="add-ifeed-filters" rendered="#{app.inEditMode}">
-    <h3>Lägg till nytt filter</h3>
+        <div class="ifeed-step">
+            <span>Välj filter</span>
+        </div>
 
-    <table class="ifeed-filters">
-      <ui:repeat value="#{app.getFilters()}" var="ifeedFilter" varStatus="status" id="getFiltersLoop">
-        <tr>
-          <td colspan="2">
-            <span title="#{ifeedFilter.help}" class="ifeed-filter-add"> </span>
-            <p:commandLink
-                           value="#{ifeedFilter.name}"
-                           update=":ifeed_view"
-                           ajax="true"
-                           async="true"
-                           title="#{ifeedFilter.help}"
-                           actionListener="#{ifeedFilter.setExpanded(!ifeedFilter.isExpanded())}">
-            </p:commandLink>
-          </td>
-        </tr>
+        <div class="ifeed-filter-box">
+            <table class="ifeed-filters">
+                <ui:repeat value="#{app.getFilters()}" var="ifeedFilter" varStatus="status" id="getFiltersLoop">
+                    <tr>
+                        <td colspan="2">
+                            <!--<span title="#{ifeedFilter.help}" class="ifeed-filter-help"> </span>-->
+                            <div title="#{ifeedFilter.help}" class="#{ifeedFilter.isExpanded() ? 'icon-chevron-down' : 'icon-chevron-right'}"></div>
+                            <h:commandLink
+                                    value="#{ifeedFilter.name}"
+                                    title="#{ifeedFilter.help}"
+                                    ajax="true"
+                                    action="#{ifeedFilter.setExpanded(!ifeedFilter.isExpanded())}">
+                                <f:ajax render="@form" onevent="refreshResults()"/>
+                            </h:commandLink>
+                        </td>
+                    </tr>
 
-        <ui:fragment rendered="#{ifeedFilter.expanded or true}">
-          <ui:repeat value="#{ifeedFilter.children}" var="child" varStatus="vs4filterLoop">
-            <tr>
-              <ui:fragment rendered="#{vs4filterLoop.index == 0}">
-                <td rowspan="#{ifeedFilter.children.size()}"></td>
-              </ui:fragment>
-              <td>
-                <span title="#{child.help}" class="ifeed-filter-help"> </span>
-                <p:commandLink value="#{child.name}"
-                               update=":ifeed_view"
-                               ajax="true" async="true"
-                               title="#{child.help}"
-                               actionListener="#{app.setNewFilter(child)}">
-                </p:commandLink>
-              </td>
-            </tr>
-          </ui:repeat>
-        </ui:fragment>
+                    <ui:fragment rendered="#{ifeedFilter.expanded}">
+                        <ui:repeat value="#{ifeedFilter.children}" var="child" varStatus="vs4filterLoop">
+                            <tr>
+                                <ui:fragment rendered="#{vs4filterLoop.index == 0}">
+                                    <td rowspan="#{ifeedFilter.children.size()}"></td>
+                                </ui:fragment>
+                                <td>
+                                    <span title="#{child.help}" class="ifeed-filter-add"> </span>
+                                    <p:commandLink value="#{child.name}"
+                                                   update=":ifeed_view"
+                                                   title="#{child.help}"
+                                                   onclick="refreshResults()"
+                                                   action="#{app.setNewFilter(child)}">
+                                        <f:ajax render="@form" onevent="refreshResults()"/>
+                                    </p:commandLink>
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                    </ui:fragment>
 
+                </ui:repeat>
+            </table>
+        </div>
 
-      </ui:repeat>
-    </table>
-  </p:panel>
-
-
+    </h:panelGroup>
 
 </f:view>

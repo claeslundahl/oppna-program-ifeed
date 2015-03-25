@@ -18,6 +18,9 @@ import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ifeed.types.VgrDepartment;
+import se.vgregion.ifeed.types.VgrGroup;
 
 public class IFeedViewerControllerTest {
 

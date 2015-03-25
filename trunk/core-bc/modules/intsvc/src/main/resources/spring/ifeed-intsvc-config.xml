@@ -31,7 +31,6 @@
   </jaxrs:server>
 
   <bean id="iFeedFeedService" class="se.vgregion.ifeed.intsvc.atom.IFeedFeedServiceImpl">
-    <property name="pushServerEndpoint" value="${push.service}" />
     <property name="namespaces">
       <map>
         <entry key="dc" value="http://purl.org/dc/elements/1.1/" />

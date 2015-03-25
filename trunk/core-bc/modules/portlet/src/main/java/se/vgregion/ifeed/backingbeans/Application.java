@@ -52,6 +52,11 @@ public class Application {
 
     @Value("${ifeed.metadata.base.url}")
     private String metadataBaseUrl;
+    @Value("${ifeed.web.script.url}")
+    private String webScriptUrl;
+    @Value("${ifeed.web.script.json.url}")
+    private String webScriptJsonUrl;
+
     @Autowired
     private IFeedService iFeedService;
     @Autowired
@@ -60,8 +65,13 @@ public class Application {
     private LdapPersonService ldapPersonService;
     @Value("#{iFeedModelBean}")
     private IFeedModelBean iFeedModelBean;
+
+    @Value("#{vgrOrganizationsHome}")
+    private VgrOrganizationsHome vgrOrganizationsHome;
+
     @Autowired
     private MetadataService metadataService;
+
     @Autowired
     private IFeedBackingBean iFeedBackingBean;
     @Autowired
@@ -95,6 +105,8 @@ public class Application {
 
     private boolean inEditMode;
 
+    private boolean limitOnResultCount;
+
     @Value("#{filter}")
     private FilterModel filter;
 
@@ -115,13 +127,14 @@ public class Application {
     private LdapSupportService ldapOrganizationService;
     private List<IFeed> page;
     private IFeedResults currentResult = new IFeedResults();
+    private Map<String, FieldInf> fieldsByNameIndex;
 
     public Application() {
     }
 
     @PostConstruct
     public void init() {
-        if (getCurrentUser() != null){
+        if (getCurrentUser() != null) {
             filter.setUserId(getCurrentUser().getScreenName());
         }
         filters = iFeedService.getFieldInfs();
@@ -207,23 +220,7 @@ public class Application {
     }
 
     public void viewIFeed(Long id) throws PortalException, SystemException {
-        //FacesContext facesContext = FacesContext.getCurrentInstance();
-        //ExternalContext externalContext = facesContext.getExternalContext();
-        //PortletRequest request = (PortletRequest) externalContext.getRequest();
-        //User user = getUser(request);
         IFeed feed = iFeedService.getIFeed(id);
-
-        /*for (Ownership ownership : feed.getOwnerships()) {
-            assert ownership != null;
-        }
-
-        for (IFeedFilter feedFilter : feed.getFilters()) {
-            assert feedFilter != null;
-        }
-
-        if (feed.getDepartment() != null) {
-            feed.getDepartment().getVgrGroups();
-        }*/
         iFeedModelBean.copyValuesFromIFeed(feed);
 
         List<FieldsInf> fieldsInfs = iFeedService.getFieldsInfs();
@@ -237,6 +234,20 @@ public class Application {
         navigationModelBean.setUiNavigation("VIEW_IFEED");
         setInEditMode(false);
         findResultsByCurrentFeedConditions();
+
+        setFilters(filters);
+
+        for (IFeedFilter filter : iFeedModelBean.getFilters()) {
+            FieldInf field = getFieldsByNameIndex().get(filter.getFilterKey());
+            if ("d:ldap_org_value".equals(field.getType())) {
+                VgrOrganization organization = vgrOrganizationsHome.findVgrOrganizationByHsaId(filter.getFilterQuery());
+                if (organization != null) {
+                    filter.setFilterQueryForDisplay(organization.getLabel());
+                }
+            }
+            filter.setFieldInf(field);
+        }
+
     }
 
     User getUser(PortletRequest request) throws PortalException, SystemException {
@@ -318,6 +329,25 @@ public class Application {
 
     public void setFilters(List<FieldInf> filters) {
         this.filters = filters;
+        this.fieldsByNameIndex = new HashMap<String, FieldInf>() {
+            @Override
+            public FieldInf get(Object key) {
+                FieldInf result = super.get(key);
+                if (result == null) {
+                    result = new FieldInf();
+                    result.setName((String) key);
+                }
+                return result;
+            }
+        };
+        for (FieldInf parent : filters) {
+            fieldsByNameIndex.put(parent.getId(), parent);
+            if (!parent.getChildren().isEmpty()) {
+                for (FieldInf child : parent.getChildren()) {
+                    fieldsByNameIndex.put(child.getId(), child);
+                }
+            }
+        }
     }
 
     public void cancelNewFilter(FieldInf fieldInf) {
@@ -439,7 +469,6 @@ public class Application {
     public void findResultsByCurrentFeedConditions() {
         this.currentResult = iFeedSolrQuery.getIFeedResults(getIFeedModelBean());
     }
-
 
     public void removeDepartmentsGroup(VgrGroup item) {
         department.getVgrGroups().remove(item);
@@ -681,4 +710,44 @@ public class Application {
         return s;
     }
 
+    public Map<String, FieldInf> getFieldsByNameIndex() {
+        return fieldsByNameIndex;
+    }
+
+    public String getWebScriptUrl() {
+        return webScriptUrl;
+    }
+
+    public void setWebScriptUrl(String webScriptUrl) {
+        this.webScriptUrl = webScriptUrl;
+    }
+
+    public String getWebScriptJsonUrl() {
+        return webScriptJsonUrl;
+    }
+
+    public void setWebScriptJsonUrl(String webScriptJsonUrl) {
+        this.webScriptJsonUrl = webScriptJsonUrl;
+    }
+
+    public void editFilterValue(IFeedFilter filter) {
+        if (iFeedModelBean.getFilters().contains(filter)) {
+            newFilter = filter.getFieldInf();
+            if(newFilter==null) {
+                newFilter = fieldsByNameIndex.get(filter.getFilterKey());
+            }
+            newFilter.setValue(filter.getFilterQuery());
+            iFeedModelBean.removeFilter(filter);
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    public boolean isLimitOnResultCount() {
+        return limitOnResultCount;
+    }
+
+    public void setLimitOnResultCount(boolean limitOnResultCount) {
+        this.limitOnResultCount = limitOnResultCount;
+    }
 }

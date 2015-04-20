@@ -28,28 +28,10 @@ public class IFeedModelBean extends IFeed implements Serializable {
     private IFeed initalFeed;
 
     public IFeedModelBean() {
-
+        super();
     }
-
-    private String newOwnershipName;
 
     private List<String> newOwnershipNames = new MirrorOwnershipToTextList(ownerships);
-
-    /*
-    public void copyNamesToNewOwnershipNames() {
-        for (Ownership ownership : getOwnershipList()) {
-            newOwnershipNames.add(ownership.getName());
-        }
-    }
-
-    public void copyFromNewOwnershipNamesToOwnerships() {
-        getOwnershipList().clear();
-        for (String name : newOwnershipNames) {
-            Ownership ownership = new Ownership();
-            ownership.setName(name);
-            getOwnershipList().add(ownership);
-        }
-    }*/
 
     private void copy(Object from, Object into) {
         BeanMap fromMap = BeanMap.create(from);
@@ -67,6 +49,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
         setGroup(iFeed.getGroup());
         setDepartment(iFeed.getDepartment());
         setInitalFeed(iFeed);
+        setSortDirection("asc");
     }
 
     //List for display purposes
@@ -208,6 +191,10 @@ public class IFeedModelBean extends IFeed implements Serializable {
         /*iFeed.getOwnerships().addAll(getOwnerships());*/
         iFeed.setDepartment(getDepartment());
         iFeed.setGroup(getGroup());
+
+
+        iFeed.setDynamicTableDefs(getDynamicTableDefs());
+
         return iFeed;
     }
 

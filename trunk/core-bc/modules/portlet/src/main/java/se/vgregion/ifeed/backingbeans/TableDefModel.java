@@ -1,10 +1,11 @@
 package se.vgregion.ifeed.backingbeans;
 
+import org.apache.commons.beanutils.BeanMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.ifeed.shared.ColumnDef;
-import se.vgregion.ifeed.shared.IfeedDynamicTableDef;
+import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.FieldInf;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 @Component(value = "tableDef")
 @Scope("session")
-public class TableDefModel extends IfeedDynamicTableDef {
+public class TableDefModel extends DynamicTableDef {
 
     public TableDefModel() {
         super();
@@ -27,6 +28,9 @@ public class TableDefModel extends IfeedDynamicTableDef {
 
     @Value("#{app}")
     private Application app;
+
+    @Value("#{navigationModelBean}")
+    private NavigationModelBean navigationModelBean;
 
     public String toTableMarkup() {
         return toTableMarkupImpl();
@@ -58,7 +62,7 @@ public class TableDefModel extends IfeedDynamicTableDef {
                 "\tdefaultsortorder=\"" + format(getDefaultSortOrder()) + "\" \n" +
                 "\tshowTableHeader=\"" + yesOrNo(isShowTableHeader()) + "\" \n" +
                 "\tlinkOriginalDoc=\"" + yesOrNo(isLinkOriginalDoc()) + "\" \n" +
-                "\tlimit=\"" + getLimit() + "\" \n" +
+                "\tlimit=\"" + getMaxHitLimit() + "\" \n" +
                 "\thiderightcolumn=\"" + yesOrNo(isHideRightColumn()) + "\" \n" +
                 "\tfeedid=\"" + getFeedId() + "\">\n" +
                 "</div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/" + getFeedId() +
@@ -73,9 +77,9 @@ public class TableDefModel extends IfeedDynamicTableDef {
 
     @Override
     public String getFeedId() {
-        if (app.getIFeedModelBean() != null) {
+/*        if (app.getIFeedModelBean() != null) {
             return app.getIFeedModelBean().getId() + "";
-        }
+        }*/
         return super.getFeedId();
     }
 
@@ -133,4 +137,16 @@ public class TableDefModel extends IfeedDynamicTableDef {
         return sb.toString();
     }
 
+    public void editFlow(DynamicTableDef dynamicTableDef) {
+        new BeanMap(this).putAllWriteable(new BeanMap(dynamicTableDef));
+        navigationModelBean.setUiNavigation("EDIT_JSONP");
+    }
+
+    /*
+    public DynamicTableDef toDynamicTableDef() {
+        DynamicTableDef result = new TableDefModel();
+        new BeanMap(result).putAllWriteable(new BeanMap(this));
+        return result;
+    }
+    */
 }

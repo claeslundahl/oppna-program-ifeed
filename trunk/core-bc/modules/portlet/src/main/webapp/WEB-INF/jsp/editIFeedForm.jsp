@@ -133,7 +133,7 @@
 		  <portlet:param name="view" value="showEditJsonp"/>
 		</portlet:renderURL>
 
-		<a href="${showEditJsonpUrl}" class="rp-overlay-link">EPI-konfiguration (JSON)</a>
+		<a href="${showEditJsonpUrl}" class="rp-overlay-link">Ny EPI-konfiguration (JSON)</a>
       
 
 	  	  <br><span class="ifeed-meta-label"> Länka till orginaldokument i html-vyn: </span>

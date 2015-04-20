@@ -22,11 +22,12 @@ public class Filter extends IFeed {
         addConditionIfAnyValue("o.userId like ?", getUserId(), condition, values);
         addConditionIfAnyValue("o.description like ?", getDescription(), condition, values);
         addConditionIfAnyValue("o.department.id = ?", getDepartment() != null ? getDepartment().getId() : null, condition, values);
+        addConditionIfAnyValue("o.group.id = ?", getGroup() != null ? getGroup().getId() : null, condition, values);
         addConditionIfAnyValue("o.id = ?", getId(), condition, values);
 
-        if (getGroup() != null) {
+        /*if (getGroup() != null) {
             addConditionIfAnyValue("o.group.id = ?", getGroup().getId(), condition, values);
-        }
+        }*/
 
         if (!values.isEmpty()) {
             sb.append(" where ");

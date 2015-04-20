@@ -1,7 +1,7 @@
 package se.vgregion.ifeed.client;
 
 import com.google.gwt.user.client.Element;
-import se.vgregion.ifeed.shared.IfeedDynamicTableDef;
+import se.vgregion.ifeed.shared.DynamicTableDef;
 
 /**
  * Designed to hold information about an ifeed - mirroring the textual description on the element.
@@ -24,9 +24,10 @@ import se.vgregion.ifeed.shared.IfeedDynamicTableDef;
  * </noscript>
  * </code>
  */
-public class TableDef extends IfeedDynamicTableDef {
+public class TableDef extends DynamicTableDef {
 
     private Element element;
+    private String onStartJsCallback;
 
     public Element getElement() {
         return element;
@@ -34,5 +35,13 @@ public class TableDef extends IfeedDynamicTableDef {
 
     public void setElement(Element element) {
         this.element = element;
+    }
+
+    public void setOnStartJsCallback(String onStartJsCallback) {
+        this.onStartJsCallback = onStartJsCallback;
+    }
+
+    public String getOnStartJsCallback() {
+        return onStartJsCallback;
     }
 }

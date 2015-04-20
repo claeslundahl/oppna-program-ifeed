@@ -17,6 +17,8 @@ public interface IFeedService {
 
     List<VgrDepartment> getVgrDepartments();
 
+    VgrDepartment getVgrDepartment(Long id);
+
     VgrDepartment save(VgrDepartment department);
 
     void delete(VgrDepartment department);

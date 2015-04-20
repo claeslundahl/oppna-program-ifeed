@@ -29,7 +29,7 @@
                         </h:inputText>
                     </th>
                     <th class="filter-result-h">
-                        <h:inputText value="${filter.userId}">
+                        <h:inputText value="${filter.userId}" style="width:50px;">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
                         </h:inputText>
                     </th>

@@ -15,8 +15,14 @@
           <h:outputText value="Inställningar för listan"/>
         </f:facet>
 
+        <h:outputText value="Namn" rendered="#{app.inEditMode}" />
+        <h:inputText value="#{tableDef.name}" rendered="#{app.inEditMode}">
+          <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:inputText>
+        <h:outputText value="Skriv ett namn som representerar den här flödesdeklarationen. Används bara internt, här på den här vyn." rendered="#{app.inEditMode}"/>
+
         <h:outputText value="Antal rader"/>
-        <h:selectOneMenu value="#{tableDef.limit}" id="limit1">
+        <h:selectOneMenu value="#{tableDef.maxHitLimit}" id="limit1">
           <f:selectItem itemValue="0" itemLabel="Ingen begränsning"/>
           <f:selectItems value="#{fn:split('5,10,20,30,40,50,60,70,80,90,100,150,200', ',')}" itemVar="i"
                          itemValue="#{i}" itemLabel="#{i}"/>
@@ -155,15 +161,23 @@
     </div>
     <br/>
 
-    <div>
-      <p:commandButton value="Stäng"
+    <aui:button-row>
+      <h:commandLink value="Ok"
                        styleClass="rp-link-button rp-link-button-alt"
+                       actionListener="#{app.putFlowInFeed(tableDef)}"
+                       id="okCloseEditJsonpViewLink"
+                       update=":ifeed_view"
+                       ajax="true">
+      </h:commandLink>
+
+      <h:commandLink value="#{app.inEditMode ? 'Avbryt' : 'Tillbaka'}"
+                       styleClass="rp-link-button secondary"
                        actionListener="#{navigationModelBean.setUiNavigation('VIEW_IFEED')}"
                        id="closeEditJsonpViewLink"
                        update=":ifeed_view"
                        ajax="true">
-      </p:commandButton>
-    </div>
+      </h:commandLink>
+    </aui:button-row>
 
   </h:panelGroup>
 

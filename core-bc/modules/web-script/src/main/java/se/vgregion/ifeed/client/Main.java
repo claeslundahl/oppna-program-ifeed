@@ -153,6 +153,9 @@ public class Main implements EntryPoint {
                 //Display displayTable = new Display(tableDef, entries);
                 Display displayTable = new Display(tableDef, new EventedList<Entry>());
                 panel.add(displayTable);
+                if (tableDef.getOnStartJsCallback() != null && !"".equals(tableDef.getOnStartJsCallback())) {
+                    eval(tableDef.getOnStartJsCallback());
+                }
                 displayTable.getData().addAll(entries);
 
                 if (areThereMoore) {
@@ -165,14 +168,19 @@ public class Main implements EntryPoint {
         });
     }
 
+    private native String eval(String javascript)
+    /*-{
+       return eval(javascript);
+    }-*/;
+
 
     private boolean areThereMooreToFetch(List<Entry> entries) {
         /*
-        if (tableDef.getLimit() == 0) {
+        if (tableDef.getMaxHitLimit() == 0) {
             return false;
         }
-        if (entries.size() >= tableDef.getLimit()) {
-            entries.removeAll(entries.subList(tableDef.getLimit(), entries.size()));
+        if (entries.size() >= tableDef.getMaxHitLimit()) {
+            entries.removeAll(entries.subList(tableDef.getMaxHitLimit(), entries.size()));
             return true;
         }
         return false;*/
@@ -224,8 +232,8 @@ public class Main implements EntryPoint {
     }
 
     private boolean whenOverFetchLimitThenTruncate(TableDef tableDef, List entries) {
-        if (tableDef.getLimit() > 0 && tableDef.getLimit() <= entries.size()) {
-            int limit = tableDef.getLimit();
+        if (tableDef.getMaxHitLimit() > 0 && tableDef.getMaxHitLimit() <= entries.size()) {
+            int limit = tableDef.getMaxHitLimit();
             limit = Math.min(limit, entries.size());
             List retainees = entries.subList(0, limit);
             entries.retainAll(retainees);

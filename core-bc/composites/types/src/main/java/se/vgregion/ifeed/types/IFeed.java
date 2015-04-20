@@ -1,17 +1,26 @@
 package se.vgregion.ifeed.types;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gwt.core.shared.GwtIncompatible;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+import se.vgregion.ifeed.shared.DynamicTableDef;
 
 import javax.persistence.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "vgr_ifeed")
+@GwtIncompatible
 public class IFeed extends AbstractEntity<Long> implements Serializable, Comparable<IFeed> {
 
     private static final long serialVersionUID = -2277251806545192506L;
@@ -21,14 +30,15 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @GeneratedValue
     protected Long id;
 
+    @OneToMany(mappedBy = "ifeed")
+    private List<DynamicTableDef> dynamicTableDefs = new ArrayList<DynamicTableDef>();
+
     @Version
     private Long version;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
-    // @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
-    protected
-    Set<IFeedFilter> filters;
+    protected Set<IFeedFilter> filters;
 
     private String name;
 
@@ -47,8 +57,6 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @ManyToOne
     private VgrGroup group;
 
-    // @ElementCollection(fetch = FetchType.EAGER)
-    // @CollectionTable(name = "vgr_ifeed_ownership", joinColumns = @JoinColumn(name = "ifeed_id"))
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
     protected Set<Ownership> ownerships = new HashSet<Ownership>();
 
@@ -61,7 +69,6 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         if (filters == null) {
             return Collections.emptySet();
         }
-        //return Collections.unmodifiableSet(filters);
         return filters;
     }
 
@@ -243,14 +250,104 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         this.group = group;
     }
 
+    @GwtIncompatible
     public String toJson() {
-        Gson gson = new GsonBuilder().create();
+        try {
+            return toJsonImpl();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GwtIncompatible
+    private String toJsonImpl() throws IOException, ClassNotFoundException {
+        final Set<String> excludeFields = new HashSet<String>(Arrays.asList("iFeed", "ifeed", "ownerships",
+                "department", "group", "ifeedDynamicTableDefs"));
+        Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+                return excludeFields.contains(fieldAttributes.getName());
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).create();
+
+        /*
+        ByteArrayOutputStream fout = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(fout);
+        oos.writeObject(this);
+        ByteArrayInputStream bais = new ByteArrayInputStream(fout.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+
+        IFeed iFeed = (IFeed) ois.readObject();
+
+        findCirkular(iFeed);
+        iFeed.getOwnerships().clear();
+        iFeed.setDepartment(null);
+        iFeed.setGroup(null);
+        return gson.toJson(iFeed);*/
         return gson.toJson(this);
     }
 
+    @GwtIncompatible
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        FileInputStream fin = new
+                FileInputStream("C:\\Users\\clalu4\\Downloads\\iFeed.obj.1");
+
+        ObjectInputStream obj_in =
+                new ObjectInputStream(fin);
+
+        IFeed iFeed = (IFeed) obj_in.readObject();
+        findCirkular(iFeed);
+    }
+
+    @GwtIncompatible
+    static void findCirkular(Object currentNode) {
+        try {
+            findCirkular(currentNode, new ArrayList<String>(), new IdentityHashMap());
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GwtIncompatible
+    static void findCirkular(Object currentNode, List<String> stack, IdentityHashMap passed) throws IllegalAccessException {
+        if (currentNode instanceof Collection) for (Object o : ((Collection) currentNode)) {
+            findCirkular(o, stack, passed);
+        }
+        if (currentNode == null || currentNode.getClass().getName().startsWith("java.")) return;
+        System.out.println(stack);
+        if (passed.containsKey(currentNode)) {
+            System.out.println("Found cirkular dep " + stack);
+        } else {
+            passed.put(currentNode, null);
+            Field[] fields = currentNode.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object nextNode = field.get(currentNode);
+                stack.add(field.getName());
+                findCirkular(nextNode, stack, passed);
+                if (!stack.isEmpty())
+                    stack.remove(stack.size() - 1);
+            }
+        }
+    }
+
+    @GwtIncompatible
     public static IFeed fromJson(String ifeed) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(ifeed, IFeed.class);
     }
 
+
+    public List<DynamicTableDef> getDynamicTableDefs() {
+        return dynamicTableDefs;
+    }
+
+    public void setDynamicTableDefs(List<DynamicTableDef> dynamicTableDefs) {
+        this.dynamicTableDefs = dynamicTableDefs;
+    }
 }

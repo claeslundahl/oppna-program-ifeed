@@ -14,10 +14,14 @@
   <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
     <property name="entityManagerFactory" ref="entityManagerFactory" />
   </bean>
-  
+
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
     <property name="iFeedRepo" ref="iFeedRepo" />
   </bean>
+  <!--
+    <bean id="objectRepo" class="se.vgregion.ifeed.service.ifeed.ObjectRepo">
+      <property name="entityManager" ref="" />
+    </bean>-->
 
   <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
     <property name="dataSource" ref="dataSource" />

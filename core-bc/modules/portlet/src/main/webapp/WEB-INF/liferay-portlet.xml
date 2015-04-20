@@ -3,12 +3,12 @@
         "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
 
 <liferay-portlet-app>
-  <!--  <portlet>
-      <portlet-name>iFeed</portlet-name>
-      <instanceable>false</instanceable>
-        <requires-namespaced-parameters>false</requires-namespaced-parameters>
-      <css-class-wrapper>ifeed-portlet</css-class-wrapper>
-    </portlet>-->
+    <!--  <portlet>
+        <portlet-name>iFeed</portlet-name>
+        <instanceable>false</instanceable>
+          <requires-namespaced-parameters>false</requires-namespaced-parameters>
+        <css-class-wrapper>ifeed-portlet</css-class-wrapper>
+      </portlet>-->
     <portlet>
         <portlet-name>iFeedJsf</portlet-name>
         <action-url-redirect>true</action-url-redirect>
@@ -21,62 +21,64 @@
         <add-default-resource>false</add-default-resource>
     </portlet>
 
+    <!--
+        <portlet>
+            <portlet-name>iFeed</portlet-name>
+            <action-url-redirect>true</action-url-redirect>
+            <instanceable>false</instanceable>
+            <requires-namespaced-parameters>false</requires-namespaced-parameters>
+            <header-portlet-css>/css/theme.css</header-portlet-css>
+            <add-default-resource>false</add-default-resource>
+        </portlet>
+    -->
+
     <portlet>
-        <portlet-name>iFeed</portlet-name>
-        <action-url-redirect>true</action-url-redirect>
-        <instanceable>false</instanceable>
+        <portlet-name>apelon-scheduler</portlet-name>
+        <scheduler-entry>
+            <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedScheduledJob
+            </scheduler-event-listener-class>
+            <trigger>
+                <cron>
+                    <!-- Run every night at 3.15 a.m -->
+                    <cron-trigger-value>0 50 13 ? * *</cron-trigger-value>
+                </cron>
+            </trigger>
+        </scheduler-entry>
         <requires-namespaced-parameters>false</requires-namespaced-parameters>
-        <header-portlet-css>/css/theme.css</header-portlet-css>
-        <!--  <header-portlet-css>/css/prime-faces.css</header-portlet-css>-->
-        <add-default-resource>false</add-default-resource>
+        <system>true</system>
     </portlet>
 
+    <!--
   <portlet>
-    <portlet-name>apelon-scheduler</portlet-name>
+    <portlet-name>publish-scheduler</portlet-name>
     <scheduler-entry>
-      <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedScheduledJob</scheduler-event-listener-class>
+      <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedPublishScheduler</scheduler-event-listener-class>
       <trigger>
         <cron>
-          <!-- Run every night at 3.15 a.m -->
-          <cron-trigger-value>0 50 13 ? * *</cron-trigger-value>
+          <cron-trigger-value>0 */1 * ? * *</cron-trigger-value>
         </cron>
       </trigger>
     </scheduler-entry>
-    <requires-namespaced-parameters>false</requires-namespaced-parameters>
+      <requires-namespaced-parameters>false</requires-namespaced-parameters>
     <system>true</system>
   </portlet>
+   -->
 
-  <!--
-<portlet>
-  <portlet-name>publish-scheduler</portlet-name>
-  <scheduler-entry>
-    <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedPublishScheduler</scheduler-event-listener-class>
-    <trigger>
-      <cron>
-        <cron-trigger-value>0 */1 * ? * *</cron-trigger-value>
-      </cron>
-    </trigger>
-  </scheduler-entry>
-    <requires-namespaced-parameters>false</requires-namespaced-parameters>
-  <system>true</system>
-</portlet>
- -->
-
-  <role-mapper>
-    <role-name>administrator</role-name>
-    <role-link>Administrator</role-link>
-  </role-mapper>
-  <role-mapper>
-    <role-name>guest</role-name>
-    <role-link>Guest</role-link>
-  </role-mapper>
-  <role-mapper>
-    <role-name>power-user</role-name>
-    <role-link>Power User</role-link>
-  </role-mapper>
-  <role-mapper>
-    <role-name>user</role-name>
-    <role-link>User</role-link>
-  </role-mapper>
+    <role-mapper>
+        <role-name>administrator</role-name>
+        <role-link>Administrator</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>guest</role-name>
+        <role-link>Guest</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>power-user</role-name>
+        <role-link>Power User</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>user</role-name>
+        <role-link>User</role-link>
+    </role-mapper>
 
 </liferay-portlet-app>

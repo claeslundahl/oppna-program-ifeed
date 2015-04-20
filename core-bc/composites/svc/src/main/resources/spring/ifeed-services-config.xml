@@ -35,9 +35,15 @@
     <constructor-arg value="${ifeed.json}" />
   </bean>
 
+  <bean id="iFeedExcelFeed" class="org.springframework.web.util.UriTemplate">
+    <constructor-arg value="${ifeed.excel}" />
+  </bean>
+
   <bean id="solrServiceUrl" class="java.lang.String">
     <constructor-arg value="${solr.service}" />
   </bean>
+
+  <bean id="objectRepo" class="se.vgregion.ifeed.service.ifeed.ObjectRepo" />
 
   <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer" scope="prototype">
     <constructor-arg type="java.lang.String" value="${solr.service}" />
@@ -58,6 +64,7 @@
     <property name="fieldsInfRepo" ref="fieldsInfRepo" />
     <property name="departmentRepo" ref="departmentRepo" />
     <property name="solrServiceUrl" value="${solr.service}" />
+    <property name="objectRepo" ref="objectRepo" />
   </bean>
 
   <bean id="iFeedRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">

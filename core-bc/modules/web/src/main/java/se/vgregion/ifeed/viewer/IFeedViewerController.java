@@ -4,6 +4,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,11 @@ import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -154,15 +159,87 @@ public class IFeedViewerController {
     }
 
     /**
+     * Gets the ifeed from either a db or from a plain instance (sent as text).
+     *
+     * @param instance the id of the feed in the db or the feed itself as an instance. To bad that
+     *                                   spring portlet mvc does not function well enough to work for the latter
+     *                                   scenario. It is kept in case this is
+     *                                   fixed later.
+     * @param model                      to place the data for the view.
+     * @param sortField                  the field to be used to sort the result.
+     * @param sortDirection              what direction to use when sorting, sould be asc or desc.
+     * @param startBy                    what offset to have in the result from the db.
+     * @param endBy                      where to end the result (truncate it) from the db.
+     * @param fromPage                   should be the url (or some other id, perhaps) of the page that calls the
+     *                                   function via the
+     *                                   ajax script.
+     *                                   @param response handle to write the result somewhere.
+     * @return
+     */
+    @RequestMapping(value = "/metaascsv")
+    public String getIFeedAsCsv(@RequestParam String instance, Model model,
+                           @RequestParam(value = "by", required = false) String sortField,
+                           @RequestParam(value = "dir", required = false) String sortDirection,
+                           @RequestParam(value = "startBy", required = false) Integer startBy,
+                           @RequestParam(value = "endBy", required = false) Integer endBy,
+                           @RequestParam(value = "fromPage", required = false) String fromPage,
+                           HttpServletResponse response) {
+        //public void exportCsv(@PathVariable String listIdOrSerializedInstance, HttpServletRequest request, HttpServletResponse  response) {
+        String url;
+        if (isNumeric(instance)) {
+            Long id = Long.parseLong(instance);
+            url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage);
+        } else {
+            IFeed ifeed = IFeed.fromJson(instance);
+            url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage);
+        }
+
+        BufferedOutputStream bos = null;
+        OutputStream portletOutputStream = null;
+        try {
+            portletOutputStream = response.getOutputStream();
+            bos = new BufferedOutputStream(portletOutputStream);
+
+            List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
+
+            if (!result.isEmpty()) {
+                Map<String, Object> first = result.get(0);
+                for (String key : first.keySet()) {
+                    bos.write(key.getBytes());
+                    bos.write(";".getBytes());
+                }
+                bos.write("\n".getBytes());
+                for (Map<String, Object> item : result) {
+                    for (String key : first.keySet()) {
+                        bos.write(((item.get(key) + "").getBytes()));
+                        bos.write(";".getBytes());
+                    }
+                    bos.write("\n".getBytes());
+                }
+            }
+            bos.flush();
+
+            response.setContentType("text/csv;charset=utf-8");
+            response.setHeader("Content-Disposition", "inline; filename=export.csv");
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        return url;
+    }
+
+
+    /**
      * Gets an ifeed from the db for the purpose of displaying it to the user.
-     * @param listId the id of the feed to be viewed. Must be present in the db.
-     * @param model where to put the data that is to be presented to the user.
-     * @param sortField the field to be used to sort the result.
+     *
+     * @param listId        the id of the feed to be viewed. Must be present in the db.
+     * @param model         where to put the data that is to be presented to the user.
+     * @param sortField     the field to be used to sort the result.
      * @param sortDirection what direction to use when sorting, sould be asc or desc.
-     * @param startBy offset in the db (solr-server) result.
-     * @param endBy the end of the span of results.
-     * @param fromPage should be the url (or some other id, perhaps) of the page that calls the function via the
-     *                 ajax script.
+     * @param startBy       offset in the db (solr-server) result.
+     * @param endBy         the end of the span of results.
+     * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the function via the
+     *                      ajax script.
      * @return what jsp to use when showing the data.
      */
     public String getIFeedById(@PathVariable Long listId, Model model,
@@ -196,7 +273,6 @@ public class IFeedViewerController {
                                      String fromPage) {
 
         if (fromPage != null && !"".equals(fromPage.trim())) {
-            System.out.println("From Page " + fromPage);
             Integer i = callsToJsonpMetadata.get(fromPage);
             if (i == null) {
                 callsToJsonpMetadata.put(fromPage, 1);
@@ -226,14 +302,14 @@ public class IFeedViewerController {
                 getEnum(SortDirection.class, sortDirection));
 
         model.addAttribute("result", result);
-        Util.setLocalValue(retrievedFeed);
         return "documentList";
     }
 
     /**
      * Showing detial for an document.
+     *
      * @param documentId thw id of the document (in alfresco).
-     * @param model where to put the data that is to be presented to the user.
+     * @param model      where to put the data that is to be presented to the user.
      * @return what jsp to use as view.
      */
     @RequestMapping(value = "/documents/{documentId}")
@@ -243,9 +319,10 @@ public class IFeedViewerController {
 
     /**
      * Used to get document information with GET-html parameters (as oposed to with path parameters).
+     *
      * @param documentId thw id of the document (in alfresco).
-     * @param model data to be used in rendering the data.
-     * @param response to write the information to.
+     * @param model      data to be used in rendering the data.
+     * @param response   to write the information to.
      * @return what jsp to use.
      */
     @RequestMapping(value = "/documents/metadata")
@@ -259,8 +336,9 @@ public class IFeedViewerController {
 
     /**
      * Using path variables to asscess a feed from a http client.
+     *
      * @param documentId thw id of the document (in alfresco).
-     * @param model data to be used in rendering the data.
+     * @param model      data to be used in rendering the data.
      * @return what jsp to use.
      */
     @RequestMapping(value = "/documents/{documentId}/metadata")
@@ -366,6 +444,7 @@ public class IFeedViewerController {
 
     /**
      * Handling exceptions occuring when http clients calls controller methods in this class.
+     *
      * @param e the error to handle.
      * @return where to steer the view.
      */

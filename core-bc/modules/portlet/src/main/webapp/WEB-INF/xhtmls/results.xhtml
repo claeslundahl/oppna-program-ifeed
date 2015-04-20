@@ -15,10 +15,8 @@
 
         <h:panelGroup rendered="#{!app.inEditMode}" layout="block">
             <h2>Resultat</h2>
-            <h:selectBooleanCheckbox value="#{app.limitOnResultCount}" />
+            <h:selectBooleanCheckbox value="#{app.limitOnResultCount}" rendered="false" />
         </h:panelGroup>
-
-
 
         <div class="#{app.inEditMode ? 'ifeed-filter-box' : ''}">
             <div
@@ -29,7 +27,7 @@
                     defaultsortorder="asc"
                     showTableHeader="yes"
                     linkOriginalDoc="no"
-                    limit="#{app.limitOnResultCount ? '100' : '0'}"
+                    maxHitLimit="#{app.limitOnResultCount ? '100' : '0'}"
                     hiderightcolumn="yes"
                     feedid='#{iFeedModelBean.toJson()}'>
             </div>

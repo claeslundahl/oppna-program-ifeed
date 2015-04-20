@@ -11,6 +11,8 @@
   <context:annotation-config />
   <tx:annotation-driven />
 
+  <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+
   <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
     <property name="entityManagerFactory" ref="entityManagerFactory" />
   </bean>
@@ -19,20 +21,20 @@
     <property name="dataSource" ref="dataSource" />
     <property name="persistenceXmlLocation" value="classpath*:META-INF/ifeed-persistence.xml" />
     <property name="jpaVendorAdapter" ref="jpaVendor" />
-    <property name="jpaPropertyMap">
+    <!--<property name="jpaPropertyMap">
       <map>
-        <!--<entry key="hibernate.hbm2ddl.auto" value="false" />-->
-        <entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
+        <entry key="hibernate.hbm2ddl.auto" value="auto" />
+        &lt;!&ndash;<entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />&ndash;&gt;
         <entry key="hibernate.format_sql" value="${hibernate.database.showsql}" />
       </map>
-    </property>
+    </property>-->
   </bean>
 
   <bean id="jpaVendor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
     <property name="database" value="${hibernate.vendor.database}" />
     <property name="databasePlatform" value="${hibernate.vendor.databaseDialect}" />
-    <!--<property name="generateDdl" value="false" />-->
-    <property name="generateDdl" value="${hibernate.vendor.generateDdl}" />
+    <property name="generateDdl" value="true" />
+    <!--<property name="generateDdl" value="${hibernate.vendor.generateDdl}" />-->
     <property name="showSql" value="true" />
     <!--<property name="showSql" value="${hibernate.database.showsql}" />-->
 

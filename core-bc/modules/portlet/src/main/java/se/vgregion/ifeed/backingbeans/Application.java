@@ -7,6 +7,7 @@ import com.liferay.portal.service.ResourceLocalService;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.sun.faces.component.visit.FullVisitContext;
+import org.apache.commons.beanutils.BeanMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
-import se.vgregion.ifeed.formbean.SearchResultList;
 import se.vgregion.ifeed.formbean.VgrOrganization;
+import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
@@ -40,6 +42,7 @@ import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by clalu4 on 2014-06-10.
@@ -56,6 +59,8 @@ public class Application {
     private String webScriptUrl;
     @Value("${ifeed.web.script.json.url}")
     private String webScriptJsonUrl;
+    //@Value("#{tableDef}")
+    //private TableDefModel tableDefModel;
 
     @Autowired
     private IFeedService iFeedService;
@@ -88,6 +93,8 @@ public class Application {
     //@Resource(name = "iFeedJsonFeed")
     @Autowired
     private UriTemplate iFeedJsonFeed;
+    @Autowired
+    private UriTemplate iFeedExcelFeed;
 
     private String solrServiceUrl;
 
@@ -221,6 +228,7 @@ public class Application {
 
     public void viewIFeed(Long id) throws PortalException, SystemException {
         IFeed feed = iFeedService.getIFeed(id);
+        newFilter = null;
         iFeedModelBean.copyValuesFromIFeed(feed);
 
         List<FieldsInf> fieldsInfs = iFeedService.getFieldsInfs();
@@ -309,7 +317,6 @@ public class Application {
 
     public void update() {
         try {
-            System.out.println("bean.getOwnershipList().size(): " + iFeedModelBean.getOwnershipList().size());
             IFeed feed = iFeedModelBean.toIFeed();
             IFeed updated = iFeedService.update(feed);
             iFeedModelBean.copyValuesFromIFeed(updated);
@@ -413,6 +420,21 @@ public class Application {
 
     public void saveDepartment() {
         try {
+            if (department.getId() != null) {
+                VgrDepartment unaltered = iFeedService.getVgrDepartment(department.getId());
+                addMemberFeedsToGroups(unaltered.getVgrGroups());
+                for (VgrGroup groupFromDb : unaltered.getVgrGroups()) {
+                    if (!department.getVgrGroups().contains(groupFromDb)) {
+                        for (IFeed feed : groupFromDb.getMemberFeeds()) {
+                            feed.setGroup(null);
+                            iFeedService.update(feed);
+                        }
+                    }
+                }
+            }
+            for (VgrGroup group: department.getVgrGroups()) {
+                group.setDepartment(department);
+            }
             iFeedService.save(department);
         } catch (Exception e) {
             e.printStackTrace();
@@ -575,6 +597,12 @@ public class Application {
 
     public java.net.URI getJsonFeedLink() {
         return iFeedJsonFeed.expand(iFeedModelBean.getId(), iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection());
+    }
+
+    public String getExcelFeedLink() {
+        String result = String.valueOf(iFeedExcelFeed.expand("ID", iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection()));
+        result = result.replaceFirst(Pattern.quote("ID"), iFeedModelBean.toJson());
+        return result;
     }
 
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
@@ -750,4 +778,43 @@ public class Application {
     public void setLimitOnResultCount(boolean limitOnResultCount) {
         this.limitOnResultCount = limitOnResultCount;
     }
+
+    public List<VgrGroup> addMemberFeedsToGroups(List<VgrGroup> items) {
+        if (items == null){
+            return new ArrayList<VgrGroup>();
+        }
+
+        for (VgrGroup item : items) {
+            if (item.getId() != null) {
+                Filter groupFilter = new FilterModel();
+                groupFilter.setGroup(item);
+                List<IFeed> feeds = iFeedService.getIFeedsByFilter(groupFilter);
+                item.getMemberFeeds().addAll(feeds);
+            }
+        }
+        return items;
+    }
+
+    public void putFlowInFeed(DynamicTableDef dynamicTableDef) {
+        BeanMap bm = new BeanMap(dynamicTableDef);
+        boolean found = false;
+        for (DynamicTableDef item : iFeedModelBean.getDynamicTableDefs()) {
+            if (item.getId() == dynamicTableDef.getId()) {
+                found = true;
+                new BeanMap(item).putAllWriteable(bm);
+                continue;
+            }
+        }
+        if (!found) {
+            DynamicTableDef instance = new DynamicTableDef();
+            new BeanMap(instance).putAllWriteable(bm);
+            iFeedModelBean.getDynamicTableDefs().add(instance);
+        }
+        navigationModelBean.setUiNavigation("VIEW_IFEED");
+    }
+
+    public void removeFlow(DynamicTableDef dynamicTableDef) {
+        this.getIFeedModelBean().getDynamicTableDefs().remove(dynamicTableDef);
+    }
+
 }

@@ -9,8 +9,11 @@
        xmlns:b="http://www.springframework.org/schema/beans">
 
     <context:component-scan base-package="se.vgregion.ifeed.backingbeans"/>
+    <context:component-scan base-package="se.vgregion.ifeed.service.ifeed"/>
 
     <context:annotation-config/>
+
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
 
     <import resource="classpath*:spring/ifeed-datasource-config.xml" />
     <import resource="classpath*:spring/ldap-config.xml"/>

@@ -1,17 +1,25 @@
 package se.vgregion.ifeed.service.ifeed;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
+import se.vgregion.ifeed.shared.ColumnDef;
+import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
 
 import java.io.Serializable;
 import java.util.*;
 
+@Service
 public class IFeedServiceImpl implements IFeedService, Serializable {
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
+
+    private ObjectRepo objectRepo;
+
     private JpaRepository<FieldsInf, Long, Long> fieldsInfRepo;
 
     private JpaRepository<VgrDepartment, Long, Long> departmentRepo;
@@ -37,6 +45,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public List<VgrDepartment> getVgrDepartments() {
         Collection<VgrDepartment> result = departmentRepo.findByQuery("select distinct o from " + VgrDepartment.class.getSimpleName() + " o left join fetch o.vgrGroups g order by o.name, g.name");
         return new ArrayList<VgrDepartment>(result);
+    }
+
+    @Override
+    public VgrDepartment getVgrDepartment(Long id) {
+        return departmentRepo.findByPrimaryKey(id);
     }
 
     @Override
@@ -68,6 +81,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     }
 
     @Override
+    @Transactional
     public final List<IFeed> getUserIFeeds(final String userId) {
         ArrayList<IFeed> result = new ArrayList<IFeed>(
                 iFeedRepo
@@ -75,22 +89,50 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                                 "SELECT distinct ifeed FROM IFeed ifeed "
                                         + "WHERE ifeed.userId=?1 or ifeed.id in (select o.ifeedId from Ownership o where o.userId=?2)",
                                 new Object[]{userId, userId}));
-
+        init(result);
         return result;
     }
 
     @Override
+    @Transactional
     public List<IFeed> getIFeedsByFilter(Filter filter) {
         List<Object> values = new ArrayList<Object>();
         String jpql = filter.toJpqlQuery(values);
         List<IFeed> result = (List<IFeed>) iFeedRepo.findByQuery(jpql, values.toArray());
-
+        init(result);
         return new ArrayList<IFeed>(result);
     }
 
     @Override
+    @Transactional
     public final IFeed getIFeed(final Long id) {
-        return iFeedRepo.find(id);
+        IFeed result = iFeedRepo.find(id);
+        init(result);
+        return result;
+    }
+
+    @Transactional
+    private void init(Collection<IFeed> result) {
+        if (result == null) {
+            return;
+        }
+        for (IFeed item : result) {
+            init(item);
+        }
+    }
+
+    @Transactional
+    private void init(IFeed result) {
+        List<DynamicTableDef> dynamicTableDefs = result.getDynamicTableDefs();
+        if (dynamicTableDefs != null) {
+            for (DynamicTableDef dynamicTable : dynamicTableDefs) {
+                if (dynamicTable.getColumnDefs() != null) {
+                    for (ColumnDef columnDef : dynamicTable.getColumnDefs()) {
+
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -109,6 +151,18 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     @Transactional
     public final IFeed update(final IFeed iFeed) {
+        for (DynamicTableDef dynamicTableDef : iFeed.getDynamicTableDefs()) {
+            dynamicTableDef.setIfeed(iFeed);
+                if (dynamicTableDef.getId() == null) {
+                    objectRepo.persist(dynamicTableDef);
+                } else {
+                    dynamicTableDef = objectRepo.merge(dynamicTableDef);
+                }
+            for (ColumnDef columnDef : dynamicTableDef.getColumnDefs()) {
+                columnDef.setTableDef(dynamicTableDef);
+            }
+        }
+
         IFeed result = iFeedRepo.merge(iFeed);
         iFeedRepo.flush();
         return result;
@@ -136,6 +190,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             ownership.setIfeedId(oldIFeed.getId());
             ownership.setIfeed(oldIFeed);
             oldIFeed.getOwnerships().add(ownership);
+        }
+
+        oldIFeed.getDynamicTableDefs().clear();
+        for (DynamicTableDef dynamicTableDef : iFeed.getDynamicTableDefs()) {
+            oldIFeed.getDynamicTableDefs().add(dynamicTableDef);
         }
 
         oldIFeed.removeFilters();
@@ -257,6 +316,14 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     public List<String> fetchFilterSuggestion(IFeed feed, String fieldId) {
         return SolrFacetUtil.fetchFacets(getSolrServiceUrl(), feed, fieldId);
+    }
+
+    public ObjectRepo getObjectRepo() {
+        return objectRepo;
+    }
+
+    public void setObjectRepo(ObjectRepo objectRepo) {
+        this.objectRepo = objectRepo;
     }
 
 }

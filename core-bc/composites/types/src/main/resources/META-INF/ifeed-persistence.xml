@@ -10,5 +10,7 @@
     <class>se.vgregion.ifeed.types.Ownership</class>
     <class>se.vgregion.ifeed.types.VgrDepartment</class>
     <class>se.vgregion.ifeed.types.VgrGroup</class>
+    <class>se.vgregion.ifeed.shared.DynamicTableDef</class>
+    <class>se.vgregion.ifeed.shared.ColumnDef</class>
   </persistence-unit>
 </persistence>

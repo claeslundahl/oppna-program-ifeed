@@ -9,20 +9,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.imageio.plugins.bmp.BMPImageWriteParam;
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 
 /**
  * Created by clalu4 on 2014-06-24.
@@ -38,6 +25,13 @@ public class VgrGroup extends AbstractEntity<Long> implements Serializable, Comp
     private String name;
 
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", nullable = false)
+    private VgrDepartment department;
+
+    @Transient
+    private final List<IFeed> memberFeeds = new ArrayList<IFeed>();
 
     @Override
     public int compareTo(VgrGroup o) {
@@ -70,5 +64,17 @@ public class VgrGroup extends AbstractEntity<Long> implements Serializable, Comp
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public List<IFeed> getMemberFeeds() {
+        return memberFeeds;
+    }
+
+    public VgrDepartment getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(VgrDepartment department) {
+        this.department = department;
     }
 }

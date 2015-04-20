@@ -26,7 +26,7 @@ public class VgrDepartment extends AbstractEntity<Long> implements Serializable,
     @Transient
     private Boolean open;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "department")
     private List<VgrGroup> vgrGroups = new ArrayList<VgrGroup>();
 
     @Override

@@ -6,7 +6,7 @@
                 xmlns:aui="http://liferay.com/faces/aui"
                 xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-    <div style="overflow: hidden;" class="container-fluid">
+    <div class="container-fluid">
 
         <div style="float: left;">
             <h1>#{iFeedModelBean.name}
@@ -53,10 +53,12 @@
                            ajax="false" async="true" actionListener="#{app.update()}">
             </p:commandLink>
         </div>
+
+
         <div id="basicFeedInfo">
-            <h:panelGroup styleClass="border" style="display:block;" id="basicFeedInfo">
-                <h:panelGrid style="clear:both; border-spacing: 10px; border-collapse: separate;" columns="2"
-                             cellspacing="10">
+
+            <h:panelGroup layout="block" styleClass="row-fluid border" style="display:block;" id="basicFeedInfo">
+                <div class="span4 first">
                     <h:panelGroup>
                         <h:outputText style="font-weight: bold;" value="Namn: "></h:outputText>
                         <br/>
@@ -67,6 +69,7 @@
                     </h:panelGroup>
 
                     <h:panelGroup>
+                        <br/>
                         <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
                         <br/>
                         <h:outputText value="#{iFeedModelBean.description}" label="text"
@@ -75,6 +78,88 @@
                                      id="descriptionInput">
                         </h:inputText>
                     </h:panelGroup>
+
+                    <h:panelGroup>
+                        <br/>
+                        <span style="font-weight: bold;"><i class="icon-user"></i>Ägare:</span><br/>
+                        <h:outputText
+                                value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
+                                rendered="#{not app.inEditMode}"/>
+                        <p:autoComplete id="createOwnershipInput"
+                                        value="#{iFeedModelBean.userId}"
+                                        completeMethod="#{app.completeUserName}"
+                                        forceSelection="true"
+                                        rendered="#{app.inEditMode}"
+                                        title="Skriv in vgr-id för ny ägare här. Observera att du kan bli av med möjligheten att ändra posten om du inte samtidigt lagt till dig själv som administratör innan du sparar ändringen."
+                                        multiple="false"/>
+                        <p:watermark for="createOwnershipInput" value="Ändra ägare här" />
+                    </h:panelGroup>
+
+
+                    <div>
+                        <div style="font-weight: bold;"><i class="icon-user"></i>Administratörer:
+                        </div>
+                        <p:autoComplete id="createNewAdminInput"
+                                        value="#{app.newOwnershipUserId}"
+                                        completeMethod="#{app.completeUserName}"
+                                        forceSelection="true"
+                                        rendered="#{app.inEditMode}"
+                                        styleClass="createNewAdminInput master-item"
+                                        title="Skriv in vgr-id och klicka på 'Lägg till'' för att lägg till en användare som administratör på feedet."
+                                        multiple="false" />
+                        <p:watermark for="createNewAdminInput" value="Vgr-Id för ny admin" />
+
+                        <p:commandLink styleClass="ltr-flowing-item"
+                                       value="Lägg till"
+                                       update="basicFeedInfo"
+                                       rendered="#{app.inEditMode}"
+                                       id="addOwnershipLink"
+                                       ajax="true" async="true" actionListener="#{app.createNewOwnership()}">
+                        </p:commandLink>
+
+                        <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="getOwnershipsAsListItem"
+                                   idFoo="owners"
+                                   varStatus="status">
+                          <span class="ltr-flowing-item">
+                            <span class="name">#{app.fetchLdapPersonFullName(getOwnershipsAsListItem.userId)} (#{getOwnershipsAsListItem.userId})</span>
+                            <span class="remove">
+                              <p:commandLink value=" " update=":ifeed_view"
+                                             rendered="#{app.inEditMode}"
+                                             styleClass="link-button-trash"
+                                             ajax="false" async="true"
+                                             id="remove_#{getOwnershipsAsListItem.userId}"
+                                             actionListener="#{iFeedModelBean.getOwnershipsAsList().remove(getOwnershipsAsListItem)}">
+                              </p:commandLink>
+                            </span>
+                          </span>
+                        </ui:repeat>
+                    </div>
+
+
+                </div>
+
+
+                <div class="span4">
+                    <ui:include src="show-department-and-group.xhtml"/>
+                </div>
+                <div class="span4 last">
+
+
+                    <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
+                    <br/>
+                    <p:commandLink value="EPI-konfiguration (JSON)"
+                                   actionListener="#{navigationModelBean.setUiNavigation('EDIT_JSONP')}"
+                                   ajax="true"
+                                   id="epiConfigLink"
+                                   update=":ifeed_view"
+                                   immediate="true">
+                    </p:commandLink>
+                    <br/>
+                    <a href="#{app.getWebFeedLink()}" target="_blank">Html</a><br/>
+                    <a id="excel-feed-link" href="#{app.getExcelFeedLink()}" target="_blank">Excel</a><br/>
+                    <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a><br/>
+                    <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a><br/>
+                    <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a><br/>
 
                     <h:panelGroup>
                         <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
@@ -87,83 +172,9 @@
                                                  ajax="true"/>
                     </h:panelGroup>
 
-                    <h:panelGroup>
-                        <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
-                        <br/>
-                        <h:panelGroup>
-                            <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a>
-                            <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a>
-                            <a href="#{app.getWebFeedLink()}" target="_blank">Html</a>
-                            <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a>
-                            <a id="excel-feed-link" href="#{app.getExcelFeedLink()}" target="_blank">Excel</a>
-                            <p:commandLink value="EPI-konfiguration (JSON)"
-                                           actionListener="#{navigationModelBean.setUiNavigation('EDIT_JSONP')}"
-                                           ajax="true"
-                                           id="epiConfigLink"
-                                           update=":ifeed_view"
-                                           immediate="true">
-                            </p:commandLink>
-                        </h:panelGroup>
-                    </h:panelGroup>
-
-
-                    <ui:include src="show-department-and-group.xhtml"/>
-
-                    <h:panelGroup>
-                        <span style="font-weight: bold;"><i class="icon-user"></i>&#160;Ägare:</span><br/>
-                        <h:outputText
-                                value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
-                                rendered="#{not app.inEditMode}"/>
-                        <p:autoComplete id="createOwnershipInput"
-                                        value="#{iFeedModelBean.userId}"
-                                        completeMethod="#{app.completeUserName}"
-                                        forceSelection="true"
-                                        rendered="#{app.inEditMode}"
-                                        multiple="false"/>
-                    </h:panelGroup>
-
-
-                </h:panelGrid>
-
-                <div>
-                    <div style="margin-left: 10px; font-weight: bold;"><i class="icon-user"></i>&#160;Administratörer:
-                    </div>
-                    <span style="margin-left: 5px;"></span>
-                    <p:autoComplete id="createNewAdminInput"
-                                    value="#{app.newOwnershipUserId}"
-                                    completeMethod="#{app.completeUserName}"
-                                    forceSelection="true"
-                                    rendered="#{app.inEditMode}"
-                                    style="padding-left: 5px;"
-                                    styleClass="createNewAdminInput master-item"
-                                    multiple="false"/>
-
-                    <p:commandLink styleClass="ltr-flowing-item"
-                                   value="Lägg till"
-                                   update="basicFeedInfo"
-                                   rendered="#{app.inEditMode}"
-                                   id="addOwnershipLink"
-                                   ajax="true" async="true" actionListener="#{app.createNewOwnership()}">
-                    </p:commandLink>
-
-                    <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="getOwnershipsAsListItem"
-                               idFoo="owners"
-                               varStatus="status">
-          <span class="ltr-flowing-item">
-            <span class="name">#{app.fetchLdapPersonFullName(getOwnershipsAsListItem.userId)} (#{getOwnershipsAsListItem.userId})</span>
-            <span class="remove">
-              <p:commandLink value=" " update=":ifeed_view"
-                             rendered="#{app.inEditMode}"
-                             styleClass="link-button-trash"
-                             ajax="false" async="true"
-                             id="remove_#{getOwnershipsAsListItem.userId}"
-                             actionListener="#{iFeedModelBean.getOwnershipsAsList().remove(getOwnershipsAsListItem)}">
-              </p:commandLink>
-            </span>
-          </span>
-                    </ui:repeat>
                 </div>
             </h:panelGroup>
+
         </div>
     </div>
 
@@ -272,12 +283,10 @@
 
         function refreshResults() {
             console.log('refreshResults before');
-            //document.getElementById('rerun-ifeed-loading').click;
             setTimeout(function () {document.getElementById('rerun-ifeed-loading').click();}, 500);
             console.log('refreshResults after');
         }
     //]]>
-
-
     </script>
+
 </ui:composition>

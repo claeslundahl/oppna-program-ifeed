@@ -75,7 +75,7 @@ public class ElementUtil {
         tableDef.setHideRightColumn("yes".equals(from.getAttribute("hiderightcolumn")));
         tableDef.setLinkOriginalDoc("yes".equals(from.getAttribute("linkoriginaldoc")));
         String limitText = from.getAttribute("limit");
-        tableDef.setMaxHitLimit(limitText == null ? 0 : Integer.parseInt(limitText));
+        tableDef.setMaxHitLimit(limitText == null || limitText.isEmpty() ? 0 : Integer.parseInt(limitText));
         tableDef.createColumnDefs(from.getAttribute("columnes"));
 
         tableDef.setShowTableHeader(getBooleanValue(from, "showTableHeader"));

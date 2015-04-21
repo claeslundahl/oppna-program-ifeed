@@ -100,7 +100,9 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
                 Class<?> type = bm.getPropertyType(name);
 
                 if (type.equals(Boolean.TYPE)) {
-                    bm.put(name, "yes".equalsIgnoreCase(cells[c].trim()));
+                    String part = cells[c].trim();
+                    boolean b = "yes".equalsIgnoreCase(part);
+                    bm.put(name, b);
                 } else if (type.equals(List.class) && name.equals("children")) {
                     ((List) bm.get(name)).add(cells[c].trim());
                 } else {

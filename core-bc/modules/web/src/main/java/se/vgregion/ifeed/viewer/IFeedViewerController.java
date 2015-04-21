@@ -161,29 +161,29 @@ public class IFeedViewerController {
     /**
      * Gets the ifeed from either a db or from a plain instance (sent as text).
      *
-     * @param instance the id of the feed in the db or the feed itself as an instance. To bad that
-     *                                   spring portlet mvc does not function well enough to work for the latter
-     *                                   scenario. It is kept in case this is
-     *                                   fixed later.
-     * @param model                      to place the data for the view.
-     * @param sortField                  the field to be used to sort the result.
-     * @param sortDirection              what direction to use when sorting, sould be asc or desc.
-     * @param startBy                    what offset to have in the result from the db.
-     * @param endBy                      where to end the result (truncate it) from the db.
-     * @param fromPage                   should be the url (or some other id, perhaps) of the page that calls the
-     *                                   function via the
-     *                                   ajax script.
-     *                                   @param response handle to write the result somewhere.
+     * @param instance      the id of the feed in the db or the feed itself as an instance. To bad that
+     *                      spring portlet mvc does not function well enough to work for the latter
+     *                      scenario. It is kept in case this is
+     *                      fixed later.
+     * @param model         to place the data for the view.
+     * @param sortField     the field to be used to sort the result.
+     * @param sortDirection what direction to use when sorting, sould be asc or desc.
+     * @param startBy       what offset to have in the result from the db.
+     * @param endBy         where to end the result (truncate it) from the db.
+     * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the
+     *                      function via the
+     *                      ajax script.
+     * @param response      handle to write the result somewhere.
      * @return
      */
     @RequestMapping(value = "/metaascsv")
     public String getIFeedAsCsv(@RequestParam String instance, Model model,
-                           @RequestParam(value = "by", required = false) String sortField,
-                           @RequestParam(value = "dir", required = false) String sortDirection,
-                           @RequestParam(value = "startBy", required = false) Integer startBy,
-                           @RequestParam(value = "endBy", required = false) Integer endBy,
-                           @RequestParam(value = "fromPage", required = false) String fromPage,
-                           HttpServletResponse response) {
+                                @RequestParam(value = "by", required = false) String sortField,
+                                @RequestParam(value = "dir", required = false) String sortDirection,
+                                @RequestParam(value = "startBy", required = false) Integer startBy,
+                                @RequestParam(value = "endBy", required = false) Integer endBy,
+                                @RequestParam(value = "fromPage", required = false) String fromPage,
+                                HttpServletResponse response) {
         //public void exportCsv(@PathVariable String listIdOrSerializedInstance, HttpServletRequest request, HttpServletResponse  response) {
         String url;
         if (isNumeric(instance)) {
@@ -217,10 +217,12 @@ public class IFeedViewerController {
                     bos.write("\n".getBytes());
                 }
             }
-            bos.flush();
-
             response.setContentType("text/csv;charset=utf-8");
+            String ct = response.getContentType();
+            System.out.println("Content type " + ct);
             response.setHeader("Content-Disposition", "inline; filename=export.csv");
+            bos.close();
+            portletOutputStream.close();
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }

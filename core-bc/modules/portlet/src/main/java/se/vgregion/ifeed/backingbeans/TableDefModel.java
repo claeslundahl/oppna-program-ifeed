@@ -77,9 +77,9 @@ public class TableDefModel extends DynamicTableDef {
 
     @Override
     public String getFeedId() {
-/*        if (app.getIFeedModelBean() != null) {
+        if (app.getIFeedModelBean() != null) {
             return app.getIFeedModelBean().getId() + "";
-        }*/
+        }
         return super.getFeedId();
     }
 

@@ -15,34 +15,39 @@
                     <tr>
                         <td colspan="2">
                             <!--<span title="#{ifeedFilter.help}" class="ifeed-filter-help"> </span>-->
-                            <div title="#{ifeedFilter.help}" class="#{ifeedFilter.isExpanded() ? 'icon-chevron-down' : 'icon-chevron-right'}"></div>
+
                             <h:commandLink
-                                    value="#{ifeedFilter.name}"
+                                    value=""
                                     title="#{ifeedFilter.help}"
                                     ajax="true"
                                     action="#{ifeedFilter.setExpanded(!ifeedFilter.isExpanded())}">
                                 <f:ajax render="@form" onevent="refreshResults()"/>
+                                <div title="#{ifeedFilter.help}" class="#{ifeedFilter.isExpanded() ? 'icon-chevron-down' : 'icon-chevron-right'}"></div>
+                                #{ifeedFilter.name}
                             </h:commandLink>
                         </td>
                     </tr>
 
-                    <ui:fragment rendered="#{ifeedFilter.expanded}">
+                    <ui:fragment rendered="#{ifeedFilter.expanded}" visible="#{ifeedFilter.filter}">
                         <ui:repeat value="#{ifeedFilter.children}" var="child" varStatus="vs4filterLoop">
-                            <tr>
-                                <ui:fragment rendered="#{vs4filterLoop.index == 0}">
-                                    <td rowspan="#{ifeedFilter.children.size()}"></td>
-                                </ui:fragment>
-                                <td>
-                                    <span title="#{child.help}" class="ifeed-filter-add"> </span>
-                                    <p:commandLink value="#{child.name}"
-                                                   update=":ifeed_view"
-                                                   title="#{child.help}"
-                                                   onclick="refreshResults()"
-                                                   action="#{app.setNewFilter(child)}">
-                                        <f:ajax render="@form" onevent="refreshResults()"/>
-                                    </p:commandLink>
-                                </td>
-                            </tr>
+                            <ui:fragment rendered="#{child.filter}" visible="#{ifeedFilter.filter}">
+                                <tr>
+
+                                        <td> </td>
+
+                                    <td>
+
+                                        <h:commandLink value="#{child.name}"
+                                                       update=":ifeed_view"
+                                                       title="#{child.help}"
+                                                       onclick="refreshResults()"
+                                                       action="#{app.setNewFilter(child)}">
+                                            <f:ajax render="@form" onevent="refreshResults()"/>
+                                            <span title="#{child.help}" class="ifeed-filter-add"> </span>
+                                        </h:commandLink>
+                                    </td>
+                                </tr>
+                            </ui:fragment>
                         </ui:repeat>
                     </ui:fragment>
 

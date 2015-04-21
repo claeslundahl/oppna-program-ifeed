@@ -27,11 +27,11 @@ public class DynamicTableDef extends AbstractEntity {
     private String feedHome;
 
     @Column(name = "max_hit_limit")
-    private Integer maxHitLimit;
+    private Integer maxHitLimit = 0;
 
     private Boolean showTableHeader = true;
     private Boolean linkOriginalDoc = false;
-    private Boolean hideRightColumn = true;
+    private Boolean hideRightColumn = false;
 
     @OneToMany(mappedBy = "tableDef")
     private final List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();

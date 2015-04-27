@@ -1,0 +1,26 @@
+# Configure local dev. version of application #
+
+Check out hidden material from internal svn. Look at the config.properties.dev file. Rename it to config.properties and place it at your (home-dir)/.iFeed/config.properties.
+
+Change the hard coded ip-numbers to your own computer number. Try using 'localhost', this has been reported as being a source of error though.
+
+Also change the 'hibernate.vendor.generateDdl=false' setting to 'hibernate.vendor.generateDdl=true' initially at least - since the application would lack its tables otherwise.
+
+Set the environment property 'datasoure.connector' to either 'jndi' or 'direct' depending on desired method of accessing the db.
+
+One way of setting the env-prop is to edit the file (LIFE\_RAY\_HOME)/(TOMCAT\_HOME)/bin/setenv.bat (or .sh-file).
+
+```
+
+if exist "%CATALINA_HOME%/jre1.6.0_21/win" (
+if not "%JAVA_HOME%" == "" (
+set JAVA_HOME=
+)
+
+set "JRE_HOME=%CATALINA_HOME%/jre1.6.0_21/win"
+)
+
+set "JAVA_OPTS=%JAVA_OPTS% -Dfile.encoding=UTF8 -Djava.net.preferIPv4Stack=true -Duser.timezone=Europe/Stockholm -Xmx1024m -XX:MaxPermSize=256m -Ddatasource.connector=direct"
+```
+
+Notice the '-Ddatasource.connector=direct' text near the end of the file.

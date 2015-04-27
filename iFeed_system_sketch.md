@@ -1,0 +1,19 @@
+# iFeed system sketch #
+
+A description of the different parts of the system sketch below will be added later.
+
+![http://oppna-program-ifeed.googlecode.com/svn/wiki/iFeed%20Sketch.png](http://oppna-program-ifeed.googlecode.com/svn/wiki/iFeed%20Sketch.png)
+
+Terminology Server -> iFeed Service: Web-Service call from iFeed Service to get terminology. The result is cached in the db. Fetch occurs regularly (started with a activating thread), old data is cleared.
+
+iFeed Manager -> iFeed Service: User logs into portal and adds/edit a feed containing document metadata. Adds filter constraints to get a subsets of hits from the original feed.
+
+iFeed Service -> iFeed Server: The filtered feed from previous step is used to show a list of documents.
+
+iFeed Server(Web App) -> CMS: The CMS gets updates of its feed from the iFeed Server and then stores/displays it to its users.
+
+iFeed Service -> Push Server: Fetching of feed of the latest changes. It is used by iFeed Manager to show how filter options affects the resulting stream of data to the user.
+
+Search Server -> iFeed Service: Solr 'pings' to inform iFeed Service that it has an updated version of its document-metadata-feed.
+
+Document Store -> Search Server: Alfresco informs solr that new documents needs to be added to the index that it keeps.

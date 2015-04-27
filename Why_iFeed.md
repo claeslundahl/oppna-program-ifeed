@@ -1,0 +1,42 @@
+# Problem #
+VGR uses a centralized document repository from which documents only can be retrieved based on the meta data that they carry. How should common non-technical users within the VGR organization be able to find the documents they need?
+
+
+# Solution #
+Two services are used within VGR to solve the problem, Hitta and iFeed. Both solutions depend on an up to date search index with the documents and their meta data. However, the same index is not used for the two solutions as the update frequency and the scope differ between the two solutions.
+
+The two services are complimentary and one is based on a pull approach and one is based on push.
+
+
+## Pull Approach ##
+
+**Service:** hitta.vgregion.se
+
+**Use case:** Finding a particular document or set of documents
+
+**Configuration:** Traditional search query
+
+**Delivery:** Traditional search engine result pages
+
+**Core capability:** _Findability_ - being able to quickly find what you are looking for
+
+**Search scope:** Central document repository as well as a crawler index based on several sources within VGR
+
+**Target audience:** VGR organization and the general public
+
+
+## Push Approach ##
+
+**Service:** iFeed
+
+**Use case:** Subscribing to published documents that fit certain criteria
+
+**Configuration:** Configuration wizard
+
+**Delivery:** ATOM feed
+
+**Core capability:** _Reliability_ - be confident that you promptly get all documents that fit the criteria as they are published
+
+**Search scope:** Central document repository only, due to the strict meta data requirements
+
+**Target audience:** iFeed is initially targeted against webmasters that want to automate the publication of additions to document series and new revised versions of current documents. The long term vision for iFeed, however, is that all users of the VGR portal should be able to configure their own custom document feeds and easily subscribe to pre-configured feeds relevant to them.

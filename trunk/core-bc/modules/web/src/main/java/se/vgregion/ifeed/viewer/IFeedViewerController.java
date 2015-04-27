@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -29,6 +30,7 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static se.vgregion.common.utils.CommonUtils.getEnum;
 
@@ -176,8 +178,8 @@ public class IFeedViewerController {
      * @param response      handle to write the result somewhere.
      * @return
      */
-    @RequestMapping(value = "/metaascsv")
-    public String getIFeedAsCsv(@RequestParam String instance, Model model,
+    @RequestMapping(value = "/metaascsv", produces = {"text/csv"}, method=RequestMethod.GET)
+    public String getIFeedAsCsv(@RequestParam(value = "instance") String instance, Model model,
                                 @RequestParam(value = "by", required = false) String sortField,
                                 @RequestParam(value = "dir", required = false) String sortDirection,
                                 @RequestParam(value = "startBy", required = false) Integer startBy,
@@ -198,29 +200,56 @@ public class IFeedViewerController {
         OutputStream portletOutputStream = null;
         try {
             portletOutputStream = response.getOutputStream();
+            response.setCharacterEncoding("UTF-8");
             bos = new BufferedOutputStream(portletOutputStream);
 
             List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
 
+            List<FieldInf> fields = iFeedService.getFieldInfs();
+
+            // 0xEF,0xBB,0xBF
+            // \uFEFF
+            /*bos.write(0xEF);
+            bos.write(0xBB);
+            bos.write(0xBF);*/
+
+            //chr(239) . chr(187) . chr(191)
+            bos.write(239);
+            bos.write(187);
+            bos.write(191);
+
+
             if (!result.isEmpty()) {
-                Map<String, Object> first = result.get(0);
-                for (String key : first.keySet()) {
-                    bos.write(key.getBytes());
-                    bos.write(";".getBytes());
+                for (FieldInf fi : fields) {
+                    if (fi.isInHtmlView()) {
+                        for (FieldInf child: fi.getChildren()) {
+                            if (child.isInHtmlView()) {
+                                bos.write(prettyfyFeedValue(child.getName()));
+                                bos.write(";".getBytes());
+                            }
+                        }
+                    }
                 }
                 bos.write("\n".getBytes());
                 for (Map<String, Object> item : result) {
-                    for (String key : first.keySet()) {
-                        bos.write(((item.get(key) + "").getBytes()));
-                        bos.write(";".getBytes());
+                    for (FieldInf fi : fields) {
+                        if (fi.isInHtmlView()) {
+                            for (FieldInf child: fi.getChildren()) {
+                                if (child.isInHtmlView()) {
+                                    bos.write(prettyfyFeedValue(item.get(child.getId()) + ""));
+                                    bos.write(";".getBytes());
+                                }
+                            }
+                        }
                     }
                     bos.write("\n".getBytes());
                 }
             }
+            /* This does not work, dont know why. It is done instead in the filter
+               se.vgregion.ifeed.viewer.CsvContentTypeFilter -filter.
             response.setContentType("text/csv;charset=utf-8");
-            String ct = response.getContentType();
-            System.out.println("Content type " + ct);
             response.setHeader("Content-Disposition", "inline; filename=export.csv");
+            */
             bos.close();
             portletOutputStream.close();
         } catch (IOException e) {
@@ -228,6 +257,12 @@ public class IFeedViewerController {
         }
 
         return url;
+    }
+
+    private byte[] prettyfyFeedValue(String value) {
+        value = value.replaceAll(Pattern.quote("["), "");
+        value = value.replaceAll(Pattern.quote("]"), "");
+        return value.getBytes();
     }
 
 
@@ -273,6 +308,8 @@ public class IFeedViewerController {
                                      Integer startBy,
                                      Integer endBy,
                                      String fromPage) {
+
+        Util.setLocalValue(retrievedFeed);
 
         if (fromPage != null && !"".equals(fromPage.trim())) {
             Integer i = callsToJsonpMetadata.get(fromPage);

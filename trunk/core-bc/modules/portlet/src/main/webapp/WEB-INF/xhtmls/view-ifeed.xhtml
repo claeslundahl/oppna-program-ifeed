@@ -143,17 +143,17 @@
                     <ui:include src="show-department-and-group.xhtml"/>
                 </div>
                 <div class="span4 last">
-
-
-                    <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
+                    <h:outputText style="font-weight: bold;" value="Lägg till: "></h:outputText>
                     <br/>
-                    <p:commandLink value="EPI-konfiguration (JSON)"
-                                   actionListener="#{navigationModelBean.setUiNavigation('EDIT_JSONP')}"
+                    <h:commandLink value="EPI-konfiguration (JSON)"
+                                   actionListener="#{tableDef.editNewJsonp()}"
                                    ajax="true"
                                    id="epiConfigLink"
                                    update=":ifeed_view"
                                    immediate="true">
-                    </p:commandLink>
+                    </h:commandLink>
+                    <br/>
+                    <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
                     <br/>
                     <a href="#{app.getWebFeedLink()}" target="_blank">Html</a><br/>
                     <a id="excel-feed-link" href="#{app.getExcelFeedLink()}" target="_blank">Excel</a><br/>

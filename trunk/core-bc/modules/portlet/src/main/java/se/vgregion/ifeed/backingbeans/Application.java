@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.backingbeans;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.User;
@@ -22,6 +24,7 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapSupportService;
@@ -40,6 +43,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -605,6 +609,12 @@ public class Application {
         return result;
     }
 
+    public void onTypeChangeInColumnDef(TableDefModel tableDefModel, ColumnDef columnDef) {
+        FieldInf fi = getFieldsByNameIndex().get(columnDef.getName());
+        columnDef.setLabel(fi.getName());
+        tableDefModel.toTableMarkup();
+    }
+
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
         List<SelectItemGroup> result = new ArrayList<SelectItemGroup>();
         if (filters == null) {
@@ -612,15 +622,53 @@ public class Application {
         }
         for (FieldInf parent : getFilters()) {
             SelectItemGroup group = new SelectItemGroup(parent.getName());
-            SelectItem[] selectItems = new SelectItem[parent.getChildren().size()];
+            //SelectItem[] selectItems = new SelectItem[parent.getChildren().size()];
+            List<SelectItem> items = new ArrayList<SelectItem>();
             int c = 0;
             for (FieldInf child : parent.getChildren()) {
-                selectItems[c++] = new SelectItem(child.getId(), child.getName());
+                if (child.isInHtmlView()) {
+                    //selectItems[c++] = new SelectItem(child.getId(), child.getName());
+                    items.add(new SelectItem(child.getId(), child.getName()));
+                }
             }
-            group.setSelectItems(selectItems);
+            //group.setSelectItems(selectItems);
+            group.setSelectItems(items.toArray(new SelectItem[items.size()]));
             result.add(group);
         }
         return result;
+    }
+
+    public List<FieldInf> getInHtmlFilters() {
+        List<FieldInf> fieldInfs = getFilters();
+        fieldInfs = clone(fieldInfs);
+
+        for (FieldInf baseItem : fieldInfs) {
+            List<FieldInf> children = new ArrayList<FieldInf>(baseItem.getChildren());
+            for (int i = children.size() - 1; i >= 0; i--) {
+                FieldInf childItem = children.get(i);
+                if (!childItem.isInHtmlView()) {
+                    baseItem.getChildren().remove(i);
+                }
+            }
+        }
+
+        return fieldInfs;
+    }
+
+    private  <T>  T clone(T thisInstance) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(thisInstance);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (T) ois.readObject();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void showMyFeeds() {
@@ -799,15 +847,17 @@ public class Application {
         BeanMap bm = new BeanMap(dynamicTableDef);
         boolean found = false;
         for (DynamicTableDef item : iFeedModelBean.getDynamicTableDefs()) {
-            if (item.getId() == dynamicTableDef.getId()) {
+            if (dynamicTableDef.getId() != null && (item.getId() == dynamicTableDef.getId() || dynamicTableDef.getId().equals(item.getId()))) {
                 found = true;
                 new BeanMap(item).putAllWriteable(bm);
-                continue;
+                item.setColumnDefs(dynamicTableDef.getColumnDefs());
+                break;
             }
         }
         if (!found) {
             DynamicTableDef instance = new DynamicTableDef();
             new BeanMap(instance).putAllWriteable(bm);
+            instance.setColumnDefs(dynamicTableDef.getColumnDefs());
             iFeedModelBean.getDynamicTableDefs().add(instance);
         }
         navigationModelBean.setUiNavigation("VIEW_IFEED");

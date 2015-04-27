@@ -11,6 +11,7 @@ import se.vgregion.ifeed.types.FieldInf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by clalu4 on 2014-08-21.
@@ -36,6 +37,16 @@ public class TableDefModel extends DynamicTableDef {
         return toTableMarkupImpl();
     }
 
+    public List<String> toTableMarkupWithLineBreaks() {
+        String text = toTableMarkupImpl();
+        String[] texts = text.split(Pattern.quote("\n"));
+        return Arrays.asList(texts);
+    }
+
+    public String toRunnableInstanceTableMarkup() {
+        return toTableMarkupImpl(app.getIFeedModelBean().toJson());
+    }
+
     private String yesOrNo(boolean b) {
         if (b) {
             return "yes";
@@ -44,7 +55,12 @@ public class TableDefModel extends DynamicTableDef {
         }
     }
 
+
     private String toTableMarkupImpl() {
+        return toTableMarkupImpl(getFeedId());
+    }
+
+    private String toTableMarkupImpl(String textAsFeedId) {
         if (getColumnDefs().isEmpty()) {
             return "Lägg till kolumner för att få fram en kod.";
         }
@@ -64,7 +80,8 @@ public class TableDefModel extends DynamicTableDef {
                 "\tlinkOriginalDoc=\"" + yesOrNo(isLinkOriginalDoc()) + "\" \n" +
                 "\tlimit=\"" + getMaxHitLimit() + "\" \n" +
                 "\thiderightcolumn=\"" + yesOrNo(isHideRightColumn()) + "\" \n" +
-                "\tfeedid=\"" + getFeedId() + "\">\n" +
+                //"\tfeedid=\"" + getFeedId() + "\">\n" +
+                "\tfeedid='" + textAsFeedId + "'>\n" +
                 "</div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/" + getFeedId() +
                 "/?by=" + format(getDefaultSortColumn()) +
                 "&dir=" + format(getDefaultSortOrder()) + "' id='iframenoscript' name='iframenoscript' " +
@@ -97,7 +114,7 @@ public class TableDefModel extends DynamicTableDef {
         FieldInf fieldTemplate = app.getFilters().get(0).getChildren().get(0);
         column.setName(fieldTemplate.getId());
         column.setLabel(fieldTemplate.getName());
-        column.setWidth("");
+        column.setWidth("70");
 
         getColumnDefs().add(column);
     }
@@ -139,6 +156,7 @@ public class TableDefModel extends DynamicTableDef {
 
     public void editFlow(DynamicTableDef dynamicTableDef) {
         new BeanMap(this).putAllWriteable(new BeanMap(dynamicTableDef));
+        setColumnDefs(dynamicTableDef.getColumnDefs());
         navigationModelBean.setUiNavigation("EDIT_JSONP");
     }
 
@@ -149,4 +167,8 @@ public class TableDefModel extends DynamicTableDef {
         return result;
     }
     */
+
+    public void editNewJsonp() {
+        editFlow(new TableDefModel());
+    }
 }

@@ -40,7 +40,7 @@ public class ColumnDef extends AbstractEntity {
     private String name;
     private String label;
     private String alignment;
-    private String width;
+    private String width = "70";
 
     /**
      * Takes a text that contains information about the column in question. Then it parses that string and puts
@@ -99,7 +99,7 @@ public class ColumnDef extends AbstractEntity {
 
     public String toStringImpl() {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("tableDef", tableDef);
+        // map.put("tableDef", tableDef);
         map.put("name", name);
         map.put("width", width);
         map.put("id", id);

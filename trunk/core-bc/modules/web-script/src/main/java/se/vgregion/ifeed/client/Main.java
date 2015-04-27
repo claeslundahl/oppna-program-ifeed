@@ -51,6 +51,9 @@ public class Main implements EntryPoint {
         final Element body = RootPanel.getBodyElement();
         if (body == null) Window.alert("Did not find the body!");
         List<Element> result = ElementUtil.findByCssClass(body, "ifeedDocList");
+        for (Element oldElement : result) {
+            oldElement.setInnerHTML("");
+        }
         ifeedDocLists = result;
         fetchNext();
 

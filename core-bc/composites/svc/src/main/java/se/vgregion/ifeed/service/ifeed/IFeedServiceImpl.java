@@ -153,13 +153,21 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public final IFeed update(final IFeed iFeed) {
         for (DynamicTableDef dynamicTableDef : iFeed.getDynamicTableDefs()) {
             dynamicTableDef.setIfeed(iFeed);
-                if (dynamicTableDef.getId() == null) {
-                    objectRepo.persist(dynamicTableDef);
-                } else {
-                    dynamicTableDef = objectRepo.merge(dynamicTableDef);
-                }
+            if (dynamicTableDef.getId() == null) {
+                objectRepo.persist(dynamicTableDef);
+            } else {
+                dynamicTableDef = objectRepo.merge(dynamicTableDef);
+            }
             for (ColumnDef columnDef : dynamicTableDef.getColumnDefs()) {
                 columnDef.setTableDef(dynamicTableDef);
+
+                assert columnDef.getName() != null : "ColumnDef name cannot be null";
+                if (columnDef.getId() == null) {
+                    objectRepo.persist(columnDef);
+                } else {
+                    columnDef = objectRepo.merge(columnDef);
+                    assert columnDef.getName() != null : "After merge - ColumnDef name cannot be null";
+                }
             }
         }
 

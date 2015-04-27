@@ -33,8 +33,8 @@ public class DynamicTableDef extends AbstractEntity {
     private Boolean linkOriginalDoc = false;
     private Boolean hideRightColumn = false;
 
-    @OneToMany(mappedBy = "tableDef")
-    private final List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
+    @OneToMany(mappedBy = "tableDef", cascade = CascadeType.ALL)
+    private List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
 
     @ManyToOne
     @JoinColumn(name = "fk_ifeed_id")
@@ -130,6 +130,10 @@ public class DynamicTableDef extends AbstractEntity {
         return columnDefs;
     }
 
+    public void setColumnDefs(List<ColumnDef> columnDefs) {
+        this.columnDefs = columnDefs;
+    }
+
     public String getFeedHome() {
         return feedHome;
     }
@@ -143,7 +147,7 @@ public class DynamicTableDef extends AbstractEntity {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("defaultSortOrder", defaultSortOrder);
         map.put("showTableHeader", showTableHeader);
-        map.put("feedId", feedId);
+        // map.put("feedId", feedId);
         map.put("feedHome", feedHome);
         map.put("maxHitLimit", maxHitLimit);
         map.put("hideRightColumn", hideRightColumn);

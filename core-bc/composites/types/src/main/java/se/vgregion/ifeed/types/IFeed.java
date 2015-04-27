@@ -262,7 +262,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @GwtIncompatible
     private String toJsonImpl() throws IOException, ClassNotFoundException {
         final Set<String> excludeFields = new HashSet<String>(Arrays.asList("iFeed", "ifeed", "ownerships",
-                "department", "group", "ifeedDynamicTableDefs"));
+                "department", "group", "ifeedDynamicTableDefs", "tableDef"));
         Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes fieldAttributes) {

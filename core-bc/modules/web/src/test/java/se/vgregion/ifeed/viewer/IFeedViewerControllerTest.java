@@ -22,6 +22,12 @@ import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ifeed.types.VgrDepartment;
 import se.vgregion.ifeed.types.VgrGroup;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.regex.Pattern;
+
 public class IFeedViewerControllerTest {
 
     private IFeedViewerController controller;
@@ -84,5 +90,25 @@ public class IFeedViewerControllerTest {
         IFeedServiceException se = (IFeedServiceException) result.getModel().get("exception");
         Assert.assertEquals(se, e);
     }*/
+
+    @Test
+    public void testSomeTimeParsing() throws ParseException {
+        String string = "2015-04-10T08:34:00.000Z";
+        /*String defaultTimezone = TimeZone.getDefault().getID();
+        Date date = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(string.replaceAll("Z$", "+0000"));
+
+        System.out.println("string: " + string);
+        System.out.println("defaultTimezone: " + defaultTimezone);
+        System.out.println("date: " + (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).format(date));
+
+
+        String matching = "^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$";
+        Pattern c = Pattern.compile(matching);
+        boolean result = c.matcher(string).matches();
+        System.out.println(result);*/
+
+
+        System.out.println(IFeedViewerController.toTextDateImpl(string));
+    }
 
 }

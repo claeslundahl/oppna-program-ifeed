@@ -4,9 +4,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -22,7 +20,6 @@ import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -178,7 +175,7 @@ public class IFeedViewerController {
      * @param response      handle to write the result somewhere.
      * @return
      */
-    @RequestMapping(value = "/metaascsv", produces = {"text/csv"}, method=RequestMethod.GET)
+    @RequestMapping(value = "/metaascsv", produces = {"text/csv"}, method = RequestMethod.GET)
     public String getIFeedAsCsv(@RequestParam(value = "instance") String instance, Model model,
                                 @RequestParam(value = "by", required = false) String sortField,
                                 @RequestParam(value = "dir", required = false) String sortDirection,
@@ -222,7 +219,7 @@ public class IFeedViewerController {
             if (!result.isEmpty()) {
                 for (FieldInf fi : fields) {
                     if (fi.isInHtmlView()) {
-                        for (FieldInf child: fi.getChildren()) {
+                        for (FieldInf child : fi.getChildren()) {
                             if (child.isInHtmlView()) {
                                 bos.write(prettyfyFeedValue(child.getName()));
                                 bos.write(";".getBytes());
@@ -234,7 +231,7 @@ public class IFeedViewerController {
                 for (Map<String, Object> item : result) {
                     for (FieldInf fi : fields) {
                         if (fi.isInHtmlView()) {
-                            for (FieldInf child: fi.getChildren()) {
+                            for (FieldInf child : fi.getChildren()) {
                                 if (child.isInHtmlView()) {
                                     bos.write(prettyfyFeedValue(item.get(child.getId()) + ""));
                                     bos.write(";".getBytes());
@@ -373,6 +370,50 @@ public class IFeedViewerController {
         return details(documentId, model);
     }
 
+    static final Pattern ISO8601 = Pattern.compile("^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$");
+
+    static boolean itsSomeDateValue(String v) {
+        return ISO8601.matcher(v).matches();
+    }
+
+    static SimpleDateFormat sdfForView = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+
+    static SimpleDateFormat sdfForDataText = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.GERMAN);
+
+    @Deprecated
+    static Calendar toDateOld(String sValue) {
+        SimpleDateFormat inParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+        //if (StringUtils.hasText(sValue)) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            Date date = inParser.parse(sValue);
+            calendar.setTime(date);
+            return calendar;
+            //outFormatter.setTimeZone(inParser.getTimeZone());
+            //idValueMap.put(childId, outFormatter.format(date));
+        } catch (ParseException e) {
+            // Wasn't a date
+            //idValueMap.put(childId, sValue);
+            throw new RuntimeException(e);
+        }
+        //}
+    }
+
+    static String toTextDate(String iso8601format) {
+        try {
+            return toTextDateImpl(iso8601format);
+        } catch (ParseException e) {
+            return iso8601format;
+        }
+    }
+
+    static String toTextDateImpl(String iso8601format) throws ParseException {
+        //String string = "2015-04-10T08:34:00.000Z";
+        //String defaultTimezone = TimeZone.getDefault().getID();
+        Date date = sdfForDataText.parse(iso8601format.replaceAll("Z$", "+0000"));
+        return sdfForView.format(date);
+    }
+
     /**
      * Using path variables to asscess a feed from a http client.
      *
@@ -398,7 +439,7 @@ public class IFeedViewerController {
         }
         final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
 
-        SimpleDateFormat inParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+        //SimpleDateFormat inParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
         SimpleDateFormat outFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("sv", "SE"));
 
         Map<String, String> idValueMap = new HashMap<String, String>();
@@ -408,27 +449,16 @@ public class IFeedViewerController {
             fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
             for (FieldInf fieldInf : fieldInfs) {
                 for (FieldInf child : fieldInf.getChildren()) {
-                    if (child.getId().equals("dcterms.audience") || child.getName().equals("dcterms.audience")) {
-                        System.out.println("Hittade dcterms.audience inf");
-                    }
                     String childId = child.getId();
                     if (StringUtils.hasText(childId)) { // If it has an id it is not just a caption
                         // Does the document have any value for this field?
                         Object value = documentInfo.getMetadata().get(childId);
                         if (value instanceof String) {
                             String sValue = (String) value;
-                            if (StringUtils.hasText(sValue)) {
-                                try {
-                                    Calendar calendar = Calendar.getInstance();
-                                    Date date = inParser.parse(sValue);
-                                    calendar.setTime(date);
-                                    outFormatter.setTimeZone(inParser.getTimeZone());
-                                    idValueMap.put(childId, outFormatter.format(date));
-                                } catch (ParseException e) {
-                                    // Wasn't a date
-                                    idValueMap.put(childId, sValue);
-                                }
+                            if (itsSomeDateValue(sValue)) {
+                                sValue = toTextDate(sValue);
                             }
+                            idValueMap.put(childId, sValue);
                         } else if (value instanceof Collection) {
                             String sValue = collectionToString((Collection) value);
                             if (StringUtils.hasText(sValue)) {

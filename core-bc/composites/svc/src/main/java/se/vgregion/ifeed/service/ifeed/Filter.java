@@ -90,8 +90,10 @@ public class Filter extends IFeed {
     }
 
     public void setIdAsText(String idAsText) {
-        if ("".equals(idAsText)) {
+        if (idAsText == null || "".equals(idAsText.trim())) {
             setId(null);
+            this.idAsText = idAsText;
+            return;
         }
         Long id = null;
         try {

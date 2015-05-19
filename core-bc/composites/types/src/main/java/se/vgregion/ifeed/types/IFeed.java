@@ -338,8 +338,12 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     @GwtIncompatible
     public static IFeed fromJson(String ifeed) {
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson(ifeed, IFeed.class);
+        try {
+            Gson gson = new GsonBuilder().create();
+            return gson.fromJson(ifeed, IFeed.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 

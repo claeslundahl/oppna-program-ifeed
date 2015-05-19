@@ -214,7 +214,7 @@
         <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="getFiltersAsListItem" varStatus="status"
                    id="getFiltersAsListRepeat">
     <span class="ltr-flowing-item ifeed-border">
-      <span class="name">#{app.fieldsByNameIndex.get(getFiltersAsListItem.filterKey).name}</span>
+      <span class="name">#{app.getFieldsByNameIndex().get(getFiltersAsListItem.filterKey).name}</span>
       <span class="name-value-delimiter">:</span>
       <span>#{empty getFiltersAsListItem.filterQueryForDisplay ? getFiltersAsListItem.filterQuery : getFiltersAsListItem.filterQueryForDisplay}</span>
 
@@ -282,9 +282,7 @@
         }
 
         function refreshResults() {
-            console.log('refreshResults before');
             setTimeout(function () {document.getElementById('rerun-ifeed-loading').click();}, 500);
-            console.log('refreshResults after');
         }
     //]]>
     </script>

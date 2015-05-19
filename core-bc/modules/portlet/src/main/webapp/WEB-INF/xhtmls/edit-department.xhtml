@@ -26,11 +26,11 @@
                         <th>Ta bort</th>
                     </tr>
                     </thead>
-                    <ui:repeat value="#{app.addMemberFeedsToGroups(app.department.getVgrGroups())}" var="group"
+                    <ui:repeat value="#{app.department.getVgrGroups()}" var="group"
                                varStatus="groupsVarStatus">
                         <tr>
                             <td>
-                                <h:inputText id="groupId#{group.id}name#{group.name}" value="#{group.name}"/>
+                                <h:inputText id="groupId#{group.id}name#{group.name.hashCode()}" value="#{group.name}"/>
                             </td>
                             <td>
                                 <ui:repeat value="#{group.memberFeeds}" var="item"

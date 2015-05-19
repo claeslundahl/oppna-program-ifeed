@@ -29,6 +29,9 @@ public class VgrDepartment extends AbstractEntity<Long> implements Serializable,
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "department")
     private List<VgrGroup> vgrGroups = new ArrayList<VgrGroup>();
 
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    private List<IFeed> memberFeeds = new ArrayList<IFeed>();
+
     @Override
     public int compareTo(VgrDepartment o) {
         if (o == null) {
@@ -77,5 +80,13 @@ public class VgrDepartment extends AbstractEntity<Long> implements Serializable,
 
     public void setOpen(Boolean open) {
         this.open = open;
+    }
+
+    public List<IFeed> getMemberFeeds() {
+        return memberFeeds;
+    }
+
+    public void setMemberFeeds(List<IFeed> memberFeeds) {
+        this.memberFeeds = memberFeeds;
     }
 }

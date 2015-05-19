@@ -146,6 +146,10 @@ public class ObjectRepo {
         return query.getResultList();
     }
 
+    public void flush() {
+        entityManager.flush();
+    }
+
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }

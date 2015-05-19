@@ -167,7 +167,8 @@ public class IFeedBackingBean implements Serializable {
         if (!AccessGuard.mayEditFeed(user, feed)) {
             throw new RuntimeException();
         }
-        iFeedService.removeIFeed(iFeed.getId());
+        //iFeedService.removeIFeed(iFeed.getId());
+        iFeedService.removeIFeed(iFeed);
 
         // Remove from memory
         iFeedModelBeans.remove(iFeed);

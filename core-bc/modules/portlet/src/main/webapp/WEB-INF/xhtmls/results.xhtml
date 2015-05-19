@@ -10,15 +10,15 @@
     <h:panelGroup rendered="#{not iFeedModelBean.getFilters().isEmpty()}">
 
         <h:panelGroup rendered="#{app.inEditMode}" styleClass="ifeed-step" layout="block">
-            <span>Din träfflista</span>
+            <span style="no">Din träfflista</span>
         </h:panelGroup>
-
         <h:panelGroup rendered="#{!app.inEditMode}" layout="block">
             <h2>Resultat</h2>
             <h:selectBooleanCheckbox value="#{app.limitOnResultCount}" rendered="false" />
         </h:panelGroup>
 
         <div class="#{app.inEditMode ? 'ifeed-filter-box' : ''}">
+            <div>(<span class="ifeed-step" id="ifeed-count-#{iFeedModelBean.toJson()}">0</span> st)</div>
             <div
                     class="ifeedDocList"
                     columnes="dc.title|Titel (autokomplettering)|left|,dc.date.issued|Publicerad|left|"

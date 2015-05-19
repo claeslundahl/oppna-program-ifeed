@@ -6,10 +6,7 @@ import java.util.Map;
 import com.liferay.portal.kernel.cache.ThreadLocalCachable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.FieldsInf;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.VgrDepartment;
+import se.vgregion.ifeed.types.*;
 
 public interface IFeedService {
 
@@ -20,6 +17,12 @@ public interface IFeedService {
     VgrDepartment getVgrDepartment(Long id);
 
     VgrDepartment save(VgrDepartment department);
+
+    @Transactional
+    void delete(VgrGroup group);
+
+    @Transactional
+    void delete(Object group);
 
     void delete(VgrDepartment department);
 
@@ -32,7 +35,16 @@ public interface IFeedService {
     IFeed addIFeed(IFeed iFeed);
 
     @Transactional
+    VgrDepartment loadDepartment(Long id);
+
+    @Transactional
+    void removeIFeed(IFeed feed);
+
+    @Transactional
     IFeed update(IFeed iFeed);
+
+    @Transactional
+    void saveDepartment(VgrDepartment department);
 
     IFeed updateIFeed(IFeed iFeed);
 
@@ -47,4 +59,12 @@ public interface IFeedService {
     Map<String, FieldInf> mapFieldInfToId();
 
     List<String> fetchFilterSuggestion(IFeed feed, String fieldId);
+
+    <T> T findByPrimaryKey(Class<T> clazz, Object id);
+
+    @Transactional
+    void deleteDepartmentGroups(VgrDepartment department);
+
+    @Transactional
+    void deleteDepartmentEntity(VgrDepartment department);
 }

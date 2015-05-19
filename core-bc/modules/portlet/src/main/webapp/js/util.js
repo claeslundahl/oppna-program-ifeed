@@ -11,7 +11,5 @@ function toggle() {
 }
 
 function refreshResults() {
-    console.log('refreshResults before');
     setTimeout(function () {document.getElementById('rerun-ifeed-loading').click();}, 500);
-    console.log('refreshResults after');
 }

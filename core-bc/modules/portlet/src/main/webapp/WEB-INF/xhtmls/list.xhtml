@@ -24,19 +24,22 @@
                 </tr>
                 <tr>
                     <th class="filter-result-h">
-                        <h:inputText value="${filter.name}" listener="#{app.updateFilterQuery}">
+                        <p:inputText placeholder="Filtrera på namn" value="${filter.name}" listener="#{app.updateFilterQuery}" id="filterOnName">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
-                        </h:inputText>
+                            <p:watermark for="filterOnName" value="Sök namn" />
+                        </p:inputText>
                     </th>
                     <th class="filter-result-h">
-                        <h:inputText value="${filter.userId}" style="width:50px;">
+                        <p:inputText value="${filter.userId}" style="width:50px;" id="filterOnUserId">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
-                        </h:inputText>
+                            <p:watermark for="filterOnUserId" value="Vgr-Id" />
+                        </p:inputText>
                     </th>
                     <th class="filter-result-h">
-                        <h:inputText value="${filter.description}">
+                        <p:inputText value="${filter.description}" id="filterOnDescription">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
-                        </h:inputText>
+                            <p:watermark for="filterOnDescription" value="Sök beskrivning" />
+                        </p:inputText>
                     </th>
                     <th class="filter-result-h">
                         <h:selectOneMenu style="text-align:left;"
@@ -66,9 +69,10 @@
                         </h:selectOneMenu>
                     </th>
                     <th class="filter-result-h">
-                        <h:inputText value="${filter.idAsText}" size="8" style="width: 50px;">
+                        <p:inputText value="${filter.idAsText}" size="8" style="width: 50px;" id="filterOnIdAsText">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
-                        </h:inputText>
+                            <p:watermark for="filterOnIdAsText" value="Sök Id" />
+                        </p:inputText>
                     </th>
                     <th class="filter-result-d">
                     </th>
@@ -89,7 +93,7 @@
                         <td>${item.id}</td>
                         <td>
                             <p:commandLink
-                                    action="#{iFeedBackingBean.removeBook(item)}"
+                                    action="#{app.removeFeed(item)}"
                                     styleClass="link-button-trash"
                                     update=":ifeed_view"
                                     ajax="false"

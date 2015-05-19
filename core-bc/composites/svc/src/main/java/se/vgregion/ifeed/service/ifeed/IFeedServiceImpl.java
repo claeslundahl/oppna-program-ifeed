@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.service.ifeed;
 
+import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +24,12 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     private JpaRepository<FieldsInf, Long, Long> fieldsInfRepo;
 
     private JpaRepository<VgrDepartment, Long, Long> departmentRepo;
+
     private String solrServiceUrl;
 
     public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam,
-                            JpaRepository<FieldsInf, Long, Long> fieldsInfRepo, JpaRepository<VgrDepartment, Long, Long> departmentRepo) {
+                            JpaRepository<FieldsInf, Long, Long> fieldsInfRepo,
+                            JpaRepository<VgrDepartment, Long, Long> departmentRepo) {
         iFeedRepo = iFeedRepoParam;
         this.fieldsInfRepo = fieldsInfRepo;
         this.departmentRepo = departmentRepo;
@@ -70,10 +73,24 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
+    public void delete(VgrGroup group) {
+        objectRepo.delete(group);
+        objectRepo.flush();
+    }
+
+    @Override
+    @Transactional
+    public void delete(Object group) {
+        objectRepo.delete(group);
+        objectRepo.flush();
+    }
+
+    @Override
+    @Transactional
     public void delete(VgrDepartment department) {
         try {
-            departmentRepo.remove(department.getId());
-            departmentRepo.flush();
+            objectRepo.delete(department);
+            objectRepo.flush();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -150,6 +167,34 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
+    public VgrDepartment loadDepartment(Long id) {
+        VgrDepartment result = objectRepo.findByPrimaryKey(VgrDepartment.class, id);
+        for (VgrGroup vg : result.getVgrGroups()) {
+            new HashMap(BeanMap.create(vg));
+            for (IFeed feed : vg.getMemberFeeds()) {
+                new HashMap(BeanMap.create(feed));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public final void removeIFeed(IFeed feed) {
+        feed = objectRepo.findByPrimaryKey(IFeed.class, feed.getId());
+        for (DynamicTableDef dynamicTableDef : feed.getDynamicTableDefs()) {
+            for (ColumnDef columnDef : dynamicTableDef.getColumnDefs()) {
+                objectRepo.delete(columnDef);
+            }
+            dynamicTableDef.getColumnDefs().clear();
+            objectRepo.delete(dynamicTableDef);
+        }
+        feed.getDynamicTableDefs().clear();
+        objectRepo.delete(feed);
+    }
+
+    @Override
+    @Transactional
     public final IFeed update(final IFeed iFeed) {
         for (DynamicTableDef dynamicTableDef : iFeed.getDynamicTableDefs()) {
             dynamicTableDef.setIfeed(iFeed);
@@ -174,6 +219,47 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         IFeed result = iFeedRepo.merge(iFeed);
         iFeedRepo.flush();
         return result;
+    }
+
+    @Override
+    @Transactional
+    public void saveDepartment(VgrDepartment department) {
+        try {
+            if (department.getId() != null) {
+                VgrDepartment fromDb = findByPrimaryKey(VgrDepartment.class, department.getId());
+                fromDb.setName(department.getName());
+
+                for (VgrGroup groupFromDb : fromDb.getVgrGroups()) {
+                    if (!department.getVgrGroups().contains(groupFromDb)) {
+                        for (IFeed feed : groupFromDb.getMemberFeeds()) {
+                            feed.setGroup(null);
+                            update(feed);
+                        }
+                    }
+                }
+
+                for (VgrGroup vgrGroup : new ArrayList<VgrGroup>(fromDb.getVgrGroups())) {
+                    if (!department.getVgrGroups().contains(vgrGroup)) {
+                        fromDb.getVgrGroups().remove(vgrGroup);
+                        delete(vgrGroup);
+                    }
+                }
+
+                for (VgrGroup vgrGroup : department.getVgrGroups()) {
+                    if (!fromDb.getVgrGroups().contains(vgrGroup)) {
+                        fromDb.getVgrGroups().add(vgrGroup);
+                    }
+                }
+                department = fromDb;
+            }
+            for (VgrGroup group : department.getVgrGroups()) {
+                group.setDepartment(department);
+            }
+            save(department);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -332,6 +418,49 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     public void setObjectRepo(ObjectRepo objectRepo) {
         this.objectRepo = objectRepo;
+    }
+
+
+    /**
+     * Find data in the db by ites primary key.
+     * @param clazz what type to find.
+     * @param id search key to use.
+     * @param <T> type that are being returned.
+     * @return list with zero or more results.
+     */
+    @Override
+    public <T> T findByPrimaryKey(Class<T> clazz, Object id) {
+        return objectRepo.findByPrimaryKey(clazz, id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteDepartmentGroups(VgrDepartment department) {
+        department = objectRepo.getReference(VgrDepartment.class, department.getId());
+        //addMemberFeedsToGroups(department.getVgrGroups());
+        for (IFeed ifeed : department.getMemberFeeds()) {
+            ifeed.setDepartment(null);
+            objectRepo.merge(ifeed);
+        }
+        for (VgrGroup group : new ArrayList<VgrGroup>(department.getVgrGroups())) {
+            for (IFeed feed : group.getMemberFeeds()) {
+                feed.setGroup(null);
+                objectRepo.merge(feed);
+            }
+            // iFeedService.delete(iFeedService.findByPrimaryKey(VgrGroup.class, group.getId()));
+            if (group.getId() != null) {
+                department.getVgrGroups().remove(group);
+                objectRepo.delete(group);
+            }
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteDepartmentEntity(VgrDepartment department) {
+        department = objectRepo.findByPrimaryKey(VgrDepartment.class, department.getId());
+        objectRepo.delete(department);
     }
 
 }

@@ -8,6 +8,7 @@ import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.VgrDepartment;
+import se.vgregion.ifeed.types.VgrGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class IFeedServiceImplTest {
 	@Before
 	public void setUp() throws Exception {
 		iFeedRepoParam = mock(JpaRepository.class);
-        JpaRepository<VgrDepartment, Long, Long> departmentRepo = mock(JpaRepository.class);
+		JpaRepository<VgrDepartment, Long, Long> departmentRepo = mock(JpaRepository.class);
         service = new IFeedServiceImpl(iFeedRepoParam, fieldsInfParam, departmentRepo);
 	}
 

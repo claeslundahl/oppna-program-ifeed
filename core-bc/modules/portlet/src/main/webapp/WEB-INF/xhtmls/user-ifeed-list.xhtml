@@ -40,31 +40,7 @@
         </div>
         <div class="row-fluid">
             <div class="span12 first last">
-                <aui:button-row>
-                    <p:commandLink
-                            styleClass="rp-link-button" value="Rensa filter"
-                            actionListener="#{app.clearFilter()}"
-                            update=":ifeed_view" ajax="false" async="true"/>
-
-                    <p:commandLink
-                            actionListener="#{app.setFilterUserId(app.getCurrentUser().getScreenName())}"
-                            update="::ifeed_view"
-                            ajax="false"
-                            value="Visa mina"
-                            styleClass="rp-link-button"
-                            async="true">
-                    </p:commandLink>
-
-                    <p:commandLink
-                            actionListener="#{app.setFilterUserId(null)}"
-                            update="::ifeed_view"
-                            ajax="false"
-                            value="Visa alla"
-                            styleClass="rp-link-button"
-                            async="true">
-                    </p:commandLink>
-                </aui:button-row>
-
+                <br />
                 <ui:include src="list.xhtml"/>
 
             </div>

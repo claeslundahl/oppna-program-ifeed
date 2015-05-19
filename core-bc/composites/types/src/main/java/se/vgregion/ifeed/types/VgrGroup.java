@@ -30,14 +30,18 @@ public class VgrGroup extends AbstractEntity<Long> implements Serializable, Comp
     @JoinColumn(name = "department_id", nullable = false)
     private VgrDepartment department;
 
-    @Transient
-    private final List<IFeed> memberFeeds = new ArrayList<IFeed>();
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<IFeed> memberFeeds = new ArrayList<IFeed>();
 
     @Override
     public int compareTo(VgrGroup o) {
         if (o == null) {
             return 1;
         }
+        if (this == o) {
+            return 0;
+        }
+
         return hashCode() - o.hashCode();
     }
 

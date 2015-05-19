@@ -31,6 +31,9 @@ public class JsonpCallbackFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        httpResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.addHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+
         @SuppressWarnings("unchecked")
         Map<String, String[]> parms = httpRequest.getParameterMap();
 

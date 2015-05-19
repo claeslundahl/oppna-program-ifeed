@@ -1,7 +1,5 @@
 package se.vgregion.ifeed.backingbeans;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.User;
@@ -16,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.VgrOrganization;
-import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedResults;
@@ -148,7 +146,7 @@ public class Application {
         if (getCurrentUser() != null) {
             filter.setUserId(getCurrentUser().getScreenName());
         }
-        filters = iFeedService.getFieldInfs();
+        setFilters(iFeedService.getFieldInfs());
         if (filter != null) {
             updateQuery();
         }
@@ -414,6 +412,9 @@ public class Application {
     }
 
     public void editDepartment(VgrDepartment department) {
+        if (department.getId() != null) {
+            department = iFeedService.loadDepartment(department.getId());
+        }
         setDepartment(department);
         navigationModelBean.setUiNavigation("EDIT_DEPARTMENT");
     }
@@ -422,12 +423,15 @@ public class Application {
         editDepartment(new VgrDepartment());
     }
 
-    public void saveDepartment() {
+    @Transactional
+    public void saveDepartment(VgrDepartment department) {
+        /*
         try {
             if (department.getId() != null) {
-                VgrDepartment unaltered = iFeedService.getVgrDepartment(department.getId());
-                addMemberFeedsToGroups(unaltered.getVgrGroups());
-                for (VgrGroup groupFromDb : unaltered.getVgrGroups()) {
+                VgrDepartment fromDb = iFeedService.loadDepartment(department.getId());
+                fromDb.setName(department.getName());
+
+                for (VgrGroup groupFromDb : fromDb.getVgrGroups()) {
                     if (!department.getVgrGroups().contains(groupFromDb)) {
                         for (IFeed feed : groupFromDb.getMemberFeeds()) {
                             feed.setGroup(null);
@@ -435,15 +439,40 @@ public class Application {
                         }
                     }
                 }
+
+                for (VgrGroup vgrGroup : new ArrayList<VgrGroup>(fromDb.getVgrGroups())) {
+                    if (!department.getVgrGroups().contains(vgrGroup)) {
+                        fromDb.getVgrGroups().remove(vgrGroup);
+                        iFeedService.delete(vgrGroup);
+                    }
+                }
+
+                for (VgrGroup vgrGroup : department.getVgrGroups()) {
+                    if (!fromDb.getVgrGroups().contains(vgrGroup)) {
+                        fromDb.getVgrGroups().add(vgrGroup);
+                    }
+                }
+                department = fromDb;
             }
-            for (VgrGroup group: department.getVgrGroups()) {
+            for (VgrGroup group : department.getVgrGroups()) {
                 group.setDepartment(department);
             }
-            iFeedService.save(department);
+            // iFeedService.save(department);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
-        }
+        }*/
+        iFeedService.saveDepartment(department);
+        cancelDepartment();
+    }
+
+    public void removeFeed(IFeed iFeed) throws SystemException, PortalException {
+        iFeedBackingBean.removeBook(iFeed);
+        updateFilterQuery();
+    }
+
+    public void saveDepartment() {
+        iFeedService.saveDepartment(department);
         cancelDepartment();
     }
 
@@ -457,7 +486,8 @@ public class Application {
     }
 
     public void deleteDepartment(VgrDepartment department) {
-        iFeedService.delete(department);
+        iFeedService.deleteDepartmentGroups(department);
+        iFeedService.deleteDepartmentEntity(department);
     }
 
     public boolean mayEditFeed(PortletRequest request, IFeed feed) throws SystemException, PortalException {
@@ -496,6 +526,7 @@ public class Application {
         this.currentResult = iFeedSolrQuery.getIFeedResults(getIFeedModelBean());
     }
 
+    @Transactional
     public void removeDepartmentsGroup(VgrGroup item) {
         department.getVgrGroups().remove(item);
     }
@@ -655,7 +686,7 @@ public class Application {
         return fieldInfs;
     }
 
-    private  <T>  T clone(T thisInstance) {
+    private <T> T clone(T thisInstance) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -809,7 +840,7 @@ public class Application {
     public void editFilterValue(IFeedFilter filter) {
         if (iFeedModelBean.getFilters().contains(filter)) {
             newFilter = filter.getFieldInf();
-            if(newFilter==null) {
+            if (newFilter == null) {
                 newFilter = fieldsByNameIndex.get(filter.getFilterKey());
             }
             newFilter.setValue(filter.getFilterQuery());
@@ -825,22 +856,6 @@ public class Application {
 
     public void setLimitOnResultCount(boolean limitOnResultCount) {
         this.limitOnResultCount = limitOnResultCount;
-    }
-
-    public List<VgrGroup> addMemberFeedsToGroups(List<VgrGroup> items) {
-        if (items == null){
-            return new ArrayList<VgrGroup>();
-        }
-
-        for (VgrGroup item : items) {
-            if (item.getId() != null) {
-                Filter groupFilter = new FilterModel();
-                groupFilter.setGroup(item);
-                List<IFeed> feeds = iFeedService.getIFeedsByFilter(groupFilter);
-                item.getMemberFeeds().addAll(feeds);
-            }
-        }
-        return items;
     }
 
     public void putFlowInFeed(DynamicTableDef dynamicTableDef) {
@@ -866,5 +881,8 @@ public class Application {
     public void removeFlow(DynamicTableDef dynamicTableDef) {
         this.getIFeedModelBean().getDynamicTableDefs().remove(dynamicTableDef);
     }
+
+
+
 
 }

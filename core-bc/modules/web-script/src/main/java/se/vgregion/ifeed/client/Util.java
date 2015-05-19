@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.client;
 
+import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
 import com.google.gwt.safehtml.shared.UriUtils;
@@ -7,10 +8,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A collection of utility functions to be used inside the gui. Handy to have this separately so that it can be run in
@@ -94,77 +92,56 @@ public class Util {
       }
     }-*/;
 
-    public static String getServiceUrl(TableDef tableDef, int startBy, int endBy) {
-        // http://ifeed.vgregion.se/
-        //String url = "http://127.0.0.1:8080/example-feed.jsonp.jsp";
-        /*String url = "http://ifeed.vgregion.se/iFeed-web/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder();*/
-
-
-        /*String url = "http://127.0.0.1:8080/iFeed-web2/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy;
-*/
-
-        /*String url = "http://ifeed.vgregion.se/iFeed-web/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy;*/
-
-        /*
-        String url = "/iFeed-web/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy + "&fromPage="
-                + UriUtils.encode(Window.Location.getProtocol() + "//"
-                + Window.Location.getHostName() + ":"
-                + Window.Location.getPort()
-                + Window.Location.getPath());*/
-
-        String url = "/iFeed-web/meta.json?instance="
-                + tableDef.getFeedId() + "&by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy + "&fromPage="
-                + UriUtils.encode(Window.Location.getProtocol() + "//"
-                + Window.Location.getHostName() + ":"
-                + Window.Location.getPort()
-                + Window.Location.getPath());
-
-        /*
-        String url = "http://portalen-test.vgregion.se/iFeed-web/documentlists/"
-                + tableDef.getFeedId() + "/metadata.json?by="
-                + tableDef.getDefaultSortColumn()
-                + "&dir=" + tableDef.getDefaultSortOrder()
-                + "&startBy=" + startBy + "&endBy=" + endBy + "&fromPage="
-                + UriUtils.encode(Window.Location.getProtocol() + "//"
-                + Window.Location.getHostName() + ":"
-                + Window.Location.getPort()
-                + Window.Location.getPath());
-        */
-        /*
-        Element element = tableDef.getElement();
-        com.google.gwt.dom.client.Element sibling = element.getNextSiblingElement();
-        if (sibling != null && sibling.getTagName().equalsIgnoreCase("noscript")) {
-            com.google.gwt.dom.client.Element iframe = sibling.getFirstChildElement();
-            if (iframe != null) {
-                String host = iframe.getAttribute("src");
-                host = host.substring(0, host.indexOf("/iFeed-web/"));
-                url = host + url;
-            } else {
-                String host = sibling.getInnerText();
-                host = host.substring(host.indexOf("src='") + 5, host.indexOf("/iFeed-web/"));
-                url = host + url;
-            }
-        }*/
-        url = getIfeedHome(tableDef) + url;
+    public static String getGetUrl(TableDef tableDef, int startBy, int endBy) {
+        String url = getRequestData(tableDef, startBy, endBy);
+        url = getIfeedHome(tableDef) + "?" + url;
         return url;
+    }
+
+    public static String getRequestData(TableDef tableDef, int startBy, int endBy) {
+        return getRequestData(tableDef, startBy, endBy, true);
+    }
+
+    public static String getRequestData(TableDef tableDef, int startBy, int endBy, boolean encodeInstance) {
+        String instance = tableDef.getFeedId();
+        if (encodeInstance) {
+            instance = URL.encodeQueryString(instance);
+        }
+
+        String url = "instance="
+                + instance + "&by="
+                + tableDef.getDefaultSortColumn()
+                + "&dir=" + tableDef.getDefaultSortOrder()
+                + "&startBy=" + startBy + "&endBy=" + endBy + "&fromPage="
+                + UriUtils.encode(Window.Location.getProtocol() + "//"
+                + Window.Location.getHostName() + ":"
+                + Window.Location.getPort()
+                + Window.Location.getPath());
+        return url;
+    }
+
+    /**
+     * Concatenates several strings and places another string between each of those.
+     *
+     * @param junctor what string to concatenate between the other parameters.
+     * @param list    the different strings to be concatenated
+     * @return as string product of the parameters.
+     */
+    public static String join(List<?> list, String junctor) {
+        StringBuilder sb = new StringBuilder();
+        if (list.isEmpty()) {
+            return "";
+        }
+        if (list.size() == 1) {
+            return list.get(0) + "";
+        }
+
+        for (int i = 0, j = list.size() - 1; i < j; i++) {
+            sb.append(list.get(i));
+            sb.append(junctor);
+        }
+        sb.append(list.get(list.size() - 1));
+        return sb.toString();
     }
 
     public static String getIfeedHome(TableDef tableDef) {
@@ -186,7 +163,7 @@ public class Util {
         if (url == null || "".equals(url)) {
             url = "http://ifeed.vgregion.se";
         }
-        return url;
+        return url + "/iFeed-web/meta.json";
     }
 
 }

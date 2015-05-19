@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.viewer;
 
+import com.sun.imageio.plugins.common.LZWCompressor;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +115,7 @@ public class IFeedViewerController {
      *                      ajax script.
      * @return the result of the opration.
      */
-    @RequestMapping(value = "/meta")
+    @RequestMapping(value = "/meta", method = {RequestMethod.POST, RequestMethod.GET})
     public String getIFeedByParams(@RequestParam(value = "instance") String instance, Model model,
                                    @RequestParam(value = "by", required = false) String sortField,
                                    @RequestParam(value = "dir", required = false) String sortDirection,
@@ -204,24 +205,16 @@ public class IFeedViewerController {
 
             List<FieldInf> fields = iFeedService.getFieldInfs();
 
-            // 0xEF,0xBB,0xBF
-            // \uFEFF
-            /*bos.write(0xEF);
-            bos.write(0xBB);
-            bos.write(0xBF);*/
-
-            //chr(239) . chr(187) . chr(191)
             bos.write(239);
             bos.write(187);
             bos.write(191);
-
 
             if (!result.isEmpty()) {
                 for (FieldInf fi : fields) {
                     if (fi.isInHtmlView()) {
                         for (FieldInf child : fi.getChildren()) {
                             if (child.isInHtmlView()) {
-                                bos.write(prettyfyFeedValue(child.getName()));
+                                bos.write(prettifyFeedValue(child.getName()));
                                 bos.write(";".getBytes());
                             }
                         }
@@ -233,7 +226,7 @@ public class IFeedViewerController {
                         if (fi.isInHtmlView()) {
                             for (FieldInf child : fi.getChildren()) {
                                 if (child.isInHtmlView()) {
-                                    bos.write(prettyfyFeedValue(item.get(child.getId()) + ""));
+                                    bos.write(prettifyFeedValue(item.get(child.getId()) + ""));
                                     bos.write(";".getBytes());
                                 }
                             }
@@ -242,11 +235,7 @@ public class IFeedViewerController {
                     bos.write("\n".getBytes());
                 }
             }
-            /* This does not work, dont know why. It is done instead in the filter
-               se.vgregion.ifeed.viewer.CsvContentTypeFilter -filter.
-            response.setContentType("text/csv;charset=utf-8");
-            response.setHeader("Content-Disposition", "inline; filename=export.csv");
-            */
+
             bos.close();
             portletOutputStream.close();
         } catch (IOException e) {
@@ -256,7 +245,10 @@ public class IFeedViewerController {
         return url;
     }
 
-    private byte[] prettyfyFeedValue(String value) {
+    private byte[] prettifyFeedValue(String value) {
+        if ("null".equals(value)) {
+            return "".getBytes();
+        }
         value = value.replaceAll(Pattern.quote("["), "");
         value = value.replaceAll(Pattern.quote("]"), "");
         return value.getBytes();

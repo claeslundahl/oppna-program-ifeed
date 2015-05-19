@@ -6,19 +6,21 @@
         xmlns:portlet="http://java.sun.com/portlet_2_0">
 
     <div style="width:100%;">
-        <h2>#{app.isSuperUser() ? 'Administrera Förvaltningar' : 'Välj en administration för att ändra dess grupper'}</h2>
+        <h2>
+            #{app.isSuperUser() ? 'Administrera Förvaltningar' : 'Välj en administration för att ändra dess grupper'}</h2>
 
     <span style="float: right; display: inline-block; position:absolute; top: 25px; right: 5px;">
+      <h:commandLink
+              actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}"
+              styleClass="rp-link-button secondary"
+              value="Avbryt"
+              update="ifeed_view" ajax="false" async="true"/>
+
       <h:commandLink
               actionListener="#{app.createNewDepartment()}"
               styleClass="rp-link-button rp-link-button-alt" value="Lägg till"
               rendered="#{app.isSuperUser()}"
-              update="ifeed_view" ajax="false" async="true" />
-
-      <h:commandLink
-              actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}"
-              styleClass="rp-link-button rp-link-button-alt" value="Tillbaka"
-              update="ifeed_view" ajax="false" async="true" />
+              update="ifeed_view" ajax="false" async="true"/>
     </span>
     </div>
 
@@ -56,6 +58,7 @@
                                 update=":ifeed_view"
                                 ajax="false"
                                 rendered="#{app.isSuperUser()}"
+                                onclick="confirm('Är du säker du vill radera den här posten?')"
                                 async="true">
                         </p:commandLink>
                         ${app.isSuperUser() ? '' : department.description}

@@ -216,6 +216,7 @@ public class Display extends EventedListGrid<Entry> {
 
     private String urlToMetaData(Entry entry) {
         String result = tableDef.getFeedHome() + "/iFeed-web/documents/" + entry.get("dc.identifier.documentid") + "/metadata";
+        result = result.replace("meta.json/iFeed-web/", "");
         result = result.replace("workspace://SpacesStore/", "");
         return result;
     }

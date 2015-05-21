@@ -50,10 +50,7 @@ public class Main implements EntryPoint {
      */
     @Override
     public void onModuleLoad() {
-
-        Util.log("GWT.getModuleBaseURL()");
-        Util.log(GWT.getModuleBaseURL());
-
+        AnchorPostUtil.makeLinksPostInsteadOfGetData();
         final Element body = RootPanel.getBodyElement();
         if (body == null) Window.alert("Did not find the body!");
         List<Element> result = ElementUtil.findByCssClass(body, "ifeedDocList");
@@ -74,8 +71,10 @@ public class Main implements EntryPoint {
                     @Override
                     public void onClick(ClickEvent event) {
                         List<Element> oldElements = ElementUtil.findByCssClass(body, "doc-list");
-                        for (Element oldElement : oldElements) {
-                            oldElement.removeFromParent();
+                        if (oldElements != null) {
+                            for (Element oldElement : oldElements) {
+                                oldElement.removeFromParent();
+                            }
                         }
                         onModuleLoad();
                     }
@@ -85,11 +84,14 @@ public class Main implements EntryPoint {
     }
 
     private void fetchNext() {
-        if (ifeedDocLists.isEmpty()) {
+        if (ifeedDocLists == null || ifeedDocLists.isEmpty()) {
             return;
         }
         Element element = ifeedDocLists.remove(0);
         TableDef tableDef = ElementUtil.toTableDef(element);
+        if (tableDef == null) {
+            return;
+        }
         hideRightEpiServerColumn(tableDef);
         tableDefs.add(tableDef);
         fetch(tableDef);

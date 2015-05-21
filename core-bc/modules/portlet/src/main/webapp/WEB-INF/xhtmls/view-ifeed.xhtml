@@ -156,7 +156,7 @@
                     <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
                     <br/>
                     <a href="#{app.getWebFeedLink()}" target="_blank">Html</a><br/>
-                    <a id="excel-feed-link" href="#{app.getExcelFeedLink()}" target="_blank">Excel</a><br/>
+                    <a id="excel-feed-link" class="link-as-post-form" href="#{app.getExcelFeedLink()}" target="_blank" type="text/csv;charset=UTF-8">Excel</a><br/>
                     <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a><br/>
                     <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a><br/>
                     <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a><br/>
@@ -199,7 +199,7 @@
                                style="color: white;"
                                rendered="#{app.inEditMode}"
                                ajax="false" async="true"
-                               action="#{iFeedModelBean.removeFlow(ifeedDynamicTableDefsItem)}">
+                               action="#{app.removeFlow(ifeedDynamicTableDefsItem)}">
                 </p:commandLink>
               </span>
             </span>
@@ -282,7 +282,7 @@
         }
 
         function refreshResults() {
-            setTimeout(function () {document.getElementById('rerun-ifeed-loading').click();}, 500);
+            setTimeout(function () {try { document.getElementById('rerun-ifeed-loading').click(); }catch(e){console.log(e);}}, 500);
         }
     //]]>
     </script>

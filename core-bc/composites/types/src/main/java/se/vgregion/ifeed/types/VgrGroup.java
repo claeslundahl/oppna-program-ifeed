@@ -81,4 +81,9 @@ public class VgrGroup extends AbstractEntity<Long> implements Serializable, Comp
     public void setDepartment(VgrDepartment department) {
         this.department = department;
     }
+
+    @Override
+    public String toString() {
+        return VgrGroup.class.getSimpleName() + "id " + getId();
+    }
 }

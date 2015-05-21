@@ -65,24 +65,28 @@ public class ElementUtil {
      */
 
     public static TableDef toTableDef(Element from) {
-        TableDef tableDef = new TableDef();
-        tableDef.setElement(from);
-        tableDef.setFeedHome(Util.getIfeedHome(tableDef));
-        tableDef.setDefaultSortColumn(from.getAttribute("defaultsortcolumn"));
-        tableDef.setDefaultSortOrder(from.getAttribute("defaultsortorder"));
-        tableDef.setFeedId(from.getAttribute("feedid"));
-        tableDef.setFontSize(from.getAttribute("fontSize"));
-        tableDef.setHideRightColumn("yes".equals(from.getAttribute("hiderightcolumn")));
-        tableDef.setLinkOriginalDoc("yes".equals(from.getAttribute("linkoriginaldoc")));
-        String limitText = from.getAttribute("limit");
-        tableDef.setMaxHitLimit(limitText == null || limitText.isEmpty() ? 0 : Integer.parseInt(limitText));
-        tableDef.createColumnDefs(from.getAttribute("columnes"));
+        try {
+            TableDef tableDef = new TableDef();
+            tableDef.setElement(from);
+            tableDef.setFeedHome(Util.getIfeedHome(tableDef));
+            tableDef.setDefaultSortColumn(from.getAttribute("defaultsortcolumn"));
+            tableDef.setDefaultSortOrder(from.getAttribute("defaultsortorder"));
+            tableDef.setFeedId(from.getAttribute("feedid"));
+            tableDef.setFontSize(from.getAttribute("fontSize"));
+            tableDef.setHideRightColumn("yes".equals(from.getAttribute("hiderightcolumn")));
+            tableDef.setLinkOriginalDoc("yes".equals(from.getAttribute("linkoriginaldoc")));
+            String limitText = from.getAttribute("limit");
+            tableDef.setMaxHitLimit(limitText == null || limitText.isEmpty() ? 0 : Integer.parseInt(limitText));
+            tableDef.createColumnDefs(from.getAttribute("columnes"));
 
-        tableDef.setShowTableHeader(getBooleanValue(from, "showTableHeader"));
-        tableDef.setHideRightColumn(getBooleanValue(from, "hiderightcolumn"));
-        tableDef.setOnStartJsCallback(from.getAttribute("onStartJsCallback"));
+            tableDef.setShowTableHeader(getBooleanValue(from, "showTableHeader"));
+            tableDef.setHideRightColumn(getBooleanValue(from, "hiderightcolumn"));
+            tableDef.setOnStartJsCallback(from.getAttribute("onStartJsCallback"));
 
-        return tableDef;
+            return tableDef;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static boolean getBooleanValue(Element from, String key) {

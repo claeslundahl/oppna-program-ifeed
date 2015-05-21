@@ -176,7 +176,7 @@ public class IFeedViewerController {
      * @param response      handle to write the result somewhere.
      * @return
      */
-    @RequestMapping(value = "/metaascsv", produces = {"text/csv"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/metaascsv", produces = {"text/csv"}, method = {RequestMethod.POST, RequestMethod.GET})
     public String getIFeedAsCsv(@RequestParam(value = "instance") String instance, Model model,
                                 @RequestParam(value = "by", required = false) String sortField,
                                 @RequestParam(value = "dir", required = false) String sortDirection,

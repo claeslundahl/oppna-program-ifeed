@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.shared;
 
+import org.hibernate.LazyInitializationException;
+
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.io.Serializable;
@@ -22,6 +24,8 @@ public abstract class AbstractEntity implements Serializable {
             } else {
                 return toStringImpl();
             }
+        }catch (Exception lie) {
+            return lie.getClass().getSimpleName();
         } finally {
             toStringRunning = false;
         }

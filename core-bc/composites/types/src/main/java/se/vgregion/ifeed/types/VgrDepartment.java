@@ -89,4 +89,9 @@ public class VgrDepartment extends AbstractEntity<Long> implements Serializable,
     public void setMemberFeeds(List<IFeed> memberFeeds) {
         this.memberFeeds = memberFeeds;
     }
+
+    @Override
+    public String toString() {
+        return VgrDepartment.class.getSimpleName() + "id " + getId();
+    }
 }

@@ -425,44 +425,8 @@ public class Application {
 
     @Transactional
     public void saveDepartment(VgrDepartment department) {
-        /*
-        try {
-            if (department.getId() != null) {
-                VgrDepartment fromDb = iFeedService.loadDepartment(department.getId());
-                fromDb.setName(department.getName());
-
-                for (VgrGroup groupFromDb : fromDb.getVgrGroups()) {
-                    if (!department.getVgrGroups().contains(groupFromDb)) {
-                        for (IFeed feed : groupFromDb.getMemberFeeds()) {
-                            feed.setGroup(null);
-                            iFeedService.update(feed);
-                        }
-                    }
-                }
-
-                for (VgrGroup vgrGroup : new ArrayList<VgrGroup>(fromDb.getVgrGroups())) {
-                    if (!department.getVgrGroups().contains(vgrGroup)) {
-                        fromDb.getVgrGroups().remove(vgrGroup);
-                        iFeedService.delete(vgrGroup);
-                    }
-                }
-
-                for (VgrGroup vgrGroup : department.getVgrGroups()) {
-                    if (!fromDb.getVgrGroups().contains(vgrGroup)) {
-                        fromDb.getVgrGroups().add(vgrGroup);
-                    }
-                }
-                department = fromDb;
-            }
-            for (VgrGroup group : department.getVgrGroups()) {
-                group.setDepartment(department);
-            }
-            // iFeedService.save(department);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }*/
         iFeedService.saveDepartment(department);
+        cancelDepartment();
         cancelDepartment();
     }
 

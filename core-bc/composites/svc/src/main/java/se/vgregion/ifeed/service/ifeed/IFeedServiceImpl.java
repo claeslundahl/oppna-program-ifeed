@@ -150,6 +150,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                 }
             }
         }
+        if (result.getDepartment() != null) {
+            for (VgrGroup group : result.getDepartment().getVgrGroups()) {
+                for (IFeed otherFeed : group.getMemberFeeds()) {
+                    otherFeed.toString();
+                }
+            }
+        }
     }
 
     @Override
@@ -215,6 +222,12 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                 }
             }
         }
+        IFeed fromDb = getIFeed(iFeed.getId());
+        for (DynamicTableDef dynamicTableDef : fromDb.getDynamicTableDefs()) {
+            if (!iFeed.getDynamicTableDefs().contains(dynamicTableDef)) {
+                objectRepo.delete(dynamicTableDef);
+            }
+        }
 
         IFeed result = iFeedRepo.merge(iFeed);
         iFeedRepo.flush();
@@ -234,6 +247,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                         for (IFeed feed : groupFromDb.getMemberFeeds()) {
                             feed.setGroup(null);
                             update(feed);
+                        }
+                    }else {
+                        VgrGroup group = department.getVgrGroups().get(department.getVgrGroups().indexOf(groupFromDb));
+                        if (group.getId() != null) {
+                            objectRepo.merge(group);
                         }
                     }
                 }

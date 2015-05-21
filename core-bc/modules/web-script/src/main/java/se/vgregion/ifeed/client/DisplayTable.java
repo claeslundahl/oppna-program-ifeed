@@ -285,6 +285,7 @@ public class DisplayTable extends Composite {
     private String urlToMetaData(Entry entry) {
         String result = tableDef.getFeedHome() + "/iFeed-web/documents/" + entry.get("dc.identifier.documentid") + "/metadata";
         result = result.replace("workspace://SpacesStore/", "");
+        result = result.replace("/meta.json/iFeed-web", "");
         return result;
     }
 

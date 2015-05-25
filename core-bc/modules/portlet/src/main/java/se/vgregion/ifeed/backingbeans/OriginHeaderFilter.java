@@ -17,10 +17,10 @@ public class OriginHeaderFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         Map<String, String[]> parms = request.getParameterMap();
-        //if (parms.containsValue("iFeedJsf_WAR_iFeedportlet")) {
+
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.addHeader("Access-Control-Allow-Origin", "*");
-        //}
+
         chain.doFilter(request, response);
     }
 

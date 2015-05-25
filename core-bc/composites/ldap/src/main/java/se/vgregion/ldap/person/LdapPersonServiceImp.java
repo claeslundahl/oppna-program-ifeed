@@ -23,7 +23,7 @@ public class LdapPersonServiceImp implements LdapPersonService, InitializingBean
 
     private static final String DEFAULT_LASTNAME_ATTRIBUTE = "sn";
 
-    private static final String DEFAULT_USERNAME_ATTRIBUTE = "uid";
+    private static final String DEFAULT_USERNAME_ATTRIBUTE = "vgr-id";
 
     private static final String DEFAULT_ORGANISATION_ATTRIBUTE = "ou";
 
@@ -90,8 +90,20 @@ public class LdapPersonServiceImp implements LdapPersonService, InitializingBean
     public List<Person> getPeople(final String filter, final int maxResults) {
         final AttributesMapper attributesMapper = getAttributesMapper();
 
-        final Filter searchFilter = constructFilter(filter);
+        final Filter searchFilter = createPersonFilter(filter);
 
+        final SearchControls searchControls = new SearchControls();
+        /*searchControls.setReturningAttributes(new String[]{_emailAttribute, _firstnameAttribute,
+                _lastnameAttribute, _organisationAttribute, _usernameAttribute});*/
+
+        searchControls.setReturningAttributes(new String[]{"*"});
+        searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+        List<Person> result = _ldapTemplate.search(StringUtils.EMPTY, searchFilter.encode(), searchControls,
+                attributesMapper);
+
+        return result;
+        /*
         final SearchControls searchControls = new SearchControls();
         searchControls.setReturningAttributes(new String[] { _emailAttribute, _firstnameAttribute,
                 _lastnameAttribute, _organisationAttribute, _usernameAttribute });
@@ -104,7 +116,7 @@ public class LdapPersonServiceImp implements LdapPersonService, InitializingBean
             result = result.subList(0, maxResults);
         }
 
-        return result;
+        return result;*/
     }
 
     private AttributesMapper getAttributesMapper() {
@@ -123,6 +135,7 @@ public class LdapPersonServiceImp implements LdapPersonService, InitializingBean
         };
         return attributesMapper;
     }
+
 
     private Filter constructFilter(final String filter) {
         Filter result;
@@ -147,6 +160,22 @@ public class LdapPersonServiceImp implements LdapPersonService, InitializingBean
             result = orFilter;
         }
 
+        return result;
+    }
+
+    private Filter createPersonFilter(final String id) {
+        AndFilter result = new AndFilter();
+        // (&(objectclass=vgrUser)(vgr-id=theId))
+        EqualsFilter objectClass = new EqualsFilter("objectclass", "vgrUser");
+        Filter vgrId;
+        if (id.contains("*")) {
+            vgrId = new LikeFilter("vgr-id", id);
+        } else {
+            vgrId = new EqualsFilter("vgr-id", id);
+        }
+
+        result.and(objectClass);
+        result.and(vgrId);
         return result;
     }
 

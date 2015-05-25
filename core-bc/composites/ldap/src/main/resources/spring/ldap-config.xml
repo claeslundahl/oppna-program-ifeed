@@ -17,11 +17,19 @@
 
   <bean id="vgr.dirContextValidator" class="org.springframework.ldap.pool.validation.DefaultDirContextValidator" />
 
-  <bean id="vgr.contextSourceTarget" class="org.springframework.ldap.core.support.LdapContextSource">
+<!--  <bean id="vgr.contextSourceTarget" class="org.springframework.ldap.core.support.LdapContextSource">
     <property name="url" value="${ldap.authentication.java.naming.provider.url}" />
     <property name="userDn" value="${ldap.synchronization.java.naming.security.principal}" />
     <property name="password" value="${ldap.synchronization.java.naming.security.credentials}" />
     <property name="base" value="${ldap.synchronization.userSearchBase}" />
+    <property name="pooled" value="false" />
+  </bean>-->
+
+  <bean id="vgr.contextSourceTarget" class="org.springframework.ldap.core.support.LdapContextSource">
+    <property name="url" value="${ldap.org.authentication.java.naming.provider.url}" />
+    <property name="userDn" value="${ldap.org.synchronization.java.naming.security.principal}" />
+    <property name="password" value="${ldap.org.synchronization.java.naming.security.credentials}" />
+    <property name="base" value="${ldap.org.synchronization.userSearchBase}" />
     <property name="pooled" value="false" />
   </bean>
 

@@ -18,7 +18,11 @@
         </h:panelGroup>
 
         <div class="#{app.inEditMode ? 'ifeed-filter-box' : ''}">
-            <div>(<span class="ifeed-step" id="ifeed-count-#{iFeedModelBean.toJson()}">0</span> st)</div>
+            <div>
+                ( <span class="ifeed-step" id="ifeed-count-#{iFeedModelBean.toJson()}">0</span> st
+                <ui:fragment rendered="#{header['User-Agent'].contains('; MSIE ')}"> - visar max 200</ui:fragment> )
+            </div>
+            <ui:fragment rendered="#{header['User-Agent'].contains('; MSIE ')}">
             <div
                     class="ifeedDocList"
                     columnes="dc.title|Titel (autokomplettering)|left|,dc.date.issued|Publicerad|left|"
@@ -28,9 +32,27 @@
                     showTableHeader="yes"
                     linkOriginalDoc="no"
                     maxHitLimit="#{app.limitOnResultCount ? '100' : '0'}"
+                    limit="200"
                     hiderightcolumn="yes"
                     feedid='#{iFeedModelBean.toJson()}'>
             </div>
+            </ui:fragment>
+
+            <ui:fragment rendered="#{!header['User-Agent'].contains('; MSIE ')}">
+                <div
+                        class="ifeedDocList"
+                        columnes="dc.title|Titel (autokomplettering)|left|,dc.date.issued|Publicerad|left|"
+                        fontSize="auto"
+                        defaultsortcolumn="dc.title"
+                        defaultsortorder="asc"
+                        showTableHeader="yes"
+                        linkOriginalDoc="no"
+                        maxHitLimit="#{app.limitOnResultCount ? '100' : '0'}"
+                        hiderightcolumn="yes"
+                        feedid='#{iFeedModelBean.toJson()}'>
+                </div>
+            </ui:fragment>
+
         </div>
     <div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>
     <button id="rerun-ifeed-loading" style="display:none;">Should be hidden</button>

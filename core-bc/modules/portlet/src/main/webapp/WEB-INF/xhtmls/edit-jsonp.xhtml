@@ -83,7 +83,7 @@
                 <tr>
                     <td colspan="5">
                         <h:outputText value="Kolumner"/>
-                        <h:commandLink value="Lägg till">
+                        <h:commandLink value="Lägg till" id="addColumnLink">
                             <f:ajax render=":ifeed_view" listener="#{tableDef.createColumn}"/>
                         </h:commandLink>
                     </td>
@@ -198,7 +198,13 @@
 
                     <h:outputScript>
                         function on() {
-                        document.getElementById('rerun-ifeed-loading').click();
+                            document.getElementById('rerun-ifeed-loading').click();
+                            <portlet:namespace var="nameSpace" />
+                            var link = document.getElementById('#{nameSpace}:ifeed_view:addColumnLink');
+                            console.log(link);
+                            var table = link.parentElement.parentElement.parentElement.parentElement;
+                            var tbodys = table.getElementsByTagName('tbody');
+                            if (tbodys.length == 0) link.click();
                         }
                         setTimeout(on, 100);
                     </h:outputScript>

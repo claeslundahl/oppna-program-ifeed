@@ -57,8 +57,8 @@ public class Application {
 
     @Value("${ifeed.metadata.base.url}")
     private String metadataBaseUrl;
-    @Value("${ifeed.web.script.url}")
-    private String webScriptUrl;
+/*    @Value("${ifeed.web.script.url}")
+    private String webScriptUrl;*/
     @Value("${ifeed.web.script.json.url}")
     private String webScriptJsonUrl;
     //@Value("#{tableDef}")
@@ -153,7 +153,9 @@ public class Application {
     }
 
     public List<IFeed> list() {
-        return iFeedService.getIFeedsByFilter(filter);
+        int start = (getCurrentSpanStart());
+        int end = (getCurrentSpanEnd());
+        return iFeedService.getIFeedsByFilter(filter, start, end);
     }
 
     public List<IFeed> updateFilterQuery() {
@@ -163,9 +165,14 @@ public class Application {
 
     public List<IFeed> updateQuery() {
         try {
-            List<IFeed> result = iFeedService.getIFeedsByFilter(filter);
-            int start = Math.min(getCurrentSpanStart(), result.size());
-            int end = Math.min(getCurrentSpanEnd(), result.size());
+            //int start = Math.min(getCurrentSpanStart(), result.size());
+            //int end = Math.min(getCurrentSpanEnd(), result.size());
+
+            int start = (getCurrentSpanStart());
+            int end = (getCurrentSpanEnd());
+
+            List<IFeed> result = iFeedService.getIFeedsByFilter(filter, start, end);
+
             page = result.subList(start, end);
             return page;
         } catch (Exception e) {
@@ -785,6 +792,7 @@ public class Application {
         return fieldsByNameIndex;
     }
 
+/*
     public String getWebScriptUrl() {
         return webScriptUrl;
     }
@@ -792,6 +800,7 @@ public class Application {
     public void setWebScriptUrl(String webScriptUrl) {
         this.webScriptUrl = webScriptUrl;
     }
+*/
 
     public String getWebScriptJsonUrl() {
         return webScriptJsonUrl;

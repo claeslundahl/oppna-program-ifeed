@@ -50,7 +50,7 @@ public class Main implements EntryPoint {
      */
     @Override
     public void onModuleLoad() {
-        AnchorPostUtil.makeLinksPostInsteadOfGetData();
+        //AnchorPostUtil.makeLinksPostInsteadOfGetData();
         final Element body = RootPanel.getBodyElement();
         if (body == null) Window.alert("Did not find the body!");
         List<Element> result = ElementUtil.findByCssClass(body, "ifeedDocList");
@@ -218,7 +218,7 @@ public class Main implements EntryPoint {
         Scheduler.get().scheduleDeferred(new Command() {
             public void execute() {
                 com.google.gwt.dom.client.Element countDisplay = Document.get().getElementById("ifeed-count-" + tableDef.getFeedId());
-                if (countDisplay != null) {
+                if (countDisplay != null && display != null && display.getData() != null) {
                     countDisplay.setInnerHTML(display.getData().size() + "");
                 }
             }
@@ -277,7 +277,7 @@ public class Main implements EntryPoint {
             builder.sendRequest(Util.getRequestData(tableDef, startAt, endAt, false), new RequestCallback() {
                 @Override
                 public void onResponseReceived(Request request, Response response) {
-                    Util.log("Success " + response.getText());
+                    //Util.log("Success " + response.getText());
                     List<Entry> entries = toEntries((JsArray) eval(response.getText()));
                     displayTable.getData().addAll(entries);
 

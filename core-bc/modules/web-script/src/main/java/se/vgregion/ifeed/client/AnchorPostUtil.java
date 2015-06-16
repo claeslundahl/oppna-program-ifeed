@@ -19,17 +19,35 @@ public class AnchorPostUtil {
     final static Element body = RootPanel.getBodyElement();
 
     public static void makeLinksPostInsteadOfGetData() {
-        List<Element> elements = ElementUtil.findByCssClass(body, "link-as-post-form");
+        try {
+            List<Element> elements = ElementUtil.findByCssClass(body, "link-as-post-form");
 
-        for (Element element : elements) {
-            transform(element);
+            for (Element element : elements) {
+                transform(element);
+            }
+        } catch (Exception e) {
+            Util.log(e);
         }
     }
 
+    public static String urlToPostForm(String url) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<form>");
+
+
+
+        sb.append("</form>");
+        return sb.toString();
+    }
+
     private static void transform(Element element) {
+        //Util.log("transform");
+        if (element == null) {
+            return;
+        }
         AnchorElement anchor = AnchorElement.as(element);
         Anchor a = Anchor.wrap(anchor);
-        String javascriptReturnFalse = "javascript:return false;";
+        String javascriptReturnFalse = "javascript:void(0);";
         if (javascriptReturnFalse.equals(anchor.getHref())) {
             return;
         }
@@ -40,25 +58,38 @@ public class AnchorPostUtil {
         form.setMethod("post");
         form.setVisible(false);
         // Assume we have parameters - the ? char is present
-        String[] urlAndParams = anchor.getHref().split("\\?");
-        form.setAction(urlAndParams[0]);
-        form.getElement().setAttribute("target", "_blank");
+
+        String href = anchor.getHref();
+        if (href != null && !href.isEmpty()) {
+            //String[] urlAndParams = href.split("/\\?(.+)?/", 2);
+            String[] urlAndParams = href.split("['?']", 2);
+            if (urlAndParams.length == 2) {
+                //Util.log("urlAndParams");
+                //Util.log(urlAndParams);
+                form.setAction(urlAndParams[0]);
+                form.getElement().setAttribute("target", "_blank");
+                String[] params = urlAndParams[1].split("\\&");
+
+                for (String nameValue : params) {
+                    String[] nameValuePair = nameValue.split("\\=");
+                    final TextBox tb = new TextBox();
+                    tb.setName(nameValuePair[0]);
+                    if (nameValuePair[1] != null && !nameValuePair[1].isEmpty()) {
+                        //tb.setValue(URL.decode(nameValuePair[1]));
+                        tb.setValue(nameValuePair[1]);
+                    }
+                    vp.add(tb);
+                }
+                anchor.setHref(javascriptReturnFalse);
+            }
+        }
+
         try {
-            form.setEncoding(anchor.getType());
+            //anchor.removeAttribute("href");
+            form.setEncoding(FormPanel.ENCODING_URLENCODED);
         } catch (Exception e) {
             // In some ie browsers this seems to fail.
         }
-        String[] params = urlAndParams[1].split("\\&");
-        for (String nameValue : params) {
-            String[] nameValuePair = nameValue.split("\\=");
-            final TextBox tb = new TextBox();
-            tb.setName(nameValuePair[0]);
-            if (nameValuePair[1] != null && !nameValuePair[1].isEmpty()) {
-                tb.setValue(URL.decode(nameValuePair[1]));
-            }
-            vp.add(tb);
-        }
-        anchor.setHref(javascriptReturnFalse);
 
         a.addClickHandler(new ClickHandler() {
             @Override
@@ -69,6 +100,7 @@ public class AnchorPostUtil {
                 panel.remove(form);
             }
         });
+        //Util.log("transform");
     }
 
 }

@@ -17,7 +17,13 @@ public class ElementUtil {
      */
     public static List<Element> findByCssClass(Element element, String className) {
         List result = new ArrayList();
-        findByCssClassImpl(result, element, className);
+        try {
+            //Util.log("Före findByCssClass");
+            findByCssClassImpl(result, element, className);
+            //Util.log("Efter findByCssClass");
+        } catch (Exception e) {
+            Util.log(e);
+        }
         return result;
     }
 
@@ -29,6 +35,7 @@ public class ElementUtil {
         String c = element.getClassName();
 
         if (c != null) {
+            //Util.log("c = '" + c + "'");
             String[] p = c.split("[' ']");
             for (int x = 0; x < p.length; x++) {
                 if (p[x].equals(className)) {

@@ -268,7 +268,6 @@
 
     <script type="text/javascript">
     //<![CDATA[
-
         function toggle() {
 			var dta = 'display-toggle'; // name of the attribute... for brievety.
            for (var i = 0; i < arguments.length; i++) {
@@ -284,6 +283,24 @@
         function refreshResults() {
             setTimeout(function () {try { document.getElementById('rerun-ifeed-loading').click(); }catch(e){console.log(e);}}, 500);
         }
+
+        $(document).ready(function() {
+            $("a.excel-feed-link").click(function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var href = this.href;
+                var parts = href.split('?');
+                var url = parts[0];
+                var params = parts[1].split('&');
+                var pp, inputs = '';
+                for(var i = 0, n = params.length; i < n; i++) {
+                    pp = params[i].split('=');
+                    inputs += '<input type="hidden" name="' + pp[0] + '" value="' + pp[1] + '" />';
+                }
+                $("body").append('<form action="'+url+'" method="post" id="poster" target="_blank">'+inputs+'</form>');
+                $("#poster").submit();
+            });
+        });
     //]]>
     </script>
 

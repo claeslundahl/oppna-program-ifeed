@@ -26,3 +26,4 @@ core-bc/modules/web/.settings/*
 
 .idea/
 core-bc/modules/web-script/target/
+*.iml

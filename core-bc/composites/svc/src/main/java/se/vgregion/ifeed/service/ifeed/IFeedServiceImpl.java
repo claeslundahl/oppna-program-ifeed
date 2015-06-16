@@ -2,7 +2,6 @@ package se.vgregion.ifeed.service.ifeed;
 
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
@@ -112,10 +111,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
-    public List<IFeed> getIFeedsByFilter(Filter filter) {
+    public List<IFeed> getIFeedsByFilter(Filter filter, int start, int end) {
         List<Object> values = new ArrayList<Object>();
         String jpql = filter.toJpqlQuery(values);
         List<IFeed> result = (List<IFeed>) iFeedRepo.findByQuery(jpql, values.toArray());
+        start = Math.min(start, result.size());
+        end = Math.min(end, result.size());
+        result = result.subList(start, end);
         init(result);
         return new ArrayList<IFeed>(result);
     }
@@ -123,6 +125,12 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     @Transactional
     public final IFeed getIFeed(final Long id) {
+        if (iFeedRepo == null) {
+            throw new RuntimeException("iFeedRepo is not initialized");
+        }
+        if (id == null) {
+            throw new RuntimeException("Id of feed cannot be null.");
+        }
         IFeed result = iFeedRepo.find(id);
         init(result);
         return result;

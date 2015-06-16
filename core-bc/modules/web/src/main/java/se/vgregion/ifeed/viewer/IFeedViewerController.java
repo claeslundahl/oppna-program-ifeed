@@ -25,6 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -190,6 +193,11 @@ public class IFeedViewerController {
             Long id = Long.parseLong(instance);
             url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage);
         } else {
+            try {
+                instance = URLDecoder.decode(instance, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             IFeed ifeed = IFeed.fromJson(instance);
             url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage);
         }

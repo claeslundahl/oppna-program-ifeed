@@ -16,14 +16,14 @@
         <requires-namespaced-parameters>false</requires-namespaced-parameters>
         <header-portlet-css>/css/theme.css</header-portlet-css>
         <!--  <header-portlet-css>/css/prime-faces.css</header-portlet-css>-->
-        <footer-portlet-javascript>/js/11F205242C7972D110A111CD00F3F954.cache.js?</footer-portlet-javascript>
+<!--        <footer-portlet-javascript>/js/11F205242C7972D110A111CD00F3F954.cache.js?</footer-portlet-javascript>
         <footer-portlet-javascript>/js/9BBCBB0472EF93758AE6D138FFDDA652.cache.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/A21926F45829EAF00108C59C09AE802B.cache.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/ACAF4AC0F43A54FF7F0281B36BE88126.cache.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/B14C5DFDAE733CBD042DCF1ACF27727F.cache.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/ifeed-jsonp-builder.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/local.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.devmode.js</footer-portlet-javascript>
+        <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.devmode.js</footer-portlet-javascript>-->
         <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.nocache.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/util.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/vgr-ifeed-config.js</footer-portlet-javascript>

@@ -108,7 +108,7 @@ public class Application {
 
     private String newOwnershipUserId;
 
-    private int pageSize = 20;
+    private int pageSize = 3;
 
     private int currentPage = 0;
 
@@ -155,7 +155,8 @@ public class Application {
     public List<IFeed> list() {
         int start = (getCurrentSpanStart());
         int end = (getCurrentSpanEnd());
-        return iFeedService.getIFeedsByFilter(filter, start, end);
+        List<IFeed> result = iFeedService.getIFeedsByFilter(filter, start, end);
+        return result;
     }
 
     public List<IFeed> updateFilterQuery() {
@@ -173,8 +174,8 @@ public class Application {
 
             List<IFeed> result = iFeedService.getIFeedsByFilter(filter, start, end);
 
-            page = result.subList(start, end);
-            return page;
+            //page = result.subList(start, end);
+            return page = result;
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getLocalizedMessage()));
             throw new RuntimeException(e);
@@ -199,8 +200,8 @@ public class Application {
         return getMaxPageCountImp(list(), pageSize);
     }
 
-    static int getMaxPageCountImp(Collection list, int pageSize) {
-        int r = list.size() / pageSize;
+    int getMaxPageCountImp(Collection list, int pageSize) {
+        int r = iFeedService.getLatestFilterQueryTotalCount() / pageSize;
         if (list.size() % pageSize > 0) {
             r++;
         }
@@ -609,6 +610,35 @@ public class Application {
         String result = String.valueOf(iFeedExcelFeed.expand("ID", iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection()));
         result = result.replaceFirst(Pattern.quote("ID"), iFeedModelBean.toJson());
         return result;
+    }
+
+    public String getExcelFeedLinkForm() {
+        return urlToPostForm(getExcelFeedLink(), "excelForm").replace("\"", "\\\"");
+    }
+
+    public static String urlToPostForm(String url, String id) {
+        StringBuilder sb = new StringBuilder();
+
+        String[] urlAndParams = url.split("[?]", 2);
+        String[] params = urlAndParams[1].split("[&]");
+
+        sb.append("<form action='");
+        sb.append(urlAndParams[0]);
+        sb.append("' method=post target='_blank' style='display:none;' id='");
+        sb.append(id);
+        sb.append("'>");
+        for (String paramAndValue : params) {
+            String[] paramAndValueSplit = paramAndValue.split(Pattern.quote("="), 2);
+            sb.append("<input name='");
+            sb.append(paramAndValueSplit[0]);
+            sb.append("' value='");
+            sb.append(paramAndValueSplit[1]);
+            sb.append("' />");
+        }
+
+        sb.append("</form>");
+
+        return sb.toString();
     }
 
     public void onTypeChangeInColumnDef(TableDefModel tableDefModel, ColumnDef columnDef) {

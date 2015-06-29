@@ -25,6 +25,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     private JpaRepository<VgrDepartment, Long, Long> departmentRepo;
 
     private String solrServiceUrl;
+    private int latestFilterQueryTotalCount;
 
     public IFeedServiceImpl(final JpaRepository<IFeed, Long, Long> iFeedRepoParam,
                             JpaRepository<FieldsInf, Long, Long> fieldsInfRepo,
@@ -115,11 +116,17 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         List<Object> values = new ArrayList<Object>();
         String jpql = filter.toJpqlQuery(values);
         List<IFeed> result = (List<IFeed>) iFeedRepo.findByQuery(jpql, values.toArray());
+        latestFilterQueryTotalCount = result.size();
         start = Math.min(start, result.size());
         end = Math.min(end, result.size());
         result = result.subList(start, end);
         init(result);
         return new ArrayList<IFeed>(result);
+    }
+
+    @Override
+    public int getLatestFilterQueryTotalCount() {
+        return latestFilterQueryTotalCount;
     }
 
     @Override
@@ -148,6 +155,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Transactional
     private void init(IFeed result) {
+        assert result != null : "An ifeed must be found to";
         List<DynamicTableDef> dynamicTableDefs = result.getDynamicTableDefs();
         if (dynamicTableDefs != null) {
             for (DynamicTableDef dynamicTable : dynamicTableDefs) {

@@ -156,7 +156,13 @@
                     <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
                     <br/>
                     <a href="#{app.getWebFeedLink()}" target="_blank">Html</a><br/>
-                    <a id="excel-feed-link" class="link-as-post-form" href="#{app.getExcelFeedLink()}" target="_blank" type="text/csv;charset=UTF-8">Excel</a><br/>
+
+                    <a id="excel-feed-link" class="link-as-post-form-dont-match"
+                       onclick="document.getElementById('excelForm').submit();"
+                       href="javascript:void(0);"
+                       target="_blank"
+                       type="text/csv;charset=UTF-8">Excel</a><br/>
+
                     <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a><br/>
                     <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a><br/>
                     <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a><br/>
@@ -301,6 +307,16 @@
                 $("#poster").submit();
             });
         });
+
+        var excelForm = document.getElementById('excelForm');
+        if (excelForm)
+            excelForm.parentNode.removeChild(excelForm);
+
+        console.log("Before appending excel form");
+        var node = document.createElement("div");
+        document.getElementsByTagName('body')[0].appendChild(node);
+        node.innerHTML = "#{app.getExcelFeedLinkForm()} hej";
+        console.log("After appending excel form");
     //]]>
     </script>
 

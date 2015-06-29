@@ -30,6 +30,8 @@ public interface IFeedService {
 
     List<IFeed> getIFeedsByFilter(Filter filter, int start, int end);
 
+    int getLatestFilterQueryTotalCount();
+
     IFeed getIFeed(Long id);
 
     IFeed addIFeed(IFeed iFeed);

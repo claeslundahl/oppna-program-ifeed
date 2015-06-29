@@ -1,14 +1,17 @@
 iFeed is a service that enables easy configuration and consumption of push enabled ATOM feeds based on search queries against a SOLR server.
 
-The web based configurator is implemented as a portlet where iFeeds easily can be configured without any knowledge of SOLR query syntax. The UI includes the relevant elements from the Dublin Core based meta data model used at VGR. Terminology is pulled in to the configurator from Apelon DTS (Distributed Terminology System), which greatly simplifies the creation of quality queries.
+The web based configurator is implemented as a portlet where iFeeds easily can be configured without any knowledge of SOLR query syntax. The UI includes the relevant elements from the Dublin Core based meta data model used at VGR. Terminology is pulled in to the configurator from Apelon DTS (Distributed Terminology System) as well from different ldap-sources, which greatly simplifies the creation of quality queries.
 
-The iFeeds configured in the configurator are made available in a web application. The web application provides a unique ATOM feed for each iFeed, queries the SOLR server for changes at an configured interval and pings the push server, a PubSubHubbub? hub, to notify consumers when changes occur in an iFeed.
+The iFeeds configured in the configurator are made available in a web application. The web application provides a unique ATOM/RSS feed for each iFeed and a xbrowser script and jsonp-service that eneable external pages to include content from the iFeeds.
 
-The project consists of four applications.
-* Intsvc. A web application that produces RSS feeds from search results to Solr index.
+The project consists of four applications:
 
-* Portlet, a portlet designed to run in Liferay. Editing SOLR searches, which in turn can produce RSS.
+* Portlet, a portlet designed to run in Liferay. Editing SOLR searches, which in turn can produce RSS, Atom, Jsonp or a simple html-view.
 
-* Web, yet a web application. It should create display views of metadta retrieved from Solr and or alfresco.
+** Output RSS/Atom
+* Intsvc. A web application that produces RSS/Atom feeds from search results to Solr index.
 
-* web scripts, is to make a script that can consume jsonp data from the web-project mentioned earlier. It is used by the inclusion of a third-party site with information on the feed you want to see and so renders it a list of the Content, in there.
+** Output Jsonp/html
+* Web, receives a request with a feed-id and produces a response in jsonp or html.
+
+* web-script, is a script for building ajax-generated displays of feeds on various web-pages. It consumes data (as jsonp) via the iFeed-web web-application 

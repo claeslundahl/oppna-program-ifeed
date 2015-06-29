@@ -1,0 +1,70 @@
+# Place this file in ${user-home}/.ifeed and fill in the missing right-hand-side configuration.
+
+#Jndi configuration. Used in datasoure.connector is set to jndi.
+datasource.connector.jndi.jndiName=
+
+#Direct datasoure configuration. Used if datasoure.connector is set to direct.
+datasource.connector.direct.driverClassName=
+datasource.connector.direct.url=
+datasource.connector.direct.username=
+datasource.connector.direct.password=
+
+hibernate.database.showsql=
+hibernate.hbm2ddl.auto=
+hibernate.vendor.generateDdl=
+hibernate.vendor.databaseDialect=
+hibernate.vendor.database=
+
+#************************************
+#       Service configuration
+#************************************
+
+ifeed.rss-feed=
+ifeed.json=
+ifeed.excel=
+
+# IFeed atom service link - {id} is replaced in runtime with the current ifeed-id
+ifeed.feed=
+
+ifeed.web=
+
+# Solr server location
+solr.service=
+
+# IFeed metadata base url (for the portlet to link to the web module)
+ifeed.metadata.base.url=
+
+# Alfresco Lager - Metadata Service Uri template
+alfresco.metadata.service=
+
+# Apelon metadata service
+apelon.metadata.service=
+
+ifeed.web.script.json.url=
+ifeed.web.script.url=
+
+#************************************
+#       LDAP configuration
+#************************************
+
+# Ldap User Attributes
+ldap.synchronization.userIdAttributeName=
+ldap.synchronization.userFirstNameAttributeName=
+ldap.synchronization.userLastNameAttributeName=
+ldap.synchronization.userEmailAttributeName=
+ldap.synchronization.userOrganizationalIdAttributeName=
+
+ldap.synchronization.queryBatchSize=
+ldap.synchronization.timestampFormat=
+ldap.synchronization.personQuery=
+ldap.synchronization.groupQuery=
+
+# Ldap for organizations
+ldap.org.authentication.java.naming.provider.url=
+ldap.org.synchronization.java.naming.security.principal=
+ldap.org.synchronization.java.naming.security.credentials=
+ldap.org.synchronization.userSearchBase=
+
+# web-script settings
+webScriptDataSourceUrl=
+webScriptHostUrl=

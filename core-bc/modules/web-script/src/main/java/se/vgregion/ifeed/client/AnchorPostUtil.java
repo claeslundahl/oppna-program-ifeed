@@ -10,10 +10,12 @@ import com.google.gwt.user.client.ui.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by clalu4 on 2015-05-20.
  */
+@Deprecated
 public class AnchorPostUtil {
 
     final static Element body = RootPanel.getBodyElement();
@@ -28,16 +30,6 @@ public class AnchorPostUtil {
         } catch (Exception e) {
             Util.log(e);
         }
-    }
-
-    public static String urlToPostForm(String url) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<form>");
-
-
-
-        sb.append("</form>");
-        return sb.toString();
     }
 
     private static void transform(Element element) {

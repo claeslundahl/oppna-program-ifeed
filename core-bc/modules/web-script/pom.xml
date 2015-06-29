@@ -51,7 +51,7 @@
                     <module>se.vgregion.ifeed.Module</module>
                     <runTarget>test.html</runTarget>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
-                    <!--<style>PRETTY</style>-->
+                    <style>PRETTY</style>
                     <!--<i18nMessagesBundle>se.metab.client.Messages</i18nMessagesBundle>-->
                 </configuration>
             </plugin>

@@ -8,10 +8,10 @@ The project consists of four applications:
 
 * Portlet, a portlet designed to run in Liferay. Editing SOLR searches, which in turn can produce RSS, Atom, Jsonp or a simple html-view.
 
-** Output RSS/Atom
+**Output RSS/Atom**
 * Intsvc. A web application that produces RSS/Atom feeds from search results to Solr index.
 
-** Output Jsonp/html
+**Output Jsonp/html**
 * Web, receives a request with a feed-id and produces a response in jsonp or html.
 
 * web-script, is a script for building ajax-generated displays of feeds on various web-pages. It consumes data (as jsonp) via the iFeed-web web-application 

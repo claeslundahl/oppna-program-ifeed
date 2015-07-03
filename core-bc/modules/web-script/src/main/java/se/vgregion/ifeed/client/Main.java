@@ -50,7 +50,6 @@ public class Main implements EntryPoint {
      */
     @Override
     public void onModuleLoad() {
-        //AnchorPostUtil.makeLinksPostInsteadOfGetData();
         final Element body = RootPanel.getBodyElement();
         if (body == null) Window.alert("Did not find the body!");
         List<Element> result = ElementUtil.findByCssClass(body, "ifeedDocList");

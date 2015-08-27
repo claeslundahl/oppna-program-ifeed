@@ -3,6 +3,7 @@ package se.vgregion.ifeed.formbean;
 import se.vgregion.ifeed.el.Json;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -13,6 +14,8 @@ public class VgrOrganization extends BaseVgrOrganization {
     private boolean added;
 
     private int level;
+
+    private transient VgrOrganization parent;
 
     public VgrOrganization() {
         super();
@@ -32,7 +35,39 @@ public class VgrOrganization extends BaseVgrOrganization {
         return getCn();
     }
 
-    private List<VgrOrganization> children = new ArrayList<VgrOrganization>();
+    private final VgrOrganization me = this;
+
+    private final List<VgrOrganization> children = new ArrayList<VgrOrganization>() {
+
+        @Override
+        public boolean add(VgrOrganization organization) {
+            organization.setParent(me);
+            return super.add(organization);
+        }
+
+        @Override
+        public void add(int index, VgrOrganization element) {
+            element.setParent(me);
+            super.add(index, element);
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends VgrOrganization> c) {
+            for (VgrOrganization organization : c) {
+                organization.setParent(me);
+            }
+            return super.addAll(c);
+        }
+
+        @Override
+        public boolean addAll(int index, Collection<? extends VgrOrganization> c) {
+            for (VgrOrganization organization : c) {
+                organization.setParent(me);
+            }
+            return super.addAll(index, c);
+        }
+
+    };
 
     /*
     public String getId() {
@@ -80,6 +115,14 @@ public class VgrOrganization extends BaseVgrOrganization {
 
     public void setAdded(boolean added) {
         this.added = added;
+    }
+
+    public VgrOrganization getParent() {
+        return parent;
+    }
+
+    public void setParent(VgrOrganization parent) {
+        this.parent = parent;
     }
 
     public static class Id extends BaseVgrOrganization {

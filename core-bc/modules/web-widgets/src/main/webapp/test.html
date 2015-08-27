@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the    -->
+<!-- browser's rendering engine into               -->
+<!-- "Standards Mode". Replacing this declaration  -->
+<!-- with a "Quirks Mode" doctype may lead to some -->
+<!-- differences in layout.                        -->
+
+<html>
+<head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <!--                                                               -->
+    <!-- Consider inlining CSS to reduce the number of requested files -->
+    <!--                                                               -->
+
+    <!--                                           -->
+    <!-- Any title is fine                         -->
+    <!--                                           -->
+    <title>Web Application Starter Project</title>
+
+    <!--                                           -->
+    <!-- This script loads your compiled module.   -->
+    <!-- If you add any GWT meta tags, they must   -->
+    <!-- be added before this line.                -->
+
+    <script type="text/javascript" language="javascript" src="se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js"></script>
+
+    <style>
+
+        .gwt-PopupPanelGlass {
+        background-color: #000;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        }
+
+        .gwt-DialogBox .Caption {
+        background: #F1F1F1;
+        padding: 4px 8px 4px 4px;
+        cursor: default;
+        font-family: Arial Unicode MS, Arial, sans-serif;
+        font-weight: bold;
+        border-bottom: 1px solid #bbbbbb;
+        border-top: 1px solid #D2D2D2;
+        }
+        .gwt-DialogBox .dialogContent {
+        }
+        .gwt-DialogBox .dialogMiddleCenter {
+        padding: 3px;
+        background: white;
+        }
+        .gwt-DialogBox .dialogBottomCenter {
+        background: url(images/hborder.png) repeat-x 0px -2945px;
+        -background: url(images/hborder_ie6.png) repeat-x 0px -2144px;
+        }
+        .gwt-DialogBox .dialogMiddleLeft {
+        background: url(images/vborder.png) repeat-y -31px 0px;
+        }
+        .gwt-DialogBox .dialogMiddleRight {
+        background: url(images/vborder.png) repeat-y -32px 0px;
+        -background: url(images/vborder_ie6.png) repeat-y -32px 0px;
+        }
+        .gwt-DialogBox .dialogTopLeftInner {
+        width: 10px;
+        height: 8px;
+        zoom: 1;
+        }
+        .gwt-DialogBox .dialogTopRightInner {
+        width: 12px;
+        zoom: 1;
+        }
+        .gwt-DialogBox .dialogBottomLeftInner {
+        width: 10px;
+        height: 12px;
+        zoom: 1;
+        }
+        .gwt-DialogBox .dialogBottomRightInner {
+        width: 12px;
+        height: 12px;
+        zoom: 1;
+        }
+        .gwt-DialogBox .dialogTopLeft {
+        background: url(images/circles.png) no-repeat -20px 0px;
+        -background: url(images/circles_ie6.png) no-repeat -20px 0px;
+        }
+        .gwt-DialogBox .dialogTopRight {
+        background: url(images/circles.png) no-repeat -28px 0px;
+        -background: url(images/circles_ie6.png) no-repeat -28px 0px;
+        }
+        .gwt-DialogBox .dialogBottomLeft {
+        background: url(images/circles.png) no-repeat 0px -36px;
+        -background: url(images/circles_ie6.png) no-repeat 0px -36px;
+        }
+        .gwt-DialogBox .dialogBottomRight {
+        background: url(images/circles.png) no-repeat -8px -36px;
+        -background: url(images/circles_ie6.png) no-repeat -8px -36px;
+        }
+        * html .gwt-DialogBox .dialogTopLeftInner {
+        width: 10px;
+        overflow: hidden;
+        }
+        * html .gwt-DialogBox .dialogTopRightInner {
+        width: 12px;
+        overflow: hidden;
+        }
+        * html .gwt-DialogBox .dialogBottomLeftInner {
+        width: 10px;
+        height: 12px;
+        overflow: hidden;
+        }
+        * html .gwt-DialogBox .dialogBottomRightInner {
+        width: 12px;
+        height: 12px;
+        overflow: hidden;
+        }
+
+    </style>
+
+</head>
+
+<!--                                           -->
+<!-- The body can have arbitrary html, or      -->
+<!-- you can leave the body empty if you want  -->
+<!-- to toTableDef a completely dynamic UI.        -->
+<!--                                           -->
+<body>
+
+<a id="excel-feed-link" class="link-as-post-form" href="https://vgwb0046.vgregion.se:8843/iFeed-web/metaascsv?instance={&quot;id&quot;:911747,&quot;dynamicTableDefs&quot;:[{&quot;id&quot;:1591071,&quot;name&quot;:&quot;Kan jag spara den här, tro&quot;,&quot;fontSize&quot;:&quot;auto&quot;,&quot;defaultSortColumn&quot;:&quot;dc.title.filename&quot;,&quot;defaultSortOrder&quot;:&quot;asc&quot;,&quot;feedId&quot;:&quot;911747&quot;,&quot;maxHitLimit&quot;:5,&quot;showTableHeader&quot;:true,&quot;linkOriginalDoc&quot;:false,&quot;hideRightColumn&quot;:false,&quot;columnDefs&quot;:[{&quot;id&quot;:1591072,&quot;name&quot;:&quot;dc.title.filename&quot;,&quot;label&quot;:&quot;Filnamn&quot;,&quot;alignment&quot;:&quot;left&quot;,&quot;width&quot;:&quot;70&quot;,&quot;toStringRunning&quot;:false},{&quot;id&quot;:1591073,&quot;name&quot;:&quot;dc.identifier.version&quot;,&quot;label&quot;:&quot;Version&quot;,&quot;alignment&quot;:&quot;left&quot;,&quot;width&quot;:&quot;30&quot;,&quot;toStringRunning&quot;:false}],&quot;fkIfeedId&quot;:911747,&quot;toStringRunning&quot;:false}],&quot;version&quot;:26103,&quot;filters&quot;:[{&quot;filterQuery&quot;:&quot;SE2321000131-E000000010735&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Ej aktiva enheter&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000008756&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Externa HSAadmin&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000000113&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Folktandvården Västra Götaland&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000006940&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Angereds Närsjukhus&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000000103&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Hälsan och Stressmedicin&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000010952&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Folkhögskoleförvaltningen&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000002949&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Göteborgs botaniska trädgård&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000001166&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Frölunda Specialistsjukhus&quot;},{&quot;filterQuery&quot;:&quot;*test*&quot;,&quot;filterKey&quot;:&quot;dc.title&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.title&quot;,&quot;name&quot;:&quot;Titel (autokomplettering)&quot;,&quot;help&quot;:&quot;Namn på dokument, handling eller annan typ av resurs. (Fritext)&quot;,&quot;type&quot;:&quot;d:text_facet&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false}},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000002948&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Folkhögskolor&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000008282&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Film i Väst&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000000110&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Alingsås Lasarett&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000007046&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Göteborgsoperan AB&quot;},{&quot;filterQuery&quot;:&quot;SE2321000131-E000000000102&quot;,&quot;filterKey&quot;:&quot;dc.creator.forunit.id&quot;,&quot;fieldInf&quot;:{&quot;id&quot;:&quot;dc.creator.forunit.id&quot;,&quot;name&quot;:&quot;Skapat av enhet ID (VGR:s organisationsträd)&quot;,&quot;help&quot;:&quot;Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)&quot;,&quot;type&quot;:&quot;d:ldap_org_value&quot;,&quot;apelonKey&quot;:&quot;&quot;,&quot;children&quot;:[],&quot;filter&quot;:true,&quot;inHtmlView&quot;:true,&quot;expanded&quot;:false},&quot;filterQueryForDisplay&quot;:&quot;Habilitering u0026 Hälsa&quot;}],&quot;name&quot;:&quot;Claes&quot;,&quot;description&quot;:&quot;Test&quot;,&quot;userId&quot;:&quot;clalu4&quot;,&quot;sortField&quot;:&quot;dc.title&quot;,&quot;sortDirection&quot;:&quot;asc&quot;,&quot;linkNativeDocument&quot;:true}&amp;by=dc.title&amp;dir=asc" target="_blank" type="text/csv;charset=UTF-8">Excel</a>
+
+
+<!-- OPTIONAL: include this if you want history support -->
+<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+        style="position:absolute;width:0;height:0;border:0"></iframe>
+
+<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+<noscript>
+    <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
+    </div>
+</noscript>
+Inkallelse av brandvakt vid Ã¶verbelastning pÃ¥ Akutmottagningen NÃ„L:
+
+<div id="ifeed-data2" style="display:none;">http://vgas0564.vgregion.se:8081</div>
+
+<div class="ifeedDocList" columnes="dc.title|Titel|left|100%" fontsize="auto" defaultsortcolumn="dc.title" defaultsortorder="asc" showtableheader="yes" linkoriginaldoc="no" limit="0" hiderightcolumn="no" feedid="3818144">
+</div>
+
+<div>Nästa</div>
+<div class="ifeedDocList" columnes="dc.title|Titel|left|100%" fontsize="auto" defaultsortcolumn="dc.title" defaultsortorder="asc" showtableheader="yes" linkoriginaldoc="no" limit="0" hiderightcolumn="no" feedid="3818144">
+</div>
+
+
+
+
+
+</body>
+</html>

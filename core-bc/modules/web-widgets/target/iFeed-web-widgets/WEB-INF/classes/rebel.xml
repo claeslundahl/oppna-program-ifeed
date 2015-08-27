@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd">
+
+	<classpath>
+		<dir name="C:/Users/clalu4/git-src/oppna-program-ifeed/core-bc/modules/web-widgets/target/iFeed-web-widgets/WEB-INF/classes">
+		</dir>
+	</classpath>
+
+	<web>
+		<link target="/">
+			<dir name="C:/Users/clalu4/git-src/oppna-program-ifeed/core-bc/modules/web-widgets/src/main/webapp">
+			</dir>
+		</link>
+	</web>
+
+</application>

@@ -1,11 +1,5 @@
 package se.vgregion.ifeed.backingbeans;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.PostConstruct;
-
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +9,12 @@ import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ldap.LdapSupportService;
+
+import javax.annotation.PostConstruct;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component(value = "vgrOrganizationsHome")
 @Scope("session")
@@ -340,6 +340,10 @@ public class VgrOrganizationsHome implements Serializable {
         }
         return o1.equals(o2);
     }
+
+    /*public String toJson() {
+        return Json.toJson(getAllOrganizationsRoot());
+    }*/
 
     public List<VgrOrganization> getOrganizations() {
         return organizations;

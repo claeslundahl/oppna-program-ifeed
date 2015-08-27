@@ -31,7 +31,7 @@
                         </td>
                     </h:panelGroup>
                     <td class="toggle-expanded" align="center">
-                        <h:commandLink title="Öppna"
+                        <h:commandLink title="Öppna" styleClass="select-org" onclick="$('#rerun-ifeed-loading').click(); $('a.select-org').attr('onclick', '')"
                                        rendered="#{not organization.leaf and not organization.open}"
                                        action="#{vgrOrganizationsHome.loadChildrenFlat(app, organization)}">
                             <f:ajax render="@form" action="click"/>
@@ -40,7 +40,7 @@
                             <div class="icon-chevron-right"></div>
                         </h:commandLink>
 
-                        <h:commandLink title="Stäng"
+                        <h:commandLink title="Stäng" styleClass="select-org" onclick="$('a.select-org').attr('onclick', '')"
                                        rendered="#{not organization.leaf and organization.open}"
                                        actionListener="#{vgrOrganizationsHome.closeChildrenFlat(organization)}">
                             <f:ajax render="@form" action="click"/>
@@ -53,15 +53,15 @@
                     </td>
 
                     <td>
-                        <h:commandLink title="Välj"
+                        <h:commandLink title="Välj" styleClass="select-org" onclick="$('a.select-org').attr('onclick', '')"
                                        rendered="#{vgrOrganizationsHome.indexOfOrgInFeed(app, organization) == -1}"
                                        actionListener="#{vgrOrganizationsHome.toggleOrganizationCondition(app, organization)}">
-                            <input type="checkbox"/>
+                            <input type="checkbox" class="select-org"/>
                         </h:commandLink>
-                        <h:commandLink title="Välj"
+                        <h:commandLink title="Välj" styleClass="select-org" onclick="$('a.select-org').attr('onclick', '')"
                                        rendered="#{vgrOrganizationsHome.indexOfOrgInFeed(app, organization) != -1}"
                                        actionListener="#{vgrOrganizationsHome.toggleOrganizationCondition(app, organization)}">
-                            <input type="checkbox" checked="checked"/>
+                            <input type="checkbox" checked="checked" class="select-org"/>
                         </h:commandLink>
                     </td>
                 </tr>

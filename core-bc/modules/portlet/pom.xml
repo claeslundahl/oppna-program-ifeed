@@ -64,6 +64,7 @@
                             <!-- this is relative to the pom.xml directory -->
                             <targetPath>js</targetPath>
                             <directory>../web-script/target/iFeed-web-script/se.vgregion.ifeed.Module</directory>
+                            <!--<directory>../web-widgets/target/iFeed-web-widgets/se.vgregion.ifeed.web.widgets.Module</directory>-->
                         </resource>
                     </webResources>
                 </configuration>

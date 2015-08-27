@@ -23,7 +23,9 @@
         <footer-portlet-javascript>/js/B14C5DFDAE733CBD042DCF1ACF27727F.cache.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/ifeed-jsonp-builder.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/local.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.devmode.js</footer-portlet-javascript>-->
+        <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.devmode.js</footer-portlet-javascript>
+        <footer-portlet-javascript>/js/se.vgregion.ifeed.web.widgets.Module.nocache.js</footer-portlet-javascript>
+        -->
         <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.nocache.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/util.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/vgr-ifeed-config.js</footer-portlet-javascript>

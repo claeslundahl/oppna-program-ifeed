@@ -86,6 +86,8 @@
                                 value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
                                 rendered="#{not app.inEditMode}"/>
                         <p:autoComplete id="createOwnershipInput"
+                                        required="true"
+                                        requiredMessage="'Ägare' är obligatorisk information!"
                                         value="#{iFeedModelBean.userId}"
                                         completeMethod="#{app.completeUserName}"
                                         forceSelection="true"
@@ -93,6 +95,7 @@
                                         title="Skriv in vgr-id för ny ägare här. Observera att du kan bli av med möjligheten att ändra posten om du inte samtidigt lagt till dig själv som administratör innan du sparar ändringen."
                                         multiple="false"/>
                         <p:watermark for="createOwnershipInput" value="Ändra ägare här" />
+                        <h:message for="createOwnershipInput" style="color:red" />
                     </h:panelGroup>
 
 
@@ -287,7 +290,7 @@
         }
 
         function refreshResults() {
-            setTimeout(function () {try { document.getElementById('rerun-ifeed-loading').click(); }catch(e){console.log(e);}}, 500);
+            setTimeout(function () {try { document.getElementById('rerun-ifeed-loading').click(); }catch(e){}}, 500);
         }
 
         $(document).ready(function() {
@@ -316,7 +319,6 @@
         var node = document.createElement("div");
         document.getElementsByTagName('body')[0].appendChild(node);
         node.innerHTML = "#{app.getExcelFeedLinkForm()} hej";
-        console.log("After appending excel form");
     //]]>
     </script>
 

@@ -50,11 +50,11 @@ public class Main implements EntryPoint {
      */
     @Override
     public void onModuleLoad() {
-        Util.log("onModuleLoad");
         final Element body = RootPanel.getBodyElement();
-        if (body == null) Window.alert("Did not find the body!");
+        if (body == null) {
+            Util.log("Did not find the body!");
+        }
         List<Element> result = ElementUtil.findByCssClass(body, "ifeedDocList");
-        Util.log("ifeedDocList.count = " + result.size());
         for (Element oldElement : result) {
             oldElement.setInnerHTML("");
         }

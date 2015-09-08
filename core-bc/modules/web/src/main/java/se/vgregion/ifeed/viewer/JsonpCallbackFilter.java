@@ -29,6 +29,9 @@ public class JsonpCallbackFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
             ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+
+        httpRequest.setCharacterEncoding("UTF-8");
+        System.out.println("Efter att ha satt " + httpRequest.getCharacterEncoding());
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         httpResponse.addHeader("Access-Control-Allow-Origin", "*");

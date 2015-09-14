@@ -108,7 +108,7 @@ public class Application {
 
     private String newOwnershipUserId;
 
-    private int pageSize = 3;
+    private int pageSize = 25;
 
     private int currentPage = 0;
 

@@ -25,6 +25,8 @@ public class Ie7Rewrite implements Filter {
      */
     private static Map<String, String> urlToContentCache = new HashMap<String, String>();
 
+    private static boolean jsConversionRunning;
+
     /**
      * Does nothing at the moment. Just here for making the contract complete.
      */
@@ -51,17 +53,23 @@ public class Ie7Rewrite implements Filter {
         HttpServletRequest hr = (HttpServletRequest) request;
         String userAgent = hr.getHeader("User-Agent");
         String path = hr.getRequestURI().substring(hr.getContextPath().length());
-        System.out.println("Path " + path + " userAgent = " + userAgent);
+        //System.out.println("Path " + path + " userAgent = " + userAgent);
 
         String result = null;
         if (userAgent.indexOf("MSIE 7.0") > -1) {
             if (urlToContentCache.containsKey(path)) {
                 result = urlToContentCache.get(path);
-            } else {
+            } else if (!jsConversionRunning) {
+                System.out.println("Rewriting ie-script start!");
+                jsConversionRunning = true;
                 chain.doFilter(request, responseWrapper);
                 result = new String(responseWrapper.toString());
                 result = removeFinallyBlockFrom(result);
                 urlToContentCache.put(path, result);
+                System.out.println("Rewriting ie-script done!");
+                jsConversionRunning = false;
+            } else {
+                result = "Machine not yet ready with script.";
             }
         } else {
             chain.doFilter(request, responseWrapper);
@@ -129,7 +137,7 @@ public class Ie7Rewrite implements Filter {
                         // Ie7 still does not like finally, so ut must be erased.
                         Token tryStart = catchOrTry.previous("try");
                         if (tryStart == null) {
-                            System.out.println(catchOrTry);
+                            //System.out.println(catchOrTry);
                         }
                         Token tryBlock = tryStart.next("\\{");
                         Token.Tokens finallyBlockClone = Token.deepClone(finallyBlock.getChildren());

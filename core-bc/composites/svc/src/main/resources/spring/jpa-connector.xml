@@ -35,7 +35,7 @@
     <property name="databasePlatform" value="${hibernate.vendor.databaseDialect}" />
     <property name="generateDdl" value="true" />
     <!--<property name="generateDdl" value="${hibernate.vendor.generateDdl}" />-->
-    <property name="showSql" value="true" />
+    <property name="showSql" value="false" />
     <!--<property name="showSql" value="${hibernate.database.showsql}" />-->
 
   </bean>

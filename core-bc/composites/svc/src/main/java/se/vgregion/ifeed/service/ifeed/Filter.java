@@ -1,8 +1,10 @@
 package se.vgregion.ifeed.service.ifeed;
 
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.Ownership;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,7 +21,9 @@ public class Filter extends IFeed {
         List condition = new ArrayList<Object>();
 
         addConditionIfAnyValue("o.name like ?", getName(), condition, values);
-        addConditionIfAnyValue("o.userId like ?", getUserId(), condition, values);
+        addConditionIfAnyValue("(o.userId like ? or ow.userId like ?)", getUserId(), condition, values);
+        //addConditionIfAnyValue("o.userId like ?", getUserId(), condition, values);
+
         addConditionIfAnyValue("o.description like ?", getDescription(), condition, values);
         addConditionIfAnyValue("o.department.id = ?", getDepartment() != null ? getDepartment().getId() : null, condition, values);
         addConditionIfAnyValue("o.group.id = ?", getGroup() != null ? getGroup().getId() : null, condition, values);
@@ -30,6 +34,9 @@ public class Filter extends IFeed {
         }*/
 
         if (!values.isEmpty()) {
+            if (getUserId() != null && !getUserId().isEmpty()) {
+                sb.append(" left join o.ownerships ow ");
+            }
             sb.append(" where ");
             sb.append(join(condition, " and "));
         }
@@ -40,10 +47,13 @@ public class Filter extends IFeed {
     private void addConditionIfAnyValue(String jpql, Object value, List<Object> sb, List<Object> values) {
         if (!isBlank(value)) {
             sb.add(jpql);
-            if (value instanceof String){
-                values.add("%" + value + "%");
-            } else {
-                values.add(value);
+            int count = jpql.length() - jpql.replace("?", "").length();
+            for (int i = 0; i < count; i++) {
+                if (value instanceof String) {
+                    values.add("%" + value + "%");
+                } else {
+                    values.add(value);
+                }
             }
         }
     }
@@ -52,8 +62,8 @@ public class Filter extends IFeed {
         if (s == null) {
             return true;
         }
-        if (s instanceof String){
-            return "".equals(((String)s).trim());
+        if (s instanceof String) {
+            return "".equals(((String) s).trim());
         }
         return false;
     }
@@ -83,7 +93,7 @@ public class Filter extends IFeed {
     }
 
     public String getIdAsText() {
-        if (idAsText == null  && id != null) {
+        if (idAsText == null && id != null) {
             return id.toString();
         }
         return idAsText;
@@ -104,4 +114,13 @@ public class Filter extends IFeed {
             System.out.println(idAsText + " is not a long value.");
         }
     }
+
+    public String toTextUserIds(Collection<Ownership> ownerships) {
+        List<String> users = new ArrayList<String>();
+        for (Ownership ownership : ownerships) {
+            users.add(ownership.getUserId());
+        }
+        return Filter.join(users, " ");
+    }
+
 }

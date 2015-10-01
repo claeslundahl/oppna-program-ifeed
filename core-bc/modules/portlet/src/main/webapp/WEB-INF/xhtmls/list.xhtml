@@ -5,8 +5,6 @@
         xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
         xmlns:portlet="http://java.sun.com/portlet_2_0">
 
-    <h:head></h:head>
-
     <h:messages/>
 
     <h:panelGroup id="resultGroup">
@@ -15,7 +13,7 @@
                 <thead>
                 <tr>
                     <th class="filter-result-h">Namn</th>
-                    <th class="filter-result-h">Ägare</th>
+                    <th class="filter-result-h">Ägare / Admin</th>
                     <th class="filter-result-h">Beskrivning</th>
                     <th class="filter-result-h">Förvaltning</th>
                     <th class="filter-result-h">Grupp</th>
@@ -86,7 +84,10 @@
                                            value="#{item.name}"
                                            actionListener="#{app.viewIFeed(item.id)}"/>
                         </td>
-                        <td>${item.userId}</td>
+                        <td>
+                            ${item.userId}
+                            #{filter.toTextUserIds(item.ownerships)}
+                        </td>
                         <td>${item.description}</td>
                         <td>${item.department != null ? item.department.name : '-'}</td>
                         <td>${item.group != null ? item.group.name : '-'}</td>

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.VgrOrganization;
+import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedResults;
@@ -884,7 +885,6 @@ public class Application {
     public void removeFlow(DynamicTableDef dynamicTableDef) {
         this.getIFeedModelBean().getDynamicTableDefs().remove(dynamicTableDef);
     }
-
 
 
 

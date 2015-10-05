@@ -109,6 +109,8 @@ public class Application {
 
     private String newOwnershipUserId;
 
+    private String newCompositeName;
+
     private int pageSize = 25;
 
     private int currentPage = 0;
@@ -274,9 +276,6 @@ public class Application {
     }
 
     public List<String> completeUserName(String incompleteUserName) {
-        //List<Person> people = new ArrayList<Person>();
-        System.out.println("completeUserName " + incompleteUserName);
-
         try {
             List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
             List<String> result = new ArrayList<String>();
@@ -886,6 +885,35 @@ public class Application {
         this.getIFeedModelBean().getDynamicTableDefs().remove(dynamicTableDef);
     }
 
+    public List<String> completeFeedName(String incompleteName) {
+        System.out.println("completeFeedName " + incompleteName);
+        Filter sample = new FilterModel();
+        sample.setName(incompleteName);
+        List<IFeed> result = iFeedService.getIFeedsByFilter(sample, 0, 10);
+        List<String> names = new ArrayList<String>();
+        for (IFeed iFeed : result) {
+            names.add(iFeed.getName());
+        }
+        return names;
+    }
 
+    public void createNewComposite() {
+        if (newCompositeName != null && !newCompositeName.isEmpty()) {
+            Filter filter = new FilterModel();
+            filter.setName(newCompositeName);
+            List<IFeed> nf = iFeedService.getIFeedsByFilter(filter, 0, 1);
+            if (!nf.isEmpty()){
+                iFeedModelBean.getComposites().add(nf.get(0));
+            }
+        }
+    }
+
+    public String getNewCompositeName() {
+        return newCompositeName;
+    }
+
+    public void setNewCompositeName(String newCompositeName) {
+        this.newCompositeName = newCompositeName;
+    }
 
 }

@@ -89,8 +89,7 @@ public class IFeedBackingBean implements Serializable {
 
         List<IFeed> allIFeeds = null;
         try {
-            allIFeeds = iFeedService.getIFeeds();
-            System.out.println("Autowired iFeedService is Not Null----------------------------------------------!!!");
+            allIFeeds = iFeedService.getIFeeds();;
         } catch (Exception e) {
             System.out.println("Autowired iFeedService is null---------------------------------------------------: " + e.toString());
             throw new RuntimeException(e);
@@ -109,7 +108,6 @@ public class IFeedBackingBean implements Serializable {
                 iFeedModelBeans.add(iFeedModelBean1);
             }
 
-            System.out.println("IFeedModelbeans size----------------------------------------------!!! " + iFeedModelBeans.size());
         } catch (Exception e) {
             System.out.println("Autowired iFeedService is null---------------------------------------------------: " + e.toString());
             throw new RuntimeException(e);

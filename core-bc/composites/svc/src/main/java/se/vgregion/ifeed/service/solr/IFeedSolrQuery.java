@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.service.solr;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.join;
 import static se.vgregion.common.utils.CommonUtils.isNull;
 import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.SOLR_DATE_FORMAT;
 
@@ -78,6 +79,47 @@ public class IFeedSolrQuery extends SolrQuery {
     }
 
     private void addFeedFilters(IFeed iFeed) {
+        List<String> resultWithOrBetween = new ArrayList<String>();
+        addFeedFiltersImpl(iFeed, resultWithOrBetween, new HashSet<IFeed>());
+        addFilterQuery(join(resultWithOrBetween, " or "));
+    }
+
+    private void addFeedFiltersImpl(IFeed iFeed, List<String> resultWithOrBetween, Set<IFeed> handled) {
+        if (handled.contains(iFeed)) {
+            return; // Avoids infinite recursive calls.
+        }
+        handled.add(iFeed);
+
+        FeedFilterBag bag = new FeedFilterBag();
+
+        for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
+            bag.get(iFeedFilter.getFilterKey()).add(iFeedFilter);
+        }
+
+        List<String> queryParts = new ArrayList<String>();
+
+        for (String key : bag.keySet()) {
+            List<IFeedFilter> filters = bag.get(key);
+            if (filters.size() == 1) {
+                // addFilterQuery(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
+                queryParts.add(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
+            } else {
+                String fq = SolrQueryBuilder.createOrQuery(filters);
+                queryParts.add(fq);
+                // addFilterQuery(fq);
+            }
+        }
+        resultWithOrBetween.add(join(queryParts, " and "));
+
+        for (IFeed composite : iFeed.getComposites()) {
+            addFeedFiltersImpl(composite, resultWithOrBetween, handled);
+        }
+
+        LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
+    }
+
+    @Deprecated
+    private void addFeedFilters_old(IFeed iFeed) {
         // Populate the query with the feed's filters
 
         FeedFilterBag bag = new FeedFilterBag();
@@ -87,15 +129,23 @@ public class IFeedSolrQuery extends SolrQuery {
             //addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter, iFeedService.mapFieldInfToId()));
         }
 
+        boolean hasAlreadyFilters = this.getFilterQueries().length > 0;
+
+        List<String> queryParts = new ArrayList<String>();
+
         for (String key : bag.keySet()) {
             List<IFeedFilter> filters = bag.get(key);
             if (filters.size() == 1) {
-                addFilterQuery(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
+                // addFilterQuery(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
+                queryParts.add(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
             } else {
                 String fq = SolrQueryBuilder.createOrQuery(filters);
-                addFilterQuery(fq);
+                queryParts.add(fq);
+                // addFilterQuery(fq);
             }
         }
+
+        addFilterQuery(join(queryParts, " and "));
 
         LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
     }

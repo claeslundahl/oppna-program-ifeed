@@ -17,7 +17,7 @@ public class Filter extends IFeed {
     public String toJpqlQuery(List<Object> values) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("select o from " + IFeed.class.getSimpleName() + " o");
+        sb.append("select distinct o from " + IFeed.class.getSimpleName() + " o");
         List condition = new ArrayList<Object>();
 
         addConditionIfAnyValue("o.name like ?", getName(), condition, values);

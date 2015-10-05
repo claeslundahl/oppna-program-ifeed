@@ -60,6 +60,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
     protected Set<Ownership> ownerships = new HashSet<Ownership>();
 
+    @ManyToMany
+    protected List<IFeed> composites = new ArrayList<IFeed>();
+
     private String sortField;
     private String sortDirection;
 
@@ -354,4 +357,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     public void setDynamicTableDefs(List<DynamicTableDef> dynamicTableDefs) {
         this.dynamicTableDefs = dynamicTableDefs;
     }
+
+    public List<IFeed> getComposites() {
+        return composites;
+    }
+
 }

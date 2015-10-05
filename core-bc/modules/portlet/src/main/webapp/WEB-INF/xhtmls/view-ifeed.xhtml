@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:aui="http://liferay.com/faces/aui"
-                xmlns:portlet="http://java.sun.com/portlet_2_0">
+        >
 
     <div class="container-fluid">
 
@@ -94,8 +93,8 @@
                                         rendered="#{app.inEditMode}"
                                         title="Skriv in vgr-id för ny ägare här. Observera att du kan bli av med möjligheten att ändra posten om du inte samtidigt lagt till dig själv som administratör innan du sparar ändringen."
                                         multiple="false"/>
-                        <p:watermark for="createOwnershipInput" value="Ändra ägare här" />
-                        <h:message for="createOwnershipInput" style="color:red" />
+                        <p:watermark for="createOwnershipInput" value="Ändra ägare här"/>
+                        <h:message for="createOwnershipInput" style="color:red"/>
                     </h:panelGroup>
 
 
@@ -109,8 +108,8 @@
                                         rendered="#{app.inEditMode}"
                                         styleClass="createNewAdminInput master-item"
                                         title="Skriv in vgr-id och klicka på 'Lägg till'' för att lägg till en användare som administratör på feedet."
-                                        multiple="false" />
-                        <p:watermark for="createNewAdminInput" value="Vgr-Id för ny admin" />
+                                        multiple="false"/>
+                        <p:watermark for="createNewAdminInput" value="Vgr-Id för ny admin"/>
 
                         <p:commandLink styleClass="ltr-flowing-item"
                                        value="Lägg till"
@@ -186,6 +185,8 @@
 
         </div>
     </div>
+
+
 
     <div class="container-fluid">
         <h3 style="display: inline;">
@@ -320,6 +321,7 @@
         document.getElementsByTagName('body')[0].appendChild(node);
         node.innerHTML = "#{app.getExcelFeedLinkForm()} hej";
     //]]>
+
     </script>
 
 </ui:composition>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:aui="http://liferay.com/faces/aui"
+                xmlns:portlet="http://java.sun.com/portlet_2_0">
+
+    <div>
+        <div style="font-weight: bold;"><i class="icon-user"></i>Delflöden:
+        </div>
+        <p:autoComplete id="createCompositeFeedInput"
+                        value="#{app.newCompositeName}"
+                        completeMethod="#{app.completeFeedName}"
+                        forceSelection="true"
+                        rendered="#{app.inEditMode}"
+                        styleClass="createNewAdminInput master-item"
+                        title="Skriv in namn på annat flöde och klicka på 'Lägg till'' för att lägg till ett flöde som del till detta."
+                        multiple="false" />
+        <p:watermark for="createCompositeFeedInput" value="Namn på annat flöde" />
+
+        <p:commandLink styleClass="ltr-flowing-item"
+                       value="Lägg till"
+                       update="basicFeedInfo"
+                       rendered="#{app.inEditMode}"
+                       id="addCompositeLink"
+                       ajax="true" async="true" actionListener="#{app.createNewComposite()}">
+        </p:commandLink>
+
+        <ui:repeat value="#{iFeedModelBean.composites}" var="compositeItem"
+                   varStatus="status">
+                          <span class="ltr-flowing-item">
+                            <span class="name">#{copositeItem.name}</span>
+                            <span class="remove">
+                              <p:commandLink value=" " update=":ifeed_view"
+                                             rendered="#{app.inEditMode}"
+                                             styleClass="link-button-trash"
+                                             ajax="false" async="true"
+                                             id="remove_#{compositeItem.id}"
+                                             actionListener="#{iFeedModelBean.composites.remove(compositeItem)}">
+                              </p:commandLink>
+                            </span>
+                          </span>
+        </ui:repeat>
+    </div>
+
+</ui:composition>

@@ -886,7 +886,7 @@ public class Application {
     }
 
     public List<String> completeFeedName(String incompleteName) {
-        System.out.println("completeFeedName " + incompleteName);
+
         Filter sample = new FilterModel();
         sample.setName(incompleteName);
         List<IFeed> result = iFeedService.getIFeedsByFilter(sample, 0, 10);
@@ -905,6 +905,7 @@ public class Application {
             if (!nf.isEmpty()){
                 iFeedModelBean.getComposites().add(nf.get(0));
             }
+            newCompositeName = "";
         }
     }
 

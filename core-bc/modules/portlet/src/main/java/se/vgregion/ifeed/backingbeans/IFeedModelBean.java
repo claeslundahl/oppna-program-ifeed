@@ -49,6 +49,8 @@ public class IFeedModelBean extends IFeed implements Serializable {
         newOwnershipNames = new MirrorOwnershipToTextList(getOwnerships());
         setGroup(iFeed.getGroup());
         setDepartment(iFeed.getDepartment());
+        getComposites().addAll(iFeed.getComposites());
+        getPartOf().addAll(iFeed.getComposites());
         setInitalFeed(iFeed);
         setSortDirection("asc");
     }
@@ -192,6 +194,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
         /*iFeed.getOwnerships().addAll(getOwnerships());*/
         iFeed.setDepartment(getDepartment());
         iFeed.setGroup(getGroup());
+        iFeed.getComposites().addAll(getComposites());
 
 
         iFeed.setDynamicTableDefs(getDynamicTableDefs());

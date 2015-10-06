@@ -10,10 +10,7 @@ import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 
 import javax.persistence.*;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -61,7 +58,10 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     protected Set<Ownership> ownerships = new HashSet<Ownership>();
 
     @ManyToMany
-    protected List<IFeed> composites = new ArrayList<IFeed>();
+    protected List<IFeed> composites = new SetishArrayList<IFeed>();
+
+    @ManyToMany(mappedBy = "composites")
+    protected List<IFeed> partOf = new SetishArrayList<IFeed>();
 
     private String sortField;
     private String sortDirection;
@@ -263,9 +263,50 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     @GwtIncompatible
+    private void gatherAllNestedFeeds(Set<IFeed> intoThis) {
+        if (!intoThis.contains(this)) {
+            intoThis.add(this);
+            for (IFeed feed : composites) {
+                feed.gatherAllNestedFeeds(intoThis);
+            }
+        }
+    }
+
+    private Set<IFeed> getAllNestedFeedsFlattly() {
+        final Set<IFeed> result = new HashSet<IFeed>();
+        gatherAllNestedFeeds(result);
+        return result;
+    }
+
+    @GwtIncompatible
+    static private <T> T copy(T instance) {
+        ObjectOutputStream oos = null;
+        ObjectInputStream ois = null;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(baos);
+
+            oos.writeObject(instance);
+            oos.flush();
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ois = new ObjectInputStream(bais);
+            return (T) ois.readObject();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                oos.close();
+                ois.close();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @GwtIncompatible
     private String toJsonImpl() throws IOException, ClassNotFoundException {
         final Set<String> excludeFields = new HashSet<String>(Arrays.asList("iFeed", "ifeed", "ownerships",
-                "department", "group", "ifeedDynamicTableDefs", "tableDef"));
+                "department", "group", "ifeedDynamicTableDefs", "tableDef", "partOf"));
         Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes fieldAttributes) {
@@ -277,6 +318,18 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
                 return false;
             }
         }).create();
+
+        if (!composites.isEmpty()) {
+            //* To handle circular dependencies *//
+            IFeed container = new IFeed();
+            container.getComposites().addAll(copy(getAllNestedFeedsFlattly()));
+            long seq = 0;
+            for (IFeed feed : container.getComposites()) {
+                feed.getComposites().clear();
+                feed.setId(seq--); // to make it unique
+            }
+            return gson.toJson(container);
+        }
 
         /*
         ByteArrayOutputStream fout = new ByteArrayOutputStream();
@@ -292,6 +345,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         iFeed.setDepartment(null);
         iFeed.setGroup(null);
         return gson.toJson(iFeed);*/
+
         return gson.toJson(this);
     }
 
@@ -362,4 +416,48 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return composites;
     }
 
+    private static class SetishArrayList<E> extends ArrayList<E> {
+        @Override
+        public boolean add(E e) {
+            if (!contains(e)) {
+                return super.add(e);
+            }
+            return false;
+        }
+
+        @Override
+        public void add(int index, E element) {
+            if (!contains(element)) {
+                return;
+            }
+            super.add(index, element);
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends E> c) {
+            ArrayList<E> clone = new ArrayList<E>(c);
+            clone.removeAll(this);
+            return super.addAll(clone);
+        }
+
+        @Override
+        public boolean addAll(int index, Collection<? extends E> c) {
+            ArrayList<E> clone = new ArrayList<E>(c);
+            clone.removeAll(this);
+            return super.addAll(index, clone);
+        }
+    }
+
+    @PreRemove
+    void preRemove() {
+        composites.clear();
+        for (IFeed feet : partOf) {
+            feet.getComposites().remove(this);
+        }
+        partOf.clear();
+    }
+
+    public List<IFeed> getPartOf() {
+        return partOf;
+    }
 }

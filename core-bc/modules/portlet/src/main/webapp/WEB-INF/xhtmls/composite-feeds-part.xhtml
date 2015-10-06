@@ -7,7 +7,8 @@
                 xmlns:portlet="http://java.sun.com/portlet_2_0">
 
     <div>
-        <div style="font-weight: bold;"><i class="icon-user"></i>Delflöden:
+        <div style="font-weight: bold;" title="Flöde(n) vars resultat sammanfogas med denna">
+            <i class="icon-folder-open"></i>Inkluderade flöden:
         </div>
         <p:autoComplete id="createCompositeFeedInput"
                         value="#{app.newCompositeName}"
@@ -21,27 +22,32 @@
 
         <p:commandLink styleClass="ltr-flowing-item"
                        value="Lägg till"
-                       update="basicFeedInfo"
+                       update=":ifeed_view"
                        rendered="#{app.inEditMode}"
                        id="addCompositeLink"
-                       ajax="true" async="true" actionListener="#{app.createNewComposite()}">
+                       ajax="false"
+                       async="false"
+                       actionListener="#{app.createNewComposite()}">
         </p:commandLink>
 
-        <ui:repeat value="#{iFeedModelBean.composites}" var="compositeItem"
-                   varStatus="status">
-                          <span class="ltr-flowing-item">
-                            <span class="name">#{copositeItem.name}</span>
-                            <span class="remove">
-                              <p:commandLink value=" " update=":ifeed_view"
-                                             rendered="#{app.inEditMode}"
-                                             styleClass="link-button-trash"
-                                             ajax="false" async="true"
-                                             id="remove_#{compositeItem.id}"
-                                             actionListener="#{iFeedModelBean.composites.remove(compositeItem)}">
-                              </p:commandLink>
-                            </span>
-                          </span>
-        </ui:repeat>
+        <div class="clearfix">
+            <ui:repeat value="#{iFeedModelBean.composites}" var="compositeItem"
+                       varStatus="status">
+                              <span class="ltr-flowing-item">
+                                <span class="name">#{compositeItem.name}</span>
+                                <span class="remove">
+                                  <p:commandLink value=" " update=":ifeed_view"
+                                                 rendered="#{app.inEditMode}"
+                                                 styleClass="link-button-trash #{copositeItem.name}"
+                                                 ajax="false"
+                                                 async="true"
+                                                 id="remove_composite#{compositeItem.id}"
+                                                 actionListener="#{iFeedModelBean.composites.remove(compositeItem)}">
+                                  </p:commandLink>
+                                </span>
+                              </span>
+            </ui:repeat>
+        </div>
     </div>
 
 </ui:composition>

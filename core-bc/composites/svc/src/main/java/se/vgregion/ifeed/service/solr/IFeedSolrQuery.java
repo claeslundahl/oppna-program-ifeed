@@ -1,12 +1,5 @@
 package se.vgregion.ifeed.service.solr;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.join;
-import static se.vgregion.common.utils.CommonUtils.isNull;
-import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.SOLR_DATE_FORMAT;
-
-import java.util.*;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -16,11 +9,17 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+
+import java.util.*;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.join;
+import static se.vgregion.common.utils.CommonUtils.isNull;
+import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.SOLR_DATE_FORMAT;
 
 public class IFeedSolrQuery extends SolrQuery {
 
@@ -42,6 +41,7 @@ public class IFeedSolrQuery extends SolrQuery {
 
     public enum SortDirection {
         desc, asc;
+
         public SortDirection reverse() {
             return (this == asc) ? desc : asc;
         }
@@ -81,7 +81,16 @@ public class IFeedSolrQuery extends SolrQuery {
     private void addFeedFilters(IFeed iFeed) {
         List<String> resultWithOrBetween = new ArrayList<String>();
         addFeedFiltersImpl(iFeed, resultWithOrBetween, new HashSet<IFeed>());
-        addFilterQuery(join(resultWithOrBetween, " or "));
+
+        Iterator<String> i = resultWithOrBetween.iterator();
+        while (i.hasNext()) {
+            String s = i.next();
+            if (s == null || s.trim().isEmpty()) {
+                i.remove();
+            }
+        }
+
+        addFilterQuery("(" + join((resultWithOrBetween), " OR ") + ")");
     }
 
     private void addFeedFiltersImpl(IFeed iFeed, List<String> resultWithOrBetween, Set<IFeed> handled) {
@@ -128,8 +137,6 @@ public class IFeedSolrQuery extends SolrQuery {
             bag.get(iFeedFilter.getFilterKey()).add(iFeedFilter);
             //addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter, iFeedService.mapFieldInfToId()));
         }
-
-        boolean hasAlreadyFilters = this.getFilterQueries().length > 0;
 
         List<String> queryParts = new ArrayList<String>();
 

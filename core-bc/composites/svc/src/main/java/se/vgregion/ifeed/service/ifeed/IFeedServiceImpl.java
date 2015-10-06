@@ -173,6 +173,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                 }
             }
         }
+        result.getComposites().toString();
+        result.getPartOf().toString();
     }
 
     @Override

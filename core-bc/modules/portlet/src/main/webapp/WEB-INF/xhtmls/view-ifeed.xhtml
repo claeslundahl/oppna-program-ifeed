@@ -144,7 +144,9 @@
                 <div class="span4">
                     <ui:include src="show-department-and-group.xhtml"/>
                 </div>
-                <div class="span4 last">
+
+
+                <div class="span4 ">
                     <h:outputText style="font-weight: bold;" value="Lägg till: "></h:outputText>
                     <br/>
                     <h:commandLink value="EPI-konfiguration (JSON)"
@@ -180,13 +182,14 @@
                                                  ajax="true"/>
                     </h:panelGroup>
 
+                    <div>
+                        <ui:include src="composite-feeds-part.xhtml"/>
+                    </div>
+
                 </div>
             </h:panelGroup>
-
         </div>
     </div>
-
-
 
     <div class="container-fluid">
         <h3 style="display: inline;">

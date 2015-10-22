@@ -90,6 +90,10 @@ public class DynamicTableDef extends AbstractEntity {
         return feedId;
     }
 
+    public boolean isFeedIdEmpty() {
+        return  ((feedId == null || "".equals(feedId)) && getFkIfeedId() != null);
+    }
+
     public void setFeedId(String feedId) {
         this.feedId = feedId;
     }

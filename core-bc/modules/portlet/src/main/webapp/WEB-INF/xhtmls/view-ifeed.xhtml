@@ -136,15 +136,26 @@
                           </span>
                         </ui:repeat>
                     </div>
-
-
                 </div>
-
 
                 <div class="span4">
                     <ui:include src="show-department-and-group.xhtml"/>
+                    <div style="#{iFeedModelBean.partOf.isEmpty() ? 'display:none;' : ''}">
+                        <div class="clearfix" style="font-weight: bold;">Inluderas av</div>
+                        <div class="clearfix">
+                            <ui:repeat value="#{iFeedModelBean.partOf}" var="ci"
+                                       varStatus="status">
+                              <span class="ltr-flowing-item">
+                                <span class="name">
+                                    <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                                                   value="#{ci.name} (#{ci.id})"
+                                                   actionListener="#{app.viewIFeed(ci.id)}"/>
+                                </span>
+                              </span>
+                            </ui:repeat>
+                        </div>
+                    </div>
                 </div>
-
 
                 <div class="span4 ">
                     <h:outputText style="font-weight: bold;" value="Lägg till: "></h:outputText>
@@ -324,6 +335,8 @@
         document.getElementsByTagName('body')[0].appendChild(node);
         node.innerHTML = "#{app.getExcelFeedLinkForm()} hej";
     //]]>
+
+
 
     </script>
 

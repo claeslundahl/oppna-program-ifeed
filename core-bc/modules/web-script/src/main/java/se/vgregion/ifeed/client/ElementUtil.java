@@ -79,6 +79,8 @@ public class ElementUtil {
             tableDef.setDefaultSortColumn(from.getAttribute("defaultsortcolumn"));
             tableDef.setDefaultSortOrder(from.getAttribute("defaultsortorder"));
             tableDef.setFeedId(from.getAttribute("feedid"));
+            tableDef.setFkIfeedId(toLongOrHashCode(tableDef.getFeedId()));
+
             tableDef.setFontSize(from.getAttribute("fontSize"));
             tableDef.setHideRightColumn("yes".equals(from.getAttribute("hiderightcolumn")));
             tableDef.setLinkOriginalDoc("yes".equals(from.getAttribute("linkoriginaldoc")));
@@ -93,6 +95,17 @@ public class ElementUtil {
             return tableDef;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private static long toLongOrHashCode(String value) {
+        if (value == null) {
+            return 0;
+        }
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException nfe) {
+            return value.hashCode();
         }
     }
 

@@ -155,7 +155,9 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Transactional
     private void init(IFeed result) {
-        assert result != null : "An ifeed must be found to";
+        if (result == null) {
+            throw new NullPointerException("An ifeed must be found to");
+        }
         List<DynamicTableDef> dynamicTableDefs = result.getDynamicTableDefs();
         if (dynamicTableDefs != null) {
             for (DynamicTableDef dynamicTable : dynamicTableDefs) {

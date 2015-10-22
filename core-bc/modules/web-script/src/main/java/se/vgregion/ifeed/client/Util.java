@@ -166,4 +166,8 @@ public class Util {
         return url + "/iFeed-web/meta.json";
     }
 
+    public static native int localeCompare(String a, String b)  /*-{
+      return a.toLowerCase().localeCompare(b.toLowerCase());
+    }-*/;
+
 }

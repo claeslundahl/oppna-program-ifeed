@@ -34,7 +34,11 @@
             <ui:repeat value="#{iFeedModelBean.composites}" var="compositeItem"
                        varStatus="status">
                               <span class="ltr-flowing-item">
-                                <span class="name">#{compositeItem.name}</span>
+                                <span class="name">
+                                    <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                                                   value="#{compositeItem.name} (#{compositeItem.id})"
+                                                   actionListener="#{app.viewIFeed(compositeItem.id)}"/>
+                                </span>
                                 <span class="remove">
                                   <p:commandLink value=" " update=":ifeed_view"
                                                  rendered="#{app.inEditMode}"

@@ -58,8 +58,8 @@ public class Application {
 
     @Value("${ifeed.metadata.base.url}")
     private String metadataBaseUrl;
-/*    @Value("${ifeed.web.script.url}")
-    private String webScriptUrl;*/
+    /*    @Value("${ifeed.web.script.url}")
+        private String webScriptUrl;*/
     @Value("${ifeed.web.script.json.url}")
     private String webScriptJsonUrl;
     //@Value("#{tableDef}")
@@ -892,7 +892,7 @@ public class Application {
         List<IFeed> result = iFeedService.getIFeedsByFilter(sample, 0, 10);
         List<String> names = new ArrayList<String>();
         for (IFeed iFeed : result) {
-            names.add(iFeed.getName());
+            names.add(iFeed.getName() + " (" + iFeed.getId() + ")");
         }
         return names;
     }
@@ -900,9 +900,12 @@ public class Application {
     public void createNewComposite() {
         if (newCompositeName != null && !newCompositeName.isEmpty()) {
             Filter filter = new FilterModel();
-            filter.setName(newCompositeName);
+            String[] parts = newCompositeName.split("\\(|\\)");
+            String idPart = parts[parts.length - 1];
+            //filter.setName(newCompositeName);
+            filter.setId(Long.parseLong(idPart));
             List<IFeed> nf = iFeedService.getIFeedsByFilter(filter, 0, 1);
-            if (!nf.isEmpty()){
+            if (!nf.isEmpty()) {
                 iFeedModelBean.getComposites().add(nf.get(0));
             }
             newCompositeName = "";
@@ -915,6 +918,36 @@ public class Application {
 
     public void setNewCompositeName(String newCompositeName) {
         this.newCompositeName = newCompositeName;
+    }
+
+
+    private String getPartOfTextRepresentation(IFeed that) {
+        return getTextRepresentation(that.getPartOf());
+    }
+
+    private String getCompositesTextRepresentation(IFeed that) {
+        return getTextRepresentation(that.getComposites());
+    }
+
+    private String getTextRepresentation(List<IFeed> that) {
+        List<String> composites = new ArrayList<String>();
+        for (IFeed peers : that) {
+            composites.add(peers.getName() + " (" + peers.getId() + ")");
+        }
+        return Filter.join(composites, ", ");
+    }
+
+    public String getTextCompositesWarning(IFeed feed) {
+        StringBuilder sb = new StringBuilder();
+        if (!feed.getComposites().isEmpty()) {
+            sb.append("\\n* Flöden som används av det här flödet: ");
+            sb.append(getCompositesTextRepresentation(feed));
+        }
+        if (!feed.getPartOf().isEmpty()) {
+            sb.append("\\n* Flöden som använder det här flödet: ");
+            sb.append(getPartOfTextRepresentation(feed));
+        }
+        return sb.toString();
     }
 
 }

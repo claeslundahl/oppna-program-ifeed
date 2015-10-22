@@ -14,6 +14,7 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
+import java.text.Collator;
 import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -56,6 +57,17 @@ public class IFeedSolrQuery extends SolrQuery {
             QueryResponse response = solrServer.query(this);
             SolrDocumentList sdl = response.getResults();
             hits = (ArrayList<Map<String, Object>>) sdl.clone();
+            final Collator collator = Collator.getInstance(new Locale("sv", "SE")); //Your locale here
+            collator.setStrength(Collator.PRIMARY);
+
+            Collections.sort(hits, new Comparator<Map<String, Object>>() {
+                @Override
+                public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                    String f1 = (String) o1.get(sortField);
+                    String f2 = (String) o2.get(sortField);
+                    return collator.compare(f1.trim().toLowerCase(), f2.trim().toLowerCase());
+                }
+            });
         } catch (SolrServerException e) {
             e.printStackTrace();
             LOGGER.error("Serverfel: {}", e.getCause());

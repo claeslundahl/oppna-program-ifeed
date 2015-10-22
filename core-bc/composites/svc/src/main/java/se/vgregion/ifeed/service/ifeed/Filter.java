@@ -38,7 +38,7 @@ public class Filter extends IFeed {
                 sb.append(" left join o.ownerships ow ");
             }
             sb.append(" where ");
-            sb.append(join(condition, " and "));
+            sb.append(join(condition, " AND "));
         }
 
         return sb.toString() + " order by o.name";

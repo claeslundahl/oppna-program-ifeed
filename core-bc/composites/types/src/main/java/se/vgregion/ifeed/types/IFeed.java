@@ -57,10 +57,10 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
     protected Set<Ownership> ownerships = new HashSet<Ownership>();
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     protected List<IFeed> composites = new SetishArrayList<IFeed>();
 
-    @ManyToMany(mappedBy = "composites")
+    @ManyToMany(mappedBy = "composites", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     protected List<IFeed> partOf = new SetishArrayList<IFeed>();
 
     private String sortField;
@@ -331,21 +331,6 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             return gson.toJson(container);
         }
 
-        /*
-        ByteArrayOutputStream fout = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(fout);
-        oos.writeObject(this);
-        ByteArrayInputStream bais = new ByteArrayInputStream(fout.toByteArray());
-        ObjectInputStream ois = new ObjectInputStream(bais);
-
-        IFeed iFeed = (IFeed) ois.readObject();
-
-        findCirkular(iFeed);
-        iFeed.getOwnerships().clear();
-        iFeed.setDepartment(null);
-        iFeed.setGroup(null);
-        return gson.toJson(iFeed);*/
-
         return gson.toJson(this);
     }
 
@@ -460,4 +445,5 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     public List<IFeed> getPartOf() {
         return partOf;
     }
+
 }

@@ -9,10 +9,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import se.vgregion.ifeed.shared.ColumnDef;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.Collator;
+import java.util.*;
 
 /**
  * Widget that renders entries as a table.
@@ -71,8 +69,16 @@ public class Display extends EventedListGrid<Entry> {
         }
 
         List<Entry> result = mapOfLists.allInOrder();
-        if (currentSortOrder.equals("asc"))
+
+        if (currentSortOrder.equals("asc")){
+            Collections.sort(result, new Comparator<Entry>() {
+                @Override
+                public int compare(Entry o1, Entry o2) {
+                    return Util.localeCompare(o1.get(currentSortColumn), o2.get(currentSortColumn));
+                }
+            });
             return result;
+        }
 
         Collections.reverse(result);
         return result;

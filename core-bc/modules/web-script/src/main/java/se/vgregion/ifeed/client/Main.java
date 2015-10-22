@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -148,7 +149,7 @@ public class Main implements EntryPoint {
 
                 panel.clear();
                 EventedList<Entry> model = new EventedList<Entry>();
-                Display displayTable = new Display(tableDef, model);
+                final Display displayTable = new Display(tableDef, model);
                 panel.add(displayTable);
                 if (tableDef.getOnStartJsCallback() != null && !"".equals(tableDef.getOnStartJsCallback())) {
                     eval(tableDef.getOnStartJsCallback());
@@ -219,7 +220,9 @@ public class Main implements EntryPoint {
     private void displayHits(final TableDef tableDef, final Display display) {
         Scheduler.get().scheduleDeferred(new Command() {
             public void execute() {
-                com.google.gwt.dom.client.Element countDisplay = Document.get().getElementById("ifeed-count-" + tableDef.getFeedId());
+                //com.google.gwt.dom.client.Element countDisplay = Document.get().getElementById("ifeed-count-" + tableDef.getFeedId().hashCode());
+                com.google.gwt.dom.client.Element countDisplay = Document.get().getElementById("ifeed-count-" + tableDef.getFkIfeedId());
+                Util.log("tableDef.getFkIfeedId " + tableDef.getFkIfeedId());
                 if (countDisplay != null && display != null && display.getData() != null) {
                     countDisplay.setInnerHTML(display.getData().size() + "");
                 }

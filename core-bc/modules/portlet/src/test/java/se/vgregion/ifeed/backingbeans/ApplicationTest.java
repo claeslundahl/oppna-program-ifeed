@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class ApplicationTest {
@@ -33,6 +34,13 @@ public class ApplicationTest {
         result = Application.getMaxPageCountImp(list, 10);
         Assert.assertEquals(1, result);
 */
+    }
+
+    @Test
+    public void gettingOfLong() {
+        String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
+        String[] r = "hej hoppsan (89)".split("\\(|\\)");
+        System.out.println(Arrays.asList(r));
     }
 
 }

@@ -116,7 +116,6 @@ public class SolrFacetUtil {
     public static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field) throws Exception {
         List<String> values = new ArrayList<String>();
         String fu = facetUrl(solrBaseUrl, feed, field);
-        System.out.println("fu="+fu);
         URL url = new URL(fu);
         InputStream stream = url.openStream();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

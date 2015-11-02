@@ -130,7 +130,7 @@ public class IFeedSolrQuery extends SolrQuery {
                 // addFilterQuery(fq);
             }
         }
-        resultWithOrBetween.add(join(queryParts, " and "));
+        resultWithOrBetween.add(join(queryParts, " AND "));
 
         for (IFeed composite : iFeed.getComposites()) {
             addFeedFiltersImpl(composite, resultWithOrBetween, handled);
@@ -164,7 +164,7 @@ public class IFeedSolrQuery extends SolrQuery {
             }
         }
 
-        addFilterQuery(join(queryParts, " and "));
+        addFilterQuery(join(queryParts, " AND "));
 
         LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
     }

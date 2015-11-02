@@ -58,7 +58,7 @@
                                 update=":ifeed_view"
                                 ajax="false"
                                 rendered="#{app.isSuperUser()}"
-                                onclick="confirm('Är du säker du vill radera den här posten?')"
+                                onclick="confirm('Är du säker du vill ta bort den här posten?')"
                                 async="true">
                         </p:commandLink>
                         ${app.isSuperUser() ? '' : department.description}

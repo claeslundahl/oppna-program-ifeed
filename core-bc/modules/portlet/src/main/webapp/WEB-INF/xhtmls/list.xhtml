@@ -99,7 +99,7 @@
                                     update=":ifeed_view"
                                     ajax="false"
                                     rendered="#{item != null and app.mayEditFeed(request, item)}"
-                                    onclick="return confirm('Är du säker du vill radera den här posten? #{app.getTextCompositesWarning(item)}')"
+                                    onclick="if (!confirm('Är du säker på att du vill ta bort den här posten? \n #{app.getTextCompositesWarning(item)}')) return false;"
                                     async="true">
                             </p:commandLink>
                         </td>

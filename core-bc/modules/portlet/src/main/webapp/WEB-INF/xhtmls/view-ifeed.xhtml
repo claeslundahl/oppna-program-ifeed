@@ -44,7 +44,7 @@
             <p:commandLink styleClass="rp-link-button secondary" value="Avbryt" update=":ifeed_view"
                            rendered="#{app.inEditMode}"
                            id="cancelEditIfeedLink"
-                           ajax="false" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
+                           ajax="false" async="true" actionListener="#{app.cancelEdit()}">
             </p:commandLink>
             <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
                            rendered="#{app.isInEditMode()}"

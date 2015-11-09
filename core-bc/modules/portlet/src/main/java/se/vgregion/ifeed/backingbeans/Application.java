@@ -950,4 +950,11 @@ public class Application {
         return sb.toString();
     }
 
+    public void cancelEdit() throws SystemException, PortalException {
+        if (iFeedModelBean.getId() != null) {
+            viewIFeed(iFeedModelBean.getId());
+            setInEditMode(false);
+        }
+    }
+
 }

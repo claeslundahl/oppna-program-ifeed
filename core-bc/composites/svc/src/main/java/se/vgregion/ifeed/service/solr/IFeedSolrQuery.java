@@ -10,6 +10,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.vgregion.common.utils.CommonUtils;
+import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
@@ -102,7 +103,7 @@ public class IFeedSolrQuery extends SolrQuery {
             }
         }
 
-        addFilterQuery("(" + join((resultWithOrBetween), " OR ") + ")");
+        addFilterQuery("((" + Filter.join(resultWithOrBetween, ") OR (") + "))");
     }
 
     private void addFeedFiltersImpl(IFeed iFeed, List<String> resultWithOrBetween, Set<IFeed> handled) {

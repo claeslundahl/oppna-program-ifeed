@@ -2,6 +2,7 @@ package se.vgregion.ifeed.backingbeans;
 
 
 import net.sf.cglib.beans.BeanMap;
+import net.sf.cglib.beans.FixedKeySet;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.common.utils.CommonUtils;
@@ -298,6 +299,23 @@ public class IFeedModelBean extends IFeed implements Serializable {
     @Override
     public String toJson() {
         return toIFeed().toJson();
+    }
+
+    public boolean hasAnyFilter() {
+        Set<IFeedFilter> result = new HashSet<IFeedFilter>();
+        gatherNestedFilters(this, new HashSet<IFeed>(), result);
+        return !result.isEmpty();
+    }
+
+    private void gatherNestedFilters(IFeed iFeed, Set<IFeed> handled, Set<IFeedFilter> result) {
+        if (handled.contains(iFeed)) {
+            return; // Avoids infinite recursive calls.
+        }
+        handled.add(iFeed);
+        result.addAll(iFeed.getFilters());
+        for (IFeed composite : iFeed.getComposites()) {
+            gatherNestedFilters(composite, handled, result);
+        }
     }
 
 }

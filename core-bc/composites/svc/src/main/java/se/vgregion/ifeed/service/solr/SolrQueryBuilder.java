@@ -20,7 +20,7 @@ public class SolrQueryBuilder {
         for (IFeedFilter filter: filters) {
             parts.add(createQuery(filter, (Map<String, FieldInf>) null));
         }
-        return "(" + join(parts, " OR ") + ")";
+        return "((" + se.vgregion.ifeed.service.ifeed.Filter.join(parts, ") OR (") + "))";
     }
 
     private static String join(List<?> list, String junctor) {

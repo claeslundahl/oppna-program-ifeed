@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 /**
@@ -38,6 +40,7 @@ public class Ie7Rewrite implements Filter {
     /**
      * Main handler that gets the call from the client. It examines the request to find out if it is from a Ie7. If so
      * it then tries to rewrite, and cache, the served script (it only triggers on *.js-files).
+     *
      * @param request
      * @param response
      * @param chain
@@ -45,14 +48,14 @@ public class Ie7Rewrite implements Filter {
      * @throws ServletException
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(final ServletRequest request, ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         PrintWriter out = response.getWriter();
-        CharResponseWrapper responseWrapper = new CharResponseWrapper(
+        final CharResponseWrapper responseWrapper = new CharResponseWrapper(
                 (HttpServletResponse) response);
 
         HttpServletRequest hr = (HttpServletRequest) request;
         String userAgent = hr.getHeader("User-Agent");
-        String path = hr.getRequestURI().substring(hr.getContextPath().length());
+        final String path = hr.getRequestURI().substring(hr.getContextPath().length());
         //System.out.println("Path " + path + " userAgent = " + userAgent);
 
         String result = null;
@@ -60,14 +63,26 @@ public class Ie7Rewrite implements Filter {
             if (urlToContentCache.containsKey(path)) {
                 result = urlToContentCache.get(path);
             } else if (!jsConversionRunning) {
-                System.out.println("Rewriting ie-script start!");
-                jsConversionRunning = true;
-                chain.doFilter(request, responseWrapper);
-                result = new String(responseWrapper.toString());
-                result = removeFinallyBlockFrom(result);
-                urlToContentCache.put(path, result);
-                System.out.println("Rewriting ie-script done!");
-                jsConversionRunning = false;
+                final ThreadLocal<String> intermediateResult = new ThreadLocal<String>();
+                Executor executor = Executors.newSingleThreadExecutor();
+                executor.execute(new Runnable() {
+                    public void run() { /* do something */
+                        try {
+                            System.out.println("Rewriting ie-script start!");
+                            jsConversionRunning = true;
+                            chain.doFilter(request, responseWrapper);
+                            String r = new String(responseWrapper.toString());
+                            r = removeFinallyBlockFrom(r);
+                            urlToContentCache.put(path, r);
+                            intermediateResult.set(r);
+                            System.out.println("Rewriting ie-script done!");
+                            jsConversionRunning = false;
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+                result = intermediateResult.get();
             } else {
                 result = "Machine not yet ready with script.";
             }
@@ -91,6 +106,7 @@ public class Ie7Rewrite implements Filter {
      * Notice that there are redundant calls in this method: "splitter.split('"');" and
      * "splitter.split(Pattern.quote("\""));" for instance. This is because the code failed on the linux test
      * environment but succeeded on the developer machine (windows), with the same input?!
+     *
      * @param text to be broken into logical meaningfully parts.
      * @return the entire input (no data loss) broken into bits.
      */

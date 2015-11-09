@@ -3,24 +3,23 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:portlet="http://java.sun.com/portlet_2_0">
+>
 
-    <h:panelGroup rendered="#{not iFeedModelBean.getFilters().isEmpty()}">
+    <h:panelGroup rendered="#{iFeedModelBean.hasAnyFilter()}">
 
         <h:panelGroup rendered="#{app.inEditMode}" styleClass="ifeed-step" layout="block">
             <span style="no">Din träfflista</span>
         </h:panelGroup>
         <h:panelGroup rendered="#{!app.inEditMode}" layout="block">
             <h2>Resultat</h2>
-            <h:selectBooleanCheckbox value="#{app.limitOnResultCount}" rendered="false" />
+            <h:selectBooleanCheckbox value="#{app.limitOnResultCount}" rendered="false"/>
         </h:panelGroup>
 
         <div class="#{app.inEditMode ? 'ifeed-filter-box' : ''}">
             <div>
                 ( <span class="ifeed-step" id="ifeed-count-#{iFeedModelBean.toJson().hashCode()}">0</span> st
-                <ui:fragment rendered="#{header['User-Agent'].contains('; MSIE ')}"> - visar max 200</ui:fragment> )
+                <ui:fragment rendered="#{header['User-Agent'].contains('; MSIE ')}"> - visar max 200</ui:fragment>
+                )
             </div>
             <ui:fragment rendered="#{header['User-Agent'].contains('; MSIE ')}">
                 <div
@@ -54,7 +53,7 @@
             </ui:fragment>
 
         </div>
-    <div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>
-    <button id="rerun-ifeed-loading" style="display:none;">Should be hidden</button>
+        <div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>
+        <button id="rerun-ifeed-loading" style="display:none;">Should be hidden</button>
     </h:panelGroup>
 </ui:composition>

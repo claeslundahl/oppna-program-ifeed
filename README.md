@@ -1,22 +1,11 @@
-
-
-  <p>
-    <tt>
-      oppna-program-icc
-    </tt>
-     ?r en del i V?stra G?talandsregionens satsning p? ?ppen k?llkod inom ramen f?r 
-    <a href="https://github.com/Vastra-Gotalandsregionen//oppna-program">
-      ?ppna Program
-    </a>
-    . 
-  </p>
+</p>
   <p>
     <tt>
       oppna-program-ifeed
     </tt>
-     ?r en del i V?stra G?talandsregionens satsning p? ?ppen k?llkod inom ramen f?r 
+     Är en del i Västra Götalandsregionens satsning på Öppen källkod inom ramen för 
     <a href="https://github.com/Vastra-Gotalandsregionen//oppna-program">
-      ?ppna Program
+      Öppna Program
     </a>
     . 
   </p>

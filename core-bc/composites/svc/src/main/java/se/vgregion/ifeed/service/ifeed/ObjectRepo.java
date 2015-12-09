@@ -1,10 +1,13 @@
 package se.vgregion.ifeed.service.ifeed;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -154,16 +157,14 @@ public class ObjectRepo {
         this.entityManager = entityManager;
     }
 
-    /*
-    public <V> List<V> findAllLazy(Class<V> clazz) {
-        String queryString = "select t from " + clazz.getSimpleName() + " t";
-        Query query = entityManager.createQuery(queryString);
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public <T> Collection<T> findByQuery(Class<T> ofThisType, String withJpqlQuery) {
+        Query query = entityManager.createQuery(withJpqlQuery);
         return query.getResultList();
     }
-    */
 
-    //use with caution
-//    public void deleteAll(Class clazz) {
-//        entityManager.createQuery("delete from " + clazz.getSimpleName()).executeUpdate();
-//    }
 }

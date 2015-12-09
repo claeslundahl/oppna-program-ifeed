@@ -6,6 +6,7 @@ import java.util.Map;
 import com.liferay.portal.kernel.cache.ThreadLocalCachable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
 
 public interface IFeedService {
@@ -41,6 +42,8 @@ public interface IFeedService {
 
     @Transactional
     void removeIFeed(IFeed feed);
+
+    //@Transactional     List<DynamicTableDef> lookupDynamicTableDefs(Long byIfeedId);
 
     @Transactional
     IFeed update(IFeed iFeed);

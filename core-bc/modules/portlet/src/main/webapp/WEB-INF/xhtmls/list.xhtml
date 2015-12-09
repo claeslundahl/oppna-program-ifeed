@@ -111,7 +111,12 @@
             <p:commandLink update=":ifeed_view" ajax="false" async="true"
                            value="Föregående sida"
                            rendered="#{app.currentPage > 0}"
+                           styleClass="padding-right: 0.5em;"
                            actionListener="#{app.previousPage()}"/>
+
+            <h:outputText value=" | "
+                          rendered="#{app.currentPage > 0 and app.getMaxPageCount() > (app.currentPage + 1)}"/>
+
             <p:commandLink update=":ifeed_view" ajax="false" async="true"
                            value="Nästa sida"
                            rendered="#{app.getMaxPageCount() > (app.currentPage + 1)}"

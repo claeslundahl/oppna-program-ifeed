@@ -63,14 +63,14 @@ public class Ie7Rewrite implements Filter {
             if (urlToContentCache.containsKey(path)) {
                 result = urlToContentCache.get(path);
             } else if (!jsConversionRunning) {
-                final ThreadLocal<String> intermediateResult = new ThreadLocal<String>();
+                /*final ThreadLocal<String> intermediateResult = new ThreadLocal<String>();
                 Executor executor = Executors.newSingleThreadExecutor();
                 executor.execute(new Runnable() {
-                    public void run() { /* do something */
+                    public void run() { *//* do something *//*
                         try {
                             System.out.println("Rewriting ie-script start!");
                             jsConversionRunning = true;
-                            chain.doFilter(request, responseWrapper);
+                            //chain.doFilter(request, responseWrapper);
                             String r = new String(responseWrapper.toString());
                             r = removeFinallyBlockFrom(r);
                             urlToContentCache.put(path, r);
@@ -78,13 +78,28 @@ public class Ie7Rewrite implements Filter {
                             System.out.println("Rewriting ie-script done!");
                             jsConversionRunning = false;
                         } catch (Exception e) {
+                            jsConversionRunning = false;
                             throw new RuntimeException(e);
                         }
                     }
                 });
-                result = intermediateResult.get();
+                chain.doFilter(request, responseWrapper);
+                result = intermediateResult.get();*/
+
+                jsConversionRunning = true;
+                try {
+                    System.out.println("Rewriting ie-script start!: " + path);
+                    chain.doFilter(request, responseWrapper);
+                    String r = new String(responseWrapper.toString());
+                    result = removeFinallyBlockFrom(r);
+                    urlToContentCache.put(path, result);
+                    System.out.println("Rewriting ie-script end!: " + path);
+                    System.out.println("Result skript is " + result);
+                } finally {
+                    jsConversionRunning = false;
+                }
             } else {
-                result = "Machine not yet ready with script.";
+                result = "alert('Machine not yet ready with script.');";
             }
         } else {
             chain.doFilter(request, responseWrapper);

@@ -28,7 +28,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     protected Long id;
 
     @OneToMany(mappedBy = "ifeed")
-    private List<DynamicTableDef> dynamicTableDefs = new ArrayList<DynamicTableDef>();
+    private final List<DynamicTableDef> dynamicTableDefs = new ArrayList<DynamicTableDef>();
 
     @Version
     private Long version;
@@ -393,9 +393,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return dynamicTableDefs;
     }
 
-    public void setDynamicTableDefs(List<DynamicTableDef> dynamicTableDefs) {
+    /*public void setDynamicTableDefs(List<DynamicTableDef> dynamicTableDefs) {
         this.dynamicTableDefs = dynamicTableDefs;
-    }
+    }*/
 
     public List<IFeed> getComposites() {
         return composites;

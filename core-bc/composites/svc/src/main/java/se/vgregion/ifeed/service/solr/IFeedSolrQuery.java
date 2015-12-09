@@ -3,7 +3,6 @@ package se.vgregion.ifeed.service.solr;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocumentList;
@@ -16,6 +15,7 @@ import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.text.Collator;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -24,6 +24,8 @@ import static se.vgregion.common.utils.CommonUtils.isNull;
 import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.SOLR_DATE_FORMAT;
 
 public class IFeedSolrQuery extends SolrQuery {
+
+    private static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyyMMddHH:mm:s.S");
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedSolrQuery.class);
@@ -61,20 +63,79 @@ public class IFeedSolrQuery extends SolrQuery {
             final Collator collator = Collator.getInstance(new Locale("sv", "SE")); //Your locale here
             collator.setStrength(Collator.PRIMARY);
 
+            /*
             Collections.sort(hits, new Comparator<Map<String, Object>>() {
                 @Override
                 public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-                    String f1 = (String) o1.get(sortField);
-                    String f2 = (String) o2.get(sortField);
-                    return collator.compare(f1.trim().toLowerCase(), f2.trim().toLowerCase());
+                    String f1 = formatTextBeforeSorting(o1.get(sortField));
+                    String f2 = formatTextBeforeSorting(o2.get(sortField));
+
+                    return (sortDirection.equals(SortDirection.asc) ? 1 : -1)
+                            * collator.compare(f1.trim().toLowerCase(), f2.trim().toLowerCase());
                 }
-            });
+            });*/
+
+            /*
+            Collections.sort(hits, new Comparator<Map<String, Object>>() {
+                @Override
+                public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                    int direction = sortDirection.equals(SortDirection.asc) ? 1 : -1;
+                    Object f1 = o1.get(sortField);
+                    Object f2 = o2.get(sortField);
+
+                    if (f1 == null && f2 == null) {
+                        return 0;
+                    }
+
+                    if (f1 == null) {
+
+                        return f2.hashCode() * direction;
+
+                        //return direction * -1;
+                    }
+
+                    if (f2 == null) {
+
+                        return direction * f1.hashCode();
+                    }
+
+
+                    return direction
+                            * collator.compare(f1.toString().trim().toLowerCase(), f2.toString().trim().toLowerCase());
+                }
+            });*/
+
         } catch (SolrServerException e) {
             e.printStackTrace();
             LOGGER.error("Serverfel: {}", e.getCause());
         }
         return hits;
     }
+
+    private boolean isNumbersOnly(Object o) {
+        if (o == null) {
+            return false;
+        }
+        return (o.toString().matches("\\d+"));
+    }
+
+    static String formatTextBeforeSorting(Object value) {
+        if (value instanceof Date) {
+            return String.valueOf(((Date) value).getTime());
+        }
+        return padTrailing(String.valueOf(value), 13, '9');
+    }
+
+    private static String padTrailing(String forThat, int upToPosition, Character with) {
+        for (int i = forThat.length(); i < upToPosition; i++) {
+            forThat += with;
+        }
+        return forThat;
+    }
+
+
+    // 1388707200000
+
 
     private void addOffsetFilter(Date offset) {
         if (offset != null) {
@@ -179,12 +240,14 @@ public class IFeedSolrQuery extends SolrQuery {
 
         IFeedResults results = new IFeedResults();
 
-        if (solrServer instanceof CommonsHttpSolrServer) {
+        /*if (solrServer instanceof CommonsHttpSolrServer) {
             CommonsHttpSolrServer chss = (CommonsHttpSolrServer) solrServer;
             results.setQueryUrl(chss.getBaseURL() + "/select" + ClientUtils.toQueryString(this, false));
         } else {
             results.setQueryUrl(ClientUtils.toQueryString(this, false));
-        }
+        }*/
+
+        results.setQueryUrl(ClientUtils.toQueryString(this, false));
 
         results.addAll(prepareAndPerformQuery(iFeed.getSortField(), direction));
 

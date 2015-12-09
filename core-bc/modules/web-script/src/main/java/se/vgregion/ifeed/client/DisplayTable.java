@@ -17,6 +17,7 @@ import java.util.Set;
 /**
  * Widget that renders entries as a table.
  */
+@Deprecated
 public class DisplayTable extends Composite {
 
     FlexTable impl = new FlexTable();

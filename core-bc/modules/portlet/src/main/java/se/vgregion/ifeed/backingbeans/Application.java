@@ -142,6 +142,12 @@ public class Application {
     private Map<String, FieldInf> fieldsByNameIndex;
 
     public Application() {
+        super();
+    }
+
+    public Application(IFeedService iFeedService) {
+        super();
+        this.iFeedService = iFeedService;
     }
 
     @PostConstruct
@@ -205,7 +211,7 @@ public class Application {
 
     int getMaxPageCountImp(Collection list, int pageSize) {
         int r = iFeedService.getLatestFilterQueryTotalCount() / pageSize;
-        if (list.size() % pageSize > 0) {
+        if (iFeedService.getLatestFilterQueryTotalCount() % pageSize > 0) {
             r++;
         }
         return r;

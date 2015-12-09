@@ -9,7 +9,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import se.vgregion.ifeed.shared.ColumnDef;
 
-import java.text.Collator;
 import java.util.*;
 
 /**
@@ -44,6 +43,7 @@ public class Display extends EventedListGrid<Entry> {
         init();
         this.data.getAddSpies().add(new EventedList.Spy<Entry>() {
             boolean haveRun = false;
+
             @Override
             public void event(Entry item, int index) {
                 addColumnWidth();
@@ -55,7 +55,7 @@ public class Display extends EventedListGrid<Entry> {
                 return haveRun;
             }
         });
-        for (Entry item: parameterData) {
+        for (Entry item : parameterData) {
             this.data.add(item);
         }
         //this.data.addAll(data);
@@ -70,11 +70,13 @@ public class Display extends EventedListGrid<Entry> {
 
         List<Entry> result = mapOfLists.allInOrder();
 
-        if (currentSortOrder.equals("asc")){
+        if (currentSortOrder.equals("asc")) {
             Collections.sort(result, new Comparator<Entry>() {
                 @Override
                 public int compare(Entry o1, Entry o2) {
-                    return Util.localeCompare(o1.get(currentSortColumn), o2.get(currentSortColumn));
+                    String s1 = formatTextBeforeSorting(o1.get(currentSortColumn));
+                    String s2 = formatTextBeforeSorting(o2.get(currentSortColumn));
+                    return Util.localeCompare(s1, s2);
                 }
             });
             return result;
@@ -82,6 +84,24 @@ public class Display extends EventedListGrid<Entry> {
 
         Collections.reverse(result);
         return result;
+    }
+
+    /*
+        Copy / Paste from
+        {@se.vgregion.ifeed.service.solr.IFeedSolrQuery.formatTextBeforeSorting(Object)}
+    */
+    static String formatTextBeforeSorting(Object value) {
+        if (value instanceof Date) {
+            return String.valueOf(((Date) value).getTime());
+        }
+        return padTrailing(String.valueOf(value), 13, '9');
+    }
+
+    private static String padTrailing(String forThat, int upToPosition, Character with) {
+        for (int i = forThat.length(); i < upToPosition; i++) {
+            forThat += with;
+        }
+        return forThat;
     }
 
     private int ifMetadataSaysSoRenderColumnHeadersAndReturnRow(int row) {
@@ -200,7 +220,7 @@ public class Display extends EventedListGrid<Entry> {
 
     private void addColumnWidth() {
         List<ColumnDef> columns = tableDef.getColumnDefs();
-        impl.getFlexCellFormatter().getElement(0,0).getStyle().setWidth(15, Style.Unit.PX);
+        impl.getFlexCellFormatter().getElement(0, 0).getStyle().setWidth(15, Style.Unit.PX);
         for (int i = 0; i < columns.size(); i++) {
             ColumnDef cd = columns.get(i);
             String width = cd.getWidth();

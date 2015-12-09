@@ -202,7 +202,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
         iFeed.getComposites().addAll(getComposites());
 
 
-        iFeed.setDynamicTableDefs(getDynamicTableDefs());
+        iFeed.getDynamicTableDefs().addAll(getDynamicTableDefs());
 
         return iFeed;
     }

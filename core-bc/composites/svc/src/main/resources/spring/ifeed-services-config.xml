@@ -45,7 +45,7 @@
 
   <bean id="objectRepo" class="se.vgregion.ifeed.service.ifeed.ObjectRepo" />
 
-  <bean id="solrServer" class="org.apache.solr.client.solrj.impl.CommonsHttpSolrServer" scope="prototype">
+  <bean id="solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer" scope="prototype">
     <constructor-arg type="java.lang.String" value="${solr.service}" />
     <property name="requestWriter">
       <bean class="org.apache.solr.client.solrj.impl.BinaryRequestWriter" />

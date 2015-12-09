@@ -158,6 +158,9 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         if (result == null) {
             throw new NullPointerException("An ifeed must be found to");
         }
+
+        // result.getDynamicTableDefs().addAll(lookupDynamicTableDefs(result.getId()));
+
         List<DynamicTableDef> dynamicTableDefs = result.getDynamicTableDefs();
         if (dynamicTableDefs != null) {
             for (DynamicTableDef dynamicTable : dynamicTableDefs) {
@@ -268,7 +271,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                             feed.setGroup(null);
                             update(feed);
                         }
-                    }else {
+                    } else {
                         VgrGroup group = department.getVgrGroups().get(department.getVgrGroups().indexOf(groupFromDb));
                         if (group.getId() != null) {
                             objectRepo.merge(group);
@@ -461,9 +464,10 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     /**
      * Find data in the db by ites primary key.
+     *
      * @param clazz what type to find.
-     * @param id search key to use.
-     * @param <T> type that are being returned.
+     * @param id    search key to use.
+     * @param <T>   type that are being returned.
      * @return list with zero or more results.
      */
     @Override

@@ -3,6 +3,7 @@ package se.vgregion.ifeed.backingbeans;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.junit.Test;
+import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,13 +14,21 @@ public class ApplicationTest {
     @Test
     public void getMaxPageCountImp() {
         Collection list = new ArrayList();
-        for (int i = 0; i < 101; i++) {
+        for (int i = 0; i < 30; i++) {
             list.add(i);
         }
 
-/*
-        int result = Application.getMaxPageCountImp(list, 10);
-        Assert.assertEquals(11, result);
+        Application app = new Application(new IFeedServiceImpl(){
+            @Override
+            public int getLatestFilterQueryTotalCount() {
+                return 30;
+            };
+        });
+
+        int result = app.getMaxPageCountImp(list, 25);
+        Assert.assertEquals(2, result);
+
+        /*
 
         list.remove(100);
         result = Application.getMaxPageCountImp(list, 10);

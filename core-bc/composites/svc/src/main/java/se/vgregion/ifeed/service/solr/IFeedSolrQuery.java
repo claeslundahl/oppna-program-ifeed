@@ -25,8 +25,6 @@ import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.SOLR_DATE_
 
 public class IFeedSolrQuery extends SolrQuery {
 
-    private static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyyMMddHH:mm:s.S");
-
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedSolrQuery.class);
 
@@ -51,6 +49,46 @@ public class IFeedSolrQuery extends SolrQuery {
         }
     }
 
+    static Collator getSwedishComparator() {
+        final Collator collator = new SwedishCollator(Collator.getInstance(new Locale("sv", "SE")));
+        collator.setStrength(Collator.PRIMARY);
+        return collator;
+    }
+
+    static void sort(final List<Map<String, Object>> list, final String byThisField, final int inDirection) {
+        final Collator collator = getSwedishComparator();
+        Collections.sort(list, new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> map1, Map<String, Object> map2) {
+                Object o1 = map1.get(byThisField);
+                Object o2 = map2.get(byThisField);
+
+                if (o1 == o2) {
+                    return 0;
+                }
+
+                if (o1 instanceof String && o2 instanceof String) {
+                    return inDirection
+                            * collator.compare(((String) o1).trim().toLowerCase(), ((String) o2).trim().toLowerCase());
+                }
+
+                if (o1 instanceof Comparable && o2 instanceof Comparable) {
+                    return ((Comparable) o1).compareTo(o2) * inDirection;
+                }
+
+                if (o1 == null) {
+                    return -1 * inDirection;
+                }
+
+                if (o2 == null) {
+                    return +1 * inDirection;
+                }
+
+                return collator.compare(o1, o2) * inDirection;
+            }
+        });
+    }
+
     @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> doFilterQuery(final String sortField, final SortDirection sortDirection) {
         this.setSortField(sortField, ORDER.valueOf(sortDirection.name().toLowerCase(CommonUtils.SWEDISH_LOCALE)));
@@ -60,63 +98,14 @@ public class IFeedSolrQuery extends SolrQuery {
             QueryResponse response = solrServer.query(this);
             SolrDocumentList sdl = response.getResults();
             hits = (ArrayList<Map<String, Object>>) sdl.clone();
-            final Collator collator = Collator.getInstance(new Locale("sv", "SE")); //Your locale here
-            collator.setStrength(Collator.PRIMARY);
 
-            /*
-            Collections.sort(hits, new Comparator<Map<String, Object>>() {
-                @Override
-                public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-                    String f1 = formatTextBeforeSorting(o1.get(sortField));
-                    String f2 = formatTextBeforeSorting(o2.get(sortField));
-
-                    return (sortDirection.equals(SortDirection.asc) ? 1 : -1)
-                            * collator.compare(f1.trim().toLowerCase(), f2.trim().toLowerCase());
-                }
-            });*/
-
-            /*
-            Collections.sort(hits, new Comparator<Map<String, Object>>() {
-                @Override
-                public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-                    int direction = sortDirection.equals(SortDirection.asc) ? 1 : -1;
-                    Object f1 = o1.get(sortField);
-                    Object f2 = o2.get(sortField);
-
-                    if (f1 == null && f2 == null) {
-                        return 0;
-                    }
-
-                    if (f1 == null) {
-
-                        return f2.hashCode() * direction;
-
-                        //return direction * -1;
-                    }
-
-                    if (f2 == null) {
-
-                        return direction * f1.hashCode();
-                    }
-
-
-                    return direction
-                            * collator.compare(f1.toString().trim().toLowerCase(), f2.toString().trim().toLowerCase());
-                }
-            });*/
-
+            final int direction = sortDirection.equals(SortDirection.asc) ? 1 : -1;
+            sort(hits, sortField, direction);
         } catch (SolrServerException e) {
             e.printStackTrace();
             LOGGER.error("Serverfel: {}", e.getCause());
         }
         return hits;
-    }
-
-    private boolean isNumbersOnly(Object o) {
-        if (o == null) {
-            return false;
-        }
-        return (o.toString().matches("\\d+"));
     }
 
     static String formatTextBeforeSorting(Object value) {
@@ -132,10 +121,6 @@ public class IFeedSolrQuery extends SolrQuery {
         }
         return forThat;
     }
-
-
-    // 1388707200000
-
 
     private void addOffsetFilter(Date offset) {
         if (offset != null) {
@@ -184,12 +169,10 @@ public class IFeedSolrQuery extends SolrQuery {
         for (String key : bag.keySet()) {
             List<IFeedFilter> filters = bag.get(key);
             if (filters.size() == 1) {
-                // addFilterQuery(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
                 queryParts.add(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
             } else {
                 String fq = SolrQueryBuilder.createOrQuery(filters);
                 queryParts.add(fq);
-                // addFilterQuery(fq);
             }
         }
         resultWithOrBetween.add(join(queryParts, " AND "));
@@ -197,36 +180,6 @@ public class IFeedSolrQuery extends SolrQuery {
         for (IFeed composite : iFeed.getComposites()) {
             addFeedFiltersImpl(composite, resultWithOrBetween, handled);
         }
-
-        LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
-    }
-
-    @Deprecated
-    private void addFeedFilters_old(IFeed iFeed) {
-        // Populate the query with the feed's filters
-
-        FeedFilterBag bag = new FeedFilterBag();
-
-        for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
-            bag.get(iFeedFilter.getFilterKey()).add(iFeedFilter);
-            //addFilterQuery(SolrQueryBuilder.createQuery(iFeedFilter, iFeedService.mapFieldInfToId()));
-        }
-
-        List<String> queryParts = new ArrayList<String>();
-
-        for (String key : bag.keySet()) {
-            List<IFeedFilter> filters = bag.get(key);
-            if (filters.size() == 1) {
-                // addFilterQuery(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
-                queryParts.add(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
-            } else {
-                String fq = SolrQueryBuilder.createOrQuery(filters);
-                queryParts.add(fq);
-                // addFilterQuery(fq);
-            }
-        }
-
-        addFilterQuery(join(queryParts, " AND "));
 
         LOGGER.debug("Add Feed Filters: {}", Arrays.toString(getFilterQueries()));
     }
@@ -239,16 +192,7 @@ public class IFeedSolrQuery extends SolrQuery {
                 .valueOf(iFeed.getSortDirection());
 
         IFeedResults results = new IFeedResults();
-
-        /*if (solrServer instanceof CommonsHttpSolrServer) {
-            CommonsHttpSolrServer chss = (CommonsHttpSolrServer) solrServer;
-            results.setQueryUrl(chss.getBaseURL() + "/select" + ClientUtils.toQueryString(this, false));
-        } else {
-            results.setQueryUrl(ClientUtils.toQueryString(this, false));
-        }*/
-
         results.setQueryUrl(ClientUtils.toQueryString(this, false));
-
         results.addAll(prepareAndPerformQuery(iFeed.getSortField(), direction));
 
         return results;
@@ -257,14 +201,12 @@ public class IFeedSolrQuery extends SolrQuery {
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
         addFeedFilters(iFeed);
         addOffsetFilter(offset);
-
         return prepareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
     }
 
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection) {
         addFeedFilters(iFeed);
         addUnPublishedFilter();
-
         return prepareAndPerformQuery(sortField, sortDirection);
     }
 

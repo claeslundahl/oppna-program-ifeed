@@ -125,7 +125,6 @@ public class MetadataServiceImpl implements MetadataService {
 
         }
 
-        // if (emptyOrInvalidCache(cachedVocabulary)) {
         LOGGER.debug("Reading vocabulary from source");
         Collection<Metadata> vocabularyNodes = repo.findByAttribute("name", metadataNodeName);
 
@@ -138,22 +137,13 @@ public class MetadataServiceImpl implements MetadataService {
             Collections.sort(vocabulary);
         }
         vocabularyCache.put(metadataNodeName, new CachedVocabulary(vocabulary));
-        // } else {
-        // LOGGER.debug("Reading vocabulary from cache");
-        // }
         LOGGER.debug("Vocabulary: " + vocabularyCache.get(metadataNodeName).getVocabulary());
 
         return Collections.unmodifiableCollection(vocabularyCache.get(metadataNodeName).getVocabulary());
     }
 
-    private boolean emptyOrInvalidCache(CachedVocabulary cachedVocabulary) {
+    /*private boolean emptyOrInvalidCache(CachedVocabulary cachedVocabulary) {
         return cachedVocabulary == null || !cachedVocabulary.isValid();
-    }
-
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        String s = new String("Spr+Ñk".getBytes(), "UTF-8");
-
-        System.out.println("s=" + s);
-    }
+    }*/
 
 }

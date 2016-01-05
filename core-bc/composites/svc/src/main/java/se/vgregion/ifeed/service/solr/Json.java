@@ -46,9 +46,6 @@ public class Json {
             }
             return result;
         }
-        if (val != null) {
-            //System.out.println(val.getClass() + " = " + val);
-        }
         return val;
     }
 

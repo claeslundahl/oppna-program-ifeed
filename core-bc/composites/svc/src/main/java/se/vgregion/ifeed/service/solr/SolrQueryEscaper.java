@@ -11,7 +11,7 @@ public class SolrQueryEscaper {
     private static final char ESCAPE_CHAR = '\\';
     private static final char[] SPECIAL_CHARACTERS = { '+', '-', '!', '(', ')', '{', '}', '[', ']', '^', '\'',
             '~', '?', ':', '\\', ' ' };
-    // '(', ')', '{', '}', '[', ']', '^', '\'', '~', '*', '?', ':', '\\'};
+
     private static final String[] SPECIAL_CHAR_PAIR = { "&&", "||" };
     private static final String[] SPECIAL_CHAR_PAIR_ESCAPED = { "\\&&", "\\||" };
 

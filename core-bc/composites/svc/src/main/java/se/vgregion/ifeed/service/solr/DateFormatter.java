@@ -22,9 +22,9 @@ public class DateFormatter {
             this.formatter = formatter;
         }
 
-        public DateTimeFormatter formatter() {
+        /*public DateTimeFormatter formatter() {
             return formatter;
-        }
+        }*/
     }
 
     public static String format(int year, final int month, final int date, final DateFormat dateFormat) {
@@ -32,16 +32,16 @@ public class DateFormatter {
         return dt.toString(dateFormat.formatter);
     }
 
-    public static Date parse(final String dateString, final DateFormat format) {
+    /*public static Date parse(final String dateString, final DateFormat format) {
         return format.formatter.parseDateTime(dateString).toDate();
-    }
+    }*/
 
     public static String format(final Date date, final DateFormat dateFormat) {
         DateTime dt = new DateTime(date.getTime(), DateTimeZone.UTC);
         return dt.toString(dateFormat.formatter);
     }
 
-    public static boolean validate(final String solrDateString, final DateFormat dateFormat) {
+    /*public static boolean validate(final String solrDateString, final DateFormat dateFormat) {
         try {
             dateFormat.formatter.parseDateTime(solrDateString);
         } catch (UnsupportedOperationException e) {
@@ -50,10 +50,6 @@ public class DateFormatter {
             return false;
         }
         return true;
-    }
+    }*/
 
-    public static void main(String[] args) {
-        DateTime dt = new DateTime(new Date().getTime(), DateTimeZone.UTC);
-        System.out.println(dt.toString(ISODateTimeFormat.dateTime()));
-    }
 }

@@ -1,2 +1,0 @@
-# Module se.vgregion.ifeed.web.widgets.Module
-# RPC service class, partial path of RPC policy file

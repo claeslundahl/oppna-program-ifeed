@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.regex.Pattern;
 
 public class CsvContentTypeFilter implements Filter {
 
@@ -28,11 +30,19 @@ public class CsvContentTypeFilter implements Filter {
 
             instance = httpRequest.getParameter("instance");
             instance = URLDecoder.decode(instance, "UTF-8");
-            IFeed feed = IFeed.fromJson(instance);
-
-            httpResponse.setHeader("Content-Disposition", "inline; filename=" + feed.getName() + ".csv");
+            if (!isIntegerRegex(instance)) {
+                IFeed feed = IFeed.fromJson(instance);
+                httpResponse.setHeader("Content-Disposition", "inline; filename=" + feed.getName() + ".csv");
+            } else {
+                String name = request.getParameter("name");
+                if (name != null && !name.isEmpty()) {
+                    httpResponse.setHeader("Content-Disposition", "inline; filename=" + name + ".csv");
+                } else{
+                    httpResponse.setHeader("Content-Disposition", "inline; filename=" + instance + ".CSV");
+                }
+            }
             response.setContentType("text/csv;charset=UTF-8");
-
+            response.setCharacterEncoding("UTF-8");
             chain.doFilter(request, response);
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
@@ -40,6 +50,12 @@ public class CsvContentTypeFilter implements Filter {
             sb.append(instance);
             throw new RuntimeException(sb.toString(), e);
         }
+    }
+
+    public static Pattern patternInteger = Pattern.compile("^[0-9]+$");
+
+    public static boolean isIntegerRegex(String str) {
+        return patternInteger.matcher(str).matches();
     }
 
     @Override

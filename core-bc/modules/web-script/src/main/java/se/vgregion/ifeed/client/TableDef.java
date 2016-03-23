@@ -3,6 +3,8 @@ package se.vgregion.ifeed.client;
 import com.google.gwt.user.client.Element;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 
+import javax.persistence.Transient;
+
 /**
  * Designed to hold information about an ifeed - mirroring the textual description on the element.
  *
@@ -27,7 +29,11 @@ import se.vgregion.ifeed.shared.DynamicTableDef;
 public class TableDef extends DynamicTableDef {
 
     private Element element;
+
     private String onStartJsCallback;
+
+    @Transient
+    private int serialNumber;
 
     public Element getElement() {
         return element;
@@ -43,5 +49,13 @@ public class TableDef extends DynamicTableDef {
 
     public String getOnStartJsCallback() {
         return onStartJsCallback;
+    }
+
+    public int getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(int serialNumber) {
+        this.serialNumber = serialNumber;
     }
 }

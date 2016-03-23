@@ -36,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
 
@@ -184,24 +185,6 @@ public class IFeedFeedServiceImplTest {
         hits.add(item);
 
         serv.populateFeed(f, hits);
-    }
-
-
-    public static void main(String[] args) throws FileNotFoundException, TransformerException {
-        String xsltFilePath = "/home/portaldev/Dokument/iFeed/atom2rss-exslt.xsl";
-        String atomSampleFilePath = "/home/portaldev/Dokument/iFeed/sample-atom-feed.txt";
-        //FileReader xsltReader = new FileReader(xsltFilePath);
-        //FileReader atomSampleReader = new FileReader(atomSampleFilePath);
-
-
-        TransformerFactory factory = TransformerFactory.newInstance();
-        Source xslt = new StreamSource(new File(xsltFilePath));
-        Transformer transformer = factory.newTransformer(xslt);
-
-        Source text = new StreamSource(new File(atomSampleFilePath));
-        transformer.transform(text, new StreamResult(new File("output.xml")));
-
-
     }
 
 }

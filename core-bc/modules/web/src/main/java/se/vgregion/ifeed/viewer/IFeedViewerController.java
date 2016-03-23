@@ -15,11 +15,13 @@ import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -189,18 +191,37 @@ public class IFeedViewerController {
                                 HttpServletResponse response) {
         //public void exportCsv(@PathVariable String listIdOrSerializedInstance, HttpServletRequest request, HttpServletResponse  response) {
         String url;
-        if (isNumeric(instance)) {
-            Long id = Long.parseLong(instance);
-            url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage);
-        } else {
-            try {
-                instance = URLDecoder.decode(instance, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            IFeed ifeed = IFeed.fromJson(instance);
-            url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage);
+        List<Map<String, Object>> resultAccumulator = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> oneIterationResult = new ArrayList<Map<String, Object>>();
+
+        if (endBy != null) {
+            throw new RuntimeException("Did´nt think this would happen!");
         }
+
+        if (startBy == null) {
+            startBy = 0;
+        }
+        endBy = startBy + 500;
+        do {
+            oneIterationResult.clear();
+            if (isNumeric(instance)) {
+                Long id = Long.parseLong(instance);
+                url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage);
+            } else {
+                try {
+                    instance = URLDecoder.decode(instance, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                IFeed ifeed = IFeed.fromJson(instance);
+                url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage);
+            }
+            List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
+            oneIterationResult.addAll(result);
+            resultAccumulator.addAll(result);
+            startBy += 500;
+            endBy = startBy + 500;
+        } while (!oneIterationResult.isEmpty());
 
         BufferedOutputStream bos = null;
         OutputStream portletOutputStream = null;
@@ -209,15 +230,15 @@ public class IFeedViewerController {
             response.setCharacterEncoding("UTF-8");
             bos = new BufferedOutputStream(portletOutputStream);
 
-            List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
+            //List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
 
             List<FieldInf> fields = iFeedService.getFieldInfs();
 
-            bos.write(239);
-            bos.write(187);
-            bos.write(191);
+            bos.write(0xEF);
+            bos.write(0xBB);
+            bos.write(0xBF);
 
-            if (!result.isEmpty()) {
+            if (!resultAccumulator.isEmpty()) {
                 for (FieldInf fi : fields) {
                     if (fi.isInHtmlView()) {
                         for (FieldInf child : fi.getChildren()) {
@@ -229,7 +250,7 @@ public class IFeedViewerController {
                     }
                 }
                 bos.write("\n".getBytes());
-                for (Map<String, Object> item : result) {
+                for (Map<String, Object> item : resultAccumulator) {
                     for (FieldInf fi : fields) {
                         if (fi.isInHtmlView()) {
                             for (FieldInf child : fi.getChildren()) {
@@ -305,7 +326,6 @@ public class IFeedViewerController {
                                      Integer startBy,
                                      Integer endBy,
                                      String fromPage) {
-
         Util.setLocalValue(retrievedFeed);
 
         if (fromPage != null && !"".equals(fromPage.trim())) {
@@ -329,7 +349,7 @@ public class IFeedViewerController {
                 solrQuery.setRows(endBy - startBy);
             }
         } else {
-            solrQuery.setRows(501);
+            solrQuery.setRows(25000);
         }
 
         solrQuery.setShowDebugInfo(true);

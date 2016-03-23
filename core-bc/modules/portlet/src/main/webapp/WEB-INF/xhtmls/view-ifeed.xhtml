@@ -30,9 +30,8 @@
         </div>
 
         <div class="ifeed-buttons" style="float: right">
-            <p:commandLink styleClass="rp-link-button secondary" value="Avbryt" update=":ifeed_view"
-                           rendered="#{!app.inEditMode}"
-                           id="abortEditIfeedLink"
+            <p:commandLink styleClass="rp-link-button secondary" value="Tillbaka" update=":ifeed_view"
+                           id="backIfeedLink"
                            ajax="false" async="true"
                            actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
             </p:commandLink>
@@ -101,14 +100,28 @@
                     <div>
                         <div style="font-weight: bold;"><i class="icon-user"></i>Administratörer:
                         </div>
+
                         <p:autoComplete id="createNewAdminInput"
                                         value="#{app.newOwnershipUserId}"
-                                        completeMethod="#{app.completeUserName}"
-                                        forceSelection="true"
+                                        completeMethod="#{app.completeUser}"
+                                        var="user"
                                         rendered="#{app.inEditMode}"
+                                        itemLabel="#{(user['class'].simpleName eq 'String') ? user : user.userName}"
+                                        itemValue="#{(user['class'].simpleName eq 'String') ? user : user.userName}"
                                         styleClass="createNewAdminInput master-item"
                                         title="Skriv in vgr-id och klicka på 'Lägg till'' för att lägg till en användare som administratör på feedet."
-                                        multiple="false"/>
+                                        multiple="false">
+
+                                <p:column>
+                                    <h:outputText value="#{user.firstName} #{user.lastName}" />
+                                </p:column>
+
+                                <p:column>
+                                    <h:outputText value="#{user.userName}" />
+                                </p:column>
+
+                        </p:autoComplete>
+
                         <p:watermark for="createNewAdminInput" value="Vgr-Id för ny admin"/>
 
                         <p:commandLink styleClass="ltr-flowing-item"
@@ -116,7 +129,7 @@
                                        update="basicFeedInfo"
                                        rendered="#{app.inEditMode}"
                                        id="addOwnershipLink"
-                                       ajax="true" async="true" actionListener="#{app.createNewOwnership()}">
+                                       ajax="false" async="true" actionListener="#{app.createNewOwnership()}">
                         </p:commandLink>
 
                         <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="getOwnershipsAsListItem"
@@ -157,11 +170,21 @@
                     <br/>
                     <a href="#{app.getWebFeedLink()}" target="_blank">Html</a><br/>
 
-                    <a id="excel-feed-link" class="link-as-post-form-dont-match"
-                       onclick="document.getElementById('excelForm').submit();"
-                       href="javascript:void(0);"
-                       target="_blank"
-                       type="text/csv;charset=UTF-8">Excel</a><br/>
+                  <a id="excel-feed-link" class="link-as-post-form-dont-match"
+                     onclick-foo="document.getElementById('excelForm').submit();"
+                     onclick="alert('Du måste spara eller gå ur, avbryta, ändringsläget innan du tar ut excel-fil.'); return false;"
+                     href="javascript:void(0);"
+                     target="_blank"
+                     style="#{not app.inEditMode ? 'display:none;':''}"
+                     type="text/csv;charset=UTF-8">Excel</a>
+
+                  <a id="excel-feed-link2" class="link-as-post-form-dont-match"
+                     href="#{app.getExcelFeedLink()}"
+                     target="_blank"
+                     style="#{app.inEditMode ? 'display:none;':''}"
+                     type="text/csv;charset=UTF-8">Excel</a>
+
+                    <br/>
 
                     <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a><br/>
                     <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a><br/>
@@ -232,7 +255,8 @@
                        style="color: white;"
                        rendered="#{app.inEditMode}"
                        ajax="false" async="true"
-                       action="#{app.editFilterValue(getFiltersAsListItem)}">
+                       action="#{app.editFilterValue(getFiltersAsListItem)}"
+                       action-former="#{app.editFilterValue(getFiltersAsListItem)}">
         </p:commandLink>
       </span>
 

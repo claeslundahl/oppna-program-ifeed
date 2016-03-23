@@ -32,7 +32,6 @@ public class VgrOrganizationsHome implements Serializable {
 
     @PostConstruct
     public void init() {
-        //organizations = getRootOrganizations();
         organizations = getRootOrganizations();
         toTreeNodes(organizations, root);
         getAllOrganizationsRoot();
@@ -61,10 +60,24 @@ public class VgrOrganizationsHome implements Serializable {
         return null;
     }
 
+
+    private VgrOrganization getVgrOrganization() {
+        VgrOrganization vgr = new VgrOrganization("Ou=org", "SE2321000131-E000000000001");
+        vgr.setOu("Västra Götalandsregionen");
+        vgr.setLevel(0);
+        return vgr;
+    }
+
     public List<VgrOrganization> getRootOrganizations() {
-        VgrOrganization org = new VgrOrganization();
-        org.setDn("Ou=org");
-        List<VgrOrganization> result = ldapOrganizationService.findChildNodes(org);
+        VgrOrganization vgr = getVgrOrganization();
+
+        vgr.getChildren().addAll(ldapOrganizationService.findChildNodes(vgr));
+        for (VgrOrganization child : vgr.getChildren()) {
+            child.setLevel(1);
+        }
+
+        List<VgrOrganization> result = new ArrayList<VgrOrganization>();
+        result.add(vgr);
         return result;
     }
 
@@ -76,7 +89,9 @@ public class VgrOrganizationsHome implements Serializable {
             vgrOrganization.setLevel(ofThisOrg.getLevel() + 1);
         }
         organizations.addAll(index, ofThisOrg.getChildren());
-        initAddedValue(application, organizations);
+        if (application != null){
+            initAddedValue(application, organizations);
+        }
     }
 
     void initAddedValue(Application application, List<VgrOrganization> vgrOrganizationOrgs) {
@@ -87,12 +102,10 @@ public class VgrOrganizationsHome implements Serializable {
             filter.setFieldInf(application.getNewFilter());
             boolean selected = iFeedModelBean.getFilters().contains(filter);
             organization.setAdded(selected);
-
         }
     }
 
     public void closeChildrenFlat(VgrOrganization ofThisOrg) {
-        //int index = organizations.indexOf(ofThisOrg);
         setLastHsaIdClicked(ofThisOrg.getHsaIdentity());
         ofThisOrg.setOpen(false);
         organizations.removeAll(ofThisOrg.getChildren());
@@ -117,6 +130,7 @@ public class VgrOrganizationsHome implements Serializable {
             if (!loadAllOrganizationsRootFromDiscCacheIfFileIsPresent()) {
                 synchronized (this) {
                     allOrganizationsRoot = loadAllOrganizationsRoot();
+
                     long loadTimeSeconds = (System.currentTimeMillis() - startTime) / 1000;
                     System.out.println("Time to load organizations "
                             + loadTimeSeconds + " s ("
@@ -129,28 +143,6 @@ public class VgrOrganizationsHome implements Serializable {
         return allOrganizationsRoot;
     }
 
-    /*
-    private static Future<VgrOrganization> allOrganizationsRoot;
-
-    public Future<VgrOrganization> getAllOrganizationsRoot() {
-        if (allOrganizationsRoot == null) {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            allOrganizationsRoot = executor.submit(new Callable<VgrOrganization>() {
-                @Override
-                public VgrOrganization call() throws Exception {
-                    long startTime = System.currentTimeMillis();
-                    VgrOrganization result = loadAllOrganizationsRoot();
-                    long loadTimeSeconds = (System.currentTimeMillis() - startTime) / 1000;
-                    System.out.println("Time to load organizations "
-                            + loadTimeSeconds + " s ("
-                            + (loadTimeSeconds / 60) + " m).");
-                    return result;
-                }
-            });
-        }
-        return allOrganizationsRoot;
-    }
-*/
 
     private String getPathToAllOrganizationsRootCacheFile() throws MalformedURLException {
         /*ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
@@ -211,9 +203,9 @@ public class VgrOrganizationsHome implements Serializable {
     }
 
     private VgrOrganization loadAllOrganizationsRoot() {
-        final VgrOrganization result = new VgrOrganization();
-        result.setDn("Ou=org");
-        result.setOpen(true);
+        final VgrOrganization result = getVgrOrganization();
+        /*result.setDn("Ou=org");
+        result.setOpen(true);*/
         loadAllOrganizations(result);
         return result;
     }
@@ -245,10 +237,9 @@ public class VgrOrganizationsHome implements Serializable {
     }
 
     public void loadChildrenImpl(VgrOrganization ofThisOrg) {
+        if (!ofThisOrg.isOpen() && ofThisOrg.getLevel() > 0) {
 
-        if (!ofThisOrg.isOpen()) {
-            //ofThisOrg.getChildren().clear();
-        } else /*if (ofThisOrg.getChildren() == null || ofThisOrg.getChildren().isEmpty())*/ {
+        } else {
             VgrOrganization vo = new VgrOrganization();
             vo.setDn(ofThisOrg.getDn());
             List<VgrOrganization> result = ldapOrganizationService.findChildNodes(vo);
@@ -257,7 +248,6 @@ public class VgrOrganizationsHome implements Serializable {
                 vo2.setDn(child.getDn());
                 child.getChildren().addAll(ldapOrganizationService.findChildNodes(vo2));
                 child.setLeaf(child.getChildren().isEmpty());
-                //loadChildren(child);
             }
             ofThisOrg.getChildren().clear();
             ofThisOrg.getChildren().addAll(result);

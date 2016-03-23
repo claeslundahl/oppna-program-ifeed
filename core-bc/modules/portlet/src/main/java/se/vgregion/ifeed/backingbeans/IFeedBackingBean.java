@@ -143,14 +143,10 @@ public class IFeedBackingBean implements Serializable {
 
                 userIFeedModelBeans.add(iFeedModelBean1);
             }
-
-            System.out.println("IFeedModelbeans size----------------------------------------------!!! " + userIFeedModelBeans.size());
         } catch (Exception e) {
             System.out.println("Autowired iFeedService is null---------------------------------------------------: " + e.toString());
             throw new RuntimeException(e);
         }
-
-
         return userIFeeds;
     }
 

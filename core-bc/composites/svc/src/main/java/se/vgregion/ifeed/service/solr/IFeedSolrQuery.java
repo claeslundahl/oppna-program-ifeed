@@ -94,16 +94,21 @@ public class IFeedSolrQuery extends SolrQuery {
         this.setSortField(sortField, ORDER.valueOf(sortDirection.name().toLowerCase(CommonUtils.SWEDISH_LOCALE)));
 
         List<Map<String, Object>> hits = Collections.emptyList();
-        try {
-            QueryResponse response = solrServer.query(this);
-            SolrDocumentList sdl = response.getResults();
-            hits = (ArrayList<Map<String, Object>>) sdl.clone();
+        for (int i = 0; i < 3; i++) {
+            try {
+                QueryResponse response = solrServer.query(this);
 
-            final int direction = sortDirection.equals(SortDirection.asc) ? 1 : -1;
-            sort(hits, sortField, direction);
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-            LOGGER.error("Serverfel: {}", e.getCause());
+                SolrDocumentList sdl = response.getResults();
+                hits = (ArrayList<Map<String, Object>>) sdl.clone();
+
+                final int direction = sortDirection.equals(SortDirection.asc) ? 1 : -1;
+                sort(hits, sortField, direction);
+                return hits;
+            } catch (SolrServerException e) {
+                e.printStackTrace();
+                LOGGER.error("Serverfel: {}", e.getCause());
+                LOGGER.error("Trying again, This where the " + i + "nt time of 3 (0-2).");
+            }
         }
         return hits;
     }

@@ -1,8 +1,7 @@
 package se.vgregion.ifeed.client;
 
 import com.google.gwt.core.client.*;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -11,18 +10,16 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.sun.corba.se.impl.orbutil.ObjectUtility;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -86,12 +83,15 @@ public class Main implements EntryPoint {
 
     }
 
+    private int tableDefCounter = 0;
+
     private void fetchNext() {
         if (ifeedDocLists == null || ifeedDocLists.isEmpty()) {
             return;
         }
         Element element = ifeedDocLists.remove(0);
         TableDef tableDef = ElementUtil.toTableDef(element);
+        tableDef.setSerialNumber(tableDefCounter++);
         if (tableDef == null) {
             return;
         }
@@ -218,16 +218,29 @@ public class Main implements EntryPoint {
 
 
     private void displayHits(final TableDef tableDef, final Display display) {
-        Scheduler.get().scheduleDeferred(new Command() {
-            public void execute() {
-                //com.google.gwt.dom.client.Element countDisplay = Document.get().getElementById("ifeed-count-" + tableDef.getFeedId().hashCode());
-                com.google.gwt.dom.client.Element countDisplay = Document.get().getElementById("ifeed-count-" + tableDef.getFkIfeedId());
+        Timer timer = new Timer() {
+            public void run() {
+                List<Element> found = ElementUtil.findByCssClass((Element) (Document.get().getDocumentElement()),
+                        "ifeed-count-" + tableDef.getSerialNumber());
+                for (Element element : found) {
+                    element.setInnerText(display.getData().size() + "");
+                }
+                /*
+                com.google.gwt.dom.client.Element countDisplay = Document.get().getElementById("ifeed-count-" + tableDef.getSerialNumber());
                 Util.log("tableDef.getFkIfeedId " + tableDef.getFkIfeedId());
                 if (countDisplay != null && display != null && display.getData() != null) {
+                    Util.log(display.getData().size() + "");
                     countDisplay.setInnerHTML(display.getData().size() + "");
+                } else {
+                    Util.log("Count display = " + countDisplay);
+                    Util.log("Display = " + display);
                 }
+                */
             }
-        });
+        };
+
+        // Execute the timer to expire 0.3 seconds in the future
+        timer.schedule(300);
     }
 
     private native JavaScriptObject eval(String javascript)

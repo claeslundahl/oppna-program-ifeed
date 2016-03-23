@@ -43,6 +43,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
 import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -294,6 +295,12 @@ public class Application {
             return Arrays.asList("a", "b", "c");
         }
     }
+
+    public List<Person> completeUser(String incompleteUserName) {
+        List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
+        return people;
+    }
+
 
     public String fetchLdapPersonFullName(String vgrId) {
         try {
@@ -614,7 +621,18 @@ public class Application {
 
     public String getExcelFeedLink() {
         String result = String.valueOf(iFeedExcelFeed.expand("ID", iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection()));
-        result = result.replaceFirst(Pattern.quote("ID"), iFeedModelBean.toJson());
+        if (isInEditMode()) {
+            result = result.replaceFirst(Pattern.quote("ID"), iFeedModelBean.toJson());
+        } else {
+            if (iFeedModelBean != null && iFeedModelBean.getId() != null) {
+                result = result.replaceFirst(Pattern.quote("ID"), iFeedModelBean.getId().toString());
+                try {
+                    result += "&name=" + URLEncoder.encode(iFeedModelBean.getName(), "UTF-8").replaceAll("\\+", "%20");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         return result;
     }
 
@@ -853,7 +871,9 @@ public class Application {
                 newFilter = fieldsByNameIndex.get(filter.getFilterKey());
             }
             newFilter.setValue(filter.getFilterQuery());
-            iFeedModelBean.removeFilter(filter);
+            if (!filter.getFieldInf().getType().equals("d:ldap_org_value")) {
+                iFeedModelBean.removeFilter(filter);
+            }
         } else {
             throw new RuntimeException();
         }

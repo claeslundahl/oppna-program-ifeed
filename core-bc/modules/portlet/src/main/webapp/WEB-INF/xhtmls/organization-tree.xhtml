@@ -22,6 +22,8 @@
             </thead>
             <tbody>
 
+            #{vgrOrganizationsHome.organizations.get(0).children.isEmpty() ? vgrOrganizationsHome.loadChildrenFlat(app, vgrOrganizationsHome.organizations.get(0)) : ''}
+
             <ui:repeat value="#{vgrOrganizationsHome.organizations}" var="organization"
                        id="selectVgrOrganizationTree" varStatus="st">
                 <tr id="#{organization.getHsaIdentity()}">

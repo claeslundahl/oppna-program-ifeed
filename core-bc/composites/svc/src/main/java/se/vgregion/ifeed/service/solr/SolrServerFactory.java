@@ -1,0 +1,50 @@
+package se.vgregion.ifeed.service.solr;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Properties;
+
+/**
+ * Created by clalu4 on 2016-04-06.
+ * For some reason the SolrServer-class always tries to establish a ssl connection (even it´s not needed). Then it
+ * must have a key-store for valid servers to connect to. If not, it throws an exception. Often the jvm does have a
+ * default such store. But in case it does not the application itself must provide this.
+ */
+public class SolrServerFactory {
+
+    public static SolrServer create() {
+        try {
+            String path2keyStore = path(System.getProperty("user.home"), ".hotell", "ifeed", "keystore");
+
+            Properties properties = new Properties();
+            properties.load(new FileReader(getPropertiesPath()));
+            String url = properties.getProperty("solr.service");
+
+            HttpClientFactory factory = new HttpClientFactory(path2keyStore, "changeit");
+            HttpClient client = factory.getHttpsClient();
+            HttpSolrServer result = new HttpSolrServer(url, client);
+            result.setRequestWriter(new BinaryRequestWriter());
+
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    static String getPropertiesPath() {
+        return path(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties");
+    }
+
+    static String path(String... parts) {
+        return StringUtils.join(parts, File.separator);
+    }
+
+}

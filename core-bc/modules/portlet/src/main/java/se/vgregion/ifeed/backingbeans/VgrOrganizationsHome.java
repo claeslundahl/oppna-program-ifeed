@@ -64,6 +64,7 @@ public class VgrOrganizationsHome implements Serializable {
     private VgrOrganization getVgrOrganization() {
         VgrOrganization vgr = new VgrOrganization("Ou=org", "SE2321000131-E000000000001");
         vgr.setOu("Västra Götalandsregionen");
+        vgr.setOpen(true);
         vgr.setLevel(0);
         return vgr;
     }
@@ -153,7 +154,8 @@ public class VgrOrganizationsHome implements Serializable {
         f = f + "allOrganizationsRoot.obj";
         return f;*/
         String home = System.getProperty("user.home");
-        return (home + File.separator + ".ifeed" + File.separator + "allOrganizationsRoot.obj");
+        String fs = File.separator;
+        return (home + fs + ".hotell" + fs + "ifeed" + fs + "allOrganizationsRoot.obj");
     }
 
     void persistAllOrganizationsRootToDiscCache() {

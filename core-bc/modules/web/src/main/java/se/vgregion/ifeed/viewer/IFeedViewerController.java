@@ -280,6 +280,8 @@ public class IFeedViewerController {
         }
         value = value.replaceAll(Pattern.quote("["), "");
         value = value.replaceAll(Pattern.quote("]"), "");
+        value = value.replaceAll(Pattern.quote("\""), "\"\"");
+        value = '"' + value + '"';
         return value.getBytes();
     }
 

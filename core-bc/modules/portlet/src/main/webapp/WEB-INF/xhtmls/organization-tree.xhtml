@@ -22,7 +22,7 @@
             </thead>
             <tbody>
 
-            #{vgrOrganizationsHome.organizations.get(0).children.isEmpty() ? vgrOrganizationsHome.loadChildrenFlat(app, vgrOrganizationsHome.organizations.get(0)) : ''}
+            #{vgrOrganizationsHome.organizations.size() == 1 ? vgrOrganizationsHome.loadChildrenFlat(app, vgrOrganizationsHome.organizations.get(0)) : ''}
 
             <ui:repeat value="#{vgrOrganizationsHome.organizations}" var="organization"
                        id="selectVgrOrganizationTree" varStatus="st">
@@ -33,7 +33,7 @@
                         </td>
                     </h:panelGroup>
                     <td class="toggle-expanded" align="center">
-                        <h:commandLink title="Öppna" styleClass="select-org" onclick="$('#rerun-ifeed-loading').click(); $('a.select-org').attr('onclick', '')"
+                        <h:commandLink title="Öppna" styleClass="select-org #{organization.getLabel().replace(' ','-')}" onclick="$('#rerun-ifeed-loading').click(); $('a.select-org').attr('onclick', '')"
                                        rendered="#{not organization.leaf and not organization.open}"
                                        action="#{vgrOrganizationsHome.loadChildrenFlat(app, organization)}">
                             <f:ajax render="@form" action="click"/>

@@ -146,8 +146,13 @@ public class Main implements EntryPoint {
                 } else {
                     areThereMoore = areThereMooreToFetch(entries);
                 }
+                if (panel != null && panel.isAttached()){
+                    try {
+                        panel.clear();
+                    } catch (Exception e) {
 
-                panel.clear();
+                    }
+                }
                 EventedList<Entry> model = new EventedList<Entry>();
                 final Display displayTable = new Display(tableDef, model);
                 panel.add(displayTable);
@@ -189,7 +194,14 @@ public class Main implements EntryPoint {
                         areThereMoore = areThereMooreToFetch(entries);
                     }
 
-                    panel.clear();
+                    if (panel != null && panel.isAttached()){
+                        try {
+                            panel.clear();
+                        } catch (Exception e) {
+
+                        }
+                    }
+
                     EventedList<Entry> model = new EventedList<Entry>();
                     Display displayTable = new Display(tableDef, model);
                     panel.add(displayTable);
@@ -254,7 +266,7 @@ public class Main implements EntryPoint {
     }
 
     private void fetchByGet(final TableDef tableDef, final Display displayTable, final int startAt) {
-        final HTMLPanel panel = HTMLPanel.wrap(tableDef.getElement());
+        //final HTMLPanel panel = HTMLPanel.wrap(tableDef.getElement());
         JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
         final int endAt = startAt + batchSize;
         displayTable.displayAjaxLoading();

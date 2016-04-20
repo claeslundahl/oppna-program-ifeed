@@ -45,21 +45,7 @@
 
   <bean id="objectRepo" class="se.vgregion.ifeed.service.ifeed.ObjectRepo" />
 
-
-
-  <!--
-  <bean id="environmentFix1" class="se.vgregion.ifeed.service.solr.SslEnvironmentFixForSolrServer1"/>
-  <bean id="solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer" scope="prototype">
-    <constructor-arg type="java.lang.String" value="${solr.service}" />
-    <property name="requestWriter">
-      <bean class="org.apache.solr.client.solrj.impl.BinaryRequestWriter" />
-    </property>
-  </bean>
-  <bean id="environmentFix2" class="se.vgregion.ifeed.service.solr.SslEnvironmentFixForSolrServer2"/>
-  -->
-
   <bean id="solrServer" class="se.vgregion.ifeed.service.solr.SolrServerFactory" factory-method="create" scope="prototype">
-
   </bean>
 
   <bean id="iFeedSolrQuery" class="se.vgregion.ifeed.service.solr.IFeedSolrQuery" scope="prototype">

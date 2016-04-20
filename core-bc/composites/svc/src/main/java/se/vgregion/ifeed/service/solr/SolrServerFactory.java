@@ -7,7 +7,6 @@ import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Properties;
 
@@ -19,15 +18,18 @@ import java.util.Properties;
  */
 public class SolrServerFactory {
 
+    /**
+     * Factory method.
+     * @return produces an new instance of the {@link SolrServer}. Settings (what url to use for the actual server) is
+     * fetched from the file [user.home]/.hotell/ifeed/config.properties and its property 'solr.service'.
+     */
     public static SolrServer create() {
         try {
-            String path2keyStore = path(System.getProperty("user.home"), ".hotell", "ifeed", "keystore");
-
             Properties properties = new Properties();
             properties.load(new FileReader(getPropertiesPath()));
             String url = properties.getProperty("solr.service");
 
-            HttpClientFactory factory = new HttpClientFactory(path2keyStore, "changeit");
+            HttpClientFactory factory = new HttpClientFactory();
             HttpClient client = factory.getHttpsClient();
             HttpSolrServer result = new HttpSolrServer(url, client);
             result.setRequestWriter(new BinaryRequestWriter());

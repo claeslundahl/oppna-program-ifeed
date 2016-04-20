@@ -10,10 +10,10 @@ import static org.junit.Assert.assertNotNull;
  * Created by clalu4 on 2016-04-08.
  */
 public class HttpClientFactoryTest {
-    @Ignore
+
     @Test
     public void getHttpsClient() throws Exception {
-        HttpClientFactory factory = new HttpClientFactory(SolrServerFactory.getPropertiesPath(), "changeit");
+        HttpClientFactory factory = new HttpClientFactory();
         HttpClient result = factory.getHttpsClient();
         assertNotNull(result);
     }

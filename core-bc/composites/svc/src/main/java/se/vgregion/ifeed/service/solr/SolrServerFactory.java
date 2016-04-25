@@ -2,12 +2,16 @@ package se.vgregion.ifeed.service.solr;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.HttpClient;
+import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.common.util.NamedList;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -20,6 +24,7 @@ public class SolrServerFactory {
 
     /**
      * Factory method.
+     *
      * @return produces an new instance of the {@link SolrServer}. Settings (what url to use for the actual server) is
      * fetched from the file [user.home]/.hotell/ifeed/config.properties and its property 'solr.service'.
      */
@@ -35,10 +40,23 @@ public class SolrServerFactory {
             result.setRequestWriter(new BinaryRequestWriter());
 
             return result;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        } catch (final Exception e) {
+            e.printStackTrace();
 
+            return new SolrServer() {
+                @Override
+                public NamedList<Object> request(SolrRequest request) throws SolrServerException, IOException {
+                    throw new RuntimeException("solrServer failed to initialize during init-phase - when the portlet" +
+                            " starts or when it is deployed.", e);
+                }
+
+                @Override
+                public void shutdown() {
+
+                }
+            };
+
+        }
     }
 
     static String getPropertiesPath() {

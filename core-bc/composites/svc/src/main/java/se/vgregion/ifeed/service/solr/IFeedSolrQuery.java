@@ -6,6 +6,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.CommonParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.vgregion.common.utils.CommonUtils;
@@ -133,7 +134,6 @@ public class IFeedSolrQuery extends SolrQuery {
                     "processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
             addFilterQuery("processingtime:[" + DateFormatter.format(offset, SOLR_DATE_FORMAT) + " TO NOW]");
             LOGGER.debug("Add offset filter {}", Arrays.toString(getFilterQueries()));
-
         }
     }
 

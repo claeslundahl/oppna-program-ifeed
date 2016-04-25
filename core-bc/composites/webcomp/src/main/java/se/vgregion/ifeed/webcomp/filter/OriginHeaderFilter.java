@@ -3,6 +3,7 @@ package se.vgregion.ifeed.webcomp.filter;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Created by clalu4 on 2015-05-18.
@@ -27,8 +28,9 @@ public class OriginHeaderFilter implements Filter {
     }
 
     private void addIfNotThere(HttpServletResponse httpResponse, String key, String value) {
-        String presentValue = httpResponse.getHeader(key);
-        if (presentValue == null) {
+        Collection<String> presentValue = httpResponse.getHeaders(key);
+
+        if (presentValue == null || presentValue.isEmpty()) {
             httpResponse.setHeader(key, value);
         } else {
             httpResponse.addHeader(key, value);

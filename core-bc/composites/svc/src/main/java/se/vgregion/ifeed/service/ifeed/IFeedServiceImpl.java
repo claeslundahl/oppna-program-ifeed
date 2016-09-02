@@ -10,11 +10,17 @@ import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.*;
 
 @Service
 public class IFeedServiceImpl implements IFeedService, Serializable {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private JpaRepository<IFeed, Long, Long> iFeedRepo;
 
@@ -115,13 +121,42 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public List<IFeed> getIFeedsByFilter(Filter filter, int start, int end) {
         List<Object> values = new ArrayList<Object>();
         String jpql = filter.toJpqlQuery(values);
-        List<IFeed> result = (List<IFeed>) iFeedRepo.findByQuery(jpql, values.toArray());
-        latestFilterQueryTotalCount = result.size();
-        start = Math.min(start, result.size());
-        end = Math.min(end, result.size());
-        result = result.subList(start, end);
+
+        Query query = entityManager.createQuery(jpql);
+        Object[] args = values.toArray();
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                query.setParameter(i + 1, args[i]);
+            }
+        }
+
+        query.setFirstResult(start);
+        query.setMaxResults(end - start);
+
+        List<IFeed> result = query.getResultList();
+
+        long countResult = findTotalCount(jpql, args);
+
+        latestFilterQueryTotalCount = (int) countResult;
+
         init(result);
+
         return new ArrayList<IFeed>(result);
+    }
+
+    private long findTotalCount(String jpql, Object[] args) {
+
+        // Not a very robust solution but we happen to know that the query always ends with an "order by" clause.
+        jpql = jpql.replaceAll("order.*", ""); // Remove everything after and including "order".
+
+        Query queryTotal = entityManager.createQuery("select count(o) from IFeed o where o in (" + jpql + ")");
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                queryTotal.setParameter(i + 1, args[i]);
+            }
+        }
+
+        return (long) (Long) queryTotal.getSingleResult();
     }
 
     @Override

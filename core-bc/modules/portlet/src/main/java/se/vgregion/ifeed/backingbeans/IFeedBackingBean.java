@@ -80,8 +80,8 @@ public class IFeedBackingBean implements Serializable {
     @PostConstruct
     public void init() {
 
-        getAllIFeeds();
-        getUserIFeeds();
+//        getAllIFeeds();
+//        getUserIFeeds();
     }
 
 

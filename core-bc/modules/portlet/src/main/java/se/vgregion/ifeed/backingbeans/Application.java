@@ -162,13 +162,6 @@ public class Application {
         }
     }
 
-    public List<IFeed> list() {
-        int start = (getCurrentSpanStart());
-        int end = (getCurrentSpanEnd());
-        List<IFeed> result = iFeedService.getIFeedsByFilter(filter, start, end);
-        return result;
-    }
-
     public List<IFeed> updateFilterQuery() {
         setCurrentPage(0);
         return updateQuery();
@@ -207,7 +200,7 @@ public class Application {
     }
 
     public int getMaxPageCount() {
-        return getMaxPageCountImp(list(), pageSize);
+        return getMaxPageCountImp(page, pageSize);
     }
 
     int getMaxPageCountImp(Collection list, int pageSize) {

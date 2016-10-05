@@ -31,12 +31,25 @@ public class SolrServerFactory {
     public static SolrServer create() {
         try {
             Properties properties = new Properties();
-            properties.load(new FileReader(getPropertiesPath()));
             String url = properties.getProperty("solr.service");
+            properties.load(new FileReader(getPropertiesPath()));
+            return create(url);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    /**
+     * Factory method.
+     *
+     * @param solrServiceUrl the url to the solr service to use.
+     * @return produces an new instance of the {@link SolrServer}.
+     */
+    public static SolrServer create(String solrServiceUrl) {
+        try {
             HttpClientFactory factory = new HttpClientFactory();
             HttpClient client = factory.getHttpsClient();
-            HttpSolrServer result = new HttpSolrServer(url, client);
+            HttpSolrServer result = new HttpSolrServer(solrServiceUrl, client);
             result.setRequestWriter(new BinaryRequestWriter());
 
             return result;

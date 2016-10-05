@@ -97,6 +97,7 @@ public class IFeedSolrQuery extends SolrQuery {
         List<Map<String, Object>> hits = Collections.emptyList();
         for (int i = 0; i < 3; i++) {
             try {
+                setQuery("*:*");
                 QueryResponse response = solrServer.query(this);
 
                 SolrDocumentList sdl = response.getResults();

@@ -28,13 +28,14 @@ public class OriginHeaderFilter implements Filter {
     }
 
     private void addIfNotThere(HttpServletResponse httpResponse, String key, String value) {
-        Collection<String> presentValue = httpResponse.getHeaders(key);
-
-        if (presentValue == null || presentValue.isEmpty()) {
+        //Collection<String> presentValue = httpResponse.getHeaders(key);
+        /*if (presentValue == null || presentValue.isEmpty()) {
             httpResponse.setHeader(key, value);
         } else {
             httpResponse.addHeader(key, value);
-        }
+        }*/
+
+        httpResponse.addHeader(key,value);
     }
 
     @Override

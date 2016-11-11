@@ -18,6 +18,8 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 
 	private String filterKey;
 
+    private String operator = "matching"; // matching | greater | lesser
+
     @Transient
     private FieldInf fieldInf;
 
@@ -82,5 +84,13 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
 
     public void setFilterQueryForDisplay(Object filterQueryForDisplay) {
         this.filterQueryForDisplay = filterQueryForDisplay;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 }

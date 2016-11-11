@@ -15,13 +15,13 @@
                     <h:outputText value="Inställningar för listan"/>
                 </f:facet>
 
-                <h:outputText value="Namn" rendered="#{app.inEditMode}"/>
-                <h:inputText value="#{tableDef.name}" rendered="#{app.inEditMode}">
+                <h:outputText value="Namn" rendered="#{app.mayEditFeed(request, iFeedModelBean)}"/>
+                <h:inputText value="#{tableDef.name}" rendered="#{app.mayEditFeed(request, iFeedModelBean)}">
                     <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
                 </h:inputText>
                 <h:outputText
                         value="Skriv ett namn som representerar den här flödesdeklarationen. Används bara internt, här på den här vyn."
-                        rendered="#{app.inEditMode}"/>
+                        rendered="#{app.mayEditFeed(request, iFeedModelBean)}"/>
 
                 <h:outputText value="Antal rader"/>
                 <h:selectOneMenu value="#{tableDef.maxHitLimit}" id="limit1">
@@ -82,8 +82,9 @@
                 <thead>
                 <tr>
                     <td colspan="5">
-                        <h:outputText value="Kolumner"/>
-                        <h:commandLink value="Lägg till" id="addColumnLink">
+                        <div><h:outputText value="Kolumner"/></div>
+                        <h:commandLink value="Lägg till ny kolumn" id="addColumnLink"
+                                         styleClass="rp-link-button secondary">
                             <f:ajax render=":ifeed_view" listener="#{tableDef.createColumn}"/>
                         </h:commandLink>
                     </td>
@@ -180,12 +181,12 @@
                                            ajax="true">
                             </h:commandLink>
 
-                            <h:commandLink value="Ok"
+                            <h:commandLink value="Spara"
                                            styleClass="rp-link-button rp-link-button-alt"
                                            actionListener="#{app.putFlowInFeed(tableDef)}"
                                            id="okCloseEditJsonpViewLink"
                                            update=":ifeed_view"
-                                           rendered="#{app.inEditMode}"
+                                           rendered="#{app.mayEditFeed(request, iFeedModelBean)}"
                                            onclick="#{empty tableDef.name ? 'alert(\'Namn måste vara ifyllt innan du godkänner inmatningen.\'); return false;' : ''}"
                                            ajax="true">
                             </h:commandLink>

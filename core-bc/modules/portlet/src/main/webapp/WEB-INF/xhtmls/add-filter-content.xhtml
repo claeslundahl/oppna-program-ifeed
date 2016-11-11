@@ -4,88 +4,117 @@
                 xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:aui="http://liferay.com/faces/aui"
-                xmlns:portlet="http://java.sun.com/portlet_2_0">
+>
 
-    <div class="ifeed-step">
-        <span>Mata in data</span>
-    </div>
+  <div class="ifeed-step">
+    <span>Mata in data</span>
+  </div>
 
-    <p:panel rendered="#{app.newFilter != null and app.inEditMode}">
-        <div>
-            <div>
-                <div class="ifeed-filter-box">
-                    <h3 id="new-filter-name">Filter: #{app.newFilter.name}</h3>
+  <p:panel rendered="#{app.newFilter != null and app.inEditMode}">
+    <div>
+      <div>
+        <div class="ifeed-filter-box">
+          <h3 id="new-filter-name">Filter: #{app.newFilter.name}</h3>
 
-                    <div class="box">
-                        <h:panelGrid rendered="#{not empty app.newFilter.help}">
-                            <img src="/iFeed-portlet/img/information.png"/>
-                            #{app.newFilter.help}
-                        </h:panelGrid>
-                    </div>
-                    <div id="rp-filter-value-input">
-                        <h:inputText value="#{app.newFilter.value}"
-                                     rendered="#{app.newFilter.type != 'd:datetime' and app.newFilter.type != 'd:text_fix' and app.newFilter.type != 'd:date' and app.newFilter.type != 'd:ldap_value' and app.newFilter.type != 'd:text_facet' and app.newFilter.type != 'd:ldap_org_value'}">
-                        </h:inputText>
-                        <p:panel rendered="#{app.newFilter.type == 'd:ldap_org_value'}">
-                            <ui:include src="organization-tree.xhtml"/>
-                        </p:panel>
-                        <p:calendar rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
-                                    navigator="false"
-                                    readOnlyInput="false"
-                                    value="#{app.newFilter.value}"
-                                    lang="sv_SE"
-                                    pattern="yyyy-MM-dd">
-                            <f:converter converterId="textDateConverter"/>
-                        </p:calendar>
-                        <p:autoComplete value="#{app.newFilter.value}"
-                                        rendered="#{app.newFilter.type == 'd:ldap_value'}"
-                                        completeMethod="#{app.completeUserName}"
-                                        forceSelection="true"
-                                        style="z-index: 101"
-                                        styleClass="background: aliceblue; height: 24px; top: 4px; position: relative;"
-                                        multiple="false"/>
+          <!--<h:selectOneMenu value="#{app.newFilter.operator}"
+                           rendered="#{not (app.newFilter.name.endsWith(' from') or app.newFilter.name.endsWith(' tom'))}">
+            <f:selectItem itemValue="matching" itemLabel="Matchande"/>
+            <f:selectItem itemValue="greater" itemLabel="Större än"/>
+            <f:selectItem itemValue="lesser" itemLabel="Mindre än"/>
+          </h:selectOneMenu>-->
 
-                        <p:autoComplete value="#{app.newFilter.value}"
-                                        rendered="#{app.newFilter.type == 'd:text_facet'}"
-                                        completeMethod="#{app.newFilterSuggestion}"
-                                        forceSelection="false"
-                                        style="z-index: 101; background: aliceblue; height: 24px; top: 4px; position: relative;"
-                                        multiple="false"/>
+          <div class="box">
+            <h:panelGrid rendered="#{not empty app.newFilter.help}">
+              <img src="/iFeed-portlet/img/information.png"/>
+              #{app.newFilter.help}
+            </h:panelGrid>
+          </div>
+          <div id="rp-filter-value-input">
+            <h:inputText value="#{app.newFilter.value}"
+                         rendered="#{app.newFilter.type != 'd:datetime' and app.newFilter.type != 'd:text_fix' and app.newFilter.type != 'd:date' and app.newFilter.type != 'd:ldap_value' and app.newFilter.type != 'd:text_facet' and app.newFilter.type != 'd:ldap_org_value'}">
+            </h:inputText>
+            <p:panel rendered="#{app.newFilter.type == 'd:ldap_org_value'}">
+              <ui:include src="organization-tree.xhtml"/>
+            </p:panel>
 
-                        <h:selectOneMenu value="#{app.newFilter.value}"
-                                         rendered="#{app.newFilter.type == 'd:text_fix'}">
-                            <f:selectItems value="#{app.getVocabulary(app.newFilter.apelonKey)}"/>
-                        </h:selectOneMenu>
+            <p:calendar rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
+                        navigator="false"
+                        readOnlyInput="false"
+                        value="#{app.newFilter.value}"
+                        lang="sv_SE"
+                        pattern="yyyy-MM-dd">
+              <f:converter converterId="textDateConverter"/>
+            </p:calendar>
 
-                    </div>
+            <!--<p:inputText rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
+                         navigator="false"
+                         readOnlyInput="false"
+                         value="#{app.newFilter.value}"
+                         lang="sv_SE"
+                         styleClass="date-input"
+                         pattern="yyyy-MM-dd">
+            </p:inputText>
 
-                    <aui:button-row>
-                        <p:commandLink styleClass="rp-link-button secondary"
-                                       value="Avbryt"
-                                       ajax="false"
-                                       rendered="#{app.newFilter.type != 'd:ldap_org_value'}"
-                                       async="true"
-                                       update=":ifeed_view"
-                                       actionListener="#{app.cancelNewFilter(app.newFilter)}">
-                        </p:commandLink>
 
-                        <p:commandLink styleClass="rp-link-button rp-link-button-alt"
-                                       value="Lägg till"
-                                       ajax="false"
-                                       rendered="#{app.newFilter.type != 'd:ldap_org_value'}"
-                                       async="true"
-                                       update=":ifeed_view"
-                                       actionListener="#{app.addNewFilter(app.newFilter)}">
-                        </p:commandLink>
-                    </aui:button-row>
+            <h:outputScript rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}">
+              $(document).ready( function() {
+                setTimeout(
+                  function() {
+                    se_vgregion_ifeed_client.DateInputHelp.putDatePicker(".date-input");
+                  },
+                  1000);
+              } );
+            </h:outputScript>-->
 
-                </div>
-            </div>
+            <p:autoComplete value="#{app.newFilter.value}"
+                            rendered="#{app.newFilter.type == 'd:ldap_value'}"
+                            completeMethod="#{app.completeUserName}"
+                            forceSelection="true"
+                            style="z-index: 101"
+                            styleClass="background: aliceblue; height: 24px; top: 4px; position: relative;"
+                            multiple="false"/>
+
+            <p:autoComplete value="#{app.newFilter.value}"
+                            rendered="#{app.newFilter.type == 'd:text_facet'}"
+                            completeMethod="#{app.newFilterSuggestion}"
+                            forceSelection="false"
+                            style="z-index: 101; background: aliceblue; height: 24px; top: 4px; position: relative;"
+                            multiple="false"/>
+
+            <h:selectOneMenu value="#{app.newFilter.value}"
+                             rendered="#{app.newFilter.type == 'd:text_fix'}">
+              <f:selectItems value="#{app.getVocabulary(app.newFilter.apelonKey)}"/>
+            </h:selectOneMenu>
+
+          </div>
+
+          <aui:button-row>
+            <p:commandLink styleClass="rp-link-button secondary"
+                           value="Avbryt"
+                           ajax="false"
+                           rendered="#{app.newFilter.type != 'd:ldap_org_value'}"
+                           async="true"
+                           update=":ifeed_view"
+                           actionListener="#{app.cancelNewFilter(app.newFilter)}">
+            </p:commandLink>
+
+            <p:commandLink styleClass="rp-link-button rp-link-button-alt"
+                           value="Lägg till"
+                           ajax="false"
+                           rendered="#{app.newFilter.type != 'd:ldap_org_value'}"
+                           async="true"
+                           update=":ifeed_view"
+                           actionListener="#{app.addNewFilter(app.newFilter)}">
+            </p:commandLink>
+          </aui:button-row>
 
         </div>
-        <script type="text/javascript">
+      </div>
+
+    </div>
+    <script type="text/javascript">
       document.getElementById('new-filter-name').scrollIntoView(true);
-        </script>
-    </p:panel>
+    </script>
+  </p:panel>
 
 </ui:composition>

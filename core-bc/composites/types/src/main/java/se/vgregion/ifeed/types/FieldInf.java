@@ -15,6 +15,7 @@ public class FieldInf implements Serializable {
     private final List<FieldInf> children = new ArrayList<FieldInf>();
 
     private boolean filter, inHtmlView, expanded;
+    private String operator;
 
     public String getId() {
         return id;
@@ -125,5 +126,13 @@ public class FieldInf implements Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 }

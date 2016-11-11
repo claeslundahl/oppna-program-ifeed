@@ -72,4 +72,6 @@ public interface IFeedService {
 
     @Transactional
     void deleteDepartmentEntity(VgrDepartment department);
+
+    void save(DynamicTableDef instance);
 }

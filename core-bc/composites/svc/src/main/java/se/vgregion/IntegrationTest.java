@@ -12,6 +12,7 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 /**
@@ -19,15 +20,15 @@ import java.util.List;
  * Example of start command would be:
  * java -cp "*" se.vgregion.IntegrationTest http://vgas1499.vgregion.se:9090/solr/ifeed *test*
  * The following jar:s have to be present in the class-path.
- <pre>
- cglib-2.2.jar              httpcore-4.3.3.jar
- cglib-nodep-2.2.jar        httpmime-4.2.3.jar
- commons-lang-2.4.jar       iFeed-core-bc-composite-svc-1.12-SNAPSHOT.jar
- commons-logging-1.1.1.jar  iFeed-core-bc-composite-types-1.12-SNAPSHOT.jar
- dao-framework-3.5.jar      noggit-0.5.jar
- gson-2.3.1.jar             slf4j-api-1.6.1.jar
- httpclient-4.3.6.jar       solr-solrj-4.5.1.jar
- </pre>
+ * <pre>
+ * cglib-2.2.jar              httpcore-4.3.3.jar
+ * cglib-nodep-2.2.jar        httpmime-4.2.3.jar
+ * commons-lang-2.4.jar       iFeed-core-bc-composite-svc-1.12-SNAPSHOT.jar
+ * commons-logging-1.1.1.jar  iFeed-core-bc-composite-types-1.12-SNAPSHOT.jar
+ * dao-framework-3.5.jar      noggit-0.5.jar
+ * gson-2.3.1.jar             slf4j-api-1.6.1.jar
+ * httpclient-4.3.6.jar       solr-solrj-4.5.1.jar
+ * </pre>
  */
 public class IntegrationTest {
 
@@ -37,7 +38,13 @@ public class IntegrationTest {
         if (args != null && args.length > 0) {
             assert args.length == 2;
             url.set(args[0]);
-            System.out.println(findByDocumentName(args[1]));
+            String question = args[1];
+            if (question.contains(":")) {
+                String[] keyValue = question.split(Pattern.quote(":"));
+                System.out.println(find(keyValue[0], keyValue[1]));
+            } else {
+                System.out.println(findByDocumentName(args[1]));
+            }
         } else {
             System.out.println(findByDocumentName("+?\\//#:==&|[]"));
             System.out.println(findByDocumentName("*test*"));
@@ -50,7 +57,7 @@ public class IntegrationTest {
 
     public static IFeedResults find(String key, String value) {
         SolrServer solrServer = SolrServerFactory.create(url.get());
-        IFeedService iFeedService = new IFeedServiceImpl(){
+        IFeedService iFeedService = new IFeedServiceImpl() {
             @Override
             public List<FieldsInf> getFieldsInfs() {
                 List<FieldsInf> result = new ArrayList<FieldsInf>();

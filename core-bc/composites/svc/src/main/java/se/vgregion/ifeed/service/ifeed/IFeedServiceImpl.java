@@ -545,4 +545,14 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         objectRepo.delete(department);
     }
 
+    @Override
+    @Transactional
+    public void save(DynamicTableDef instance) {
+        if (instance.getId() == null) {
+            objectRepo.persist(instance);
+        } else {
+            objectRepo.merge(instance);
+        }
+    }
+
 }

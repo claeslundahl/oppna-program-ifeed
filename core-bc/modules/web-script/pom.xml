@@ -17,7 +17,7 @@
 
     <properties>
         <!-- Convenience property to set the GWT version -->
-        <gwtVersion>2.7.0</gwtVersion>
+        <gwtVersion>2.8.0</gwtVersion>
         <!-- GWT needs at least java 1.5 -->
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,6 +52,7 @@
                     <runTarget>test.html</runTarget>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
                     <style>PRETTY</style>
+                    <generateJsInteropExports>true</generateJsInteropExports>
                     <!--<i18nMessagesBundle>se.metab.client.Messages</i18nMessagesBundle>-->
                 </configuration>
             </plugin>
@@ -78,8 +79,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 

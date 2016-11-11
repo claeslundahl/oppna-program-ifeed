@@ -49,7 +49,8 @@ public class SolrFacetUtil {
 
         Map facetCounts = (Map) ((Map) tree).get("facet_counts");
         Map facetFields = (Map) ((Map) facetCounts).get("facet_fields");
-        List<Object> resultWithWeight = (List<Object>) ((Map) facetFields).get(field);
+        Map facetFieldsMap = (Map) facetFields;
+        List<Object> resultWithWeight = (List<Object>) facetFieldsMap.get(field);
         // first value is the string, then comes the weight - number of usages...
         for (int j = 0, k = Math.min(resultWithWeight.size(), 10); j < k; j += 2) {
             String value = (String) resultWithWeight.get(j);

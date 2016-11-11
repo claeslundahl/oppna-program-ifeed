@@ -22,19 +22,26 @@
                 </tr>
                 <tr>
                     <th class="filter-result-h">
-                        <p:inputText placeholder="Filtrera på namn" value="${filter.name}" listener="#{app.updateFilterQuery}" id="filterOnName">
+                        <p:inputText placeholder="Filtrera på namn"
+                                     value="${filter.name}"
+                                     listener="#{app.updateFilterQuery}"
+                                     id="filterOnName"
+                                     styleClass="filterOnName"
+                                     onkeypress="if (event.keyCode == 13) {event.preventDefault(); this.onchange(); }">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
                             <p:watermark for="filterOnName" value="Sök namn" />
                         </p:inputText>
                     </th>
                     <th class="filter-result-h">
-                        <p:inputText value="${filter.userId}" style="width:50px;" id="filterOnUserId">
+                        <p:inputText value="${filter.userId}" style="width:50px;" id="filterOnUserId"
+                                     onkeypress="if (event.keyCode == 13) {event.preventDefault(); this.onchange(); }">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
                             <p:watermark for="filterOnUserId" value="Vgr-Id" />
                         </p:inputText>
                     </th>
                     <th class="filter-result-h">
-                        <p:inputText value="${filter.description}" id="filterOnDescription">
+                        <p:inputText value="${filter.description}" id="filterOnDescription"
+                                     onkeypress="if (event.keyCode == 13) {event.preventDefault(); this.onchange(); }">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
                             <p:watermark for="filterOnDescription" value="Sök beskrivning" />
                         </p:inputText>
@@ -67,7 +74,8 @@
                         </h:selectOneMenu>
                     </th>
                     <th class="filter-result-h">
-                        <p:inputText value="${filter.idAsText}" size="8" style="width: 50px;" id="filterOnIdAsText">
+                        <p:inputText value="${filter.idAsText}" size="8" style="width: 50px;" id="filterOnIdAsText"
+                                     onkeypress="if (event.keyCode == 13) {event.preventDefault(); this.onchange(); }">
                             <f:ajax event="change" render="ifeed_view" listener="#{app.updateFilterQuery}"/>
                             <p:watermark for="filterOnIdAsText" value="Sök Id" />
                         </p:inputText>

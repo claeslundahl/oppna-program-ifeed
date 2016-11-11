@@ -386,6 +386,7 @@ public class Application {
             return;
         }
         IFeedFilter newFilter = new IFeedFilter(null, fieldInf.getValue(), fieldInf.getId());
+        newFilter.setOperator(fieldInf.getOperator());
         newFilter.setFieldInf(fieldInf);
         fieldInf.setExpanded(false);
         iFeedModelBean.addFilter(newFilter);
@@ -864,6 +865,7 @@ public class Application {
                 newFilter = fieldsByNameIndex.get(filter.getFilterKey());
             }
             newFilter.setValue(filter.getFilterQuery());
+            newFilter.setOperator(filter.getOperator());
             if (!filter.getFieldInf().getType().equals("d:ldap_org_value")) {
                 iFeedModelBean.removeFilter(filter);
             }
@@ -880,6 +882,7 @@ public class Application {
         this.limitOnResultCount = limitOnResultCount;
     }
 
+    @Transactional
     public void putFlowInFeed(DynamicTableDef dynamicTableDef) {
         BeanMap bm = new BeanMap(dynamicTableDef);
         boolean found = false;
@@ -888,6 +891,7 @@ public class Application {
                 found = true;
                 new BeanMap(item).putAllWriteable(bm);
                 item.setColumnDefs(dynamicTableDef.getColumnDefs());
+                iFeedService.save(item);
                 break;
             }
         }
@@ -896,8 +900,12 @@ public class Application {
             new BeanMap(instance).putAllWriteable(bm);
             instance.setColumnDefs(dynamicTableDef.getColumnDefs());
             iFeedModelBean.getDynamicTableDefs().add(instance);
+            instance.setIfeed(iFeedModelBean.getInitalFeed());
+            instance.setFkIfeedId(iFeedModelBean.getInitalFeed().getId());
+            iFeedService.save(instance);
         }
         navigationModelBean.setUiNavigation("VIEW_IFEED");
+
     }
 
     public void removeFlow(DynamicTableDef dynamicTableDef) {

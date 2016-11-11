@@ -31,8 +31,8 @@ public class SolrServerFactory {
     public static SolrServer create() {
         try {
             Properties properties = new Properties();
-            String url = properties.getProperty("solr.service");
             properties.load(new FileReader(getPropertiesPath()));
+            String url = properties.getProperty("solr.service");
             return create(url);
         } catch (IOException e) {
             throw new RuntimeException(e);

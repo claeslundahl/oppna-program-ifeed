@@ -247,7 +247,11 @@
                    id="getFiltersAsListRepeat">
     <span class="ltr-flowing-item ifeed-border">
       <span class="name">#{app.getFieldsByNameIndex().get(getFiltersAsListItem.filterKey).name}</span>
-      <span class="name-value-delimiter">:</span>
+      <span class="name-value-delimiter">
+        <h:outputText value=":" rendered="#{getFiltersAsListItem.operator eq 'matching' or empty getFiltersAsListItem.operator}"/>
+        <h:outputText value="&lt;" rendered="#{getFiltersAsListItem.operator eq 'lesser'}"/>
+        <h:outputText value="&gt;" rendered="#{getFiltersAsListItem.operator eq 'greater'}"/>
+      </span>
       <span>#{empty getFiltersAsListItem.filterQueryForDisplay ? getFiltersAsListItem.filterQuery : getFiltersAsListItem.filterQueryForDisplay}</span>
 
       <span class="edit">

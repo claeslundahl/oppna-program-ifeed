@@ -248,7 +248,7 @@
     <span class="ltr-flowing-item ifeed-border">
       <span class="name">#{app.getFieldsByNameIndex().get(getFiltersAsListItem.filterKey).name}</span>
       <span class="name-value-delimiter">
-        <h:outputText value=":" rendered="#{getFiltersAsListItem.operator eq 'matching' or empty getFiltersAsListItem.operator}"/>
+        <h:outputText value="=" rendered="#{getFiltersAsListItem.operator eq 'matching' or empty getFiltersAsListItem.operator}"/>
         <h:outputText value="&lt;" rendered="#{getFiltersAsListItem.operator eq 'lesser'}"/>
         <h:outputText value="&gt;" rendered="#{getFiltersAsListItem.operator eq 'greater'}"/>
       </span>
@@ -302,7 +302,6 @@
 
     </div>
 
-
     <script type="text/javascript">
     //<![CDATA[
         function toggle() {
@@ -310,10 +309,6 @@
            for (var i = 0; i < arguments.length; i++) {
                var id = arguments[i];
                $('#' + id).toggle();
-               //var e = document.getElementById(id);
-			   //var displayToggle = e.hasAttribute(dta) ? e.getAttribute(dta) : (e.style.display != 'none' ? 'none' : '');
-			   //e.setAttribute(dta, e.style.display);
-			   //e.style.display = displayToggle;
             }
         }
 
@@ -348,8 +343,6 @@
         document.getElementsByTagName('body')[0].appendChild(node);
         node.innerHTML = "#{app.getExcelFeedLinkForm()}";
     //]]>
-
-
 
     </script>
 

@@ -16,12 +16,12 @@
         <div class="ifeed-filter-box">
           <h3 id="new-filter-name">Filter: #{app.newFilter.name}</h3>
 
-          <!--<h:selectOneMenu value="#{app.newFilter.operator}"
+          <h:selectOneMenu value="#{app.newFilter.operator}"
                            rendered="#{not (app.newFilter.name.endsWith(' from') or app.newFilter.name.endsWith(' tom'))}">
             <f:selectItem itemValue="matching" itemLabel="Matchande"/>
             <f:selectItem itemValue="greater" itemLabel="Större än"/>
             <f:selectItem itemValue="lesser" itemLabel="Mindre än"/>
-          </h:selectOneMenu>-->
+          </h:selectOneMenu>
 
           <div class="box">
             <h:panelGrid rendered="#{not empty app.newFilter.help}">
@@ -37,16 +37,16 @@
               <ui:include src="organization-tree.xhtml"/>
             </p:panel>
 
-            <p:calendar rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
+            <!--<p:calendar rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
                         navigator="false"
                         readOnlyInput="false"
                         value="#{app.newFilter.value}"
                         lang="sv_SE"
                         pattern="yyyy-MM-dd">
               <f:converter converterId="textDateConverter"/>
-            </p:calendar>
+            </p:calendar>-->
 
-            <!--<p:inputText rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
+            <p:inputText rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
                          navigator="false"
                          readOnlyInput="false"
                          value="#{app.newFilter.value}"
@@ -64,7 +64,7 @@
                   },
                   1000);
               } );
-            </h:outputScript>-->
+            </h:outputScript>
 
             <p:autoComplete value="#{app.newFilter.value}"
                             rendered="#{app.newFilter.type == 'd:ldap_value'}"

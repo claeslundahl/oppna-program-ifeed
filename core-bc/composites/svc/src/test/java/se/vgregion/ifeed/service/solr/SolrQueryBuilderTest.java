@@ -39,7 +39,8 @@ public class SolrQueryBuilderTest {
 
     @Test
     public void shouldHandleFixedTextSearch() throws Exception {
-        String expectedQueryString = "language:\"Svenska\"";
+        //String expectedQueryString = "language:\"Svenska\"";
+        String expectedQueryString = "language:Svenska";
 
         IFeedFilter filter = new IFeedFilter(Filter.LANGUAGE, "Svenska", "foo.bar.baz");
         String queryString = SolrQueryBuilder.createQuery(filter, iFeedService.mapFieldInfToId());
@@ -65,4 +66,10 @@ public class SolrQueryBuilderTest {
         String queryString = SolrQueryBuilder.createQuery(filter, iFeedService.mapFieldInfToId());
         assertEquals(expectedQueryString, queryString);
     }
+
+    public static void main(String[] args) {
+        System.out.println("+123".matches("[\\\\+\\\\-][0-9]+"));
+        System.out.println("-123".matches("[\\\\+\\\\-][0-9]+"));
+    }
+
 }

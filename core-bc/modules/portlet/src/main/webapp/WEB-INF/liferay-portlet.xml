@@ -3,48 +3,22 @@
         "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
 
 <liferay-portlet-app>
-    <!--  <portlet>
-        <portlet-name>iFeed</portlet-name>
-        <instanceable>false</instanceable>
-          <requires-namespaced-parameters>false</requires-namespaced-parameters>
-        <css-class-wrapper>ifeed-portlet</css-class-wrapper>
-      </portlet>-->
+
     <portlet>
         <portlet-name>iFeedJsf</portlet-name>
         <action-url-redirect>true</action-url-redirect>
         <instanceable>false</instanceable>
         <requires-namespaced-parameters>false</requires-namespaced-parameters>
         <header-portlet-css>/css/theme.css</header-portlet-css>
-        <!--  <header-portlet-css>/css/prime-faces.css</header-portlet-css>-->
-<!--        <footer-portlet-javascript>/js/11F205242C7972D110A111CD00F3F954.cache.js?</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/9BBCBB0472EF93758AE6D138FFDDA652.cache.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/A21926F45829EAF00108C59C09AE802B.cache.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/ACAF4AC0F43A54FF7F0281B36BE88126.cache.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/B14C5DFDAE733CBD042DCF1ACF27727F.cache.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/ifeed-jsonp-builder.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/local.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.devmode.js</footer-portlet-javascript>
-        <footer-portlet-javascript>/js/se.vgregion.ifeed.web.widgets.Module.nocache.js</footer-portlet-javascript>
-        -->
+
         <footer-portlet-javascript>/js/se.vgregion.ifeed.Module.nocache.js</footer-portlet-javascript>
+        <footer-portlet-javascript>/se.vgregion.ifeed.gwt.Module/se.vgregion.ifeed.gwt.Module.nocache.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/util.js</footer-portlet-javascript>
         <footer-portlet-javascript>/js/vgr-ifeed-config.js</footer-portlet-javascript>
 
         <css-class-wrapper>ifeed-portlet</css-class-wrapper>
         <add-default-resource>false</add-default-resource>
-
     </portlet>
-
-    <!--
-        <portlet>
-            <portlet-name>iFeed</portlet-name>
-            <action-url-redirect>true</action-url-redirect>
-            <instanceable>false</instanceable>
-            <requires-namespaced-parameters>false</requires-namespaced-parameters>
-            <header-portlet-css>/css/theme.css</header-portlet-css>
-            <add-default-resource>false</add-default-resource>
-        </portlet>
-    -->
 
     <portlet>
         <portlet-name>apelon-scheduler</portlet-name>
@@ -61,22 +35,6 @@
         <requires-namespaced-parameters>false</requires-namespaced-parameters>
         <system>true</system>
     </portlet>
-
-    <!--
-  <portlet>
-    <portlet-name>publish-scheduler</portlet-name>
-    <scheduler-entry>
-      <scheduler-event-listener-class>se.vgregion.ifeed.scheduler.IFeedPublishScheduler</scheduler-event-listener-class>
-      <trigger>
-        <cron>
-          <cron-trigger-value>0 */1 * ? * *</cron-trigger-value>
-        </cron>
-      </trigger>
-    </scheduler-entry>
-      <requires-namespaced-parameters>false</requires-namespaced-parameters>
-    <system>true</system>
-  </portlet>
-   -->
 
     <role-mapper>
         <role-name>administrator</role-name>

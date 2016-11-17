@@ -17,7 +17,7 @@
           <h3 id="new-filter-name">Filter: #{app.newFilter.name}</h3>
 
           <h:selectOneMenu value="#{app.newFilter.operator}"
-                           rendered="#{not (app.newFilter.name.endsWith(' from') or app.newFilter.name.endsWith(' tom'))}">
+                           rendered="#{not (app.newFilter.id.endsWith('.id') or app.newFilter.name.endsWith(' from') or app.newFilter.name.endsWith(' tom'))}">
             <f:selectItem itemValue="matching" itemLabel="Matchande"/>
             <f:selectItem itemValue="greater" itemLabel="Större än"/>
             <f:selectItem itemValue="lesser" itemLabel="Mindre än"/>

@@ -254,7 +254,7 @@ public class Application {
 
         navigationModelBean.setUiNavigation("VIEW_IFEED");
         setInEditMode(false);
-        findResultsByCurrentFeedConditions();
+        //findResultsByCurrentFeedConditions();
 
         setFilters(filters);
 

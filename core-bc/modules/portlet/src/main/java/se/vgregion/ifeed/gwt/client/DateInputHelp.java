@@ -1,11 +1,8 @@
-package se.vgregion.ifeed.client;
+package se.vgregion.ifeed.gwt.client;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -13,10 +10,10 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueBoxBase;
 import com.google.gwt.user.datepicker.client.DatePicker;
-import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
 import java.util.*;
+
 
 /**
  * Created by clalu4 on 2016-11-10.
@@ -26,7 +23,7 @@ public class DateInputHelp {
 
     private static List<Element> getElementsByCssSelector(String selectors) {
         NodeList<Element> result = querySelectorAll(selectors);
-        List<Element> elements = new ArrayList<>();
+        List<Element> elements = new ArrayList<Element>();
         for (int i = 0, j = result.getLength(); i < j; i++) {
             elements.add((Element) result.getItem(i).cast());
         }
@@ -43,18 +40,31 @@ public class DateInputHelp {
             final TextBox box = TextBox.wrap(element);
             box.addKeyPressHandler(new SupressKeyDownHandler("0123456789+-"));
 
-            box.addFocusHandler(event -> popupShooser(box));
-            box.addClickHandler(event -> popupShooser(box));
+            box.addFocusHandler(new FocusHandler() {
+                @Override
+                public void onFocus(FocusEvent event) {
+                    popupChooser(box);
+                }
+            });
+            box.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    popupChooser(box);
+                }
+            });
         }
     }
 
-    private static void popupShooser(final TextBox box) {
+    private static void popupChooser(final TextBox box) {
         final PopupPanel popupPanel = new PopupPanel(true);
         final DatePicker datePicker = new DatePicker();  // Have to make final to use in inner method
-        datePicker.addValueChangeHandler(event1 -> {
-            Date date = event1.getValue();
-            box.setText(DateTimeFormat.getFormat("yyyy-MM-dd").format(date));
-            popupPanel.hide();
+        datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Date> event1) {
+                Date date = event1.getValue();
+                box.setText(DateTimeFormat.getFormat("yyyy-MM-dd").format(date));
+                popupPanel.hide();
+            }
         });
         popupPanel.setWidget(datePicker);
         int x = box.getElement().getAbsoluteLeft();
@@ -66,7 +76,7 @@ public class DateInputHelp {
 
     public static class SupressKeyDownHandler implements KeyPressHandler {
 
-        private final Set<Character> approvedChars = new HashSet<>();
+        private final Set<Character> approvedChars = new HashSet<Character>();
 
         public SupressKeyDownHandler(String pattern) {
             for (byte b : pattern.getBytes()) {

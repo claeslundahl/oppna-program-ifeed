@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.service.solr;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.util.JSONPObject;
@@ -64,13 +65,21 @@ public class SolrFacetUtil {
         IFeedSolrQuery.FeedFilterBag bag = new IFeedSolrQuery.FeedFilterBag();
         StringBuilder sb = new StringBuilder(solrBaseUrl + settings);
         for (IFeedFilter f : feed.getFilters()) {
-            bag.get(f.getFilterKey()).add(f);
+            bag.get(f.getFilterKey() + getFirstNonBlank(f.getOperator(), "matching")).add(f);
         }
         for (List<IFeedFilter> iFeedFilters : bag.values()) {
             sb.append("&fq=");
             sb.append(SolrQueryBuilder.createOrQuery(iFeedFilters));
         }
         return sb.toString();
+    }
+
+    static String getFirstNonBlank(String first, String second) {
+        if (StringUtils.isBlank(first)) {
+            return second;
+        } else {
+            return first;
+        }
     }
 
 

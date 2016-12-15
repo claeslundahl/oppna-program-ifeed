@@ -23,6 +23,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.join;
 import static se.vgregion.common.utils.CommonUtils.isNull;
 import static se.vgregion.ifeed.service.solr.DateFormatter.DateFormat.SOLR_DATE_FORMAT;
+import static se.vgregion.ifeed.service.solr.SolrFacetUtil.getFirstNonBlank;
 
 public class IFeedSolrQuery extends SolrQuery {
 
@@ -100,6 +101,8 @@ public class IFeedSolrQuery extends SolrQuery {
                 try {
                     setQuery("*:*");
                     QueryResponse response = solrServer.query(this);
+                    Map map = new HashMap(response.getDebugMap());
+                    LOGGER.error(map.toString());
 
                     SolrDocumentList sdl = response.getResults();
                     hits = (ArrayList<Map<String, Object>>) sdl.clone();
@@ -169,7 +172,8 @@ public class IFeedSolrQuery extends SolrQuery {
         FeedFilterBag bag = new FeedFilterBag();
 
         for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
-            bag.get(iFeedFilter.getFilterKey()).add(iFeedFilter);
+            bag.get(iFeedFilter.getFilterKey() + getFirstNonBlank(iFeedFilter.getOperator(), "matching")).add(iFeedFilter);
+            //bag.get(iFeedFilter.getFilterKey()).add(iFeedFilter);
         }
 
         List<String> queryParts = new ArrayList<String>();

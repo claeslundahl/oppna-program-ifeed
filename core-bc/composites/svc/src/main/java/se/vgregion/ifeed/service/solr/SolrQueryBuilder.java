@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.service.solr;
 
+import org.apache.commons.lang.StringUtils;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeedFilter;
@@ -41,23 +42,40 @@ public class SolrQueryBuilder {
         return sb.toString();
     }*/
 
+    private static Map<String, FieldInf> id2infsBackup;
+
+    private static Map<String, FieldInf> getOrStoreId2infs(Map<String, FieldInf> id2infs) {
+        if (id2infs != null) {
+            id2infsBackup = id2infs;
+            return id2infs;
+        } else {
+            return id2infsBackup;
+        }
+    }
+
     public static String createQuery(IFeedFilter iFeedFilter, Map<String, FieldInf> id2infs) {
+        id2infs = getOrStoreId2infs(id2infs);
         String query = "";
         Filter filter = iFeedFilter.getFilter();
         String filterQuery = iFeedFilter.getFilterQuery();
 
+        if (iFeedFilter.getFieldInf() == null) {
+            String key = iFeedFilter.getFilterKey();
+            iFeedFilter.setFieldInf(id2infs.get(key));
+        }
+
         if (filter == null || filter.getMetadataType() == null) {
 
-            if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validfrom")
+            /*if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validfrom")
                     || iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.availablefrom")) {
                 query = iFeedFilter.getFilterKey() + ":[" + filterQuery + " TO *]";
             } else if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validto")
                     || iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.availableto")) {
                 query = iFeedFilter.getFilterKey() + ":[* TO " + filterQuery + "]";
             } else {
-                //query = iFeedFilter.getFilterKey() + ":" + getAndFormatFilterQuery(iFeedFilter) + "";
                 query = getAndFormatFilterQuery(iFeedFilter);
-            }
+            }*/
+            query = getAndFormatFilterQuery(iFeedFilter);
 
         } else {
             switch (filter.getMetadataType()) {
@@ -103,21 +121,30 @@ public class SolrQueryBuilder {
         }
     }
 
+    private static boolean isSomeKindOfDate(IFeedFilter iFeedFilter) {
+        return iFeedFilter.getFieldInf() != null && (iFeedFilter.getFieldInf().getType().equals("d:date")
+                || iFeedFilter.getFieldInf().getType().equals("d:datetime"));
+    }
+
+    private static boolean isOfMatchingType(IFeedFilter iFeedFilter) {
+        String operator = iFeedFilter.getOperator();
+        return "matching".equalsIgnoreCase(operator) || StringUtils.isEmpty(operator);
+    }
+
     private static String getAndFormatFilterQuery(IFeedFilter iFeedFilter) {
         String ff = iFeedFilter.getFilterQuery();
 
-        if (iFeedFilter.getFieldInf() != null && (iFeedFilter.getFieldInf().getType().equals("d:date")
-                || iFeedFilter.getFieldInf().getType().equals("d:datetime"))
-                && (ff.startsWith("+") || ff.startsWith("-")) && ff.length() > 1 && isDigit(ff.substring(1))
-                ) {
-            Date now = new Date();
-            long daysOff = Integer.parseInt(ff.substring(1));
-            if (ff.startsWith("-")) {
-                daysOff = -daysOff;
+        if (isSomeKindOfDate(iFeedFilter)) {
+            if (ff.startsWith("+") || ff.startsWith("-") && ff.length() > 1 && isDigit(ff.substring(1))) {
+                Date now = new Date();
+                long daysOff = Integer.parseInt(ff.substring(1));
+                if (ff.startsWith("-")) {
+                    daysOff = -daysOff;
+                }
+                daysOff = daysOff * 86400000;
+                Date otherDay = new Date(now.getTime() + daysOff);
+                ff = sdf.format(otherDay);
             }
-            daysOff = daysOff * 86400000;
-            Date otherDay = new Date(now.getTime() + daysOff);
-            ff = sdf.format(otherDay);
         }
 
         ff = SolrQueryEscaper.escape(ff);
@@ -130,11 +157,14 @@ public class SolrQueryBuilder {
             solrPropertyName = iFeedFilter.getFilterKey();
         }
 
-        final String operator = iFeedFilter.getOperator();
-
-        if (operator == null || "matching".equals(operator)) {
-            ff = solrPropertyName + ":" + ff + "";
+        if (isOfMatchingType(iFeedFilter)) {
+            if (isSomeKindOfDate(iFeedFilter)) {
+                ff = solrPropertyName + ":" + ff + "*";
+            } else {
+                ff = solrPropertyName + ":" + ff + "";
+            }
         } else {
+            final String operator = iFeedFilter.getOperator();
             if (operator.equals("greater")) {
                 ff = solrPropertyName + ":[" + ff + " TO *]";
             } else if (operator.equals("lesser")) {

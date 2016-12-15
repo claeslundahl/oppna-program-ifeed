@@ -1,6 +1,5 @@
 package se.vgregion.ifeed.viewer;
 
-import com.sun.imageio.plugins.common.LZWCompressor;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,20 +14,17 @@ import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -127,7 +123,10 @@ public class IFeedViewerController {
                                    @RequestParam(value = "startBy", required = false) Integer startBy,
                                    @RequestParam(value = "endBy", required = false) Integer endBy,
                                    @RequestParam(value = "fromPage", required = false) String fromPage) {
-        return getIFeed(instance, model, sortField, sortDirection, startBy, endBy, fromPage);
+        long timeBefore = System.currentTimeMillis();
+        String result = getIFeed(instance, model, sortField, sortDirection, startBy, endBy, fromPage);
+        System.out.println("Time for call was " + (System.currentTimeMillis() - timeBefore) + "ms.");
+        return result;
     }
 
     /**

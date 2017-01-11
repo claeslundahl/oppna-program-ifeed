@@ -55,6 +55,10 @@
     <property name="showDebugInfo" value="true" />
   </bean>
 
+  <bean id="solrQueryBuilderDummy" class="se.vgregion.ifeed.service.solr.SolrQueryBuilder">
+    <property name="iFeedService" ref="iFeedService"/>
+  </bean>
+
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
     <property name="iFeedRepo" ref="iFeedRepo" />
     <property name="fieldsInfRepo" ref="fieldsInfRepo" />

@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
+import se.vgregion.InvocerUtil;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.Filter;
@@ -43,6 +44,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
 import java.io.*;
+import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -59,12 +61,9 @@ public class Application {
 
     @Value("${ifeed.metadata.base.url}")
     private String metadataBaseUrl;
-    /*    @Value("${ifeed.web.script.url}")
-        private String webScriptUrl;*/
+
     @Value("${ifeed.web.script.json.url}")
     private String webScriptJsonUrl;
-    //@Value("#{tableDef}")
-    //private TableDefModel tableDefModel;
 
     @Autowired
     private IFeedService iFeedService;
@@ -119,6 +118,8 @@ public class Application {
     private boolean inEditMode;
 
     private boolean limitOnResultCount;
+
+    private WeakReference<Set<String>> multiValueKeys = new WeakReference<Set<String>>(null);
 
     @Value("#{filter}")
     private FilterModel filter;
@@ -666,6 +667,7 @@ public class Application {
     }
 
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
+        Set<String> blackList = getMultiValueKeys();
         List<SelectItemGroup> result = new ArrayList<SelectItemGroup>();
         if (filters == null) {
             this.filters = iFeedService.getFieldInfs();
@@ -678,7 +680,9 @@ public class Application {
             for (FieldInf child : parent.getChildren()) {
                 if (child.isInHtmlView()) {
                     //selectItems[c++] = new SelectItem(child.getId(), child.getName());
-                    items.add(new SelectItem(child.getId(), child.getName()));
+                    if (!blackList.contains(child.getId())) {
+                        items.add(new SelectItem(child.getId(), child.getName()));
+                    }
                 }
             }
             //group.setSelectItems(selectItems);
@@ -982,6 +986,13 @@ public class Application {
             viewIFeed(iFeedModelBean.getId());
             setInEditMode(false);
         }
+    }
+
+    public Set<String> getMultiValueKeys() {
+        if (multiValueKeys.get() == null) {
+            multiValueKeys = new WeakReference<>(InvocerUtil.getKeysWithMultiValues());
+        }
+        return multiValueKeys.get();
     }
 
 }

@@ -6,7 +6,6 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.params.CommonParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.vgregion.common.utils.CommonUtils;
@@ -16,7 +15,6 @@ import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.text.Collator;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -101,8 +99,9 @@ public class IFeedSolrQuery extends SolrQuery {
                 try {
                     setQuery("*:*");
                     QueryResponse response = solrServer.query(this);
-                    Map map = new HashMap(response.getDebugMap());
-                    LOGGER.error(map.toString());
+                    //Map map = new HashMap(response.getDebugMap());
+                    //LOGGER.error(map.toString());
+                    // Uncomment for debug info.
 
                     SolrDocumentList sdl = response.getResults();
                     hits = (ArrayList<Map<String, Object>>) sdl.clone();
@@ -114,6 +113,7 @@ public class IFeedSolrQuery extends SolrQuery {
                     e.printStackTrace();
                     LOGGER.error("Serverfel: {}", e.getCause());
                     LOGGER.error("Trying again, This where the " + i + "nt time of 3 (0-2).");
+                    LOGGER.error("latestArg2getIFeedResults = " + latestArg2getIFeedResults);
                 }
             }
         }
@@ -160,7 +160,15 @@ public class IFeedSolrQuery extends SolrQuery {
             }
         }
 
-        addFilterQuery("((" + Filter.join(resultWithOrBetween, ") OR (") + "))");
+        if (resultWithOrBetween.isEmpty()) {
+            // Do nothing.
+        } else {
+            if(resultWithOrBetween.size() == 1){
+                addFilterQuery(resultWithOrBetween.get(0));
+            }else {
+                addFilterQuery("((" + Filter.join(resultWithOrBetween, ") OR (") + "))");
+            }
+        }
     }
 
     private void addFeedFiltersImpl(IFeed iFeed, List<String> resultWithOrBetween, Set<IFeed> handled) {
@@ -183,6 +191,8 @@ public class IFeedSolrQuery extends SolrQuery {
             if (filters.size() == 1) {
                 queryParts.add(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
             } else {
+                if(filters.size() == 0)
+                    throw new RuntimeException("Here the (()) might occur!");
                 String fq = SolrQueryBuilder.createOrQuery(filters);
                 queryParts.add(fq);
             }
@@ -210,13 +220,19 @@ public class IFeedSolrQuery extends SolrQuery {
         return results;
     }
 
+
+    private ThreadLocal<IFeed> latestArg2getIFeedResults = new ThreadLocal<IFeed>();
+    // Used for debugging.
+
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, Date offset) {
+        latestArg2getIFeedResults.set(iFeed);
         addFeedFilters(iFeed);
         addOffsetFilter(offset);
         return prepareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
     }
 
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection) {
+        latestArg2getIFeedResults.set(iFeed);
         addFeedFilters(iFeed);
         addUnPublishedFilter();
         return prepareAndPerformQuery(sortField, sortDirection);

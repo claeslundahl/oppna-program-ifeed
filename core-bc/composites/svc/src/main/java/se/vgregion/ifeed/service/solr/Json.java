@@ -13,6 +13,12 @@ import java.util.regex.Pattern;
  */
 public class Json {
 
+    /**
+     * Converts a json-text to a hieararchy of objects.
+     * @param s the json to convert.
+     * @return either a object of the primitive wrapper types or a container sort of type map or list.
+     * @throws Exception if the json text is malformed the method will throw an exception.
+     */
     public static Object parse(final String s) throws Exception {
         final ScriptEngineManager factory = new ScriptEngineManager();
         final ScriptEngine engine = factory.getEngineByName("js");
@@ -32,7 +38,7 @@ public class Json {
     }
 
     @SuppressWarnings("unchecked")
-    public static Object convert(final Object val) {
+    private static Object convert(final Object val) {
         if (val instanceof Map) {
             final Map<String, Object> result = new HashMap<String, Object>();
             for (final Map.Entry<String, Object> entry : ((Map<String, Object>) val).entrySet()) {

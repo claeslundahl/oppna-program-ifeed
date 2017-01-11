@@ -215,6 +215,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
         result.getComposites().toString();
         result.getPartOf().toString();
+        result.getFilters().toString();
     }
 
     @Override

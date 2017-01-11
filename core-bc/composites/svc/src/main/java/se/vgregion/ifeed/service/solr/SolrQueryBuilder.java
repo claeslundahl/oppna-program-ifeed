@@ -1,60 +1,39 @@
 package se.vgregion.ifeed.service.solr;
 
 import org.apache.commons.lang.StringUtils;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.FieldInf;
+import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeedFilter;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class SolrQueryBuilder {
 
     public static String createOrQuery(Collection<IFeedFilter> filters) {
-        //fq=(dc.contributor.savedby.id%3Asusro3 OR dc.contributor.savedby.id%3Aclalu4)
         if (filters.isEmpty()) {
             throw new RuntimeException("No filter provided");
         }
         if (filters.size() == 1) {
-            return createQuery(filters.iterator().next(), (Map<String, FieldInf>) null);
+            return createQuery(filters.iterator().next(), getFieldInfMap());
         }
         List<String> parts = new ArrayList<String>();
         for (IFeedFilter filter : filters) {
-            parts.add(createQuery(filter, (Map<String, FieldInf>) null));
+            parts.add(createQuery(filter, getFieldInfMap()));
         }
         return "((" + se.vgregion.ifeed.service.ifeed.Filter.join(parts, ") OR (") + "))";
     }
 
-    /*private static String join(List<?> list, String junctor) {
-        StringBuilder sb = new StringBuilder();
-        if (list.isEmpty()) {
-            return "";
-        }
-        if (list.size() == 1) {
-            return list.get(0) + "";
-        }
-
-        for (int i = 0, j = list.size() - 1; i < j; i++) {
-            sb.append(list.get(i));
-            sb.append(junctor);
-        }
-        sb.append(list.get(list.size() - 1));
-        return sb.toString();
-    }*/
-
-    private static Map<String, FieldInf> id2infsBackup;
-
-    private static Map<String, FieldInf> getOrStoreId2infs(Map<String, FieldInf> id2infs) {
-        if (id2infs != null) {
-            id2infsBackup = id2infs;
-            return id2infs;
-        } else {
-            return id2infsBackup;
-        }
-    }
-
     public static String createQuery(IFeedFilter iFeedFilter, Map<String, FieldInf> id2infs) {
-        id2infs = getOrStoreId2infs(id2infs);
+        if (id2infs == null) {
+            id2infs = getFieldInfMap();
+        }
         String query = "";
         Filter filter = iFeedFilter.getFilter();
         String filterQuery = iFeedFilter.getFilterQuery();
@@ -65,34 +44,19 @@ public class SolrQueryBuilder {
         }
 
         if (filter == null || filter.getMetadataType() == null) {
-
-            /*if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validfrom")
-                    || iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.availablefrom")) {
-                query = iFeedFilter.getFilterKey() + ":[" + filterQuery + " TO *]";
-            } else if (iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.validto")
-                    || iFeedFilter.getFilterKey().equalsIgnoreCase("DC.date.availableto")) {
-                query = iFeedFilter.getFilterKey() + ":[* TO " + filterQuery + "]";
-            } else {
-                query = getAndFormatFilterQuery(iFeedFilter);
-            }*/
             query = getAndFormatFilterQuery(iFeedFilter);
-
         } else {
             switch (filter.getMetadataType()) {
                 case TEXT_FREE:
-                    // query = filter.getFilterField() + ":\"" + SolrQueryEscaper.escape(filterQuery) + "\"";
                     query = getAndFormatFilterQuery(iFeedFilter);
                     break;
                 case TEXT_FIX:
-                    // query = filter.getFilterField() + ":\"" + SolrQueryEscaper.escape(filterQuery) + "\"";
                     query = getAndFormatFilterQuery(iFeedFilter);
                     break;
                 case LDAP_VALUE:
-                    // query = filter.getFilterField() + ":" + SolrQueryEscaper.escape(filterQuery) + "";
                     query = getAndFormatFilterQuery(iFeedFilter);
                     break;
                 case LDAP_ORG_VALUE:
-                    // query = filter.getFilterField() + ":" + SolrQueryEscaper.escape(filterQuery) + "";
                     query = getAndFormatFilterQuery(iFeedFilter);
                     break;
                 case DATE:
@@ -187,4 +151,31 @@ public class SolrQueryBuilder {
         return query;
     }
 
+    private static IFeedService iFeedService;
+
+    public static Map<String, FieldInf> getFieldInfMap() {
+        if (iFeedService == null) {
+            try {
+                byte[] bytes = Files.readAllBytes(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "fields.conf"));
+                FieldsInf fi = new FieldsInf();
+                fi.setText(new String(bytes));
+                Map<String, FieldInf> map = new HashMap<>();
+                for (FieldInf field : fi.getFieldInfs()) {
+                    map.put(field.getId(), field);
+                }
+                return map;
+            } catch (java.io.IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return iFeedService.mapFieldInfToId();
+    }
+
+    public static void setIFeedService(IFeedService iFeedService) {
+        SolrQueryBuilder.iFeedService = iFeedService;
+    }
+
+    public static IFeedService getIFeedService() {
+        return iFeedService;
+    }
 }

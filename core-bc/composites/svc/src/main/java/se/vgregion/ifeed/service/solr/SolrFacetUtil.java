@@ -1,22 +1,15 @@
 package se.vgregion.ifeed.service.solr;
 
-import com.liferay.portal.kernel.json.JSONObject;
+import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.util.JSONPObject;
-import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
-import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.SolrQueryBuilder;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 /**
@@ -24,16 +17,23 @@ import java.util.*;
  */
 public class SolrFacetUtil {
 
+    /**
+     * Calls the solr server to get facet result of a certain IFeed and field.
+     * @param solrBaseUrl the location of the server to use.
+     * @param feed the query to run as condition.
+     * @param field what property to get facets for.
+     * @return the top 10 results of the search, sorted descending.
+     */
     public static List<String> fetchFacets(String solrBaseUrl, IFeed feed, String field) {
         try {
             return fetchFacetsImpl(solrBaseUrl, feed, field);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field) throws Exception {
-        List<String> values = new ArrayList<String>();
+    private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field) throws Exception {
         String fu = facetUrl(solrBaseUrl, feed, field);
         URL url = new URL(fu);
         InputStream stream = url.openStream();
@@ -51,27 +51,49 @@ public class SolrFacetUtil {
         Map facetCounts = (Map) ((Map) tree).get("facet_counts");
         Map facetFields = (Map) ((Map) facetCounts).get("facet_fields");
         Map facetFieldsMap = (Map) facetFields;
-        List<Object> resultWithWeight = (List<Object>) facetFieldsMap.get(field);
-        // first value is the string, then comes the weight - number of usages...
-        for (int j = 0, k = Math.min(resultWithWeight.size(), 10); j < k; j += 2) {
-            String value = (String) resultWithWeight.get(j);
-            values.add(value);
+        Object mapOrList = facetFieldsMap.get(field);
+        if (mapOrList instanceof Map) {
+            Map<String, Object> map = (Map) mapOrList;
+            List<String> list = (List<String>) map.get(field);
+            if (list == null) {
+                list = new ArrayList<>();
+                NavigableMap<String, String> om = new TreeMap(map);
+                for (String s : om.keySet()) {
+                    list.add(om.get(s));
+                }
+            }
+            if (map.isEmpty()) {
+                return Collections.emptyList();
+            }
+            return list.subList(0, 10);
+        } else {
+            List<String> values = new ArrayList<String>();
+            List<Object> resultWithWeight = (List<Object>) mapOrList;
+            // first value is the string, then comes the weight - number of usages...
+            for (int j = 0, k = Math.min(resultWithWeight.size(), 10); j < k; j += 2) {
+                String value = (String) resultWithWeight.get(j);
+                values.add(value);
+            }
+            return values;
         }
-        return values;
     }
 
-    public static String facetUrl(String solrBaseUrl, IFeed feed, String field) {
+    private static String facetUrl(String solrBaseUrl, IFeed feed, String field) {
         String settings = "select?fl=*&rows=10&debugQuery=true&facet=on&wt=json&facet.mincount=1&facet.field=" + field;
         IFeedSolrQuery.FeedFilterBag bag = new IFeedSolrQuery.FeedFilterBag();
-        StringBuilder sb = new StringBuilder(solrBaseUrl + settings);
+        StringBuilder sb = new StringBuilder(solrBaseUrl + (solrBaseUrl.endsWith("/") ? "" : "/") + settings);
         for (IFeedFilter f : feed.getFilters()) {
             bag.get(f.getFilterKey() + getFirstNonBlank(f.getOperator(), "matching")).add(f);
         }
         for (List<IFeedFilter> iFeedFilters : bag.values()) {
             sb.append("&fq=");
-            sb.append(SolrQueryBuilder.createOrQuery(iFeedFilters));
+            String oq = SolrQueryBuilder.createOrQuery(iFeedFilters);
+            if ("(())".equals(oq)) {
+                throw new RuntimeException("(())");
+            }//TODO: Consider removing this before next deploy.
+            sb.append(oq);
         }
-        return sb.toString();
+        return sb.toString().replaceAll(Pattern.quote(" "), "%20");
     }
 
     static String getFirstNonBlank(String first, String second) {

@@ -1,6 +1,7 @@
 package se.vgregion;
 
 import org.apache.solr.client.solrj.SolrServer;
+import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.service.solr.IFeedResults;
@@ -10,9 +11,11 @@ import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 
 /**
@@ -30,48 +33,32 @@ import java.util.regex.Pattern;
  * httpclient-4.3.6.jar       solr-solrj-4.5.1.jar
  * </pre>
  */
-public class IntegrationTest {
+public class InvocerUtil {
 
-    private final static ThreadLocal<String> url = new ThreadLocal<String>();
+    private final String url;
+    private int maxResultCount = 10;
 
-    public static void main(String[] args) {
-        if (args != null && args.length > 0) {
-            assert args.length == 2;
-            url.set(args[0]);
-            String question = args[1];
-            if (question.contains(":")) {
-                String[] keyValue = question.split(Pattern.quote(":"));
-                System.out.println(find(keyValue[0], keyValue[1]));
-            } else {
-                System.out.println(findByDocumentName(args[1]));
-            }
-        } else {
-            url.set("http://vgas1499.vgregion.se:9090/solr/ifeed");
-            // System.out.println(findByDocumentName("+?\\//#:==&|[]"));
-
-            long time = System.currentTimeMillis();
-            IFeedResults findings = findByDocumentName("*");
-            System.out.println(findings);
-            System.out.println("Finding all docs took " + (System.currentTimeMillis() - time) + " count " + findings.size());
-
-            /*IFeedResults testDocs = findByDocumentName("*");
-
-            for (Map<String, Object> testDoc : testDocs) {
-                for (String k : testDoc.keySet()) {
-                    Object v = testDoc.get(k);
-                    if (v instanceof List)
-                        System.out.println(k + " = " + testDoc.get(k));
-                }
-            }*/
-        }
+    public InvocerUtil(String url) {
+        this.url = url;
     }
 
-    public static IFeedResults findByDocumentName(String solrPattern) {
+    public InvocerUtil() {
+        String userHome = System.getProperty("user.home");
+        Properties properties = new Properties();
+        try {
+            properties.load((Files.newInputStream(Paths.get(userHome, ".hotell", "ifeed", "config.properties"))));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.url = properties.getProperty("solr.service");
+    }
+
+    public IFeedResults findByDocumentName(String solrPattern) {
         return find("dc.title", solrPattern);
     }
 
-    public static IFeedResults find(String key, String value) {
-        SolrServer solrServer = SolrServerFactory.create(url.get());
+    public IFeedResults find(String key, String value) {
+        SolrServer solrServer = SolrServerFactory.create(url);
         IFeedService iFeedService = new IFeedServiceImpl() {
             @Override
             public List<FieldsInf> getFieldsInfs() {
@@ -82,17 +69,19 @@ public class IntegrationTest {
                 return result;
             }
         };
+
         IFeedSolrQuery iFeedSolrQuery = new IFeedSolrQuery(solrServer, iFeedService);
         IFeed feed = new IFeed();
         IFeedFilter filter = new IFeedFilter(value, key);
         feed.addFilter(filter);
         IFeedResults result = iFeedSolrQuery.getIFeedResults(feed);
+
         FieldsInf fieldsInf = new FieldsInf();
         fieldsInf.setText(getFieldsConfig());
         return result;
     }
 
-    public static String getFieldsConfig() {
+    public String getFieldsConfig() {
         return "id|name|help|type|filter|apelonKey|inHtmlView\n" +
                 "|Dokumentbeskrivning|||||yes\n" +
                 "DC.title|Titel (autokomplettering)|Namn på dokument, handling eller annan typ av resurs. (Fritext)|d:text_facet|yes||yes\n" +
@@ -189,4 +178,33 @@ public class IntegrationTest {
                 "DC.identifier.checksum.native|Kontrollsumma dokument, original|Kontrollsumma på orgnial dokumentet, handlingen eller resursen. Varje version av dokumentet får ett unikt värde. (Systemstyrt)|d:text|no||yes\n" +
                 "DC.source.origin|Källsystem|Källsystem till dokumentet, handlingen eller resursen. (Systemstyrt)|d:text|yes||yes\n";
     }
+
+    public int getMaxResultCount() {
+        return maxResultCount;
+    }
+
+    public void setMaxResultCount(int maxResultCount) {
+        this.maxResultCount = maxResultCount;
+    }
+
+    public static Set<String> getKeysWithMultiValues() {
+        InvocerUtil invocerUtil = new InvocerUtil();
+        IFeedResults result = invocerUtil.findByDocumentName("*");
+        for (Map<String, Object> map : result) {
+            System.out.println(getKeysWithMultiValues(map));
+            return getKeysWithMultiValues(map);
+        }
+        return null;
+    }
+
+    public static Set<String> getKeysWithMultiValues(Map<String, Object> fromThisSample) {
+        Set<String> result = new HashSet<>();
+        for (Map.Entry<String, Object> entry : fromThisSample.entrySet()) {
+            if (entry.getValue() instanceof List) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
 }

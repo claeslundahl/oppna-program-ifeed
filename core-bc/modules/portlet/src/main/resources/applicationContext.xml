@@ -31,4 +31,9 @@
             </map>
         </property>
     </bean>
+
+    <!--<bean name="justToSetMetadataService" class="se.vgregion.ifeed.scheduler.MetadataJob">
+        <property name="metadataService" value="${metadataService}"/>
+    </bean>-->
+
 </beans>

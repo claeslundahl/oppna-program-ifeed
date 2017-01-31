@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!-- This is the Service-composite Maven POM. Template version: 1.5-SNAPSHOT Generation time : 2011-01-14 11:17:18 CET -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>se.vgregion.iFeed</groupId>
+    <artifactId>iFeed-core-bc</artifactId>
+    <version>1.12-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <groupId>se.vgregion.iFeed</groupId>
+  <artifactId>iFeed-core-bc-composite-apelon-svc</artifactId>
+  <packaging>jar</packaging>
+
+  <name>${project.artifactId}</name>
+
+  <properties>
+    <liferay.version>6.2.10-GA1</liferay.version>
+  </properties>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+<!--        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>se.vgregion.IntegrationTest</mainClass>
+            </manifest>
+          </archive>
+        </configuration>-->
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+
+  </dependencies>
+
+</project>

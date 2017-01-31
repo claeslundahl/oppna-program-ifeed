@@ -10,7 +10,7 @@ public interface MetadataService {
     void importMetadata();
 
     @Transactional
-    void importMetdata(String rootMetadataName);
+    void importMetadata(String rootMetadataName);
 
 
     Collection<String> getVocabulary(String metadataNodeName);

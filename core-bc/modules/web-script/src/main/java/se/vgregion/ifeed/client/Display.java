@@ -123,10 +123,11 @@ public class Display extends EventedListGrid<Entry> {
                     Timer timer = new Timer() {
                         @Override
                         public void run() {
-                            currentSortColumn = cd.getName();
                             currentSortOrder = "asc".
-                                    equals(currentSortOrder)
+                                    equals(currentSortOrder) && currentSortColumn.equals(cd.getName())
                                     ? "desc" : "asc";
+                            currentSortColumn = cd.getName();
+
                             List<Entry> sorted = getSortedData();
                             Display.this.getData().clear();
                             Display.this.getData().addAll(sorted);

@@ -26,7 +26,7 @@
     <bean id="rssIFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
         <constructor-arg value="${ifeed.rss-feed}" />
     </bean>
-  
+
   <bean id="iFeedWebFeed" class="org.springframework.web.util.UriTemplate">
     <constructor-arg value="${ifeed.web}" />
   </bean>
@@ -96,8 +96,12 @@
     </constructor-arg>
   </bean>
 
-  <jaxws:client id="vocabularyService" serviceClass="vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService"
-    address="${apelon.metadata.service}" />
+  <!--<jaxws:client id="vocabularyService" serviceClass="vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService"
+                address="${apelon.metadata.service}" />-->
+
+  <bean id="vocabularyService" class="se.vgr.metaservice.schema.ApelonClient">
+    <constructor-arg value="${apelon.metadata.service}"/>
+  </bean>
 
   <bean name="metadataService" class="se.vgregion.ifeed.service.metadata.MetadataServiceImpl">
     <constructor-arg ref="vocabularyService" />

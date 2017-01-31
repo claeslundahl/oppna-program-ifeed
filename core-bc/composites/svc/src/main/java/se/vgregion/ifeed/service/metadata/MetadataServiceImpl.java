@@ -5,15 +5,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-import se.vgr.metaservice.schema.node.v2.NodeListType;
-import se.vgr.metaservice.schema.node.v2.NodeType;
-import se.vgr.metaservice.schema.response.v1.NodeListResponseObjectType;
+import se.vgr.metaservice.schema.ApelonClient;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.types.Metadata;
-import vocabularyservices.wsdl.metaservice_vgr_se.v2.GetVocabularyRequest;
-import vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -22,13 +17,13 @@ public class MetadataServiceImpl implements MetadataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataService.class);
     private static Map<String, CachedVocabulary> vocabularyCache = new HashMap<String, CachedVocabulary>();
 
-    private VocabularyService port = null;
+    private ApelonClient apelon = null;
     private JpaRepository<Metadata, Long, Long> repo = null;
 
     private Collection<String> metadataRoots;
 
-    public MetadataServiceImpl(VocabularyService port, JpaRepository<Metadata, Long, Long> repo) {
-        this.port = port;
+    public MetadataServiceImpl(ApelonClient apelon, JpaRepository<Metadata, Long, Long> repo) {
+        this.apelon = apelon;
         this.repo = repo;
     }
 
@@ -40,14 +35,19 @@ public class MetadataServiceImpl implements MetadataService {
     @Transactional
     public void importMetadata() {
         for (String metadataRoot : metadataRoots) {
-            importMetdata(metadataRoot);
+            /*if (repo.findByAttribute("name", metadataRoot).isEmpty()) {
+                Metadata mr = new Metadata(metadataRoot);
+                repo.persist(mr);
+                repo.flush();
+            }*/
+            importMetadata(metadataRoot);
             repo.flush();
         }
     }
 
     @Override
     @Transactional
-    public void importMetdata(String rootMetadataName) {
+    public void importMetadata(String rootMetadataName) {
         Collection<Metadata> roots = repo.findByAttribute("name", rootMetadataName);
         if (!roots.isEmpty()) {
             for (Metadata root : roots) {
@@ -57,26 +57,42 @@ public class MetadataServiceImpl implements MetadataService {
         Metadata root = new Metadata(rootMetadataName);
         updateCacheTree(root, StringUtils.EMPTY);
         if (root.getChildren().size() == 0) {
-            throw new RuntimeException("The Apelon service didn't return any result. Roll back transaction.");
+            String message = String.format(
+                    "The Apelon service didn't return any result for %s. Roll back transaction.", rootMetadataName);
+            LOGGER.error(message);
+            throw new RuntimeException(message);
         }
         repo.store(root);
     }
 
-    @Transactional
+    /*@Transactional
     void updateCacheTree(Metadata parent, String path) {
-
         NodeListResponseObjectType result = null;
         GetVocabularyRequest req = new GetVocabularyRequest();
         req.setRequestId(UUID.randomUUID().toString());
         String fullPath = path + (isBlank(path) ? "" : "/") + parent.getName();
         req.setPath(fullPath);
 
-        result = port.getVocabulary(req);
+        result = apelon.getVocabulary(req);
 
         NodeListType nodes = result.getNodeList();
         for (NodeType node : nodes.getNode()) {
             LOGGER.info("Importing: {}/{}", new Object[]{fullPath, node.getName()});
             Metadata child = new Metadata(node.getName());
+            parent.addChild(child);
+            updateCacheTree(child, fullPath);
+        }
+    }
+*/
+
+    @Transactional
+    void updateCacheTree(Metadata parent, String path) {
+        ApelonClient apelon = new ApelonClient();
+        String fullPath = path + (isBlank(path) ? "" : "/") + parent.getName();
+
+        for (String vocal : apelon.fetchVocabulary(fullPath)) {
+            LOGGER.info("Importing: {}/{}", new Object[]{fullPath, vocal});
+            Metadata child = new Metadata(vocal);
             parent.addChild(child);
             updateCacheTree(child, fullPath);
         }

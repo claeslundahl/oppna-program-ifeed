@@ -1,10 +1,11 @@
 package se.vgregion.ifeed.service.metadata;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+import se.vgr.metaservice.schema.ApelonClient;
+import se.vgr.metaservice.schema.node.v2.NodeType;
+import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
+import se.vgregion.ifeed.types.Metadata;
 
 import java.io.File;
 import java.net.URL;
@@ -13,26 +14,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import se.vgr.metaservice.schema.node.v2.NodeListType;
-import se.vgr.metaservice.schema.node.v2.NodeType;
-import se.vgr.metaservice.schema.response.v1.NodeListResponseObjectType;
-import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
-import se.vgregion.ifeed.types.Metadata;
-import vocabularyservices.wsdl.metaservice_vgr_se.v2.GetVocabularyRequest;
-import vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class MetadataServiceImplTest {
 
     MetadataServiceImpl serv;
-    VocabularyService port;
+    ApelonClient port;
     JpaRepository<Metadata, Long, Long> repo;
 
     @Before
     public void setUp() throws Exception {
-        port = mock(VocabularyService.class);
+        port = mock(ApelonClient.class);
         repo = mock(JpaRepository.class);
         serv = new MetadataServiceImpl(port, repo);
     }
@@ -61,7 +55,7 @@ public class MetadataServiceImplTest {
         final List<String> calledArg = new ArrayList<String>();
         serv = new MetadataServiceImpl(port, repo) {
             @Override
-            public void importMetdata(String rootMetadataName) {
+            public void importMetadata(String rootMetadataName) {
                 calledArg.add(rootMetadataName);
             }
         };
@@ -89,18 +83,18 @@ public class MetadataServiceImplTest {
                 parent.addChild(new Metadata("test"));
             }
         };
-        NodeListResponseObjectType nlrot = mock(NodeListResponseObjectType.class);
-        NodeListType value = mock(NodeListType.class);
+        List<String> nlrot = new ArrayList<>();
+        // NodeListType value = mock(NodeListType.class);
         List<NodeType> getNodeValue = new ArrayList<NodeType>();
         getNodeValue.add(new NodeType());
-        when(value.getNode()).thenReturn(getNodeValue);
-        when(nlrot.getNodeList()).thenReturn(value);
-        when(port.getVocabulary(any(GetVocabularyRequest.class))).thenReturn(nlrot);
+        // when(value.getNode()).thenReturn(getNodeValue);
+        //when(nlrot.getNodeList()).thenReturn(value);
+        when(port.fetchVocabulary(any(String.class))).thenReturn(nlrot);
         Collection<Metadata> metaDataResults = new ArrayList<Metadata>();
         metaDataResults.add(new Metadata("root1"));
         when(repo.findByAttribute("name", "root1")).thenReturn(metaDataResults);
 
-        serv.importMetdata("root1");
+        serv.importMetadata("root1");
 
         verify(repo).remove(any(Metadata.class));
         verify(repo).store(any(Metadata.class));

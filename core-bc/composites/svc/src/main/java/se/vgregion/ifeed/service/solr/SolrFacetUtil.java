@@ -1,7 +1,8 @@
 package se.vgregion.ifeed.service.solr;
 
-import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.SolrServer;
+import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -19,9 +20,10 @@ public class SolrFacetUtil {
 
     /**
      * Calls the solr server to get facet result of a certain IFeed and field.
+     *
      * @param solrBaseUrl the location of the server to use.
-     * @param feed the query to run as condition.
-     * @param field what property to get facets for.
+     * @param feed        the query to run as condition.
+     * @param field       what property to get facets for.
      * @return the top 10 results of the search, sorted descending.
      */
     public static List<String> fetchFacets(String solrBaseUrl, IFeed feed, String field) {
@@ -34,6 +36,21 @@ public class SolrFacetUtil {
     }
 
     private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field) throws Exception {
+
+        /*
+        SolrServer solrServer = SolrServerFactory.create();
+        IFeedSolrQuery iFeedSolrQuery = new IFeedSolrQuery(solrServer, null);
+        List<Map<String, Object>> r = iFeedSolrQuery.getIFeedResults(feed, field, IFeedSolrQuery.SortDirection.asc);
+
+        if (true == true) {
+            SortedSet<String> values = new TreeSet<>();
+            for (Map<String, Object> map : r) {
+                values.add((String) map.get(field));
+            }
+            return new ArrayList<>(values);
+        }
+        */
+
         String fu = facetUrl(solrBaseUrl, feed, field);
         URL url = new URL(fu);
         InputStream stream = url.openStream();
@@ -46,7 +63,23 @@ public class SolrFacetUtil {
         String result = new String(baos.toByteArray());
         System.out.println(result);
 
+        Map<String, Object> root = (Map<String, Object>) Json.parse(result);
+        //[tree].response.docs
+        if (true) {
+            Map<String, Object> response = (Map<String, Object>) root.get("response");
+            Map<String, Map> docs = (Map) response.get("docs");
+            List<String> sugestions = new ArrayList<>();
+            for (String s : docs.keySet()) {
+                sugestions.addAll(docs.get(s).values());
+            }
+            return sugestions;
+            //return docs.subList(0, Math.min(10, docs.size()));
+        }
+
         Object tree = Json.parse(result);
+
+
+
 
         Map facetCounts = (Map) ((Map) tree).get("facet_counts");
         Map facetFields = (Map) ((Map) facetCounts).get("facet_fields");
@@ -79,7 +112,9 @@ public class SolrFacetUtil {
     }
 
     private static String facetUrl(String solrBaseUrl, IFeed feed, String field) {
-        String settings = "select?fl=*&rows=10&debugQuery=true&facet=on&wt=json&facet.mincount=1&facet.field=" + field;
+        String settings = "select?wt=json&fl=%s&rows=10&facet=true&facet.mincount=1&q=published:true";
+        settings = String.format(settings, field);
+
         IFeedSolrQuery.FeedFilterBag bag = new IFeedSolrQuery.FeedFilterBag();
         StringBuilder sb = new StringBuilder(solrBaseUrl + (solrBaseUrl.endsWith("/") ? "" : "/") + settings);
         for (IFeedFilter f : feed.getFilters()) {

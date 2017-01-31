@@ -447,7 +447,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         return result;
     }
 
-    void mapFieldInfToId(List<FieldInf> fields, Map<String, FieldInf> result) {
+    public static void mapFieldInfToId(List<FieldInf> fields, Map<String, FieldInf> result) {
         for (FieldInf fi : fields) {
             if (fi.isLabel()) {
                 mapFieldInfToId(fi.getChildren(), result);

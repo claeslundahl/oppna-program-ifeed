@@ -50,7 +50,7 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>iFeed-core-bc-composite-schema</artifactId>
+      <artifactId>iFeed-core-bc-composite-apelon-svc</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -188,4 +188,5 @@
           <version>1.9</version>
         </dependency>-->
   </dependencies>
+
 </project>

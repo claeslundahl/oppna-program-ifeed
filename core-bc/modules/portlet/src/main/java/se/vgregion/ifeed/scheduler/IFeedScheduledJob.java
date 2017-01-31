@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.messaging.MessageListener;
  * @author bjornryding
  * 
  */
+@Deprecated
 public class IFeedScheduledJob implements MessageListener {
     /**
      *
@@ -81,4 +82,12 @@ public class IFeedScheduledJob implements MessageListener {
     protected void setService(MetadataService service) {
         this.service = service;
     }
+
+    public static void main(String[] args) {
+        Message messag = new Message();
+        messag.setDestinationName("foo");
+        new IFeedScheduledJob().receive(messag);
+    }
+
+
 }

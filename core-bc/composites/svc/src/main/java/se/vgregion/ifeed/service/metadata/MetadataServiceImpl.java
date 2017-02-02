@@ -53,6 +53,7 @@ public class MetadataServiceImpl implements MetadataService {
             for (Metadata root : roots) {
                 repo.remove(root);
             }
+            repo.flush();
         }
         Metadata root = new Metadata(rootMetadataName);
         updateCacheTree(root, StringUtils.EMPTY);
@@ -63,6 +64,7 @@ public class MetadataServiceImpl implements MetadataService {
             throw new RuntimeException(message);
         }
         repo.store(root);
+        repo.flush();
     }
 
     /*@Transactional

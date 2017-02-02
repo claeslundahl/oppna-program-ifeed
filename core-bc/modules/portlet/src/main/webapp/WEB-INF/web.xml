@@ -11,12 +11,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee "
          version="2.4">
 
-  <listener>
-    <listener-class>
-      se.vgregion.ifeed.scheduler.MetadataJob
-    </listener-class>
-  </listener>
-
   <filter>
     <filter-name>encodingFilter</filter-name>
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

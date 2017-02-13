@@ -12,6 +12,7 @@ import org.apache.solr.common.util.NamedList;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Properties;
 
 /**
@@ -22,6 +23,8 @@ import java.util.Properties;
  */
 public class SolrServerFactory {
 
+    private static WeakReference<String> solrServiceCache = new WeakReference<String>(null);
+
     /**
      * Factory method.
      *
@@ -30,9 +33,15 @@ public class SolrServerFactory {
      */
     public static SolrServer create() {
         try {
-            Properties properties = new Properties();
-            properties.load(new FileReader(getPropertiesPath()));
-            String url = properties.getProperty("solr.service");
+            String url;
+            if (solrServiceCache.get() == null) {
+                Properties properties = new Properties();
+                properties.load(new FileReader(getPropertiesPath()));
+                url = properties.getProperty("solr.service");
+                solrServiceCache = new WeakReference<>(url);
+            } else {
+                url = solrServiceCache.get();
+            }
             return create(url);
         } catch (IOException e) {
             throw new RuntimeException(e);

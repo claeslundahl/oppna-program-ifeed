@@ -23,6 +23,7 @@ import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.DateFormatter.DateFormat;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
+import se.vgregion.ifeed.service.solr.SolrServerFactory;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -48,6 +50,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     @Context
     private UriInfo context;
+    private SolrServer solrServer;
 
     @Autowired
     public IFeedFeedServiceImpl(IFeedSolrQuery solrQuery, IFeedService iFeedService) {
@@ -64,6 +67,14 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         this.namespaces = namespaces;
     }
 
+
+    private SolrServer getOrCreateSolrQuery() {
+        if (solrServer == null){
+            solrServer = SolrServerFactory.create();
+        }
+        return solrServer;
+    }
+
     /* (non-Javadoc)
      * 
      * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getIFeed(java.lang.Long) */
@@ -73,6 +84,9 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     @Path("/{id}/feed")
     public Feed getIFeed(@PathParam("id") Long id, @QueryParam("by") String sortField,
             @QueryParam("dir") String sortDirection) {
+
+        solrQuery = new IFeedSolrQuery(getOrCreateSolrQuery(), iFeedService);
+
         Feed f = Abdera.getInstance().newFeed();
 
         // Retrieve feed from store
@@ -94,6 +108,8 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         // Populate the feed with search results
         populateFeed(f,
                 solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection)));
+
+        solrQuery.clear();
 
         return f;
     }

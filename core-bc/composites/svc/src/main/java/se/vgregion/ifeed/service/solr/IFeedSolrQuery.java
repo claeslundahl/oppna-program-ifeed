@@ -91,6 +91,13 @@ public class IFeedSolrQuery extends SolrQuery {
 
     @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> doFilterQuery(final String sortField, final SortDirection sortDirection) {
+        long now = System.currentTimeMillis();
+        List<Map<String, Object>> result = doFilterQueryImpl(sortField, sortDirection);
+        System.out.println("Time for solr " + (System.currentTimeMillis() - now));
+        return result;
+    }
+
+    protected List<Map<String, Object>> doFilterQueryImpl(final String sortField, final SortDirection sortDirection) {
         this.setSortField(sortField, ORDER.valueOf(sortDirection.name().toLowerCase(CommonUtils.SWEDISH_LOCALE)));
 
         List<Map<String, Object>> hits = Collections.emptyList();

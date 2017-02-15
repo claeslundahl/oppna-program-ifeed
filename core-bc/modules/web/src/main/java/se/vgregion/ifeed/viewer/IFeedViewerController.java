@@ -125,7 +125,7 @@ public class IFeedViewerController {
                                    @RequestParam(value = "fromPage", required = false) String fromPage) {
         long timeBefore = System.currentTimeMillis();
         String result = getIFeed(instance, model, sortField, sortDirection, startBy, endBy, fromPage);
-        System.out.println("Time for call was " + (System.currentTimeMillis() - timeBefore) + "ms.");
+        // System.out.println("Time for call was " + (System.currentTimeMillis() - timeBefore) + "ms. Instance " + instance + " from page " + fromPage);
         return result;
     }
 
@@ -305,6 +305,10 @@ public class IFeedViewerController {
                                @RequestParam(value = "endBy", required = false) Integer endBy,
                                @RequestParam(value = "fromPage", required = false) String fromPage) {
         IFeed retrievedFeed = iFeedService.getIFeed(listId);
+        if (retrievedFeed == null) {
+            LOGGER.error("Did not find feed with id " + listId + " on page " + fromPage);
+            throw new ResourceNotFoundException();
+        }
         return getIFeedByInstance(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage);
     }
 

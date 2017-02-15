@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.client;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
@@ -95,6 +96,14 @@ public class Util {
     public static String getGetUrl(TableDef tableDef, int startBy, int endBy) {
         String url = getRequestData(tableDef, startBy, endBy);
         url = getIfeedHome(tableDef) + "?" + url;
+
+        List<Element> skipCache = ElementUtil.findByCssClass((Element) Document.get().getDocumentElement(), "skip-cache");
+        if (skipCache != null && skipCache.size() == 1) {
+            Element item = skipCache.get(0);
+            if (item.getInnerHTML().trim().equals("true")) {
+                url = url + "&skip-cache=true";
+            }
+        }
         return url;
     }
 

@@ -57,12 +57,7 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
         this.filterQuery = filterQuery;
     }
 
-    @Override
-	public String toString() {
-		return new ToStringBuilder(this).append(filter).append(filterQuery).toString();
-	}
-
-	public String getFilterKey() {
+    public String getFilterKey() {
 		return filterKey;
 	}
 
@@ -93,4 +88,17 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
     public void setOperator(String operator) {
         this.operator = operator;
     }
+
+    @Override
+    public String toString() {
+        return "IFeedFilter{" +
+                "filterQuery='" + filterQuery + '\'' +
+                ", filterKey='" + filterKey + '\'' +
+                ", operator='" + operator + '\'' +
+                ", fieldInf=" + fieldInf +
+                ", filterQueryForDisplay=" + filterQueryForDisplay +
+                ", filter=" + filter +
+                '}';
+    }
+
 }

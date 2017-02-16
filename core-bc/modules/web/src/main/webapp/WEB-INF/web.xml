@@ -18,7 +18,7 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
-  <!-- ifeed.vgregion.se/iFeed-web/documentlists/36260/metadata.json?by=&dir=asc -->
+  <!--
   <filter>
     <filter-name>cacheFilter</filter-name>
     <filter-class>se.vgregion.ifeed.viewer.CacheFilter</filter-class>
@@ -26,9 +26,9 @@
 
   <filter-mapping>
     <filter-name>cacheFilter</filter-name>
-    <!--<url-pattern>/documentlists/*</url-pattern>-->
     <url-pattern>*.json</url-pattern>
   </filter-mapping>
+   -->
 
   <filter>
     <filter-name>CharacterEncodingFilter</filter-name>

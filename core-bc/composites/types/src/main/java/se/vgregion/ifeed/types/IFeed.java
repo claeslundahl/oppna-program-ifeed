@@ -446,4 +446,37 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return partOf;
     }
 
+    @Transient
+    boolean toStringRuns = false;
+
+    @Override
+    public String toString() {
+        if (toStringRuns) {
+            return super.hashCode() + "";
+        }
+        try {
+            toStringRuns = true;
+            return "IFeed{" +
+                    "id=" + id +
+                    ", dynamicTableDefs=" + dynamicTableDefs +
+                    ", version=" + version +
+                    ", filters=" + filters +
+                    ", name='" + name + '\'' +
+                    ", timestamp=" + timestamp +
+                    ", description='" + description + '\'' +
+                    ", userId='" + userId + '\'' +
+                    ", creatorName='" + creatorName + '\'' +
+                    ", department=" + department +
+                    ", group=" + group +
+                    ", ownerships=" + ownerships +
+                    ", composites=" + composites +
+                    ", partOf=" + partOf +
+                    ", sortField='" + sortField + '\'' +
+                    ", sortDirection='" + sortDirection + '\'' +
+                    ", linkNativeDocument=" + linkNativeDocument +
+                    '}';
+        }finally {
+            toStringRuns = false;
+        }
+    }
 }

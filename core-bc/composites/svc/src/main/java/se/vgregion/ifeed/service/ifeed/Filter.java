@@ -33,10 +33,15 @@ public class Filter extends IFeed {
             addConditionIfAnyValue("o.group.id = ?", getGroup().getId(), condition, values);
         }*/
 
+        sb.append(" left join o.ownerships ow ");
+        sb.append(" left join o.composites cs ");
+        sb.append(" left join o.partOf pof ");
+        sb.append(" left join o.dynamicTableDefs dtab ");
+
         if (!values.isEmpty()) {
-            if (getUserId() != null && !getUserId().isEmpty()) {
+            /*if (getUserId() != null && !getUserId().isEmpty()) {
                 sb.append(" left join o.ownerships ow ");
-            }
+            }*/
             sb.append(" where ");
             sb.append(join(condition, " AND "));
         }

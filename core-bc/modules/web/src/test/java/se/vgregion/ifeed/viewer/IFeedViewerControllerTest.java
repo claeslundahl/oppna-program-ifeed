@@ -11,6 +11,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.ui.Model;
 
@@ -44,6 +45,7 @@ public class IFeedViewerControllerTest {
         controller = new IFeedViewerController(iFeedService, documentService, solrServer);
     }
 
+    @Ignore
     @Test
     public void getIFeed() throws SolrServerException {
         Long listId = 101l;

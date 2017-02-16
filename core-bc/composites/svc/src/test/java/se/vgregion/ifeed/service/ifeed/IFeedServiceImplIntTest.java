@@ -10,6 +10,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
+import java.util.Properties;
+
 public class IFeedServiceImplIntTest {
 
 	private IFeedService iFeedService;
@@ -57,5 +59,7 @@ public class IFeedServiceImplIntTest {
 		IFeed addedFeed = iFeedService.addIFeed(newFeed);
 		Assert.assertNotNull(addedFeed.getId());
 	}
+
+
 
 }

@@ -113,7 +113,51 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                                         + "WHERE ifeed.userId=?1 or ifeed.id in (select o.ifeedId from Ownership o where o.userId=?2)",
                                 new Object[]{userId, userId}));
         init(result);
+        initializedFeeds.set(null);
         return result;
+    }
+
+    @Override
+    @Transactional
+    public final IFeed getFeedForSolrQuery(final Long id) {
+        return getFeedForSolrQueryImpl(id, new HashSet<>());
+    }
+
+    @Transactional
+    private final IFeed getFeedForSolrQueryImpl(final Long id, Set<Long> traversal) {
+        traversal.add(id);
+        long now = System.currentTimeMillis();
+        ArrayList<IFeed> result = new ArrayList<IFeed>(
+                iFeedRepo
+                        .findByQuery(
+                                "SELECT distinct ifeed " +
+                                        "FROM IFeed ifeed " +
+                                        "left join fetch ifeed.filters f "
+                                        + "left join fetch ifeed.composites c "
+                                        + "WHERE ifeed.id = ?1",
+                                new Object[]{id}));
+
+        if (result.isEmpty()) {
+            return null;
+        }
+
+        IFeed ifeed = result.get(0);
+        entityManager.detach(ifeed);
+
+        if (!ifeed.getComposites().isEmpty()) {
+            List<IFeed> comps = new ArrayList<>();
+            for (IFeed feed : ifeed.getComposites()) {
+                if (!traversal.contains(feed.getId())) {
+                    comps.add(getFeedForSolrQueryImpl(feed.getId(), traversal));
+                }
+            }
+            ifeed.getComposites().clear();
+            ifeed.getComposites().addAll(comps);
+        }
+
+        System.out.println("Time to get feed from db was " + (System.currentTimeMillis() - now));
+
+        return ifeed;
     }
 
     @Override
@@ -139,9 +183,24 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
         latestFilterQueryTotalCount = (int) countResult;
 
-        init(result);
+        ArrayList<IFeed> rv = new ArrayList<IFeed>(result);
 
-        return new ArrayList<IFeed>(result);
+        for (IFeed feed : rv) {
+            for (IFeed composite : feed.getComposites()) {
+                init(composite);
+            }
+            for (IFeed composite : feed.getPartOf()) {
+                init(composite);
+            }
+            for (DynamicTableDef dtf : feed.getDynamicTableDefs()) {
+                for (ColumnDef column : dtf.getColumnDefs()) {
+                    column.getId();
+                }
+            }
+        }
+        initializedFeeds.set(null);
+
+        return rv;
     }
 
     private long findTotalCount(String jpql, Object[] args) {
@@ -175,6 +234,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
         IFeed result = iFeedRepo.find(id);
         init(result);
+        initializedFeeds.set(null);
         return result;
     }
 
@@ -188,8 +248,16 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
     }
 
+    private static ThreadLocal<Set<IFeed>> initializedFeeds = new ThreadLocal<>();
+
     @Transactional
     private void init(IFeed result) {
+        if (initializedFeeds.get() == null) {
+            initializedFeeds.set(new HashSet<>());
+        }
+        if (initializedFeeds.get().contains(result)) {
+            return;
+        }
         if (result == null) {
             throw new NullPointerException("An ifeed must be found to");
         }

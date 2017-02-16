@@ -304,7 +304,8 @@ public class IFeedViewerController {
                                @RequestParam(value = "startBy", required = false) Integer startBy,
                                @RequestParam(value = "endBy", required = false) Integer endBy,
                                @RequestParam(value = "fromPage", required = false) String fromPage) {
-        IFeed retrievedFeed = iFeedService.getIFeed(listId);
+        // IFeed retrievedFeed = iFeedService.getIFeed(listId);
+        IFeed retrievedFeed = iFeedService.getFeedForSolrQuery(listId);
         if (retrievedFeed == null) {
             LOGGER.error("Did not find feed with id " + listId + " on page " + fromPage);
             throw new ResourceNotFoundException();

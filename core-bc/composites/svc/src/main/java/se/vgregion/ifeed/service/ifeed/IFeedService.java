@@ -3,8 +3,6 @@ package se.vgregion.ifeed.service.ifeed;
 import java.util.List;
 import java.util.Map;
 
-import com.liferay.portal.kernel.cache.ThreadLocalCachable;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
@@ -29,6 +27,10 @@ public interface IFeedService {
 
     List<IFeed> getUserIFeeds(String userId);
 
+
+    @Transactional
+    IFeed getFeedForSolrQuery(Long id);
+
     List<IFeed> getIFeedsByFilter(Filter filter, int start, int end);
 
     int getLatestFilterQueryTotalCount();
@@ -42,8 +44,6 @@ public interface IFeedService {
 
     @Transactional
     void removeIFeed(IFeed feed);
-
-    //@Transactional     List<DynamicTableDef> lookupDynamicTableDefs(Long byIfeedId);
 
     @Transactional
     IFeed update(IFeed iFeed);

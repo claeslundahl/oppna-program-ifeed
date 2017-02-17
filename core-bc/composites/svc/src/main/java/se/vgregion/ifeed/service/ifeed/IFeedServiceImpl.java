@@ -155,7 +155,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             ifeed.getComposites().addAll(comps);
         }
 
-        System.out.println("Time to get feed from db was " + (System.currentTimeMillis() - now));
+        System.out.println("Time to get feed from db was " + (System.currentTimeMillis() - now) + " feed id " + id);
 
         return ifeed;
     }

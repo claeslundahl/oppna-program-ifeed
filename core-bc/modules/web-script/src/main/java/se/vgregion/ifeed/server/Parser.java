@@ -84,7 +84,7 @@ public class Parser {
             if (frags[currentIndex].trim().equals(delimiter) &&
                     (!frags[currentIndex - 1].trim().equals("\\")
                             || frags[currentIndex - 1].trim().equals("\\") && frags[currentIndex - 2].trim().equals("\\"))) {
-                System.out.println("a text " + parent);
+                // System.out.println("a text " + parent);
                 break;
             } else {
                 Token child = new Token();

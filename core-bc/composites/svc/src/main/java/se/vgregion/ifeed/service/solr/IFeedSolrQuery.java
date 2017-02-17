@@ -91,9 +91,7 @@ public class IFeedSolrQuery extends SolrQuery {
 
     @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> doFilterQuery(final String sortField, final SortDirection sortDirection) {
-        long now = System.currentTimeMillis();
         List<Map<String, Object>> result = doFilterQueryImpl(sortField, sortDirection);
-        System.out.println("Time for solr " + (System.currentTimeMillis() - now));
         return result;
     }
 
@@ -170,9 +168,9 @@ public class IFeedSolrQuery extends SolrQuery {
         if (resultWithOrBetween.isEmpty()) {
             // Do nothing.
         } else {
-            if(resultWithOrBetween.size() == 1){
+            if (resultWithOrBetween.size() == 1) {
                 addFilterQuery(resultWithOrBetween.get(0));
-            }else {
+            } else {
                 addFilterQuery("((" + Filter.join(resultWithOrBetween, ") OR (") + "))");
             }
         }
@@ -198,7 +196,7 @@ public class IFeedSolrQuery extends SolrQuery {
             if (filters.size() == 1) {
                 queryParts.add(SolrQueryBuilder.createQuery(filters.get(0), iFeedService.mapFieldInfToId()));
             } else {
-                if(filters.size() == 0)
+                if (filters.size() == 0)
                     throw new RuntimeException("Here the (()) might occur!");
                 String fq = SolrQueryBuilder.createOrQuery(filters);
                 queryParts.add(fq);
@@ -222,11 +220,11 @@ public class IFeedSolrQuery extends SolrQuery {
 
         IFeedResults results = new IFeedResults();
         results.setQueryUrl(ClientUtils.toQueryString(this, false));
-        results.addAll(prepareAndPerformQuery(iFeed.getSortField(), direction));
+
+        results.addAll(prepareAndPerformQuery(iFeed.getSortField(), direction, iFeed));
 
         return results;
     }
-
 
     private ThreadLocal<IFeed> latestArg2getIFeedResults = new ThreadLocal<IFeed>();
     // Used for debugging.
@@ -235,18 +233,29 @@ public class IFeedSolrQuery extends SolrQuery {
         latestArg2getIFeedResults.set(iFeed);
         addFeedFilters(iFeed);
         addOffsetFilter(offset);
-        return prepareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION);
+
+        List<Map<String, Object>> result = prepareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION, iFeed);
+
+        return result;
     }
 
     public List<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection) {
         latestArg2getIFeedResults.set(iFeed);
         addFeedFilters(iFeed);
         addUnPublishedFilter();
-        return prepareAndPerformQuery(sortField, sortDirection);
+        return prepareAndPerformQuery(sortField, sortDirection, iFeed);
     }
 
     private List<Map<String, Object>> prepareAndPerformQuery(final String sortField,
-                                                             final SortDirection sortDirection) {
+                                                             final SortDirection sortDirection, IFeed feed) {
+        long before = System.currentTimeMillis();
+        List<Map<String, Object>> result = prepareAndPerformQueryImpl(sortField, sortDirection);
+        System.out.println("Time for solr " + (System.currentTimeMillis() - before) + " for id " + (feed != null ? feed.getId() : "null"));
+        return result;
+    }
+
+    private List<Map<String, Object>> prepareAndPerformQueryImpl(final String sortField,
+                                                                 final SortDirection sortDirection) {
         LOGGER.debug("Search filters: {}", Arrays.toString(this.getFilterQueries()));
 
         String sortBy = isBlank(sortField) ? DEFAULT_SORT_FIELD : sortField;

@@ -145,8 +145,8 @@
   <!--NB! SCM config below assumes system name equals VGR subversion/googlecode project name! -->
   <!-- Open Source repo -->
   <scm>
-    <developerConnection>scm:git:https://github.com/claeslundahl/oppna-program-ifeed.git</developerConnection>
-    <url>https://github.com/claeslundahl/oppna-program-ifeed.git</url>
+    <developerConnection>scm:git:https://github.com/Vastra-Gotalandsregionen/oppna-program-ifeed.git</developerConnection>
+    <url>https://github.com/Vastra-Gotalandsregionen/oppna-program-ifeed.git</url>
   </scm>
 
   <properties>

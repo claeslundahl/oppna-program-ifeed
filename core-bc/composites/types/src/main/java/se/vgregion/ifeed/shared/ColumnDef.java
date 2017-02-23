@@ -10,14 +10,11 @@ import java.util.Map;
  * create table vgr_ifeed_dynamic_column_def (
  * id bigint not null,
  * table_def_id bigint,
- * <p/>
  * name character varying(255),
  * label character varying(255),
  * alignment character varying(255),
  * width character varying(255),
- * <p/>
  * CONSTRAINT vgr_ifeed_dynamic_column_def_pkey PRIMARY KEY (id),
- * <p/>
  * CONSTRAINT vgr_ifeed_dynamic_column_def_2_vgr_ifeed_dynamic_table_def FOREIGN KEY (table_def_id)
  * REFERENCES vgr_ifeed_dynamic_table_def (id) MATCH SIMPLE
  * );

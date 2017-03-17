@@ -168,10 +168,9 @@
                     <br/>
                     <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
                     <br/>
-                    <a href="#{app.getWebFeedLink()}" target="_blank">Html</a><br/>
+                    <a href="#{app.uncache(app.getWebFeedLink())}" target="_blank">Html</a><br/>
 
                   <a id="excel-feed-link" class="link-as-post-form-dont-match"
-                     onclick-foo="document.getElementById('excelForm').submit();"
                      onclick="alert('Du måste spara eller gå ur, avbryta, ändringsläget innan du tar ut excel-fil.'); return false;"
                      href="javascript:void(0);"
                      target="_blank"
@@ -179,16 +178,16 @@
                      type="text/csv;charset=UTF-8">Excel</a>
 
                   <a id="excel-feed-link2" class="link-as-post-form-dont-match"
-                     href="#{app.getExcelFeedLink()}"
+                     href="#{app.uncache(app.getExcelFeedLink())}"
                      target="_blank"
                      style="#{app.inEditMode ? 'display:none;':''}"
                      type="text/csv;charset=UTF-8">Excel</a>
 
                     <br/>
 
-                    <a href="#{app.getRssFeedLink()}" target="_blank">Rss</a><br/>
-                    <a href="#{app.getAtomFeedLink()}" target="_blank">Atom</a><br/>
-                    <a id="json-feed-link" href="#{app.getJsonFeedLink()}" target="_blank">Json</a><br/>
+                    <a href="#{app.uncache(app.getRssFeedLink())}" target="_blank">Rss</a><br/>
+                    <a href="#{app.uncache(app.getAtomFeedLink())}" target="_blank">Atom</a><br/>
+                    <a id="json-feed-link" href="#{app.uncache(app.getJsonFeedLink())}" target="_blank">Json</a><br/>
 
                     <h:panelGroup>
                         <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>

@@ -36,7 +36,7 @@
                 <h:selectBooleanCheckbox value="#{tableDef.hideRightColumn}" id="hideRightColumn1">
                     <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
                 </h:selectBooleanCheckbox>
-                <h:outputText value="Vill du dölja högerkolumnen i EPI-server för att få mer plats?"/>
+                <h:outputText value="Vill du dölja högerkolumnen i EPI-port för att få mer plats?"/>
 
                 <h:outputText value="Välj sorterings-fält"/>
                 <h:selectOneMenu style="text-align:left;" value="#{tableDef.defaultSortColumn}" id="defaultSortColumn1">
@@ -199,14 +199,17 @@
 
                     <h:outputScript>
                         function on() {
+                            /*
                             document.getElementById('rerun-ifeed-loading').click();
                             <portlet:namespace var="nameSpace" />
                             var link = document.getElementById('#{nameSpace}:ifeed_view:addColumnLink');
                             var table = link.parentElement.parentElement.parentElement.parentElement;
                             var tbodys = table.getElementsByTagName('tbody');
                             if (tbodys.length == 0) link.click();
+                            */
+                            se.vgregion.ifeed.client.Starter.init();
                         }
-                        setTimeout(on, 100);
+                        setTimeout(on, 200);
                     </h:outputScript>
 
                 </h:panelGroup>

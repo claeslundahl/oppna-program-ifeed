@@ -2,8 +2,11 @@ package se.vgregion.ifeed.client;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * A small popup display for entry details.
@@ -16,6 +19,7 @@ public class EntryPopupPanel extends PopupPanel {
 
     /**
      * Constructs an instance. Doing all the layout at once.
+     *
      * @param entry the data to render.
      */
     public EntryPopupPanel(Entry entry) {
@@ -55,9 +59,11 @@ public class EntryPopupPanel extends PopupPanel {
         plate.getElement().getStyle().setBorderColor("#A9A9A9");
         plate.getElement().getStyle().setBorderWidth(1, Style.Unit.PX);
 
-        addDomHandler(new MouseOutHandler() {
-            public void onMouseOut(MouseOutEvent event) {
+        addDomHandler(event -> {
+            try {
                 hide();
+            } catch (Exception e) {
+                Window.alert("" + e);
             }
         }, MouseOutEvent.getType());
 
@@ -66,7 +72,7 @@ public class EntryPopupPanel extends PopupPanel {
 
     private void addLabelAndDocumentMeta(String explainingText, String keyToGetWithFromDocument, int row) {
         keyToGetWithFromDocument = keyToGetWithFromDocument.toLowerCase();
-        String propertyValue = Util.formatValueForDisplay(entry, keyToGetWithFromDocument);
+        String propertyValue = Util.formatValueForDisplay(entry, keyToGetWithFromDocument) + "";
         if (propertyValue != null && !propertyValue.trim().isEmpty()) {
             plate.setText(row, 0, explainingText + ": ");
             plate.getFlexCellFormatter().getElement(row, 0).getStyle().setWidth(30, Style.Unit.PC);

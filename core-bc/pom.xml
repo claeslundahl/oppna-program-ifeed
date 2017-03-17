@@ -8,15 +8,22 @@ Generation time : 2011-01-14 11:17:18 CET
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+    </dependency>
+  </dependencies>
   <parent>
     <groupId>se.vgregion.iFeed</groupId>
     <artifactId>iFeed-system</artifactId>
-    <version>1.12-SNAPSHOT</version>
+    <version>1.13-SNAPSHOT</version>
   </parent>
   <groupId>se.vgregion.iFeed</groupId>
   <artifactId>iFeed-core-bc</artifactId>
   <packaging>pom</packaging>
-  <version>1.12-SNAPSHOT</version>
+  <version>1.13-SNAPSHOT</version>
   <name>${project.artifactId}</name>
 
   <modules>

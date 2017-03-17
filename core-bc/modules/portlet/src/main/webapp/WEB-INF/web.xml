@@ -35,6 +35,16 @@
   </filter-mapping>
 
   <servlet>
+    <servlet-name>uncacher</servlet-name>
+    <servlet-class>se.vgregion.ifeed.webcomp.filter.UnchaceJson</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>uncacher</servlet-name>
+    <url-pattern>/uncache/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>view</servlet-name>
     <servlet-class>org.springframework.web.servlet.ViewRendererServlet</servlet-class>
     <load-on-startup>1</load-on-startup>

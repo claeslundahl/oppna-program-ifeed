@@ -11,5 +11,8 @@ function toggle() {
 }
 
 function refreshResults() {
-    setTimeout(function () {document.getElementById('rerun-ifeed-loading').click();}, 500);
+    setTimeout(function () {
+        // document.getElementById('rerun-ifeed-loading').click();
+        se.vgregion.ifeed.client.Starter.init();
+    }, 500);
 }

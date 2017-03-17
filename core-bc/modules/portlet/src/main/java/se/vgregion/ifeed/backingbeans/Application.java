@@ -30,6 +30,7 @@ import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
+import se.vgregion.varnish.VarnishClient;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -615,20 +616,22 @@ public class Application {
     }
 
     public String getExcelFeedLink() {
-        String result = String.valueOf(iFeedExcelFeed.expand("ID", iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection()));
-        if (isInEditMode()) {
-            result = result.replaceFirst(Pattern.quote("ID"), iFeedModelBean.toJson());
-        } else {
-            if (iFeedModelBean != null && iFeedModelBean.getId() != null) {
-                result = result.replaceFirst(Pattern.quote("ID"), iFeedModelBean.getId().toString());
-                try {
+        try {
+            String result = String.valueOf(iFeedExcelFeed.expand("ID", iFeedModelBean.getSortField(), iFeedModelBean.getSortDirection()));
+            if (isInEditMode()) {
+                String json = iFeedModelBean.toJson();
+                json = URLEncoder.encode(json, "UTF-8").replaceAll("\\+", "%20");
+                result = result.replaceFirst(Pattern.quote("ID"), json);
+            } else {
+                if (iFeedModelBean != null && iFeedModelBean.getId() != null) {
+                    result = result.replaceFirst(Pattern.quote("ID"), iFeedModelBean.getId().toString());
                     result += "&name=" + URLEncoder.encode(iFeedModelBean.getName(), "UTF-8").replaceAll("\\+", "%20");
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
                 }
             }
+            return result;
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
-        return result;
     }
 
     public String getExcelFeedLinkForm() {
@@ -993,6 +996,30 @@ public class Application {
             multiValueKeys = new WeakReference<>(InvocerUtil.getKeysWithMultiValues());
         }
         return multiValueKeys.get();
+    }
+
+    private VarnishClient varnishClient;
+
+    {
+        try {
+            this.varnishClient = VarnishClient.newVarnishClient();
+        } catch (Exception e) {
+            // Do nothing. The client might not be needed.
+        }
+    }
+
+    public String uncache(String thatUrl) {
+        //System.out.println("How many times is this called?");
+        LOGGER.debug("How many times is this called?");
+        if (varnishClient == null) {
+            return thatUrl;
+        }
+        varnishClient.clear(thatUrl);
+        return thatUrl;
+    }
+
+    public String urlEncode(String s) throws UnsupportedEncodingException {
+        return URLEncoder.encode(s, "UTF-8");
     }
 
 }

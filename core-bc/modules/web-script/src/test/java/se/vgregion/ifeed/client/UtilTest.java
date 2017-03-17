@@ -13,19 +13,6 @@ public class UtilTest extends TestCase {
     }
 
     @Test
-    public void testFormatValueForDisplay() {
-        HasGetter entry = new HasGetter() {
-            @Override
-            public String get(Object key) {
-                return "2014-03-11T10:21:38Z";
-            }
-        };
-
-        String s = Util.formatValueForDisplay(entry, "dc.date.issued");
-        System.out.println(s);
-    }
-
-    @Test
     public void testIsTimeStampPassed() {
         boolean b = Util.isTimeStampPassed("2014-03-11T10:21:38Z");
         Assert.assertTrue(b);

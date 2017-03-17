@@ -32,11 +32,11 @@ public class SolrServerFactory {
      * fetched from the file [user.home]/.hotell/ifeed/config.properties and its property 'solr.service'.
      */
     public static SolrServer create() {
-        try {
+        try(FileReader fr =new FileReader(getPropertiesPath())) {
             String url;
             if (solrServiceCache.get() == null) {
                 Properties properties = new Properties();
-                properties.load(new FileReader(getPropertiesPath()));
+                properties.load(fr);
                 url = properties.getProperty("solr.service");
                 solrServiceCache = new WeakReference<>(url);
             } else {

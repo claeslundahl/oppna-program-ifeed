@@ -34,7 +34,7 @@
                         maxHitLimit="#{app.limitOnResultCount ? '100' : '0'}"
                         limit="200"
                         hiderightcolumn="yes"
-                        feedid='#{iFeedModelBean.toJson()}'>
+                        feedid='#{app.uncache(app.urlEncode(iFeedModelBean.toJson()))}'>
                 </div>
             </ui:fragment>
 
@@ -49,7 +49,7 @@
                         linkOriginalDoc="no"
                         maxHitLimit="#{app.limitOnResultCount ? '100' : '0'}"
                         hiderightcolumn="yes"
-                        feedid='#{iFeedModelBean.toJson()}'>
+                        feedid='#{app.uncache(app.urlEncode(iFeedModelBean.toJson()))}'>
                 </div>
             </ui:fragment>
 

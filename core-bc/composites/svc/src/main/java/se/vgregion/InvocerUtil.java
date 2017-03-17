@@ -1,7 +1,6 @@
 package se.vgregion;
 
 import org.apache.solr.client.solrj.SolrServer;
-import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.service.solr.IFeedResults;
@@ -11,8 +10,8 @@ import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -45,8 +44,8 @@ public class InvocerUtil {
     public InvocerUtil() {
         String userHome = System.getProperty("user.home");
         Properties properties = new Properties();
-        try {
-            properties.load((Files.newInputStream(Paths.get(userHome, ".hotell", "ifeed", "config.properties"))));
+        try (InputStream is = Files.newInputStream(Paths.get(userHome, ".hotell", "ifeed", "config.properties"))) {
+            properties.load((is));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

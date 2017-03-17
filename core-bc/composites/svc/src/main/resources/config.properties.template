@@ -28,7 +28,7 @@ ifeed.feed=
 
 ifeed.web=
 
-# Solr server location
+# Solr port location
 solr.service=
 
 # IFeed metadata base url (for the portlet to link to the web module)

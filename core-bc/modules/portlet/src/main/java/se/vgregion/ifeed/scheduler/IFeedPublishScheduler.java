@@ -41,7 +41,7 @@ public class IFeedPublishScheduler implements MessageListener {
             LOGGER.debug("Checking for updates since {} in feed {} (id: {})", new Object[] { iFeed.getTimestamp(),
                     iFeed.getName(), iFeed.getId() });
             Collection<Map<String, Object>> iFeedResults = iFeedSolrQuery.getIFeedResults(iFeed,
-                    iFeed.getTimestamp());
+                    iFeed.getTimestamp(), null);
 
             if (!isEmpty(iFeedResults) || iFeed.getTimestamp() == null) {
                 LOGGER.debug("{} new documents found in feed {} (id: {})", new Object[] { iFeedResults.size(),

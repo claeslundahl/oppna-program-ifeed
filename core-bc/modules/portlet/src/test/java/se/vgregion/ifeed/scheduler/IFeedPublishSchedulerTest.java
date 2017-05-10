@@ -45,7 +45,7 @@ public class IFeedPublishSchedulerTest {
         Map<String, Object> someValue = new HashMap<String, Object>();
         iFeedResults.add(someValue);
 
-        when(iFeedSolrQuery.getIFeedResults(firstResult, null)).thenReturn(iFeedResults);
+        when(iFeedSolrQuery.getIFeedResults(firstResult, null, null)).thenReturn(iFeedResults);
 
         Message message = mock(Message.class);
         iFeedPublishScheduler.receive(message);

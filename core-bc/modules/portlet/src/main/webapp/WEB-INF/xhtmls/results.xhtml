@@ -3,7 +3,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:composite="http://java.sun.com/jsf/composite/component"
 >
 
     <h:panelGroup rendered="#{iFeedModelBean.hasAnyFilter()}">
@@ -56,6 +55,14 @@
         </div>
         <div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>
         <button id="rerun-ifeed-loading" style="display:none;">Should be hidden</button>
+        <h:outputScript>
+            function on() {
+                try{
+                    se.vgregion.ifeed.client.Starter.init();
+                }catch(e){}
+            }
+            setTimeout(on, 300);
+        </h:outputScript>
     </h:panelGroup>
 
 </ui:composition>

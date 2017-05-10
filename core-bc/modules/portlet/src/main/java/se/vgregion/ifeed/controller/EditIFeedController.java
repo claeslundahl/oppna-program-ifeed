@@ -178,7 +178,7 @@ public class EditIFeedController {
         iFeed.setSortField(sortField);
         iFeed.setSortDirection(sortDirection);
 
-        IFeedResults result = iFeedSolrQuery.getIFeedResults(iFeed);
+        IFeedResults result = iFeedSolrQuery.getIFeedResults(iFeed, null);
 
         if (result.size() == iFeedSolrQuery.getRows()) {
             result.remove(result.size() - 1);

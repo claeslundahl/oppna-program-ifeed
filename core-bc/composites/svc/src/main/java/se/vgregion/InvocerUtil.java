@@ -73,7 +73,7 @@ public class InvocerUtil {
         IFeed feed = new IFeed();
         IFeedFilter filter = new IFeedFilter(value, key);
         feed.addFilter(filter);
-        IFeedResults result = iFeedSolrQuery.getIFeedResults(feed);
+        IFeedResults result = iFeedSolrQuery.getIFeedResults(feed, null);
 
         FieldsInf fieldsInf = new FieldsInf();
         fieldsInf.setText(getFieldsConfig());

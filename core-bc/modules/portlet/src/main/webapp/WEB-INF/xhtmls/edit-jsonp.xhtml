@@ -199,14 +199,7 @@
 
                     <h:outputScript>
                         function on() {
-                            /*
-                            document.getElementById('rerun-ifeed-loading').click();
-                            <portlet:namespace var="nameSpace" />
-                            var link = document.getElementById('#{nameSpace}:ifeed_view:addColumnLink');
-                            var table = link.parentElement.parentElement.parentElement.parentElement;
-                            var tbodys = table.getElementsByTagName('tbody');
-                            if (tbodys.length == 0) link.click();
-                            */
+                            if (console) console.log("se.vgregion.ifeed.client.Starter.init()");
                             se.vgregion.ifeed.client.Starter.init();
                         }
                         setTimeout(on, 200);

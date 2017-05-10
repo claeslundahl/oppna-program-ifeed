@@ -128,7 +128,7 @@ public class EditIFeedControllerTest {
         javax.portlet.RenderResponse response = mock(RenderResponse.class);
 
         IFeedSolrQuery iFeedSolrQuery = mock(IFeedSolrQuery.class);
-        when(iFeedSolrQuery.getIFeedResults(iFeed)).thenReturn(new IFeedResults());
+        when(iFeedSolrQuery.getIFeedResults(iFeed, null)).thenReturn(new IFeedResults());
         when(iFeedSolrQuery.getRows()).thenReturn(10);
         controller.setIFeedSolrQuery(iFeedSolrQuery);
 

@@ -79,7 +79,7 @@ public class Starter {
       String v2 = o2.get(byThatKey);
       if (v1 == null) v1 = "";
       if (v2 == null) v2 = "";
-      return v1.compareTo(v2);
+      return v1.toLowerCase().compareTo(v2.toLowerCase());
     };
     if ("asc".equals(ascOrDesc)) {
       those.sort(sorter);
@@ -107,6 +107,10 @@ public class Starter {
       place.add(wait);
 
       if (!putResultsHere.element.hasAttribute("doing-ajax-call")) {
+        putResultsHere.element.setAttribute("data-url", url);
+        if (putResultsHere.usepost != null && "yes".equals(putResultsHere.usepost)) {
+          url += "&usePost";
+        }
         Invocer.fetchFeedByJsonpCall(url, entries -> {
           int step = 0;
           try {
@@ -116,6 +120,7 @@ public class Starter {
             step++;
             putResultsHere.element.setAttribute("doing-ajax-call", "true");
             step++;
+            /*
             String[] sorting = putResultsHere.defaultsortcolumn.split("[,]");
             step++;
             String[] ordering = putResultsHere.defaultsortcolumn.split("[,]");
@@ -123,9 +128,9 @@ public class Starter {
             int i = 0;
             for (String s : sorting) {
               sort(entries, s, ordering[i++]);
-            }
+            }*/
             step++;
-            //sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
+            sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
 
             if (putResultsHere.limit != null && putResultsHere.limit.matches("^(-?)\\d+$")) {
               int limit = Integer.parseInt(putResultsHere.limit);

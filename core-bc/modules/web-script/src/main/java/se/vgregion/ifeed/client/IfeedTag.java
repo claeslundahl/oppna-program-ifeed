@@ -14,7 +14,7 @@ public class IfeedTag {
      */
 
     public String ifeedDocList, columnes, fontsize, defaultsortcolumn, defaultsortorder, showtableheader, linkoriginaldoc, limit,
-            hiderightcolumn, feedid;
+            hiderightcolumn, feedid, usepost;
 
     public final List<Column> columns = new ArrayList<>();
 
@@ -32,6 +32,7 @@ public class IfeedTag {
         showtableheader = element.getAttribute("showtableheader");
         linkoriginaldoc = element.getAttribute("linkoriginaldoc");
         hiderightcolumn = element.getAttribute("hiderightcolumn");
+        usepost = element.getAttribute("usepost");
         feedid = element.getAttribute("feedid");
         fontsize = element.getAttribute("fontsize");
         limit = element.getAttribute("limit");

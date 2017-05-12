@@ -1019,7 +1019,7 @@ public class Application {
   }
 
   public String uncacheJson(String thatUrl) {
-    //System.out.println("How many times is this called?");
+
     LOGGER.debug("How many times is this called?");
     if (varnishClient == null) {
       return thatUrl;
@@ -1036,6 +1036,14 @@ public class Application {
       return getIFeedModelBean().getId() + "";
     }
     return URLEncoder.encode(s, "UTF-8");
+  }
+
+  public String join(String... frag) {
+    StringBuilder sb = new StringBuilder();
+    for (String s : frag) {
+      sb.append(s);
+    }
+    return sb.toString();
   }
 
 }

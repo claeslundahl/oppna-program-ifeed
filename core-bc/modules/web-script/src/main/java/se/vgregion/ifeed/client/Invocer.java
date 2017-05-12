@@ -43,7 +43,7 @@ public class Invocer {
   }
 
   private static void fetchFeedByJsonpCall(String url, AsyncCallback<List<Entry>> callback) {
-    if (url.length() > 300) {
+    if (url.length() > 300 || url.endsWith("&usePost")) {
       int indexOfData = url.indexOf('?');
       String data = url.substring(indexOfData + 1);
       url = url.substring(0, indexOfData);

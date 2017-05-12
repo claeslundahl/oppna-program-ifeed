@@ -4,8 +4,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHttpRequest;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +95,12 @@ public class VarnishClient {
     }
 
     public void clearImp(String thatUrlFromCache) throws IOException {
+        if (thatUrlFromCache.contains("://")) {
+            String url = thatUrlFromCache;
+            url = url.replace("://", "");
+            url = url.substring(url.indexOf('/'));
+            thatUrlFromCache = url;
+        }
         HttpHost host = new HttpHost(getServer(), getPort());
         HttpPurge purgeRequest = new HttpPurge("" + thatUrlFromCache);
         purgeRequest.addHeader("Host", contentOriginHost);
@@ -119,7 +127,7 @@ public class VarnishClient {
         }
     }
 
-    private void clearJsonImp(String thatUrlFromCache) throws IOException {
+    private void clearJsonImp_old(String thatUrlFromCache) throws IOException {
         HttpHost host = new HttpHost(getServer(), getPort());
         HttpPurge purgeRequest = new HttpPurge("" + thatUrlFromCache);
         purgeRequest.addHeader("Host", contentOriginHost);
@@ -129,6 +137,9 @@ public class VarnishClient {
 
         // Makes Varnish do a 'hard' purge. Immediately removing cached content.
         purgeRequest.addHeader("X-Hard-Purge", "1");
+
+        String subUrl = thatUrlFromCache.replace("://", "");
+        subUrl = thatUrlFromCache.substring(subUrl.indexOf('/') + 1);
 
         String json = toText(new URL(thatUrlFromCache));
         ArrayList<HashMap<String, Object>> result =
@@ -148,6 +159,37 @@ public class VarnishClient {
         /*for (Header header : response.getAllHeaders()) {
             System.out.println(header);
         }*/
+    }
+
+    public void clearJsonImp(String thatUrlFromCache) throws IOException {
+        String url = thatUrlFromCache;
+        url = url.replace("://", "");
+        url = url.substring(url.indexOf('/'));
+
+        HttpHost host = new HttpHost(server, port);
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        BasicHttpRequest purgeRequest = new BasicHttpRequest("PURGE", url);
+
+        purgeRequest.addHeader("Host", contentOriginHost);
+        purgeRequest.addHeader("X-Cache-Group", "Staging");
+        purgeRequest.addHeader("Connection", "close");
+        purgeRequest.addHeader("X-Purge-Secret", secret);
+        // Makes Varnish do a 'hard' purge. Immediately removing cached content.
+        purgeRequest.addHeader("X-Hard-Purge", "1");
+
+        String json = toText(new URL(thatUrlFromCache));
+        ArrayList<HashMap<String, Object>> result =
+            new ObjectMapper().readValue(json, ArrayList.class);
+
+        for (HashMap<String, Object> map : result) {
+            String id = (String) map.get("id");
+            String[] idFrags = id.split(Pattern.quote(":"));
+            String uuid = idFrags[idFrags.length - 1];
+            purgeRequest.addHeader("xkey", "alfresco/" + uuid);
+        }
+
+        HttpResponse response = httpclient.execute(host, purgeRequest);
+        System.out.println(response.getEntity().getContent());
     }
 
     static String toText(URL url) {

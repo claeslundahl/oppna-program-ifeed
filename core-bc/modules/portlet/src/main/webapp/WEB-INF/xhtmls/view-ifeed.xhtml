@@ -187,8 +187,9 @@
 
                     <a href="#{app.uncache(app.getRssFeedLink())}" target="_blank">Rss</a><br/>
                     <a href="#{app.uncache(app.getAtomFeedLink())}" target="_blank">Atom</a><br/>
-                    <a id="json-feed-link" href="#{app.uncacheJson(app.getJsonFeedLink())}" target="_blank">Json</a><br/>
 
+                    <a id="json-feed-link" href="#{app.uncacheJson(app.getJsonFeedLink())}" target="_blank">Json</a><br/>
+                    <div style="display:none;">#{app.uncacheJson(app.join(app.getJsonFeedLink(), '&#38;f=dc.title&#38;f=dc.date.issued&#38;f=dc.title&#38;callback=__gwt_jsonp__.P0.onSuccess'))}</div>
                     <h:panelGroup>
                         <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
                         <br/>

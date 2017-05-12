@@ -37,6 +37,10 @@ public class TableDefModel extends DynamicTableDef {
         return toTableMarkupImpl();
     }
 
+    public String toPostingTableMarkup() {
+        return toTableMarkupImpl(getFeedId(), true);
+    }
+
     public List<String> toTableMarkupWithLineBreaks() {
         String text = toTableMarkupImpl();
         String[] texts = text.split(Pattern.quote("\n"));
@@ -44,7 +48,7 @@ public class TableDefModel extends DynamicTableDef {
     }
 
     public String toRunnableInstanceTableMarkup() {
-        return toTableMarkupImpl(app.getIFeedModelBean().toJson());
+        return toTableMarkupImpl(app.getIFeedModelBean().toJson(), false);
     }
 
     private String yesOrNo(boolean b) {
@@ -57,10 +61,10 @@ public class TableDefModel extends DynamicTableDef {
 
 
     private String toTableMarkupImpl() {
-        return toTableMarkupImpl(getFeedId());
+        return toTableMarkupImpl(getFeedId(), false);
     }
 
-    private String toTableMarkupImpl(String textAsFeedId) {
+    private String toTableMarkupImpl(String textAsFeedId, boolean posting) {
         if (getColumnDefs().isEmpty()) {
             return "Lägg till kolumner för att få fram en kod.";
         }
@@ -81,6 +85,7 @@ public class TableDefModel extends DynamicTableDef {
                 "\tlimit=\"" + getMaxHitLimit() + "\" \n" +
                 "\thiderightcolumn=\"" + yesOrNo(isHideRightColumn()) + "\" \n" +
                 //"\tfeedid=\"" + getFeedId() + "\">\n" +
+                "\tusepost=\"" + yesOrNo(posting) + "\" \n" +
                 "\tfeedid='" + textAsFeedId + "'>\n" +
                 "</div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/" + getFeedId() +
                 "/?by=" + format(getDefaultSortColumn()) +

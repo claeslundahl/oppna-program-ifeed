@@ -13,5 +13,6 @@
     <class>se.vgregion.ifeed.types.VgrGroup</class>
     <class>se.vgregion.ifeed.shared.DynamicTableDef</class>
     <class>se.vgregion.ifeed.shared.ColumnDef</class>
+    <class>se.vgregion.ifeed.shared.DynamicTableSortingDef</class>
   </persistence-unit>
 </persistence>

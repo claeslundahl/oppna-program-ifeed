@@ -36,6 +36,10 @@ public class DynamicTableDef extends AbstractEntity {
     @OneToMany(mappedBy = "tableDef", cascade = CascadeType.ALL)
     private List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
 
+    @OneToMany(mappedBy = "tableDef", cascade = CascadeType.ALL)
+    @OrderBy("name index")
+    private List<DynamicTableSortingDef> extraSorting = new ArrayList<DynamicTableSortingDef>();
+
     @ManyToOne
     @JoinColumn(name = "fk_ifeed_id")
     @GwtIncompatible
@@ -196,6 +200,14 @@ public class DynamicTableDef extends AbstractEntity {
     @GwtIncompatible
     public void setIfeed(se.vgregion.ifeed.types.IFeed ifeed) {
         this.ifeed = ifeed;
+    }
+
+    public List<DynamicTableSortingDef> getExtraSorting() {
+        return extraSorting;
+    }
+
+    public void setExtraSorting(List<DynamicTableSortingDef> extraSorting) {
+        this.extraSorting = extraSorting;
     }
 
     /*

@@ -36,17 +36,6 @@ public class Starter {
     NodeList<Element> elements = querySelectorAll(".ifeedDocList");
     List<IfeedTag> tags = new ArrayList<>();
     for (int i = 0, j = elements.getLength(); i < j; i++) {
-      /*
-      Element element = elements.getItem(i);
-      String inProgress = element.getAttribute("in-progress");
-      if (!"".equals(inProgress)) {
-        Util.log("Found in progress.");
-        continue;
-      } else {
-        Util.log("Did not find in progress.");
-      }
-      element.setAttribute("in-progress", "true");
-      */
       Element element = elements.getItem(i);
       IfeedTag feed = new IfeedTag(element);
       feed.index = i;
@@ -112,25 +101,16 @@ public class Starter {
           url += "&usePost";
         }
         Invocer.fetchFeedByJsonpCall(url, entries -> {
-          int step = 0;
           try {
             if (putResultsHere.element.hasChildNodes()) {
               putResultsHere.element.setInnerHTML("");
             }
-            step++;
             putResultsHere.element.setAttribute("doing-ajax-call", "true");
-            step++;
-            /*
-            String[] sorting = putResultsHere.defaultsortcolumn.split("[,]");
-            step++;
-            String[] ordering = putResultsHere.defaultsortcolumn.split("[,]");
-            step++;
-            int i = 0;
-            for (String s : sorting) {
-              sort(entries, s, ordering[i++]);
-            }*/
-            step++;
+
             sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
+            for (Entry extraSortColumn : putResultsHere.extraSortColumns) {
+              sort(entries, extraSortColumn.get("name"), extraSortColumn.get("direction"));
+            }
 
             if (putResultsHere.limit != null && putResultsHere.limit.matches("^(-?)\\d+$")) {
               int limit = Integer.parseInt(putResultsHere.limit);
@@ -138,26 +118,14 @@ public class Starter {
                 entries = entries.subList(0, Math.min(entries.size(), limit));
               }
             }
-            step++;
 
             putResultsHere.fetchedData = entries;
 
-            /*if (place != null && place.isAttached()) {
-              try {
-                place.clear();
-              } catch (Exception e) {
-                Util.log("place.clear() exception.");
-              }
-            }*/
-            step++;
             place.add(createTable(putResultsHere));
-            step++;
             findAnySizePlaceholdersAndFillThem(putResultsHere);
-            step++;
             putResultsHere.element.removeAttribute("doing-ajax-call");
-            step++;
           } catch (Exception e) {
-            Window.alert("Problem while doing the ajax call. Step is " + step + ".");
+            Util.log(e);
           }
         });
       } else {
@@ -199,8 +167,6 @@ public class Starter {
 
   public static void addHeading(FlexTable impl, IfeedTag tableDef) {
     try {
-
-
       impl.setText(0, 0, " ");
       int c = 1;
       final HTMLPanel place = HTMLPanel.wrap(tableDef.element);

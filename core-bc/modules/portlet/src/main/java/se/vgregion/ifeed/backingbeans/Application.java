@@ -26,6 +26,7 @@ import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
+import se.vgregion.ifeed.shared.DynamicTableSortingDef;
 import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
@@ -905,12 +906,21 @@ public class Application {
     if (!found) {
       DynamicTableDef instance = new DynamicTableDef();
       new BeanMap(instance).putAllWriteable(bm);
-      instance.setColumnDefs(dynamicTableDef.getColumnDefs());
+      instance.setColumnDefs(new ArrayList<>(dynamicTableDef.getColumnDefs()));
+      instance.setExtraSorting(new ArrayList<>(dynamicTableDef.getExtraSorting()));
       iFeedModelBean.getDynamicTableDefs().add(instance);
       instance.setIfeed(iFeedModelBean.getInitalFeed());
       instance.setFkIfeedId(iFeedModelBean.getInitalFeed().getId());
+      for (DynamicTableSortingDef extraSort : instance.getExtraSorting()) {
+        extraSort.setTableDef(instance);
+      }
       iFeedService.save(instance);
+    } else {
+      DynamicTableDef dtd = new DynamicTableDef();
+      new BeanMap(dtd).putAllWriteable(bm);
+      iFeedService.save(dtd);
     }
+
     navigationModelBean.setUiNavigation("VIEW_IFEED");
 
   }

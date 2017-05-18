@@ -89,12 +89,12 @@ public class Invocer {
     }
   }
 
-  private static List<Entry> toEntries(String text) {
+  public static List<Entry> toEntries(String text) {
     JavaScriptObject jso = JsonUtils.safeEval(text);
     return toEntries((JsArray) jso);
   }
 
-  private static List<Entry> toEntries(JsArray array) {
+  public static List<Entry> toEntries(JsArray array) {
     List<Entry> entries = new ArrayList<>();
     for (int i = 0, j = array.length(); i < j; i++) {
       Entry item = array.get(i).cast();

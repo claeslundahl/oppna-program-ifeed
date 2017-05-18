@@ -36,7 +36,8 @@ public class VarnishClientTest {
     // client.clear("https://ifeed-stage.vgregion.se/iFeed-web/documentlists/91344/?by=&dir=asc");
     // https://ifeed-stage.vgregion.se/iFeed-web/meta.json?instance=116106&f=dc.title&f=dc.date.issued&f=dc.title
 
-    String url = "https://ifeed-stage.vgregion.se/iFeed-web/meta.json?instance=116106&f=dc.title&f=dc.date.issued&f=dc.title&callback=__gwt_jsonp__.P0.onSuccess";
+    //String url = "https://ifeed-stage.vgregion.se/iFeed-web/meta.json?instance=116106&f=dc.title&f=dc.date.issued&f=dc.title";
+    String url = "https://ifeed-stage.vgregion.se/iFeed-web/meta.json?instance=116106&f=*";
     client.clearJsonImp(url);
 
     if (true) return;

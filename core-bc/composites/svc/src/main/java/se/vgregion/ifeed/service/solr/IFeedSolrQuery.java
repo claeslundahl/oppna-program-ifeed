@@ -103,7 +103,7 @@ public class IFeedSolrQuery extends SolrQuery {
       if (fieldsToSelect != null && fieldsToSelect.length > 0) {
         HashSet<String> set = new HashSet<String>(Arrays.asList(fieldsToSelect));
         set.addAll(Arrays.asList("DC.publisher.forunit", "DC.description", "DC.creator.document", "dc.identifier.documentid",
-            "DC.creator.function", "DC.contributor.acceptedby",
+            "DC.creator.function", "DC.contributor.acceptedby", "id",
             "DC.contributor.acceptedby.role", "DC.date.validfrom", "DC.date.validto", "DC.type.document.structure",
             "dc.title"));
         List<String> result = new ArrayList<>();

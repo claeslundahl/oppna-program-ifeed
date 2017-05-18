@@ -8,6 +8,7 @@ import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
+import se.vgregion.ifeed.shared.DynamicTableSortingDef;
 import se.vgregion.ifeed.types.*;
 
 import javax.persistence.EntityManager;
@@ -133,7 +134,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                                 "SELECT distinct ifeed " +
                                         "FROM IFeed ifeed " +
                                         "left join fetch ifeed.filters f "
-                                        + "left join fetch ifeed.composites c "
+                                    + "left join fetch ifeed.composites c "
                                         + "WHERE ifeed.id = ?1",
                                 new Object[]{id}));
 
@@ -232,7 +233,21 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         if (id == null) {
             throw new RuntimeException("Id of feed cannot be null.");
         }
+
+        /*Collection<IFeed> result =
+            iFeedRepo .findByQuery(
+                "SELECT distinct ifeed " +
+                    "FROM IFeed ifeed " +
+                    "left join fetch ifeed.filters f "
+                    + "left join fetch ifeed.composites c "
+                    + "left join fetch ifeed.dynamicTableDefs dtd "
+                    + "left join fetch ifeed.dynamicTableDefs dtd "
+                    + "WHERE ifeed.id = ?1",
+                new Object[]{id});*/
+
         IFeed result = iFeedRepo.find(id);
+
+        // IFeed result = iFeedRepo.find(id);
         init(result);
         initializedFeeds.set(null);
         return result;
@@ -269,6 +284,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             for (DynamicTableDef dynamicTable : dynamicTableDefs) {
                 if (dynamicTable.getColumnDefs() != null) {
                     for (ColumnDef columnDef : dynamicTable.getColumnDefs()) {
+
+                    }
+                }
+                if (dynamicTable.getExtraSorting() != null) {
+                    for (DynamicTableSortingDef dynamicTableSortingDef : dynamicTable.getExtraSorting()) {
 
                     }
                 }

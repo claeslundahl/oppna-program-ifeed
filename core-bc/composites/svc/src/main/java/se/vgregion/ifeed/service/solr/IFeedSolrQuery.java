@@ -105,7 +105,7 @@ public class IFeedSolrQuery extends SolrQuery {
         set.addAll(Arrays.asList("DC.publisher.forunit", "DC.description", "DC.creator.document", "dc.identifier.documentid",
             "DC.creator.function", "DC.contributor.acceptedby", "id",
             "DC.contributor.acceptedby.role", "DC.date.validfrom", "DC.date.validto", "DC.type.document.structure",
-            "dc.title"));
+            "dc.title", "dc.identifier.native", "url"));
         List<String> result = new ArrayList<>();
         for (String s : set) {
           result.add(s.toLowerCase());

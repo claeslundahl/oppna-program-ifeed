@@ -133,7 +133,7 @@ public class IFeedViewerController {
                                  @RequestParam(value = "startBy", required = false) Integer startBy,
                                  @RequestParam(value = "endBy", required = false) Integer endBy,
                                  @RequestParam(value = "fromPage", required = false) String fromPage,
-                                 @RequestParam(value = "f") String[] f
+                                 @RequestParam(value = "f", required = false) String[] f
   ) {
     //String[] f = toStringArray(allRequestParams, "f");
     long timeBefore = System.currentTimeMillis();

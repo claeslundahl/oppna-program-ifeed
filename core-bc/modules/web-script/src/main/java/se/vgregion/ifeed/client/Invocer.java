@@ -3,7 +3,10 @@ package se.vgregion.ifeed.client;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
-import com.google.gwt.http.client.*;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -90,8 +93,16 @@ public class Invocer {
   }
 
   public static List<Entry> toEntries(String text) {
-    JavaScriptObject jso = JsonUtils.safeEval(text);
-    return toEntries((JsArray) jso);
+    if (text == null || text.trim().isEmpty()) {
+      return new ArrayList<>();
+    }
+    try {
+      JavaScriptObject jso = JsonUtils.safeEval(text);
+      return toEntries((JsArray) jso);
+    } catch (Exception e) {
+      Util.log("Failed on json: " + text);
+      return new ArrayList<>();
+    }
   }
 
   public static List<Entry> toEntries(JsArray array) {

@@ -1,18 +1,20 @@
 package se.vgregion.ifeed.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import jsinterop.annotations.JsMethod;
 
 import java.util.*;
+
+//import jsinterop.annotations.JsMethod;
 
 /**
  * Created by clalu4 on 2017-03-01.
@@ -31,24 +33,37 @@ public class Starter {
 
   private static Images images = GWT.create(Images.class);
 
-  @JsMethod
+  private static final native void publicizeInit()/*-{
+    $wnd.se = {};
+    $wnd.se.vgregion = {};
+    $wnd.se.vgregion.ifeed = {};
+    $wnd.se.vgregion.ifeed.client = {};
+    $wnd.se.vgregion.ifeed.client.Starter = {};
+    $wnd.se.vgregion.ifeed.client.Starter.init = function() {
+      @se.vgregion.ifeed.client.Starter::init()();
+    }
+  }-*/;
+
+  //@JsMethod
   public static void init() {
-    NodeList<Element> elements = querySelectorAll(".ifeedDocList");
+    //NodeList<Element> elements = querySelectorAll(".ifeedDocList");
+    JsArray<Element> elements = findElements("div", "className", "ifeedDocList");
     List<IfeedTag> tags = new ArrayList<>();
-    for (int i = 0, j = elements.getLength(); i < j; i++) {
-      Element element = elements.getItem(i);
+    for (int i = 0, j = elements.length(); i < j; i++) {
+      Element element = elements.get(i);
       IfeedTag feed = new IfeedTag(element);
       feed.index = i;
       tags.add(feed);
       fetchAndRender(feed);
     }
+    publicizeInit();
   }
 
   public static String getFeedHome() {
-    NodeList<Element> ifeeData2 = querySelectorAll("#ifeed-data2");
+    JsArray<Element> ifeeData2 = findElements("div", "id", "ifeed-data2");
     String url; // = querySelectorAll("#ifeed-data2").getItem(0).getInnerText().trim();
-    if (ifeeData2 != null && ifeeData2.getLength() > 0) {
-      url = ifeeData2.getItem(0).getInnerText().trim();
+    if (ifeeData2 != null && ifeeData2.length() > 0) {
+      url = ifeeData2.get(0).getInnerText().trim();
     } else {
       url = "https://ifeed.vgregion.se";
     }
@@ -62,18 +77,29 @@ public class Starter {
     sort(those, byThatKey, ascOrDesc);
   }
 
-  private static void sort(List<Entry> those, String byThatKey, String ascOrDesc) {
-    Comparator<? super Entry> sorter = (Comparator<Entry>) (o1, o2) -> {
-      String v1 = o1.get(byThatKey);
-      String v2 = o2.get(byThatKey);
-      if (v1 == null) v1 = "";
-      if (v2 == null) v2 = "";
-      return v1.toLowerCase().compareTo(v2.toLowerCase());
+  private static void sort(final List<Entry> those, final String byThatKey, final String ascOrDesc) {
+    final Comparator<? super Entry> sorter = new Comparator<Entry>() {
+      @Override
+      public int compare(Entry o1, Entry o2) {
+        String v1 = o1.get(byThatKey);
+        String v2 = o2.get(byThatKey);
+        if (v1 == null) v1 = "";
+        if (v2 == null) v2 = "";
+        return v1.toLowerCase().compareTo(v2.toLowerCase());
+      }
     };
+
     if ("asc".equals(ascOrDesc)) {
-      those.sort(sorter);
+      Collections.sort(those, sorter);
+      //those.sort(sorter);
     } else {
-      those.sort((o1, o2) -> -sorter.compare(o1, o2));
+      Collections.sort(those, new Comparator<Entry>() {
+        @Override
+        public int compare(Entry o1, Entry o2) {
+          return -sorter.compare(o1, o2);
+        }
+      });
+      // those.sort((o1, o2) -> -sorter.compare(o1, o2));
     }
   }
 
@@ -100,32 +126,37 @@ public class Starter {
         if (putResultsHere.usepost != null && "yes".equals(putResultsHere.usepost)) {
           url += "&usePost";
         }
-        Invocer.fetchFeedByJsonpCall(url, entries -> {
-          try {
-            if (putResultsHere.element.hasChildNodes()) {
-              putResultsHere.element.setInnerHTML("");
-            }
-            putResultsHere.element.setAttribute("doing-ajax-call", "true");
+        Invocer.fetchFeedByJsonpCall(url, new Invocer.Callback<List<Entry>>() {
+          @Override
+          public void event(List<Entry> entries) {
+            {
+              try {
+                if (putResultsHere.element.hasChildNodes()) {
+                  putResultsHere.element.setInnerHTML("");
+                }
+                putResultsHere.element.setAttribute("doing-ajax-call", "true");
 
-            sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
-            for (Entry extraSortColumn : putResultsHere.extraSortColumns) {
-              sort(entries, extraSortColumn.get("name"), extraSortColumn.get("direction"));
-            }
+                sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
+                for (Entry extraSortColumn : putResultsHere.extraSortColumns) {
+                  sort(entries, extraSortColumn.get("name"), extraSortColumn.get("direction"));
+                }
 
-            if (putResultsHere.limit != null && putResultsHere.limit.matches("^(-?)\\d+$")) {
-              int limit = Integer.parseInt(putResultsHere.limit);
-              if (limit > 0) {
-                entries = entries.subList(0, Math.min(entries.size(), limit));
+                if (putResultsHere.limit != null && putResultsHere.limit.matches("^(-?)\\d+$")) {
+                  int limit = Integer.parseInt(putResultsHere.limit);
+                  if (limit > 0) {
+                    entries = entries.subList(0, Math.min(entries.size(), limit));
+                  }
+                }
+
+                putResultsHere.fetchedData = entries;
+
+                place.add(createTable(putResultsHere));
+                findAnySizePlaceholdersAndFillThem(putResultsHere);
+                putResultsHere.element.removeAttribute("doing-ajax-call");
+              } catch (Exception e) {
+                Util.log(e);
               }
             }
-
-            putResultsHere.fetchedData = entries;
-
-            place.add(createTable(putResultsHere));
-            findAnySizePlaceholdersAndFillThem(putResultsHere);
-            putResultsHere.element.removeAttribute("doing-ajax-call");
-          } catch (Exception e) {
-            Util.log(e);
           }
         });
       } else {
@@ -156,16 +187,17 @@ public class Starter {
   }
 
   public static void findAnySizePlaceholdersAndFillThem(IfeedTag tag) {
-    NodeList<Element> placeHolders = querySelectorAll(".ifeed-count-" + tag.index);
+    // NodeList<Element> placeHolders = querySelectorAll(".ifeed-count-" + tag.index);
+    JsArray<Element> placeHolders = findElements("span", "className", "ifeed-count-" + tag.index);
     if (placeHolders != null) {
-      for (int i = 0, j = placeHolders.getLength(); i < j; i++) {
-        Element place = placeHolders.getItem(i);
+      for (int i = 0, j = placeHolders.length(); i < j; i++) {
+        Element place = placeHolders.get(i);
         place.setInnerHTML(tag.fetchedData.size() + "");
       }
     }
   }
 
-  public static void addHeading(FlexTable impl, IfeedTag tableDef) {
+  public static void addHeading(final FlexTable impl, final IfeedTag tableDef) {
     try {
       impl.setText(0, 0, " ");
       int c = 1;
@@ -174,6 +206,28 @@ public class Starter {
         final Anchor tb = new Anchor(cd.title);
         tb.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
         tb.getElement().getStyle().setTextDecoration(Style.TextDecoration.UNDERLINE);
+
+        tb.addClickHandler(new ClickHandler() {
+          @Override
+          public void onClick(ClickEvent event) {
+            com.google.gwt.user.client.Timer timer = new Timer() {
+              @Override
+              public void run() {
+                tableDef.defaultsortorder = "asc".
+                    equals(tableDef.defaultsortorder) && tableDef.defaultsortcolumn.equals(cd.fieldId)
+                    ? "desc" : "asc";
+                tableDef.defaultsortcolumn = cd.fieldId;
+                place.clear();
+                place.getElement().setInnerHTML("");
+                sort(tableDef);
+                place.add(createTable(tableDef));
+              }
+            };
+            timer.schedule(100);
+          }
+        });
+
+        /*
         tb.addClickHandler(clickEvent -> {
           com.google.gwt.user.client.Timer timer = new com.google.gwt.user.client.Timer() {
             @Override
@@ -190,6 +244,7 @@ public class Starter {
           };
           timer.schedule(100);
         });
+        */
 
         FlowPanel hp = new FlowPanel();
         hp.add(tb);
@@ -268,21 +323,56 @@ public class Starter {
   private static final Widget makeInfoCell(final Entry entry) {
     final HorizontalPanel hp = new HorizontalPanel();
     Image icon = new Image(images.information());
-    icon.addClickHandler(clickEvent -> Window.open(urlToMetaData(entry), "_blank", ""));
+    icon.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        Window.open(urlToMetaData(entry), "_blank", "");
+      }
+    });
+    // icon.addClickHandler(clickEvent -> Window.open(urlToMetaData(entry), "_blank", ""));
     hp.add(icon);
 
+    icon.addDomHandler(
+        new MouseOverHandler() {
+          @Override
+          public void onMouseOver(MouseOverEvent event) {
+            final EntryPopupPanel info = new EntryPopupPanel(entry);
+            info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
+            info.show();
+            entry.put("EntryPopupPanel", info);
+          }
+        },
+        MouseOverEvent.getType()
+    );
+
+    /*
     icon.addDomHandler(mouseOverEvent -> {
       final EntryPopupPanel info = new EntryPopupPanel(entry);
       info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
       info.show();
       entry.put("EntryPopupPanel", info);
     }, MouseOverEvent.getType());
+    */
 
+    icon.addDomHandler(
+        new MouseOutHandler() {
+          @Override
+          public void onMouseOut(MouseOutEvent event) {
+            EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
+            if (epp != null)
+              epp.hide();
+          }
+        },
+        MouseOutEvent.getType()
+    );
+
+    /*
     icon.addDomHandler(mouseOutEvent -> {
       EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
       if (epp != null)
         epp.hide();
     }, MouseOutEvent.getType());
+    */
 
     String validToKey = "dc.date.validto";
     String textDate = entry.get(validToKey);
@@ -340,8 +430,41 @@ public class Starter {
   }
 
 
-  public static final native NodeList<Element> querySelectorAll(String selectors) /*-{
-        return $doc.querySelectorAll(selectors);
+  public static final native NodeList<Element> querySelectorAll2(String selectors) /*-{
+        try {
+          return $doc.querySelectorAll(selectors);
+        }catch(e){
+          $wnd.alert("Problem i querySelectorAll " + e.message);
+        }
     }-*/;
+
+  // w00t! Generics work just fine with overlay types
+  public static class JsArray<E extends JavaScriptObject> extends JavaScriptObject {
+    protected JsArray() {
+    }
+
+    public final native int length() /*-{ return this.length; }-*/;
+
+    public final native E get(int i) /*-{ return this[i];     }-*/;
+  }
+
+  public static final native JsArray<Element> findElements(String tag, String key, String value) /*-{
+        try {
+          var all = $doc.getElementsByTagName(tag);
+          var r = [];
+          for (var i = 0; i < all.length; i++) {
+            var element = all[i];
+            if(element[key] == value || element[key].split(" ").indexOf(value) > -1) {
+              r[r.length] = element;
+            }
+          }
+          return r;
+        }catch(e){
+          $wnd.alert("Problem i querySelectorAll " + e.message);
+        }
+    }-*/;
+
+  // var all = document.getElementsByTagName("*");
+
 
 }

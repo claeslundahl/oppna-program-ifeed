@@ -17,7 +17,7 @@ import java.util.List;
 public class Invocer {
 
 
-  public static void fetchFeedByJsonpCall(String url, Callback<List<Entry>> success, Callback<Throwable> error) {
+  public static void fetchFeedByJsonpCall(String url, final Callback<List<Entry>> success, final Callback<Throwable> error) {
     fetchFeedByJsonpCall(url, new AsyncCallback<List<Entry>>() {
       @Override
       public void onFailure(Throwable caught) {
@@ -31,7 +31,7 @@ public class Invocer {
     });
   }
 
-  public static void fetchFeedByJsonpCall(String url, Callback<List<Entry>> success) {
+  public static void fetchFeedByJsonpCall(String url, final Callback<List<Entry>> success) {
     fetchFeedByJsonpCall(url, new AsyncCallback<List<Entry>>() {
       @Override
       public void onFailure(Throwable caught) {
@@ -45,7 +45,7 @@ public class Invocer {
     });
   }
 
-  private static void fetchFeedByJsonpCall(String url, AsyncCallback<List<Entry>> callback) {
+  private static void fetchFeedByJsonpCall(String url, final AsyncCallback<List<Entry>> callback) {
     if (url.length() > 300 || url.endsWith("&usePost")) {
       int indexOfData = url.indexOf('?');
       String data = url.substring(indexOfData + 1);

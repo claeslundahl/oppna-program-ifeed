@@ -32,8 +32,35 @@ import java.util.List;
  * moments.
  */
 public class Main implements EntryPoint {
+
+    public static native void changesForOldBrowser() /*-{
+        if (!Array.prototype.slice) {
+          Array.prototype.slice = function(begin, end) {
+            var r = [];
+            for(var i = begin; i < end; i++)
+              r[i] = this[i];
+            return r;
+          }
+        }
+        if (!Array.prototype.push) {
+          $win.alert('Adding the push!');
+          Array.prototype.push = function(first) {
+            for (var i = 0; i < arguments.length; i++)
+              this[this.length] = arguments[i];
+            return arguments.length;
+          }
+        }
+    }-*/;
+
     @Override
     public void onModuleLoad() {
+        changesForOldBrowser();
         Starter.init();
+        String s = "<td class=\"ifeed-link-td ifeed-field-title\" style=\"text-align: left; width: 70pc;\">\n" +
+            "  <a class=\"gwt-Anchor\" href=\"https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/1d363e65-3c34-4b38-8340-eb30b73ddb88?a=false&amp;guest=true\"\n" +
+            "            target=\"_blank\">Minnesanteckningar DKR Skaraborg 140321\n" +
+            "  </a>\n" +
+            "</td>";
     }
+
 }

@@ -43,7 +43,6 @@ public class IfeedTag {
     for (String cp : columnesParts) {
       columns.add(new Column(cp));
     }
-    Util.log("json " + element.getAttribute("extraSortColumns"));
     String ecs = element.getAttribute("extraSortColumns");
     if (ecs == null || "".equals(ecs.trim())) {
       extraSortColumns = new ArrayList<>();

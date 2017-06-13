@@ -178,8 +178,9 @@ public class Application {
       int start = (getCurrentSpanStart());
       int end = (getCurrentSpanEnd());
 
+      long now = System.currentTimeMillis();
       List<IFeed> result = iFeedService.getIFeedsByFilter(filter, start, end);
-
+      System.out.println("Time to run getIFeedsByFilter " + (System.currentTimeMillis() - now));
       //page = result.subList(start, end);
       return page = result;
     } catch (Exception e) {

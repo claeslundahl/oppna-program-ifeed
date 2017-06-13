@@ -76,7 +76,81 @@
       </h:panelGrid>
     </div>
     <br/>
+
+    <h:panelGroup id="extraSortColumns">
+      <table class="rp-table">
+        <thead>
+        <tr>
+          <td colspan="1">
+            <div>
+              <h:outputText value="Extra sorteringskolumner"/>
+            </div>
+            <h:commandLink value="Lägg till ny sorteringskolumn" id="addSortColumnLink"
+                           styleClass="rp-link-button secondary">
+              <f:ajax render=":ifeed_view" listener="#{tableDef.createExtraSortColumn}"/>
+            </h:commandLink>
+          </td>
+          <td colspan="3">
+            Här kan du lägga till fler fält att sortera på. Om det finns några fält här under så kommer sorteringen, i
+            första hand, ske på det fält som kommer sist. I andra hand på det som kommer näst sist och allra sist på det
+            fält som angivits åvan vid 'Välj sorteringsfält' (fjärde fältet från toppen på sidan).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <h:outputText value="Fält"/>
+          </td>
+          <td>
+            <h:outputText value="Ordning"/>
+          </td>
+          <td>
+            <h:outputText value="index"/>
+          </td>
+          <td>
+            <h:outputText value="Ta bort"/>
+          </td>
+        </tr>
+        </thead>
+        <tbody>
+        <ui:repeat value="#{tableDef.getExtraSorting()}" var="sortDef123" varStatus="sortVarStatus">
+          <tr>
+            <td>
+              <h:selectOneMenu style="text-align:left;" value="#{sortDef123.name}"
+                               id="sort_name_#{sortVarStatus.index}"
+                               immediate="false"
+                               render=":ifeed_view">
+                <f:selectItems value="#{app.fieldInfsAsSelectItemGroups()}" itemVar="f"
+                               itemValue="#{f.value}" itemLabel="#{f.label}"/>
+                <f:ajax event="change" render=":ifeed_view"/>
+              </h:selectOneMenu>
+            </td>
+
+            <td>
+              <h:selectOneMenu value="#{sortDef123.direction}" id="orderSelect_#{sortVarStatus.index}">
+                <f:selectItem itemValue="asc" itemLabel="Stigande (a - ö)"/>
+                <f:selectItem itemValue="desc" itemLabel="Fallande (ö - a)"/>
+                <f:ajax event="change" render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
+              </h:selectOneMenu>
+            </td>
+
+            <td>
+              <h:outputText value="#{sortDef123.index}"/>
+            </td>
+            <td>
+              <h:commandLink styleClass="ui-commandlink ui-widget link-button-trash" value=" "
+                             id="sort_trash_#{colDefVarStatus.index}"
+                             action="#{tableDef.getExtraSorting().remove(sortDef123)}">
+                <f:ajax render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
+              </h:commandLink>
+            </td>
+          </tr>
+        </ui:repeat>
+        </tbody>
+      </table>
+    </h:panelGroup>
+
     <br/>
+
     <h:panelGroup id="jsonpColumns">
 
       <table class="rp-table">

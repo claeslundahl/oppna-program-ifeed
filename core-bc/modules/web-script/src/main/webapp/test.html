@@ -24,7 +24,26 @@
     <!-- If you add any GWT meta tags, they must   -->
     <!-- be added before this line.                -->
 
-    <script type="text/javascript" language="javascript" src="se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js"></script>
+    <script type="text/javascript" language="javascript" XXXsrc="se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js">
+
+      function find(key, value) {
+        try {
+          var all = document.getElementsByTagName("*");
+          var r = [];
+          for (var i = 0; i < all.length; i++) {
+            var element = all[i];
+            if(element[key] == value) {
+              r[r.length] = element;
+            }
+          }
+          return r;
+        }catch(e){
+          window.alert("Problem i querySelectorAll " + e.message);
+        }
+        }
+
+
+    </script>
 
     <style>
     </style>
@@ -36,7 +55,7 @@
 <!-- you can leave the body empty if you want  -->
 <!-- to toTableDef a completely dynamic UI.        -->
 <!--                                           -->
-<body>
+<body onload="console.log(find('className' , 'ifeedDocList'));">
 
 
 
@@ -58,6 +77,12 @@
 
 <div class="ifeedDocList" columnes="dc.title|Titel|left|100%" fontsize="auto" defaultsortcolumn="dc.title" defaultsortorder="asc" showtableheader="yes" linkoriginaldoc="no" limit="0" hiderightcolumn="no" feedid="1594612">
 </div>
+
+<td class="ifeed-link-td ifeed-field-title" style="text-align: left; width: 70pc;">
+  <a class="gwt-Anchor" href="https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/1d363e65-3c34-4b38-8340-eb30b73ddb88?a=false&amp;guest=true"
+            target="_blank">Minnesanteckningar DKR Skaraborg 140321
+  </a>
+</td>
 
 
 </body>

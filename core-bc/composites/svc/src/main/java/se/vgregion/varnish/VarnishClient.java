@@ -47,6 +47,7 @@ public class VarnishClient {
   private int port;
 
   private String secret;
+  private String cacheGroup;
 
   static private String path(String... parts) {
     return StringUtils.join(parts, File.separator);
@@ -77,6 +78,7 @@ public class VarnishClient {
     result.setPort(Integer.parseInt(fromTheseProperties.getProperty("varnish.port")));
     result.setSecret(fromTheseProperties.getProperty("varnish.secret"));
     result.setContentOriginHost(fromTheseProperties.getProperty("varnish.content.origin.host"));
+    result.setCacheGroup(fromTheseProperties.getProperty("varnish.cache.group"));
     return result;
   }
 
@@ -109,7 +111,7 @@ public class VarnishClient {
     HttpPurge purgeRequest = new HttpPurge(thatUrlFromCache);
     System.out.println("clearImp purge url " + thatUrlFromCache);
     purgeRequest.addHeader("Host", contentOriginHost);
-    purgeRequest.addHeader("X-Cache-Group", "Staging");
+    purgeRequest.addHeader("X-Cache-Group", getCacheGroup());
     purgeRequest.addHeader("Connection", "close");
     purgeRequest.addHeader("X-Purge-Secret", secret);
     purgeRequest.addHeader("X-Hard-Purge", "1");
@@ -260,5 +262,13 @@ public class VarnishClient {
 
   public void setContentOriginHost(String contentOriginHost) {
     this.contentOriginHost = contentOriginHost;
+  }
+
+  public void setCacheGroup(String cacheGroup) {
+    this.cacheGroup = cacheGroup;
+  }
+
+  public String getCacheGroup() {
+    return cacheGroup;
   }
 }

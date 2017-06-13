@@ -2,6 +2,7 @@ package se.vgregion.ifeed.client;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -59,6 +60,21 @@ public class EntryPopupPanel extends PopupPanel {
         plate.getElement().getStyle().setBorderColor("#A9A9A9");
         plate.getElement().getStyle().setBorderWidth(1, Style.Unit.PX);
 
+        addDomHandler(
+            new MouseOutHandler() {
+                @Override
+                public void onMouseOut(MouseOutEvent event) {
+                    try {
+                        hide();
+                    } catch (Exception e) {
+                        Window.alert("" + e);
+                    }
+                }
+            },
+            MouseOutEvent.getType()
+        );
+
+        /*
         addDomHandler(event -> {
             try {
                 hide();
@@ -66,6 +82,7 @@ public class EntryPopupPanel extends PopupPanel {
                 Window.alert("" + e);
             }
         }, MouseOutEvent.getType());
+        */
 
         add(sp);
     }

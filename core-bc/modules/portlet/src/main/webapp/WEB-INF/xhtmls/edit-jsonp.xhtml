@@ -203,10 +203,14 @@
 
           <h:outputScript>
             function on() {
-            if (console) console.log("se.vgregion.ifeed.client.Starter.init()");
-            se.vgregion.ifeed.client.Starter.init();
+              if (console) console.log("se.vgregion.ifeed.client.Starter.init()");
+              try {
+                se.vgregion.ifeed.client.Starter.init();
+              } catch(e){
+
+              }
             }
-            setTimeout(on, 200);
+            setTimeout(on, 300);
           </h:outputScript>
 
         </h:panelGroup>

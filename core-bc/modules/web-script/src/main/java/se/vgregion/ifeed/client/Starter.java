@@ -3,7 +3,6 @@ package se.vgregion.ifeed.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.i18n.shared.DateTimeFormat;
@@ -60,6 +59,10 @@ public class Starter {
   }
 
   public static String getFeedHome() {
+    String pathParameter = Window.Location.getParameter("ifeed-data2");
+    if (pathParameter != null && !pathParameter.isEmpty()) {
+      return pathParameter;
+    }
     JsArray<Element> ifeeData2 = findElements("div", "id", "ifeed-data2");
     String url; // = querySelectorAll("#ifeed-data2").getItem(0).getInnerText().trim();
     if (ifeeData2 != null && ifeeData2.length() > 0) {
@@ -77,6 +80,10 @@ public class Starter {
     sort(those, byThatKey, ascOrDesc);
   }
 
+  private static String noNpe(String s) {
+    return s + "";
+  }
+
   private static void sort(final List<Entry> those, final String byThatKey, final String ascOrDesc) {
     final Comparator<? super Entry> sorter = new Comparator<Entry>() {
       @Override
@@ -85,7 +92,9 @@ public class Starter {
         String v2 = o2.get(byThatKey);
         if (v1 == null) v1 = "";
         if (v2 == null) v2 = "";
-        return v1.toLowerCase().compareTo(v2.toLowerCase());
+        //return v1.toLowerCase().compareTo(v2.toLowerCase());
+        return noNpe(v1).toLowerCase().compareTo(noNpe(v2).toLowerCase());
+        //return noNpe(v1).compareTo(noNpe(v2));
       }
     };
 
@@ -429,15 +438,6 @@ public class Starter {
     return timeStampAsText.compareTo(currentTextDate) <= 0;
   }
 
-
-  public static final native NodeList<Element> querySelectorAll2(String selectors) /*-{
-        try {
-          return $doc.querySelectorAll(selectors);
-        }catch(e){
-          $wnd.alert("Problem i querySelectorAll " + e.message);
-        }
-    }-*/;
-
   // w00t! Generics work just fine with overlay types
   public static class JsArray<E extends JavaScriptObject> extends JavaScriptObject {
     protected JsArray() {
@@ -449,18 +449,28 @@ public class Starter {
   }
 
   public static final native JsArray<Element> findElements(String tag, String key, String value) /*-{
+
+        if(!Array.prototype.indexOf) {
+            Array.prototype.indexOf = function(obj, start) {
+                 for (var i = (start || 0), j = this.length; i < j; i++) {
+                     if (this[i] === obj) { return i; }
+                 }
+                 return -1;
+            }
+        }
+
         try {
           var all = $doc.getElementsByTagName(tag);
           var r = [];
           for (var i = 0; i < all.length; i++) {
             var element = all[i];
-            if(element[key] == value || element[key].split(" ").indexOf(value) > -1) {
+            if(element[key] != null && element[key] == value || element[key].split(" ").indexOf(value) > -1) {
               r[r.length] = element;
             }
           }
           return r;
         }catch(e){
-          $wnd.alert("Problem i querySelectorAll " + e.message);
+          $wnd.alert("Problem i findElements " + e.message);
         }
     }-*/;
 

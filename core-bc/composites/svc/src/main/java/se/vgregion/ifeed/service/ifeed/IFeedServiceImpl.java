@@ -186,6 +186,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
         ArrayList<IFeed> rv = new ArrayList<IFeed>(result);
 
+        /*long now = System.currentTimeMillis();
         for (IFeed feed : rv) {
             for (IFeed composite : feed.getComposites()) {
                 init(composite);
@@ -199,6 +200,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                 }
             }
         }
+        System.out.println("Time for init inside getIFeedsByFilter " + (System.currentTimeMillis() - now)) ;*/
         initializedFeeds.set(null);
 
         return rv;

@@ -22,16 +22,11 @@ public class Filter extends IFeed {
 
         addConditionIfAnyValue("o.name like ?", getName(), condition, values);
         addConditionIfAnyValue("(o.userId like ? or ow.userId like ?)", getUserId(), condition, values);
-        //addConditionIfAnyValue("o.userId like ?", getUserId(), condition, values);
 
         addConditionIfAnyValue("o.description like ?", getDescription(), condition, values);
         addConditionIfAnyValue("o.department.id = ?", getDepartment() != null ? getDepartment().getId() : null, condition, values);
         addConditionIfAnyValue("o.group.id = ?", getGroup() != null ? getGroup().getId() : null, condition, values);
         addConditionIfAnyValue("o.id = ?", getId(), condition, values);
-
-        /*if (getGroup() != null) {
-            addConditionIfAnyValue("o.group.id = ?", getGroup().getId(), condition, values);
-        }*/
 
         sb.append(" left join o.ownerships ow ");
         sb.append(" left join o.composites cs ");
@@ -39,9 +34,6 @@ public class Filter extends IFeed {
         sb.append(" left join o.dynamicTableDefs dtab ");
 
         if (!values.isEmpty()) {
-            /*if (getUserId() != null && !getUserId().isEmpty()) {
-                sb.append(" left join o.ownerships ow ");
-            }*/
             sb.append(" where ");
             sb.append(join(condition, " AND "));
         }

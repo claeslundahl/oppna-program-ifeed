@@ -71,7 +71,7 @@ public class TableDefModel extends DynamicTableDef {
     }
     List<String> concat = new ArrayList<String>();
     for (ColumnDef columnDef : getColumnDefs()) {
-      concat.add(join("|", columnDef.getName(), columnDef.getLabel(), columnDef.getAlignment(), columnDef.getWidth()));
+      concat.add(join("|", columnDef.getName(), columnDef.getLabel().replace(",","").replace("|",""), columnDef.getAlignment(), columnDef.getWidth()));
     }
     String columns = join(concat, ",");
 

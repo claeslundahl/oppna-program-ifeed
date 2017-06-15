@@ -984,6 +984,7 @@ public class Application {
 
   public String getTextCompositesWarning(IFeed feed) {
     StringBuilder sb = new StringBuilder();
+    feed = iFeedService.getIFeed(feed.getId());
     if (!feed.getComposites().isEmpty()) {
       sb.append("\\n* Flöden som används av det här flödet: ");
       sb.append(getCompositesTextRepresentation(feed));

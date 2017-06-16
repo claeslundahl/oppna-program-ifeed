@@ -48,7 +48,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     public final List<IFeed> getIFeeds() {
-        return new ArrayList<IFeed>(iFeedRepo.findAll());
+        return new ArrayList<>(iFeedRepo.findByQuery("select distinct i from IFeed i left join fetch i.ownerships " +
+                "left join fetch i.filters left join fetch i.department left join fetch i.group"));
     }
 
     @Override

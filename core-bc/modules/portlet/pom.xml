@@ -31,7 +31,6 @@
   </repositories>
 
   <properties>
-    <liferay.version>6.2.10-GA1</liferay.version>
     <gwtVersion>2.8.1</gwtVersion>
   </properties>
 

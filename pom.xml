@@ -153,6 +153,7 @@
   <properties>
     <apache.cxf.version>2.3.2</apache.cxf.version>
     <spring.fw.version>3.1.2.RELEASE</spring.fw.version>
+    <liferay.version>6.2.10.15</liferay.version>
   </properties>
 
 </project>

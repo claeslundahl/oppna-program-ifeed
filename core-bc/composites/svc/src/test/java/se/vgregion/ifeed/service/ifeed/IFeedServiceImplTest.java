@@ -2,6 +2,7 @@ package se.vgregion.ifeed.service.ifeed;
 
 import junit.framework.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +35,7 @@ public class IFeedServiceImplTest {
 	@Test
 	public void getIFeeds() {
 		Collection<IFeed> value = new ArrayList<IFeed>();
-		when(iFeedRepoParam.findAll()).thenReturn(value);
+		when(iFeedRepoParam.findByQuery(eq("select i from IFeed i left join fetch i.ownerships left join fetch i.filters left join fetch i.department left join fetch i.group"))).thenReturn(value);
 		List<IFeed> result = service.getIFeeds();
 		Assert.assertEquals(value, result);
 	}

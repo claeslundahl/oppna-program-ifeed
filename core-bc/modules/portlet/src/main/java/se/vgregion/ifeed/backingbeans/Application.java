@@ -179,7 +179,8 @@ public class Application {
       int end = (getCurrentSpanEnd());
 
       long now = System.currentTimeMillis();
-      List<IFeed> result = iFeedService.getIFeedsByFilter(filter, start, end);
+      List<IFeed> result = new ArrayList<>(iFeedService.getIFeedsByFilter(filter, start, end));
+      System.out.println("Start is " + start + " end is " + end + " result.size() is " + result.size());
       System.out.println("Time to run getIFeedsByFilter " + (System.currentTimeMillis() - now));
       //page = result.subList(start, end);
       return page = result;
@@ -984,7 +985,7 @@ public class Application {
 
   public String getTextCompositesWarning(IFeed feed) {
     StringBuilder sb = new StringBuilder();
-    feed = iFeedService.getIFeed(feed.getId());
+    //feed = iFeedService.getIFeed(feed.getId());
     if (!feed.getComposites().isEmpty()) {
       sb.append("\\n* Flöden som används av det här flödet: ");
       sb.append(getCompositesTextRepresentation(feed));

@@ -145,10 +145,13 @@ public class Starter {
                 }
                 putResultsHere.element.setAttribute("doing-ajax-call", "true");
 
-                sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
-                for (Entry extraSortColumn : putResultsHere.extraSortColumns) {
+                List<Entry> order = new ArrayList<Entry>(putResultsHere.extraSortColumns);
+                Collections.reverse(order);
+                for (Entry extraSortColumn : order) {
                   sort(entries, extraSortColumn.get("name"), extraSortColumn.get("direction"));
                 }
+
+                sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
 
                 if (putResultsHere.limit != null && putResultsHere.limit.matches("^(-?)\\d+$")) {
                   int limit = Integer.parseInt(putResultsHere.limit);

@@ -165,6 +165,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     @Transactional
     public List<IFeed> getIFeedsByFilter(Filter filter, int start, int end) {
+        long now = System.currentTimeMillis();
         List<Object> values = new ArrayList<Object>();
         String jpql = filter.toJpqlQuery(values);
 
@@ -181,29 +182,12 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
         List<IFeed> result = query.getResultList();
 
-        long countResult = findTotalCount(jpql, args);
-
+        long countResult = findTotalCount(jpql.replace(" fetch ", " "), args);
         latestFilterQueryTotalCount = (int) countResult;
-
         ArrayList<IFeed> rv = new ArrayList<IFeed>(result);
-
-        /*long now = System.currentTimeMillis();
-        for (IFeed feed : rv) {
-            for (IFeed composite : feed.getComposites()) {
-                init(composite);
-            }
-            for (IFeed composite : feed.getPartOf()) {
-                init(composite);
-            }
-            for (DynamicTableDef dtf : feed.getDynamicTableDefs()) {
-                for (ColumnDef column : dtf.getColumnDefs()) {
-                    column.getId();
-                }
-            }
-        }
-        System.out.println("Time for init inside getIFeedsByFilter " + (System.currentTimeMillis() - now)) ;*/
         initializedFeeds.set(null);
-
+        now = System.currentTimeMillis() - now;
+        System.out.println("Time for query is " + now);
         return rv;
     }
 

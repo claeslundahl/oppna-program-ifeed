@@ -97,13 +97,16 @@ public class Invocer {
       return new ArrayList<>();
     }
     try {
-      JavaScriptObject jso = JsonUtils.safeEval(text);
+      //JavaScriptObject jso = JsonUtils.safeEval(text);
+      JavaScriptObject jso = toJavaScriptObject(text);
       return toEntries((JsArray) jso);
     } catch (Exception e) {
       Util.log("Failed on json: " + text);
       return new ArrayList<>();
     }
   }
+
+  private static final native JavaScriptObject toJavaScriptObject(String s) /*-{ return eval(s); }-*/;
 
   public static List<Entry> toEntries(JsArray array) {
     List<Entry> entries = new ArrayList<>();

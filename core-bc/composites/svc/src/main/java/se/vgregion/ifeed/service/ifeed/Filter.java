@@ -32,6 +32,7 @@ public class Filter extends IFeed {
         sb.append(" left join o.composites cs ");
         sb.append(" left join o.partOf pof ");
         sb.append(" left join o.dynamicTableDefs dtab ");
+        sb.append(" left join fetch o.filters fters ");
 
         if (!values.isEmpty()) {
             sb.append(" where ");

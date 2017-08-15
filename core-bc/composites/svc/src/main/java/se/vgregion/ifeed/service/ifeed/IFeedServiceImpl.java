@@ -107,26 +107,30 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
-    public final List<IFeed> getUserIFeeds(final String userId) {
+    public List<IFeed> getUserIFeeds(final String userId) {
         ArrayList<IFeed> result = new ArrayList<IFeed>(
                 iFeedRepo
                         .findByQuery(
                                 "SELECT distinct ifeed FROM IFeed ifeed "
+                                        + "left join fetch ifeed.ownerships "
+                                        + " left join fetch ifeed.filters left join fetch ifeed.department left join fetch ifeed.group "
                                         + "WHERE ifeed.userId=?1 or ifeed.id in (select o.ifeedId from Ownership o where o.userId=?2)",
                                 new Object[]{userId, userId}));
-        init(result);
+
         initializedFeeds.set(null);
         return result;
     }
 
+
+
     @Override
     @Transactional
-    public final IFeed getFeedForSolrQuery(final Long id) {
+    public IFeed getFeedForSolrQuery(final Long id) {
         return getFeedForSolrQueryImpl(id, new HashSet<>());
     }
 
     @Transactional
-    private final IFeed getFeedForSolrQueryImpl(final Long id, Set<Long> traversal) {
+    private IFeed getFeedForSolrQueryImpl(final Long id, Set<Long> traversal) {
         traversal.add(id);
         long now = System.currentTimeMillis();
         ArrayList<IFeed> result = new ArrayList<IFeed>(
@@ -213,7 +217,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
-    public final IFeed getIFeed(final Long id) {
+    public IFeed getIFeed(final Long id) {
         if (iFeedRepo == null) {
             throw new RuntimeException("iFeedRepo is not initialized");
         }

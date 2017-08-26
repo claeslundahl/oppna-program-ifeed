@@ -16,15 +16,10 @@ import se.vgregion.ifeed.types.Ownership;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
-import javax.annotation.Resource;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.portlet.PortletRequest;
 import java.io.Serializable;
-import java.security.acl.Owner;
 import java.util.*;
 
 /**
@@ -34,51 +29,56 @@ import java.util.*;
 @Scope("request")
 public class EditIFeedBackingBean implements Serializable {
 
-    @Autowired
-    private IFeedService iFeedService;
-    @Autowired
-    private ResourceLocalService resourceLocalService;
-    @Autowired
-    private LdapPersonService ldapPersonService;
+  @Autowired
+  private IFeedService iFeedService;
+  @Autowired
+  private ResourceLocalService resourceLocalService;
+  @Autowired
+  private LdapPersonService ldapPersonService;
 
-    @Value("#{iFeedModelBean}")
-    private IFeedModelBean iFeedModelBean;
+  @Value("#{iFeedModelBean}")
+  private IFeedModelBean iFeedModelBean;
 
-    @Value("#{navigationModelBean}")
-    private NavigationModelBean navigationModelBean;
-    private String newOwnershipName;
+  @Value("#{navigationModelBean}")
+  private NavigationModelBean navigationModelBean;
+  private String newOwnershipName;
 
-    @Value("#{filterModelBean}")
-    private FilterModelBean filterModelBean;
+  @Value("#{filterModelBean}")
+  private FilterModelBean filterModelBean;
 
-    @Value("#{app}")
-    private Application app;
+  @Value("#{app}")
+  private Application app;
 
-    public FilterModelBean getFilterModelBean() {
-        return filterModelBean;
-    }
+  public FilterModelBean getFilterModelBean() {
+    return filterModelBean;
+  }
 
-    public void setFilterModelBean(FilterModelBean filterModelBean) {
-        this.filterModelBean = filterModelBean;
-    }
+  public void setFilterModelBean(FilterModelBean filterModelBean) {
+    this.filterModelBean = filterModelBean;
+  }
 
-    public IFeedService getiFeedService() {
-        return iFeedService;
-    }
+  public IFeedService getiFeedService() {
+    return iFeedService;
+  }
 
-    public void setiFeedService(IFeedService iFeedService) {
-        this.iFeedService = iFeedService;
-    }
+  public void setiFeedService(IFeedService iFeedService) {
+    this.iFeedService = iFeedService;
+  }
 
-    public EditIFeedBackingBean() {
-    }
+  public EditIFeedBackingBean() {
+  }
 
-    public void addIFeed() {
-        //iFeedModelBean.clearBean();
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+  public void addIFeed(Application app) throws SystemException, PortalException {
+    app.viewIFeed(addIFeed());
+    // navigationModelBean.setUiNavigation("EDIT_IFEED");
+  }
 
-        IFeed iFeed = iFeedModelBean.toIFeed();
+  public Long addIFeed() {
+    //iFeedModelBean.clearBean();
+    ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+    PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+
+    IFeed iFeed = iFeedModelBean.toIFeed();
         /*iFeed.setName(iFeedModelBean.getName());
         iFeed.setDescription(iFeedModelBean.getDescription());
         iFeed.setUserId(app.getCurrentUser().getScreenName());*/
@@ -89,23 +89,24 @@ public class EditIFeedBackingBean implements Serializable {
         ownership.setUserId(app.getCurrentUser().getScreenName());
         iFeed.getOwnerships().add(ownership);
         */
-        iFeed.setUserId(app.getCurrentUser().getScreenName());
+    iFeed.setUserId(app.getCurrentUser().getScreenName());
 
-        try {
-            iFeed = iFeedService.addIFeed(iFeed);
-            iFeedModelBean.copyValuesFromIFeed(iFeed);
-            ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
-            long companyId = themeDisplay.getCompanyId();
-            long userId = themeDisplay.getUserId();
-            resourceLocalService.addResources(companyId, 0, userId, IFeed.class.getName(), iFeed.getId().longValue(), false, false, true);
-        } catch (PortalException e) {
-            e.printStackTrace();
-        } catch (SystemException e) {
-            e.printStackTrace();
-        }
-
-        navigationModelBean.setUiNavigation("VIEW_IFEED");
+    try {
+      iFeed = iFeedService.addIFeed(iFeed);
+      iFeedModelBean.copyValuesFromIFeed(iFeed);
+      ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+      long companyId = themeDisplay.getCompanyId();
+      long userId = themeDisplay.getUserId();
+      resourceLocalService.addResources(companyId, 0, userId, IFeed.class.getName(), iFeed.getId().longValue(), false, false, true);
+    } catch (PortalException e) {
+      e.printStackTrace();
+    } catch (SystemException e) {
+      e.printStackTrace();
     }
+
+    return iFeed.getId();
+    // navigationModelBean.setUiNavigation("VIEW_IFEED");
+  }
 
 
     /*private String getRemoteUserId(PortletRequest request) {
@@ -118,164 +119,164 @@ public class EditIFeedBackingBean implements Serializable {
         return userId;
     }*/
 
-    public IFeedService getIFeedService() {
-        return iFeedService;
+  public IFeedService getIFeedService() {
+    return iFeedService;
+  }
+
+  public void setIFeedService(IFeedService iFeedService) {
+    this.iFeedService = iFeedService;
+  }
+
+  public ResourceLocalService getResourceLocalService() {
+    return resourceLocalService;
+  }
+
+  public void setResourceLocalService(ResourceLocalService resourceLocalService) {
+    this.resourceLocalService = resourceLocalService;
+  }
+
+  public IFeedModelBean getiFeedModelBean() {
+    return iFeedModelBean;
+  }
+
+  public void setiFeedModelBean(IFeedModelBean iFeedModelBean) {
+    this.iFeedModelBean = iFeedModelBean;
+  }
+
+  public void addOwnership() {
+
+    Set<Ownership> target = iFeedModelBean.getOwnerships();
+    Ownership ownership = new Ownership();
+    ownership.setName(newOwnershipName);
+    ownership.setIfeed(iFeedModelBean);
+    target.add(ownership);
+  }
+
+  public List<Person> completeUser(String incompleteUserName) {
+    //List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
+    List<Person> people = new ArrayList<Person>();
+    for (int i = 0; i < 10; i++) {
+      Person person = new Person("A" + i, "B" + i, "C" + i, "D" + i, "E" + i);
+      people.add(person);
     }
 
-    public void setIFeedService(IFeedService iFeedService) {
-        this.iFeedService = iFeedService;
-    }
-
-    public ResourceLocalService getResourceLocalService() {
-        return resourceLocalService;
-    }
-
-    public void setResourceLocalService(ResourceLocalService resourceLocalService) {
-        this.resourceLocalService = resourceLocalService;
-    }
-
-    public IFeedModelBean getiFeedModelBean() {
-        return iFeedModelBean;
-    }
-
-    public void setiFeedModelBean(IFeedModelBean iFeedModelBean) {
-        this.iFeedModelBean = iFeedModelBean;
-    }
-
-    public void addOwnership() {
-
-        Set<Ownership> target = iFeedModelBean.getOwnerships();
-        Ownership ownership = new Ownership();
-        ownership.setName(newOwnershipName);
-        ownership.setIfeed(iFeedModelBean);
-        target.add(ownership);
-    }
-
-    public List<Person> completeUser(String incompleteUserName) {
-        //List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
-        List<Person> people = new ArrayList<Person>();
-        for (int i = 0; i < 10; i++) {
-            Person person = new Person("A" + i, "B" + i, "C" + i, "D" + i, "E" + i);
-            people.add(person);
-        }
-
-        return people;
+    return people;
         /*List<String> result = new ArrayList<String>();
         for (Person person : people) {
             result.add(person.getUserName());
         }
         return result;*/
+  }
+
+  public List<String> completeUserName(String incompleteUserName) {
+    //List<Person> people = new ArrayList<Person>();
+    System.out.println("completeUserName " + incompleteUserName);
+
+    try {
+      List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
+      List<String> result = new ArrayList<String>();
+      for (Person person : people) {
+        result.add(person.getUserName());
+      }
+      return result;
+
+    } catch (Exception e) {
+      return Arrays.asList("a", "b", "c");
+    }
+  }
+
+  private String fetchNameOfPersonIfMatch(String key) {
+    try {
+      List<Person> persons = ldapPersonService.getPeople(key, 2);
+      if (persons.size() == 1) {
+        Person person = persons.get(0);
+        return person.getFirstName() + " " + person.getLastName();
+      }
+    } catch (Exception e) {
+
+    }
+    return "";
+  }
+
+  public List asList(Collection c) {
+    return new ArrayList(c);
+  }
+
+  public void update() {
+    try {
+      System.out.println("bean.getOwnershipList().size(): " + iFeedModelBean.getOwnershipList().size());
+      iFeedService.update(iFeedModelBean.toIFeed());
+      goBackToIFeedList();
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void goBackToIFeedList() {
+    navigationModelBean.setUiNavigation("USER_IFEEDS");
+    iFeedModelBean.clearBean();
+  }
+
+  public void addNewOwnershipName() {
+    if (newOwnershipName == null || "".equals(newOwnershipName)) {
+      return;
+    }
+    Ownership item = new Ownership();
+    item.setUserId(newOwnershipName);
+    iFeedModelBean.getOwnerships().add(item);
+    item.setIfeed(iFeedModelBean);
+    newOwnershipName = "";
+  }
+
+  public void removeOwnership(Ownership ownership) {
+    List<Ownership> workList = new ArrayList<Ownership>(iFeedModelBean.getOwnerships());
+
+    for (int i = workList.size() - 1; i >= 0; i--) {
+      Ownership o = workList.get(i);
+      if (o.getUserId().equals(ownership.getUserId())) {
+        workList.remove(i);
+      }
     }
 
-    public List<String> completeUserName(String incompleteUserName) {
-        //List<Person> people = new ArrayList<Person>();
-        System.out.println("completeUserName " + incompleteUserName);
+    iFeedModelBean.getOwnerships().clear();
+    iFeedModelBean.getOwnerships().addAll(workList);
+  }
 
-        try {
-            List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
-            List<String> result = new ArrayList<String>();
-            for (Person person : people) {
-                result.add(person.getUserName());
-            }
-            return result;
+  public String getNewOwnershipName() {
+    return newOwnershipName;
+  }
 
-        } catch (Exception e) {
-            return Arrays.asList("a", "b", "c");
-        }
+  public void setNewOwnershipName(String newOwnershipName) {
+    this.newOwnershipName = newOwnershipName;
+  }
+
+  public LdapPersonService getLdapPersonService() {
+    return ldapPersonService;
+  }
+
+  public void setLdapPersonService(LdapPersonService ldapPersonService) {
+    this.ldapPersonService = ldapPersonService;
+  }
+
+  public NavigationModelBean getNavigationModelBean() {
+    return navigationModelBean;
+  }
+
+  public void setNavigationModelBean(NavigationModelBean navigationModelBean) {
+    this.navigationModelBean = navigationModelBean;
+  }
+
+
+  public void addFilter() {
+    if (filterModelBean.getFilterValue() == null || "".equals(filterModelBean.getFilterValue().trim())) {
+      return;
     }
-
-    private String fetchNameOfPersonIfMatch(String key) {
-        try {
-            List<Person> persons = ldapPersonService.getPeople(key, 2);
-            if (persons.size() == 1) {
-                Person person = persons.get(0);
-                return person.getFirstName() + " " + person.getLastName();
-            }
-        } catch (Exception e) {
-
-        }
-        return "";
-    }
-
-    public List asList(Collection c) {
-        return new ArrayList(c);
-    }
-
-    public void update() {
-        try {
-            System.out.println("bean.getOwnershipList().size(): " + iFeedModelBean.getOwnershipList().size());
-            iFeedService.update(iFeedModelBean.toIFeed());
-            goBackToIFeedList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void goBackToIFeedList() {
-        navigationModelBean.setUiNavigation("USER_IFEEDS");
-        iFeedModelBean.clearBean();
-    }
-
-    public void addNewOwnershipName() {
-        if (newOwnershipName == null || "".equals(newOwnershipName)) {
-            return;
-        }
-        Ownership item = new Ownership();
-        item.setUserId(newOwnershipName);
-        iFeedModelBean.getOwnerships().add(item);
-        item.setIfeed(iFeedModelBean);
-        newOwnershipName = "";
-    }
-
-    public void removeOwnership(Ownership ownership) {
-        List<Ownership> workList = new ArrayList<Ownership>(iFeedModelBean.getOwnerships());
-
-        for (int i = workList.size() - 1; i >= 0; i--) {
-            Ownership o = workList.get(i);
-            if (o.getUserId().equals(ownership.getUserId())) {
-                workList.remove(i);
-            }
-        }
-
-        iFeedModelBean.getOwnerships().clear();
-        iFeedModelBean.getOwnerships().addAll(workList);
-    }
-
-    public String getNewOwnershipName() {
-        return newOwnershipName;
-    }
-
-    public void setNewOwnershipName(String newOwnershipName) {
-        this.newOwnershipName = newOwnershipName;
-    }
-
-    public LdapPersonService getLdapPersonService() {
-        return ldapPersonService;
-    }
-
-    public void setLdapPersonService(LdapPersonService ldapPersonService) {
-        this.ldapPersonService = ldapPersonService;
-    }
-
-    public NavigationModelBean getNavigationModelBean() {
-        return navigationModelBean;
-    }
-
-    public void setNavigationModelBean(NavigationModelBean navigationModelBean) {
-        this.navigationModelBean = navigationModelBean;
-    }
-
-
-    public void addFilter() {
-        if (filterModelBean.getFilterValue() == null || "".equals(filterModelBean.getFilterValue().trim())) {
-            return;
-        }
-        IFeedFilter filter = new IFeedFilter(filterModelBean.getFilterValue(), filterModelBean.getFieldInf().getName());
-        iFeedModelBean.addFilter(filter);
-        filterModelBean.setFilterValue(null);
-        filterModelBean.setFieldInf(null);
-    }
+    IFeedFilter filter = new IFeedFilter(filterModelBean.getFilterValue(), filterModelBean.getFieldInf().getName());
+    iFeedModelBean.addFilter(filter);
+    filterModelBean.setFilterValue(null);
+    filterModelBean.setFieldInf(null);
+  }
 
 
 }

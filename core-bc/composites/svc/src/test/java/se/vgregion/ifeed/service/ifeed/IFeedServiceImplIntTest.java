@@ -10,7 +10,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
+import java.util.List;
 import java.util.Properties;
+
 
 public class IFeedServiceImplIntTest {
 
@@ -20,8 +22,12 @@ public class IFeedServiceImplIntTest {
 	public void setUp() throws Exception {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("test-db-context.xml");
 		iFeedService = (IFeedService) ctx.getBean("iFeedService");
+		IFeed feed = new IFeed();
+		feed.getComposites().add(new IFeed());
+		iFeedService.addIFeed(feed);
 	}
 
+	@Ignore
 	@Test
 	public void areFiltersRemovedInDb() {
 		IFeed feed = new IFeed();
@@ -50,7 +56,7 @@ public class IFeedServiceImplIntTest {
 
 		IFeed oldFeed = new IFeed();
 
-        // public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
+		// public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
 		IFeedFilter filter = new IFeedFilter(null, "some.value", "some.filter.key");
 
 		oldFeed.addFilter(filter);
@@ -58,6 +64,15 @@ public class IFeedServiceImplIntTest {
 
 		IFeed addedFeed = iFeedService.addIFeed(newFeed);
 		Assert.assertNotNull(addedFeed.getId());
+	}
+
+	@Ignore
+	@Test
+	public void getIFeedAndTestToJson() {
+		List<IFeed> all = iFeedService.getIFeeds();
+		Long id = 101l;
+		IFeed feed = iFeedService.getIFeed(all.get(0).getId());
+		feed.toJson();
 	}
 
 

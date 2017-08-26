@@ -59,15 +59,19 @@ public class JsonpCallbackFilter implements Filter {
   }
 
   private byte[] addVarnishHeadersToResponse(byte[] json, HttpServletResponse httpResponse) throws IOException {
-    System.out.println("Json is " + new java.lang.String(json));
-    ArrayList<HashMap<String, Object>> result =
-        new ObjectMapper().readValue(json, ArrayList.class);
+    try {
+      // System.out.println("Json is " + new java.lang.String(json));
+      ArrayList<HashMap<String, Object>> result =
+          new ObjectMapper().readValue(json, ArrayList.class);
 
-    for (HashMap<String, Object> map : result) {
-      String id = (String) map.get("id");
-      String[] idFrags = id.split(Pattern.quote(":"));
-      String uuid = idFrags[idFrags.length - 1];
-      //httpResponse.addHeader("xkey", "ifeed/" + uuid);
+      for (HashMap<String, Object> map : result) {
+        String id = (String) map.get("id");
+        String[] idFrags = id.split(Pattern.quote(":"));
+        String uuid = idFrags[idFrags.length - 1];
+        //httpResponse.addHeader("xkey", "ifeed/" + uuid);
+      }
+    } catch (Exception e) {
+
     }
 
     return json;

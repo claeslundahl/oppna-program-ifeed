@@ -180,8 +180,8 @@ public class Application {
 
       long now = System.currentTimeMillis();
       List<IFeed> result = new ArrayList<>(iFeedService.getIFeedsByFilter(filter, start, end));
-      System.out.println("Start is " + start + " end is " + end + " result.size() is " + result.size());
-      System.out.println("Time to run getIFeedsByFilter " + (System.currentTimeMillis() - now));
+      // System.out.println("Start is " + start + " end is " + end + " result.size() is " + result.size());
+      // System.out.println("Time to run getIFeedsByFilter " + (System.currentTimeMillis() - now));
       //page = result.subList(start, end);
       return page = result;
     } catch (Exception e) {
@@ -336,6 +336,7 @@ public class Application {
     }
   }
 
+  @Transactional
   public void update() {
     try {
       IFeed feed = iFeedModelBean.toIFeed();
@@ -932,17 +933,18 @@ public class Application {
   }
 
   public List<String> completeFeedName(String incompleteName) {
-
     Filter sample = new FilterModel();
     sample.setName(incompleteName);
     List<IFeed> result = iFeedService.getIFeedsByFilter(sample, 0, 10);
     List<String> names = new ArrayList<String>();
     for (IFeed iFeed : result) {
       names.add(iFeed.getName() + " (" + iFeed.getId() + ")");
+      //iFeed.toJson();
     }
     return names;
   }
 
+  @Transactional
   public void createNewComposite() {
     if (newCompositeName != null && !newCompositeName.isEmpty()) {
       Filter filter = new FilterModel();
@@ -950,9 +952,16 @@ public class Application {
       String idPart = parts[parts.length - 1];
       //filter.setName(newCompositeName);
       filter.setId(Long.parseLong(idPart));
-      List<IFeed> nf = iFeedService.getIFeedsByFilter(filter, 0, 1);
-      if (!nf.isEmpty()) {
-        iFeedModelBean.getComposites().add(nf.get(0));
+      //List<IFeed> nf = iFeedService.getIFeedsByFilter(filter, 0, 1);
+      IFeed otherFeed = iFeedService.getIFeed(Long.parseLong(idPart));
+
+      //if (!nf.isEmpty()) {
+      if(otherFeed != null) {
+        /*IFeed first = iFeedService.getIFeed(nf.get(0).getId());
+        first.toJson();
+        iFeedModelBean.getComposites().add(first);*/
+        otherFeed.toJson();
+        iFeedModelBean.getComposites().add(otherFeed);
       }
       newCompositeName = "";
     }

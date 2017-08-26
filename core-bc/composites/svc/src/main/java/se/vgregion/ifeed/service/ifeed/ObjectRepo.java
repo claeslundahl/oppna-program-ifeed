@@ -40,6 +40,7 @@ public class ObjectRepo {
      * @param <T> type that are being returned.
      * @return list with zero or more results.
      */
+    @Transactional
     public <T> T findByPrimaryKey(Class<T> clazz, Object id) {
         T result = entityManager.find(clazz, id);
         return result;

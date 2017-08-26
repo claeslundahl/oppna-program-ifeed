@@ -9,6 +9,7 @@
     <div style="font-weight: bold;" title="Flöde(n) vars resultat sammanfogas med denna">
       <i class="icon-folder-open"> &#10094; </i>Inkluderade flöden:
     </div>
+
     <p:autoComplete id="createCompositeFeedInput"
                     value="#{app.newCompositeName}"
                     completeMethod="#{app.completeFeedName}"
@@ -17,6 +18,7 @@
                     styleClass="createNewAdminInput master-item"
                     title="Skriv in namn på annat flöde och klicka på 'Lägg till'' för att lägg till ett flöde som del till detta."
                     multiple="false"/>
+
     <p:watermark for="createCompositeFeedInput" value="Namn på annat flöde"/>
 
     <p:commandLink styleClass="ltr-flowing-item"

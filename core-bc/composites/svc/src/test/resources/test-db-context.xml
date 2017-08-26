@@ -57,4 +57,6 @@
     <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.IFeed" />
   </bean>
 
+  <bean id="objectRepo" class="se.vgregion.ifeed.service.ifeed.ObjectRepo" />
+
 </beans>

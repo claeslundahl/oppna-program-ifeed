@@ -61,10 +61,7 @@ public class SolrFacetUtil {
             i = stream.read();
         }
         String result = new String(baos.toByteArray());
-        System.out.println(result);
-
         Map<String, Object> root = (Map<String, Object>) Json.parse(result);
-        //[tree].response.docs
         if (true) {
             Map<String, Object> response = (Map<String, Object>) root.get("response");
             Map<String, Map> docs = (Map) response.get("docs");

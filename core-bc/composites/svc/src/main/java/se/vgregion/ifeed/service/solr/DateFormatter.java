@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.service.solr;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -39,6 +41,16 @@ public class DateFormatter {
     public static String format(final Date date, final DateFormat dateFormat) {
         DateTime dt = new DateTime(date.getTime(), DateTimeZone.UTC);
         return dt.toString(dateFormat.formatter);
+    }
+
+    private final static SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+
+    public static Date parse(final String thatTextDate) {
+        try {
+            return sdf.parse(thatTextDate);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /*public static boolean validate(final String solrDateString, final DateFormat dateFormat) {

@@ -1,23 +1,5 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import static se.vgregion.common.utils.CommonUtils.getEnum;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.namespace.QName;
-
 import org.apache.abdera.Abdera;
 import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Element;
@@ -27,7 +9,6 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.DateFormatter.DateFormat;
@@ -36,6 +17,18 @@ import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.service.solr.SolrServerFactory;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 @Path("documentlists")
 public class IFeedFeedServiceImpl implements IFeedFeedService {
@@ -69,7 +62,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
 
     private SolrServer getOrCreateSolrQuery() {
-        if (solrServer == null){
+        if (solrServer == null) {
             solrServer = SolrServerFactory.create();
         }
         return solrServer;
@@ -80,10 +73,10 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
      * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getIFeed(java.lang.Long) */
     @Override
     @GET
-    @Produces({ "application/xml", "application/atom+xml;type=feed;charset=UTF-8" })
+    @Produces({"application/xml", "application/atom+xml;type=feed;charset=UTF-8"})
     @Path("/{id}/feed")
     public Feed getIFeed(@PathParam("id") Long id, @QueryParam("by") String sortField,
-            @QueryParam("dir") String sortDirection) {
+                         @QueryParam("dir") String sortDirection) {
 
         solrQuery = new IFeedSolrQuery(getOrCreateSolrQuery(), iFeedService);
 
@@ -107,7 +100,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
         // Populate the feed with search results
         populateFeed(f,
-                solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection), null));
+            solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection), null));
 
         solrQuery.clear();
 
@@ -116,7 +109,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     @Override
     @GET
-    @Produces({ "application/xml", "application/atom+xml;type=entry;charset=UTF-8" })
+    @Produces({"application/xml", "application/atom+xml;type=entry;charset=UTF-8"})
     @Path("/{id}/metadata")
     public Entry getIFeedEntry(@PathParam("id") final Long id) {
         Entry e = Abdera.getInstance().newEntry();
@@ -139,13 +132,14 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         content.append("<ul>");
         for (IFeedFilter iFeedFilter : retrievedFeed.getFilters()) {
             content.append("<li>").append(iFeedFilter.getFilter().getFilterField()).append(":")
-                    .append(iFeedFilter.getFilterQuery()).append("</li>");
+                .append(iFeedFilter.getFilterQuery()).append("</li>");
         }
         content.append("</ul>");
 
         e.setContentAsXhtml(content.toString());
         return e;
     }
+
 
     Entry populateEntry(final Entry e, final Map<String, Object> map) {
 
@@ -160,8 +154,10 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         } else {
             e.setTitle("- Title missing -");
         }
-
-        if (map.containsKey("processingtime")) {
+        if (map.containsKey("dc.date.issued")) {
+            String dcDateIssued = (String) map.get("dc.date.issued");
+            e.setUpdated(DateFormatter.parse(dcDateIssued));
+        } else if (map.containsKey("processingtime")) {
             Date d = (Date) map.get("processingtime");
             e.setUpdated(d);
         } else {
@@ -209,7 +205,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
         if (namespaces.containsKey(prefix)) {
             Element element = e.addExtension(new QName(namespaces.get(prefix),
-                    fieldName.substring(prefix.length() + 1), prefix));
+                fieldName.substring(prefix.length() + 1), prefix));
 
             if (fieldValue instanceof Date) {
                 element.setText(DateFormatter.format((Date) fieldValue, DateFormat.W3CDTF));
@@ -227,7 +223,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
                 element.setText(fieldValue.toString());
             }
         } else {
-            LOGGER.debug("Unknown namespace {}, field {} is ignored.", new Object[] { prefix, fieldName });
+            LOGGER.debug("Unknown namespace {}, field {} is ignored.", new Object[]{prefix, fieldName});
         }
     }
 
@@ -249,7 +245,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     @Override
     @GET
-    @Produces({ "application/xml", "application/atom+xml;type=feed;charset=UTF-8" })
+    @Produces({"application/xml", "application/atom+xml;type=feed;charset=UTF-8"})
     @Path("/{id}")
     public Feed getIFeedShorter(Long id, String sortField, String sortDirection) {
         return getIFeed(id, sortField, sortDirection);

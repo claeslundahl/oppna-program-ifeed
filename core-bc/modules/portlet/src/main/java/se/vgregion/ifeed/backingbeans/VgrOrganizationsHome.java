@@ -2,6 +2,8 @@ package se.vgregion.ifeed.backingbeans;
 
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,8 @@ import java.util.List;
 @Component(value = "vgrOrganizationsHome")
 @Scope("session")
 public class VgrOrganizationsHome implements Serializable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(VgrOrganizationsHome.class);
     // Kopierat från VgrOrganizationHome...
 
     private String lastHsaIdClicked;
@@ -90,7 +94,7 @@ public class VgrOrganizationsHome implements Serializable {
             vgrOrganization.setLevel(ofThisOrg.getLevel() + 1);
         }
         organizations.addAll(index, ofThisOrg.getChildren());
-        if (application != null){
+        if (application != null) {
             initAddedValue(application, organizations);
         }
     }
@@ -133,9 +137,9 @@ public class VgrOrganizationsHome implements Serializable {
                     allOrganizationsRoot = loadAllOrganizationsRoot();
 
                     long loadTimeSeconds = (System.currentTimeMillis() - startTime) / 1000;
-                    System.out.println("Time to load organizations "
-                            + loadTimeSeconds + " s ("
-                            + (loadTimeSeconds / 60) + " m).");
+                    LOGGER.debug("Time to load organizations "
+                        + loadTimeSeconds + " s ("
+                        + (loadTimeSeconds / 60) + " m).");
                     persistAllOrganizationsRootToDiscCache();
                     return allOrganizationsRoot;
                 }
@@ -292,7 +296,7 @@ public class VgrOrganizationsHome implements Serializable {
             if (organization == null) throw new RuntimeException();*/
             for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
                 if (equals(iFeedFilter.getFilterQuery(), organization.getHsaIdentity()) &&
-                        equals(iFeedFilter.getFilterKey(), application.getNewFilter().getId())) {
+                    equals(iFeedFilter.getFilterKey(), application.getNewFilter().getId())) {
                     return i;
                 }
                 i++;

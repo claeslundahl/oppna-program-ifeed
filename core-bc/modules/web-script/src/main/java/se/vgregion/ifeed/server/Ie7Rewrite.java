@@ -1,5 +1,8 @@
 package se.vgregion.ifeed.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,8 +10,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 /**
@@ -21,6 +22,8 @@ import java.util.regex.Pattern;
  * catch-block instead.
  */
 public class Ie7Rewrite implements Filter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Ie7Rewrite.class);
 
     /**
      * Cache for rewritten scripts. This is due to the excessive amount of time consumed when processing the texts.
@@ -51,50 +54,28 @@ public class Ie7Rewrite implements Filter {
     public void doFilter(final ServletRequest request, ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         PrintWriter out = response.getWriter();
         final CharResponseWrapper responseWrapper = new CharResponseWrapper(
-                (HttpServletResponse) response);
+            (HttpServletResponse) response);
 
         HttpServletRequest hr = (HttpServletRequest) request;
         String userAgent = hr.getHeader("User-Agent");
         final String path = hr.getRequestURI().substring(hr.getContextPath().length());
-        //System.out.println("Path " + path + " userAgent = " + userAgent);
 
         String result = null;
-        if (userAgent.indexOf("MSIE 7.0") > -1) {
+        System.out.println("userAgent: " + userAgent);
+        if (userAgent.contains("MSIE 7.0") || userAgent.contains("Trident/7.0")) {
+            // System.out.println("Hittade IE7!");
             if (urlToContentCache.containsKey(path)) {
                 result = urlToContentCache.get(path);
             } else if (!jsConversionRunning) {
-                /*final ThreadLocal<String> intermediateResult = new ThreadLocal<String>();
-                Executor executor = Executors.newSingleThreadExecutor();
-                executor.execute(new Runnable() {
-                    public void run() { *//* do something *//*
-                        try {
-                            System.out.println("Rewriting ie-script start!");
-                            jsConversionRunning = true;
-                            //chain.doFilter(request, responseWrapper);
-                            String r = new String(responseWrapper.toString());
-                            r = removeFinallyBlockFrom(r);
-                            urlToContentCache.put(path, r);
-                            intermediateResult.set(r);
-                            System.out.println("Rewriting ie-script done!");
-                            jsConversionRunning = false;
-                        } catch (Exception e) {
-                            jsConversionRunning = false;
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-                chain.doFilter(request, responseWrapper);
-                result = intermediateResult.get();*/
-
                 jsConversionRunning = true;
                 try {
-                    System.out.println("Rewriting ie-script start!: " + path);
+                    LOGGER.debug("Rewriting ie-script start!: " + path);
                     chain.doFilter(request, responseWrapper);
                     String r = new String(responseWrapper.toString());
                     result = removeFinallyBlockFrom(r);
                     urlToContentCache.put(path, result);
-                    System.out.println("Rewriting ie-script end!: " + path);
-                    System.out.println("Result skript is " + result);
+                    LOGGER.debug("Rewriting ie-script end!: " + path);
+                    LOGGER.debug("Result skript is " + result);
                 } finally {
                     jsConversionRunning = false;
                 }

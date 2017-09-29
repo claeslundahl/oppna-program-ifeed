@@ -1,22 +1,19 @@
 package se.vgregion.ifeed.types;
 
-import java.io.Serializable;
+import se.vgregion.dao.domain.patterns.valueobject.AbstractValueObject;
 
 import javax.persistence.*;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-
-import se.vgregion.dao.domain.patterns.valueobject.AbstractValueObject;
+import java.io.Serializable;
 
 @Embeddable
 public final class IFeedFilter extends AbstractValueObject implements Serializable {
 
-	private static final long serialVersionUID = -8141707337621433677L;
+    private static final long serialVersionUID = -8141707337621433677L;
 
     @Column(nullable = false)
     private String filterQuery;
 
-	private String filterKey;
+    private String filterKey;
 
     private String operator = "matching"; // matching | greater | lesser
 
@@ -27,12 +24,12 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
     private Object filterQueryForDisplay;
 
     @Deprecated
-	@Enumerated(EnumType.STRING)
-	private FilterType.Filter filter;
+    @Enumerated(EnumType.STRING)
+    private FilterType.Filter filter;
 
-	public IFeedFilter() {
-		// To make Hibernate happy
-	}
+    public IFeedFilter() {
+        // To make Hibernate happy
+    }
 
     public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
         this.filter = filter;
@@ -45,25 +42,25 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
         this.filterKey = filterKey;
     }
 
-	public FilterType.Filter getFilter() {
-		return filter;
-	}
+    public FilterType.Filter getFilter() {
+        return filter;
+    }
 
-	public String getFilterQuery() {
-		return filterQuery;
-	}
+    public String getFilterQuery() {
+        return filterQuery;
+    }
 
     public void setFilterQuery(String filterQuery) {
         this.filterQuery = filterQuery;
     }
 
     public String getFilterKey() {
-		return filterKey;
-	}
+        return filterKey;
+    }
 
-	public void setFilterKey(String filterKey) {
-		this.filterKey = filterKey;
-	}
+    public void setFilterKey(String filterKey) {
+        this.filterKey = filterKey;
+    }
 
     public FieldInf getFieldInf() {
         return fieldInf;
@@ -92,13 +89,13 @@ public final class IFeedFilter extends AbstractValueObject implements Serializab
     @Override
     public String toString() {
         return "IFeedFilter{" +
-                "filterQuery='" + filterQuery + '\'' +
-                ", filterKey='" + filterKey + '\'' +
-                ", operator='" + operator + '\'' +
-                ", fieldInf=" + fieldInf +
-                ", filterQueryForDisplay=" + filterQueryForDisplay +
-                ", filter=" + filter +
-                '}';
+            "filterQuery='" + filterQuery + '\'' +
+            ", filterKey='" + filterKey + '\'' +
+            ", operator='" + operator + '\'' +
+            ", fieldInf=" + fieldInf +
+            ", filterQueryForDisplay=" + filterQueryForDisplay +
+            ", filter=" + filter +
+            '}';
     }
 
 }

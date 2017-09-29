@@ -74,4 +74,7 @@ public interface IFeedService {
     void deleteDepartmentEntity(VgrDepartment department);
 
     void save(DynamicTableDef instance);
+
+    @Transactional
+    IFeed copyAndPersistFeed(Long withThatKey, String otherUserId);
 }

@@ -72,11 +72,6 @@ public class Parser {
         int count = 0;
         for (; currentIndex < frags.length; currentIndex++) {
             if (frags[currentIndex].matches("[\\r\\n]")) {
-                for (int i = currentIndex - 20; i < currentIndex; i++) {
-                    System.out.println("frag" + i + "=" + frags[i]);
-                }
-                System.out.println("Error on frag " + currentIndex + " using delimiter " + delimiter);
-                System.out.println("String starts on " + (currentIndex - count));
                 throw new RuntimeException(parent.toString());
             }
             // Look for the end of the line. The delimiter that - in the same time - is not escaped with '/' and
@@ -84,7 +79,6 @@ public class Parser {
             if (frags[currentIndex].trim().equals(delimiter) &&
                     (!frags[currentIndex - 1].trim().equals("\\")
                             || frags[currentIndex - 1].trim().equals("\\") && frags[currentIndex - 2].trim().equals("\\"))) {
-                // System.out.println("a text " + parent);
                 break;
             } else {
                 Token child = new Token();

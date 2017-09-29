@@ -1,5 +1,8 @@
 package se.vgregion.ifeed.viewer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -13,6 +16,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public class CacheFilter implements Filter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CacheFilter.class);
 
     private static class ByteArrayServletStream extends ServletOutputStream {
 
@@ -180,7 +185,7 @@ public class CacheFilter implements Filter {
         doFilterImpl(servletRequest,servletResponse,filterChain);
         String instance = servletRequest.getParameter("instance");
         String fromPage = servletRequest.getParameter("fromPage");
-        System.out.println("CacheFilter - Time for call was " + (System.currentTimeMillis() - timeBefore) + "ms. Instance " + instance + " from page " + fromPage);
+        LOGGER.debug("CacheFilter - Time for call was " + (System.currentTimeMillis() - timeBefore) + "ms. Instance " + instance + " from page " + fromPage);
     }
 
     public void doFilterImpl(ServletRequest servletRequest, ServletResponse servletResponse,

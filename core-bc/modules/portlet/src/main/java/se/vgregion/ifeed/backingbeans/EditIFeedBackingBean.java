@@ -169,9 +169,6 @@ public class EditIFeedBackingBean implements Serializable {
   }
 
   public List<String> completeUserName(String incompleteUserName) {
-    //List<Person> people = new ArrayList<Person>();
-    System.out.println("completeUserName " + incompleteUserName);
-
     try {
       List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
       List<String> result = new ArrayList<String>();
@@ -204,7 +201,6 @@ public class EditIFeedBackingBean implements Serializable {
 
   public void update() {
     try {
-      System.out.println("bean.getOwnershipList().size(): " + iFeedModelBean.getOwnershipList().size());
       iFeedService.update(iFeedModelBean.toIFeed());
       goBackToIFeedList();
     } catch (Exception e) {

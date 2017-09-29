@@ -39,13 +39,11 @@ public class AdminFieldsController {
 
     @RenderMapping(params = { "view=showAdminFields" })
     public String rm(final RenderResponse response) {
-        System.out.println("rm");
         return "adminFields";
     }
 
     @ActionMapping(params = { "action=adminFields" })
     public void am(final ActionResponse response, final SessionStatus sessionStatus, final Model model) {
-        System.out.println("am");
         response.setRenderParameter("view", "showAdminFields");
     }
 

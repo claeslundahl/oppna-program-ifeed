@@ -71,17 +71,7 @@ public class IFeedViewerControllerTest {
                 "</iframe>";
 
         System.out.println(foo.substring(foo.indexOf("src='") + 5, foo.indexOf("/iFeed-web/")));
-
     }
-
-    /*@Test
-    public void handleAlfrescoDocumentServiceException() {
-        Exception e = new IFeedServiceException("", "");
-
-        ModelAndView result = controller.handleAlfrescoDocumentServiceException(e);
-        IFeedServiceException se = (IFeedServiceException) result.getModel().get("exception");
-        Assert.assertEquals(se, e);
-    }*/
 
     @Test
     public void testSomeTimeParsing() throws ParseException {

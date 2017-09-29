@@ -45,11 +45,16 @@
                            id="cancelEditIfeedLink"
                            ajax="false" async="true" actionListener="#{app.cancelEdit()}">
             </p:commandLink>
-            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
-                           rendered="#{app.isInEditMode()}"
-                           id="updateFeedLink"
-                           ajax="false" async="true" actionListener="#{app.update()}">
-            </p:commandLink>
+          <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
+                         rendered="#{app.isInEditMode()}"
+                         id="updateFeedLink"
+                         ajax="false" async="true" actionListener="#{app.update()}">
+          </p:commandLink>
+          <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Kopiera" update=":ifeed_view"
+                         rendered="#{not app.isInEditMode()}"
+                         id="createCopyOfCommand"
+                         ajax="false" async="true" actionListener="#{app.copyAndPersistFeed(request, iFeedModelBean.id)}">
+          </p:commandLink>
         </div>
 
 

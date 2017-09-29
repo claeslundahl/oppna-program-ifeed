@@ -79,8 +79,6 @@ public class IFeedModelBean extends IFeed implements Serializable {
 
         @Override
         public boolean add(Ownership ownership) {
-            //return super.add(ownership);
-            System.out.println("add");
             return !ownerships.contains(ownership);
         }
 

@@ -216,19 +216,6 @@ public class ShowDocumentMetadataController {
     }
 
     static String toJson(Object o) {
-        /*if (o == null) {
-            return "null";
-        }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new ObjectMapper().writeValue(baos, orgs);
-        try {
-            baos.flush();
-            baos.close();
-            String r = new String(baos.toByteArray(), "UTF-8");
-            return r;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
         return Json.toJson(o);
     }
 
@@ -236,17 +223,12 @@ public class ShowDocumentMetadataController {
 
     @ResourceMapping(value = "updateJsonpEmbedCode")
     public void updateJsonpEmbedCode(ResourceRequest request, ResourceResponse response) throws IOException {
-
-        System.out.println("EditIFeedController - updateJsonpEmbedCode");
-
         Map<String, String[]> map = request.getParameterMap();
 
         for (String key : map.keySet()) {
             String[] arr = map.get(key);
             String str = key + " = " + Arrays.asList(arr);
-            System.out.println(str);
         }
-
 
         String[] fields = map.get("field");
         String[] aliases = map.get("alias");
@@ -260,7 +242,6 @@ public class ShowDocumentMetadataController {
         String fontSize =map.get("fontSize")[0];
         String showTableHeader =map.get("showTableHeader")[0];
         String linkOriginalDoc =map.get("linkOriginalDoc")[0];
-
 
         String result = toTableMarkup(ifeedId, limitList, sortColumn, sortOrder, hideEpiRightColumn, fontSize, showTableHeader, linkOriginalDoc, fields, aliases, orientations, widths);
         final OutputStream out = response.getPortletOutputStream();

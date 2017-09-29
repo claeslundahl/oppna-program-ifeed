@@ -53,8 +53,6 @@ public class UnchaceJson extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("POST");
-
         StringBuffer jb = new StringBuffer();
 
         URL oracle = new URL("http://www.anotherserver.com/");

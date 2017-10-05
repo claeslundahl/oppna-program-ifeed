@@ -139,8 +139,7 @@ public class MetadataServiceImpl implements MetadataService {
         CachedVocabulary cachedVocabulary = vocabularyCache.get(metadataNodeName);
 
         if (cachedVocabulary == null || cachedVocabulary.vocabulary.isEmpty()) {
-            System.out.println("Inget vocabulär " + vocabularyCache.keySet() + "\n\n" + metadataNodeName);
-
+            LOGGER.warn("Inget vocabulär " + vocabularyCache.keySet() + "\n\n" + metadataNodeName);
         }
 
         LOGGER.debug("Reading vocabulary from source");

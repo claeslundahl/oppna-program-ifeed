@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.service.ifeed;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.Ownership;
 
@@ -11,6 +13,8 @@ import java.util.List;
  * Created by clalu4 on 2014-06-10.
  */
 public class Filter extends IFeed {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Filter.class);
 
     private String idAsText;
 
@@ -109,7 +113,7 @@ public class Filter extends IFeed {
             setId(id);
             this.idAsText = idAsText;
         } catch (Exception e) {
-            System.out.println(idAsText + " is not a long value.");
+            LOGGER.warn(idAsText + " is not a long value.");
         }
     }
 

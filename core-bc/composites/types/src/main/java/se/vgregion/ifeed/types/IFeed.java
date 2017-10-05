@@ -361,9 +361,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             findCirkular(o, stack, passed);
         }
         if (currentNode == null || currentNode.getClass().getName().startsWith("java.")) return;
-        System.out.println(stack);
         if (passed.containsKey(currentNode)) {
-            System.out.println("Found cirkular dep " + stack);
+            // Nothing
         } else {
             passed.put(currentNode, null);
             Field[] fields = currentNode.getClass().getDeclaredFields();
@@ -479,4 +478,5 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             toStringRuns = false;
         }
     }
+
 }

@@ -267,7 +267,7 @@ public class IFeedSolrQuery extends SolrQuery {
                                                            final String[] fieldsToSelect) {
     long before = System.currentTimeMillis();
     List<Map<String, Object>> result = prepareAndPerformQueryImpl(sortField, sortDirection, fieldsToSelect);
-    System.out.println("Time for solr " + (System.currentTimeMillis() - before) + " for id " + (feed != null ? feed.getId() : "null"));
+    LOGGER.debug("Time for solr " + (System.currentTimeMillis() - before) + " for id " + (feed != null ? feed.getId() : "null"));
     return result;
   }
 

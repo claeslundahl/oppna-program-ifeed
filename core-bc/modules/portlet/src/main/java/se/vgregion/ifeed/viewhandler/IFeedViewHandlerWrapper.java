@@ -3,7 +3,7 @@ package se.vgregion.ifeed.viewhandler;
 /**
  * Created by Monica on 2014-05-05.
  */
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Map;
 import javax.faces.application.ViewHandler;

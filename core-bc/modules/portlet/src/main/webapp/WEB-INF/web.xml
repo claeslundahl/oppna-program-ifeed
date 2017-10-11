@@ -25,9 +25,9 @@
   </filter>
 
   <filter>
-  <filter-name>originHeaderFilter</filter-name>
-  <filter-class>se.vgregion.ifeed.webcomp.filter.OriginHeaderFilter</filter-class>
-</filter>
+    <filter-name>originHeaderFilter</filter-name>
+    <filter-class>se.vgregion.ifeed.webcomp.filter.OriginHeaderFilter</filter-class>
+  </filter>
 
   <filter-mapping>
     <filter-name>originHeaderFilter</filter-name>
@@ -47,9 +47,9 @@
   -->
 
   <servlet>
-    <servlet-name>view</servlet-name>
+    <!--<servlet-name>view</servlet-name>
     <servlet-class>org.springframework.web.servlet.ViewRendererServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <load-on-startup>1</load-on-startup>-->
 
     <init-param>
       <param-name>keystoreLocation</param-name>
@@ -120,7 +120,8 @@
   </context-param>
   <context-param>
     <param-name>javax.faces.PROJECT_STAGE</param-name>
-    <param-value>Development</param-value>
+    <!--<param-value>Development</param-value>-->
+    <param-value>Production</param-value>
   </context-param>
   <context-param>
     <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
@@ -150,7 +151,7 @@
       <param-value>client</param-value>
   </context-param>-->
 
-  <servlet>
+  <!--<servlet>
     <servlet-name>Faces Servlet</servlet-name>
     <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
@@ -158,7 +159,7 @@
   <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>*.xhtml</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>-->
 
   <!-- To override Primefaces own theme -->
   <context-param>

@@ -3,11 +3,11 @@ package se.vgregion.ifeed.backingbeans;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.ResourceConstants;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ResourceLocalService;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -89,7 +89,8 @@ public class IFeedBackingBean implements Serializable {
 
         List<IFeed> allIFeeds = null;
         try {
-            allIFeeds = iFeedService.getIFeeds();;
+            allIFeeds = iFeedService.getIFeeds();
+            ;
         } catch (Exception e) {
             System.out.println("Autowired iFeedService is null---------------------------------------------------: " + e.toString());
             throw new RuntimeException(e);
@@ -173,7 +174,7 @@ public class IFeedBackingBean implements Serializable {
             ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
             long companyId = themeDisplay.getCompanyId();
             resourceLocalService.deleteResource(companyId, IFeed.class.getName(),
-                    ResourceConstants.SCOPE_INDIVIDUAL, iFeed.getId());
+                ResourceConstants.SCOPE_INDIVIDUAL, iFeed.getId());
         } catch (PortalException e) {
             e.printStackTrace();
         } catch (SystemException e) {

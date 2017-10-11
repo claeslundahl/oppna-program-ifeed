@@ -25,9 +25,9 @@ import se.vgregion.ifeed.types.IFeed;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ResourceLocalService;
-import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 public class AddIFeedControllerTest {
 

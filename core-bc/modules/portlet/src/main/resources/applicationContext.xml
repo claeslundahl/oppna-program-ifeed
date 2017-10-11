@@ -20,7 +20,7 @@
     <import resource="classpath*:spring/ifeed-services-config.xml"/>
 
     <!-- Declaration of bean that is injected into beans with the Autowire annotation. Security. -->
-    <bean id="resourceLocalService" class="com.liferay.portal.service.ResourceLocalServiceUtil" factory-method="getService" />
+    <bean id="resourceLocalService" class="com.liferay.portal.kernel.service.ResourceLocalServiceUtil" factory-method="getService" />
 
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
         <property name="scopes">

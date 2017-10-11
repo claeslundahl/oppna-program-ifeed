@@ -11,7 +11,7 @@
     <display-name>mayEditFeed</display-name>
     <name>mayEditFeed</name>
     <function-class>se.vgregion.ifeed.el.AccessGuard</function-class>
-    <function-signature>java.lang.Boolean mayEditFeed(com.liferay.portal.model.User, se.vgregion.ifeed.types.IFeed)</function-signature>
+    <function-signature>java.lang.Boolean mayEditFeed(com.liferay.portal.kernel.model.User, se.vgregion.ifeed.types.IFeed)</function-signature>
   </function>
 
   <function>

@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.jsf;
 
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;

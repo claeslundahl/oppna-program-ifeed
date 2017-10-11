@@ -8,13 +8,16 @@
     to change configuration without a recompile. -->
 
   <context:property-placeholder
-    location="classpath:default-config.properties, file:${user.home}/.hotell/ifeed/config.properties, ${ifeed.properties}"
+    location="classpath:default-config.properties, file:${user.home}/.hotell/ifeed/config.properties"
     ignore-resource-not-found="true" ignore-unresolvable="true" />
 
   <import resource="classpath:spring/jpa-connector.xml" />
 
   <!-- Imports a connector type configuration to the jpa connector - defaults to jndi. To load jpa-connector-direct 
     set system property datasource.connector=direct -->
+  <!--
   <import resource="classpath:spring/jpa-connector-${datasource.connector:jndi}.xml" />
+  -->
+  <import resource="classpath:spring/jpa-connector-direct.xml" />
 
 </beans>

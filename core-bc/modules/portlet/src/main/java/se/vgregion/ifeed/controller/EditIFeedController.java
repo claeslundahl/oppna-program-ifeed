@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.portlet.*;
 
+import com.liferay.portal.kernel.model.User;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
@@ -62,8 +63,8 @@ import se.vgregion.ldap.person.Person;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 @Controller
 @RequestMapping("VIEW")

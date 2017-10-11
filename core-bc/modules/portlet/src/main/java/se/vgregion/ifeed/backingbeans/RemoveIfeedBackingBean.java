@@ -3,23 +3,14 @@ package se.vgregion.ifeed.backingbeans;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.ResourceConstants;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ResourceLocalService;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
-import org.primefaces.context.RequestContext;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.util.PortalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.types.IFeed;
 
-import javax.annotation.PostConstruct;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.portlet.PortletRequest;
 import java.io.Serializable;
 

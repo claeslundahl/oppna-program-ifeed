@@ -2,11 +2,9 @@ package se.vgregion.ifeed.backingbeans;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ResourceLocalService;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
-import com.sun.faces.component.visit.FullVisitContext;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.util.PortalUtil;
 import org.apache.commons.beanutils.BeanMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +34,6 @@ import se.vgregion.varnish.VarnishClient;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.visit.VisitCallback;
-import javax.faces.component.visit.VisitContext;
-import javax.faces.component.visit.VisitResult;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
@@ -51,6 +44,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+
+//import com.sun.faces.component.visit.FullVisitContext;
 
 /**
  * Created by clalu4 on 2014-06-10.
@@ -488,6 +483,12 @@ public class Application {
     }
 
     public User getCurrentUser() {
+        try {
+            return getUser((PortletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest());
+        } catch (PortalException e) {
+            throw new RuntimeException(e);
+        }
+        /*
         User u = null;
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext externalContext = fc.getExternalContext();
@@ -496,12 +497,14 @@ public class Application {
         } else {
             Long id = Long.parseLong(externalContext.getUserPrincipal().getName());
             try {
+
                 u = UserLocalServiceUtil.getUserById(id);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
         return u;
+        */
     }
 
     public void findResultsByCurrentFeedConditions() {
@@ -755,6 +758,7 @@ public class Application {
         return "";
     }
 
+    /*
     public String traverse() {
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
@@ -774,6 +778,7 @@ public class Application {
 
         return passed.toString();
     }
+    */
 
     long count;
 
@@ -782,6 +787,7 @@ public class Application {
     }
 
 
+    /*
     public UIComponent findComponent(final String id) {
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
@@ -800,7 +806,7 @@ public class Application {
         String longId = findComponentLongId(found[0]);
 
         return found[0];
-    }
+    }*/
 
     public String findComponentLongId(UIComponent component) {
         if (component.getParent() == null) {
@@ -871,7 +877,7 @@ public class Application {
             }
             newFilter.setValue(filter.getFilterQuery());
             newFilter.setOperator(filter.getOperator());
-            if (!"d:ldap_org_value".equals(filter.getFieldInf().getType())) {
+            if (filter != null && (filter.getFieldInf() == null || !"d:ldap_org_value".equals(filter.getFieldInf().getType()))) {
                 iFeedModelBean.removeFilter(filter);
             }
         } else {

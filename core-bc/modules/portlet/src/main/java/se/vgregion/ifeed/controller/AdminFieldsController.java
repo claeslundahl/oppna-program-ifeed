@@ -28,6 +28,10 @@ public class AdminFieldsController {
     @Autowired
     private IFeedService iFeedService;
 
+    public AdminFieldsController() {
+
+    }
+
     @ModelAttribute("fields")
     public FieldsInf getCommandObject() {
         List<FieldsInf> infs = iFeedService.getFieldsInfs();

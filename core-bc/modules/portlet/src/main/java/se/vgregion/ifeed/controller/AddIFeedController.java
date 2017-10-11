@@ -35,6 +35,10 @@ public class AddIFeedController {
     private IFeedService iFeedService;
     private ResourceLocalService resourceLocalService;
 
+    public AddIFeedController() {
+
+    }
+
     @Autowired
     public AddIFeedController(final IFeedService iFeedService, final ResourceLocalService resourceLocalService) {
         super();

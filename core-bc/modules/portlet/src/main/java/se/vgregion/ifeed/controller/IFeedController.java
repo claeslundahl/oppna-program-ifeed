@@ -37,6 +37,10 @@ public class IFeedController {
     private IFeedService iFeedService;
     private UriTemplate iFeedAtomFeed;
 
+    public IFeedController() {
+
+    }
+
     @Autowired
     public IFeedController(IFeedService iFeedService, UriTemplate iFeedAtomFeed) {
         super();

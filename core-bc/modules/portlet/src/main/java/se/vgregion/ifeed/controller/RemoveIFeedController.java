@@ -26,6 +26,10 @@ public class RemoveIFeedController {
     private IFeedService iFeedService;
     private ResourceLocalService resourceLocalService;
 
+    public RemoveIFeedController() {
+
+    }
+
     @Autowired
     public RemoveIFeedController(final IFeedService iFeedService, final ResourceLocalService resourceLocalService) {
         this.iFeedService = iFeedService;

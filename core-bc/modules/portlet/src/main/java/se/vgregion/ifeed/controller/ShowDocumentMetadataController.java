@@ -60,6 +60,10 @@ public class ShowDocumentMetadataController {
     @Autowired
     private LdapSupportService ldapOrganizationService;
 
+    public ShowDocumentMetadataController() {
+
+    }
+
     public ShowDocumentMetadataController(AlfrescoDocumentService documentService) {
         this.alfrescoMetadataService = documentService;
     }

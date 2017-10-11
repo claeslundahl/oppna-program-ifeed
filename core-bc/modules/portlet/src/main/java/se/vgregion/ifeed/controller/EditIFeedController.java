@@ -93,6 +93,10 @@ public class EditIFeedController {
     @Value("${ifeed.metadata.base.url}")
     private String metadataBaseUrl;
 
+    public EditIFeedController() {
+
+    }
+
     @Autowired
     private LdapSupportService ldapOrganizationService;
 

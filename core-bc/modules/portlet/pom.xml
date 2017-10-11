@@ -354,8 +354,8 @@
     <!-- https://mvnrepository.com/artifact/com.liferay.faces/liferay-faces-util -->
     <dependency>
       <groupId>com.liferay.faces</groupId>
-      <artifactId>liferay-faces-util</artifactId>
-      <version>4.2.5-ga6</version>
+      <artifactId>com.liferay.faces.util</artifactId>
+      <version>3.1.0</version>
     </dependency>
 
 

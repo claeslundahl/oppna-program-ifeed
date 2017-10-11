@@ -350,6 +350,13 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.liferay.faces/liferay-faces-util -->
+    <dependency>
+      <groupId>com.liferay.faces</groupId>
+      <artifactId>liferay-faces-util</artifactId>
+      <version>4.2.5-ga6</version>
+    </dependency>
+
 
     <dependency>
       <groupId>com.liferay.faces</groupId>

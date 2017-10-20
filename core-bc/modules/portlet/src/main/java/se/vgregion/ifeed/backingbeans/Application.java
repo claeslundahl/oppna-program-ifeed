@@ -871,7 +871,7 @@ public class Application {
             }
             newFilter.setValue(filter.getFilterQuery());
             newFilter.setOperator(filter.getOperator());
-            if (!"d:ldap_org_value".equals(filter.getFieldInf().getType())) {
+            if (filter != null && (filter.getFieldInf() == null || !"d:ldap_org_value".equals(filter.getFieldInf().getType()))) {
                 iFeedModelBean.removeFilter(filter);
             }
         } else {

@@ -488,9 +488,6 @@ public class IFeedViewerController {
     }
     final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
 
-    //SimpleDateFormat inParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
-    SimpleDateFormat outFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("sv", "SE"));
-
     Map<String, String> idValueMap = new HashMap<String, String>();
     List<FieldsInf> infs = iFeedService.getFieldsInfs(); // todo cache?
     List<FieldInf> fieldInfs = null;

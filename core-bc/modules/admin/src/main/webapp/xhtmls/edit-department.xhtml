@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:icon="http://se.vgregion.ifeed.icon"
+>
+
+  <p:panel rendered="#{app.department != null}">
+    <h:panelGrid style="border-spacing: 15px; border-collapse: separate;" columns="1" cellspacing="15"
+                 styleClass="align-top-table">
+      <p:panel>
+        <h4>Förvaltning
+          <h:outputText rendered="#{!app.isSuperUser()}" value=": #{app.department.name}"
+                        stylex="width: 90%;"/>
+        </h4>
+        <h:inputText
+                rendered="#{app.isSuperUser()}"
+                value="#{app.department.name}"
+                styleClass="mdl-textfield__input"
+                placeholder="Förvalningsnamn"/>
+      </p:panel>
+
+      <p:panel rendered="#{!app.department.getVgrGroups().isEmpty()}">
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+          <thead>
+          <tr>
+            <th class="filter-result-h mdl-data-table__cell--non-numeric">Grupp</th>
+            <th class="filter-result-h mdl-data-table__cell--non-numeric">Dokumentflöden</th>
+            <th class="filter-result-h mdl-data-table__cell--non-numeric">Ta bort</th>
+          </tr>
+          </thead>
+          <ui:repeat value="#{app.department.getVgrGroups()}" var="group"
+                     varStatus="groupsVarStatus">
+            <tr>
+              <td class="filter-result-h mdl-data-table__cell--non-numeric">
+                <h:inputText id="groupId#{group.id}name#{group.name.hashCode()}"
+                             value="#{group.name}"
+                             styleClass="mdl-textfield__input"
+                />
+              </td>
+              <td class="filter-result-h mdl-data-table__cell--non-numeric">
+                <ui:repeat value="#{group.memberFeeds}" var="item"
+                           id="groupId#{group.id}memberFeedsLoop">
+                  <h:commandLink update=":ifeed_view" ajax="false" async="true"
+                                 value="#{item.name}"
+                                 id="groupId#{group.id}memberFeedsLoop#{item.id}"
+                                 actionListener="#{app.viewIFeed(item.id)}"/>
+                  &#160;
+                </ui:repeat>
+              </td>
+              <td class="filter-result-h mdl-data-table__cell--non-numeric">
+                <h:commandLink value=" " update=":ifeed_view"
+                               styleClass="link-button-trash"
+                               ajax="false" async="true" id="removeDepartmentsGroup_#{group.id}"
+                               actionListener="#{app.removeDepartmentsGroup(group)}">
+                  <icon:delete/>
+                </h:commandLink>
+              </td>
+            </tr>
+          </ui:repeat>
+        </table>
+      </p:panel>
+
+      <p:panel>
+        <div class="button-row">
+          <p:commandLink update=":ifeed_view"
+                         styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                         ajax="false" async="true"
+                         actionListener="#{app.createGroup()}">
+            <icon:add/>
+            <h:outputText value="Lägg till grupp"/>
+          </p:commandLink>
+          <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                         styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                         actionListener="#{app.cancelDepartment()}">
+            <icon:cancel/>
+            <h:outputText value="Avbryt"/>
+          </p:commandLink>
+          <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                         styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                         actionListener="#{app.saveDepartment()}">
+            <icon:save/>
+            <h:outputText value="Spara"/>
+          </p:commandLink>
+        </div>
+      </p:panel>
+    </h:panelGrid>
+
+  </p:panel>
+
+</ui:composition>

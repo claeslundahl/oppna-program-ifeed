@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+>
+
+  <h:head>
+    <style>
+      table.mdl-data-table-customization > * > * {
+        white-space: normal;
+      }
+    </style>
+  </h:head>
+
+  <!--< portlet : defineObjects />-->
+
+  <!--
+  <h:outputStylesheet name="css/materialize.css" />
+    <h:outputScript name="js/materialize.js" />
+      <h:outputStylesheet name="css/surface_styles.css" />
+    -->
+  <h:outputStylesheet name="css/material.css"/>
+  <h:outputStylesheet name="css-sprite/sprite-action-black.css"/>
+  <h:outputStylesheet name="css-sprite/sprite-navigation-black.css"/>
+  <h:outputStylesheet name="css-sprite/sprite-content-black.css"/>
+  <h:outputScript library="js" name="material.js" />
+
+  <div class="vgr-boxed-content rp-user-bookmarks" style="max-width: 900px; margin: auto;">
+    <div class="bd">
+
+      <button id="rerun-ifeed-loading" style="display: none;"></button>
+
+      #{app.handleSingleSignOn()}
+
+      <h:form id="ifeed_view">
+
+        <!-- Panel for navigation inside IFeed portlet -->
+        <p:panel id="ifeed_panel" style="padding: 0px">
+          <p:panel rendered="#{app.user == null}">
+            <ui:include src="login.xhtml"/>
+          </p:panel>
+
+          <p:panel rendered="#{app.logedIn and navigationModelBean.uiNavigation eq 'EDIT_JSONP'}">
+            <ui:include src="edit-jsonp.xhtml"/>
+          </p:panel>
+
+          <p:panel rendered="#{app.logedIn and navigationModelBean.uiNavigation eq 'ADMIN_DEPARTMENTS'}">
+            <ui:include src="admin-departments.xhtml"/>
+          </p:panel>
+
+          <p:panel rendered="#{app.logedIn and navigationModelBean.uiNavigation eq 'EDIT_DEPARTMENT'}">
+            <ui:include src="edit-department.xhtml"/>
+          </p:panel>
+
+          <p:panel rendered="#{app.logedIn and navigationModelBean.uiNavigation eq 'USER_IFEEDS'}">
+            <ui:include src="user-ifeed-list.xhtml"/>
+          </p:panel>
+
+          <p:panel rendered="#{app.logedIn and navigationModelBean.uiNavigation eq 'ADD_IFEED'}">
+            <ui:include src="add-ifeed.xhtml"/>
+          </p:panel>
+
+          <p:panel rendered="#{app.logedIn and navigationModelBean.uiNavigation eq 'FIELD_CONFIG'}">
+            <ui:include src="field-config.xhtml"/>
+          </p:panel>
+
+          <p:panel rendered="#{app.logedIn and navigationModelBean.uiNavigation eq 'EDIT_IFEED'}">
+            <ui:include src="edit-ifeed.xhtml"/>
+          </p:panel>
+
+          <p:panel rendered="#{app.logedIn and navigationModelBean.uiNavigation eq 'VIEW_IFEED'}">
+            <ui:include src="view-ifeed.xhtml"/>
+          </p:panel>
+
+        </p:panel>
+
+      </h:form>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    PrimeFaces.locales ['sv_SE'] = {
+      closeText: 'Stäng',
+      prevText: 'Föregående',
+      nextText: 'Nästa {code}',
+      monthNames: ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december' ],
+      monthNamesShort: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec' ],
+      dayNames: ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'],
+      dayNamesShort: ['sön', 'mån', 'tis', 'ons', 'tor', 'fre', 'lör'],
+      dayNamesMin: ['sö', 'må', 'ti', 'on', 'to', 'fr', 'lö'],
+      weekHeader: 'Vecka',
+      firstDay: 1,
+      isRTL: false,
+      showMonthAfterYear: false,
+      yearSuffix:'',
+      timeOnlyTitle: 'Endast tid',
+      timeText: 'Tid',
+      hourText: 'timmar',
+      minuteText: 'minuter',
+      secondText: 'sekunder',
+      currentText: 'Nuvarande datum',
+      ampm: false,
+      month: 'månad',
+      week: 'vecka',
+      day: 'dag',
+      allDayText: 'Hela dagen'
+    };
+
+
+
+    //$('select').material_select();
+  </script>
+
+</f:view>

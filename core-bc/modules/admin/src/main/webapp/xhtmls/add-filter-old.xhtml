@@ -1,0 +1,104 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+>
+
+  <p:panel styleClass="filter-root" id="add-ifeed-filters">
+    <ui:repeat value="#{app.filters}" var="item" varStatus="status">
+      <span class="">
+      <p:commandLink styleClass="border" value="#{item.name} #{item.expanded ? '(-)': '(+)'}"
+                     update=":ifeed_view"
+                     style="white-space: nowrap; float:none;"
+                     ajax="true" async="true"
+                     actionListener="#{item.setExpanded(!item.isExpanded())}">
+      </p:commandLink>
+
+      <p:panel rendered="#{item.expanded}" styleClass="">
+
+        <ui:repeat value="#{item.children}" var="child">
+
+          <p:commandLink styleClass="border" value="#{child.name}"
+                         update=":ifeed_view"
+                         style="white-space: nowrap; background-color: yellow; float:none;"
+                         ajax="true" async="true"
+                         actionListener="#{child.setExpanded(!child.isExpanded())}">
+          </p:commandLink>
+
+          <p:panel rendered="#{child.expanded}">
+
+            <span
+                style="background-color:#111;opacity: 0.65;*background:none;position:absolute;z-index: 9001;top:0px;left:0px;width:100%;"></span>
+
+            <div
+                style="position:fixed;background-color:white;top:25%;width:400px;height:400px;border:1px solid #000;z-index: 9002;">
+
+              <h4>#{child.name}</h4>
+
+              <div class="box">
+                #{child.help}
+              </div>
+
+              <h:inputText value="#{child.value}"
+                           styleClass="mdl-textfield__input"
+                           rendered="#{child.type != 'd:text_fix' and child.type != 'd:date' and child.type != 'd:ldap_value'}">
+              </h:inputText>
+
+              <p:calendar rendered="#{child.type == 'd:date' or child.type == 'd:datetime'}"
+                          navigator="false"
+                          readOnlyInput="false"
+                          styleClass="mdl-textfield__input"
+                          value="#{child.value}"
+                          pattern="yyyy-MM-dd">
+                <f:converter converterId="textDateConverter"/>
+              </p:calendar>
+
+
+              <p:panel rendered="#{child.type == 'd:ldap_value'}">
+                <h:inputText value="#{child.value}" styleClass="mdl-textfield__input">
+                  <f:ajax render=":ifeed_view"/>
+                </h:inputText>
+                <h:selectOneMenu value="#{child.value}" styleClass="mdl-textfield__input">
+                  <f:selectItems value="#{app.completeUserName(child.value)}"/>
+                </h:selectOneMenu>
+              </p:panel>
+
+
+              <h:selectOneMenu value="#{child.value}"
+                               styleClass="mdl-textfield__input"
+                               rendered="#{child.type == 'd:text_fix'}">
+                <f:selectItems value="#{app.getVocabulary(child.apelonKey)}"/>
+              </h:selectOneMenu>
+
+              <div>
+                <p:commandLink styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                               value="Avbryt"
+                               ajax="true"
+                               async="true"
+                               update=":ifeed_view"
+                               actionListener="#{app.cancelNewFilter(child)}">
+                </p:commandLink>
+
+                <p:commandLink styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                               value="Lägg till"
+                               ajax="true"
+                               async="true"
+                               update=":ifeed_view"
+                               actionListener="#{app.addNewFilter(child)}">
+                </p:commandLink>
+              </div>
+
+            </div>
+
+          </p:panel>
+
+
+        </ui:repeat>
+
+
+      </p:panel>
+</span>
+    </ui:repeat>
+  </p:panel>
+
+
+</f:view>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+>
+
+  <div class="ifeed-step">
+    <span>Mata in data</span>
+  </div>
+
+  <p:panel rendered="#{app.newFilter != null and app.inEditMode}">
+    <div>
+      <div>
+        <div class="ifeed-filter-box">
+          <h3 id="new-filter-name">Filter: #{app.newFilter.name}</h3>
+
+          <h:selectOneMenu value="#{app.newFilter.operator}"
+                           rendered="#{not (app.newFilter.id.endsWith('.id'))}">
+            <f:selectItem itemValue="matching" itemLabel="Matchande"/>
+            <f:selectItem itemValue="greater" itemLabel="Större än"/>
+            <f:selectItem itemValue="lesser" itemLabel="Mindre än"/>
+          </h:selectOneMenu>
+
+          <div class="box">
+            <h:panelGrid rendered="#{not empty app.newFilter.help}">
+              <img src="/iFeed-portlet/img/information.png"/>
+              #{app.newFilter.help}
+            </h:panelGrid>
+          </div>
+          <div id="rp-filter-value-input">
+            <h:inputText value="#{app.newFilter.value}"
+                         styleClass="mdl-textfield__input"
+                         rendered="#{app.newFilter.type != 'd:datetime' and app.newFilter.type != 'd:text_fix' and app.newFilter.type != 'd:date' and app.newFilter.type != 'd:ldap_value' and app.newFilter.type != 'd:text_facet' and app.newFilter.type != 'd:ldap_org_value'}">
+            </h:inputText>
+            <p:panel rendered="#{app.newFilter.type == 'd:ldap_org_value'}">
+              <ui:include src="organization-tree.xhtml"/>
+            </p:panel>
+
+            <!--<p:calendar rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
+                        navigator="false"
+                        readOnlyInput="false"
+                        value="#{app.newFilter.value}"
+                        lang="sv_SE"
+                        pattern="yyyy-MM-dd">
+              <f:converter converterId="textDateConverter"/>
+            </p:calendar>-->
+
+            <p:inputText rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
+                         navigator="false"
+                         readOnlyInput="false"
+                         value="#{app.newFilter.value}"
+                         lang="sv_SE"
+                         styleClass="date-input mdl-textfield__input"
+                         pattern="yyyy-MM-dd">
+            </p:inputText>
+
+            <h:outputScript rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}">
+              $(document).ready( function() {
+                setTimeout(
+                  function() {
+                    se_vgregion_ifeed_client.DateInputHelp.putDatePicker(".date-input");
+                  },
+                  1000);
+              } );
+            </h:outputScript>
+
+            <p:autoComplete value="#{app.newFilter.value}"
+                            rendered="#{app.newFilter.type == 'd:ldap_value'}"
+                            completeMethod="#{app.completeUserName}"
+                            forceSelection="true"
+                            style="z-index: 101"
+                            styleClass="background: aliceblue; height: 24px; top: 4px; position: relative;"
+                            multiple="false"/>
+
+            <p:autoComplete value="#{app.newFilter.value}"
+                            rendered="#{app.newFilter.type == 'd:text_facet'}"
+                            completeMethod="#{app.newFilterSuggestion}"
+                            forceSelection="false"
+                            style="z-index: 101; background: aliceblue; height: 24px; top: 4px; position: relative;"
+                            multiple="false"/>
+
+            <h:selectOneMenu value="#{app.newFilter.value}"
+                             rendered="#{app.newFilter.type == 'd:text_fix'}">
+              <f:selectItems value="#{app.getVocabulary(app.newFilter.apelonKey)}"/>
+            </h:selectOneMenu>
+
+          </div>
+
+          <div class="button-row">
+            <p:commandLink styleClass="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect"
+                           value="Avbryt"
+                           ajax="false"
+                           rendered="#{app.newFilter.type != 'd:ldap_org_value'}"
+                           async="true"
+                           update=":ifeed_view"
+                           actionListener="#{app.cancelNewFilter(app.newFilter)}">
+            </p:commandLink>
+
+            <p:commandLink styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                           value="Lägg till"
+                           ajax="false"
+                           rendered="#{app.newFilter.type != 'd:ldap_org_value'}"
+                           async="true"
+                           update=":ifeed_view"
+                           actionListener="#{app.addNewFilter(app.newFilter)}">
+            </p:commandLink>
+          </div>
+
+          <p:panel rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}">
+            <div>
+              <p><b>Alternativ 1:Ange ett fastdatum</b></p>
+              <p>Ange ÅÅÅÅ-MM-DD genom att skriva in datum alt välj i kalendern som poppar upp</p>
+
+              <p><i>Ex: Alla dokument som är publicerade 2016, välja ”Större än”, ange ”2015-12-31”</i></p>
+
+              <p><b>Alternativt 2: Ange X antal dagar framåt eller bakåt i tiden</b></p>
+              <p>Ange antal dagar med antingen plustecken (+) eller minustecken (-) framför i inmatningsfältet (ignorera datumväljaren) </p>
+
+              <p><i>Ex: Giltighetsdatum passerad med 150 dagar eller mer, välj ”mindre än”, ange ”-149”</i></p>
+              <p><i>Ex: Dokument publicerade senaste veckan, välj ”större än”, ange ”-8”</i></p>
+            </div>
+          </p:panel>
+
+        </div>
+      </div>
+
+    </div>
+    <script type="text/javascript">
+      document.getElementById('new-filter-name').scrollIntoView(true);
+    </script>
+  </p:panel>
+
+</ui:composition>

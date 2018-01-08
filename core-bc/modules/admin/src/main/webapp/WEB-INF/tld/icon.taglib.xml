@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE facelet-taglib PUBLIC
+        "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+        "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+<facelet-taglib>
+  <namespace>http://se.vgregion.ifeed.icon</namespace>
+  <tag>
+    <tag-name>delete</tag-name>
+    <source>../tags/icon/delete.xhtml</source>
+  </tag>
+  <tag>
+    <tag-name>arrow-back</tag-name>
+    <source>../tags/icon/arrow-back.xhtml</source>
+  </tag>
+  <tag>
+    <tag-name>arrow-forward</tag-name>
+    <source>../tags/icon/arrow-forward.xhtml</source>
+  </tag>
+  <tag>
+    <tag-name>add</tag-name>
+    <source>../tags/icon/add.xhtml</source>
+  </tag>
+  <tag>
+    <tag-name>cancel</tag-name>
+    <source>../tags/icon/cancel.xhtml</source>
+  </tag>
+  <tag>
+    <tag-name>save</tag-name>
+    <source>../tags/icon/save.xhtml</source>
+  </tag>
+</facelet-taglib>

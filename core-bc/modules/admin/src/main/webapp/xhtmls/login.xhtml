@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+>
+
+  <div class="">
+    <h:inputText binding="#{userName}" styleClass="mdl-textfield__input"/>
+    <h:inputSecret binding="#{password}" styleClass="mdl-textfield__input"/>
+    <h:commandButton value="Login" action="#{app.login(userName.value, password.value)}"
+    styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"/>
+  </div>
+
+</f:view>

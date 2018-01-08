@@ -1,0 +1,61 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+>
+
+  <h:panelGroup id="add_ifeed_filters" rendered="#{app.inEditMode}" layout="block">
+
+    <div class="ifeed-step">
+      <span>Välj filter</span>
+    </div>
+
+    <div class="ifeed-filter-box">
+      <table class="ifeed-filters">
+        <ui:repeat value="#{app.getFilters()}" var="ifeedFilter" varStatus="status" id="getFiltersLoop">
+          <tr>
+            <td colspan="2">
+              <!--<span title="#{ifeedFilter.help}" class="ifeed-filter-help"> </span>-->
+
+              <h:commandLink
+                  value=""
+                  title="#{ifeedFilter.help}"
+                  ajax="true"
+                  action="#{ifeedFilter.setExpanded(!ifeedFilter.isExpanded())}">
+                <f:ajax render="@form" onevent="refreshResults()"/>
+                <div title="#{ifeedFilter.help}"
+                     class="#{ifeedFilter.isExpanded() ? 'icon-chevron-down' : 'icon-chevron-right'}"></div>
+                #{ifeedFilter.name}
+              </h:commandLink>
+            </td>
+          </tr>
+
+          <ui:fragment rendered="#{ifeedFilter.expanded}" visible="#{ifeedFilter.filter}">
+            <ui:repeat value="#{ifeedFilter.children}" var="child" varStatus="vs4filterLoop">
+              <ui:fragment rendered="#{child.filter}" visible="#{ifeedFilter.filter}">
+                <tr>
+
+                  <td></td>
+
+                  <td>
+
+                    <h:commandLink value="#{child.name}"
+                                   update=":ifeed_view"
+                                   title="#{child.help}"
+                                   onclick="refreshResults()"
+                                   action="#{app.setNewFilter(child)}">
+                      <f:ajax render="@form" onevent="refreshResults()"/>
+                      <span title="#{child.help}" class="ifeed-filter-add"> </span>
+                    </h:commandLink>
+                  </td>
+                </tr>
+              </ui:fragment>
+            </ui:repeat>
+          </ui:fragment>
+
+        </ui:repeat>
+      </table>
+    </div>
+
+  </h:panelGroup>
+
+</f:view>

@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:icon="http://se.vgregion.ifeed.icon">
+
+  <h2>Lägg till ett dokumentflöde</h2>
+
+  <p:messages id="error-messages"/>
+
+  <div class="">
+    <div class="">
+      <div class="mdl-textfield mdl-js-textfield">
+        <h:inputText styleClass="mdl-textfield__input" id="title" name="title" value="#{iFeedModelBean.name}"/>
+        <h:outputLabel styleClass="mdl-textfield__label" value="Namnge dokumentpubliceringen" for="title"/>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <h:inputTextarea id="description" styleClass="mdl-textfield__input" autoResize="false" value="#{iFeedModelBean.description}" maxlength="1000"/>
+        <h:outputLabel styleClass="mdl-textfield__label" value="Beskriv syftet med publiceringen " for="description"/>
+      </div>
+      <div class="span4 last">
+        <h:panelGroup id="addIfeedDepartmentAndGroup" layout="block">
+          <h:outputLabel value="Välj förvaltning" for="selectGovernance"/>
+
+          <div class="mdl-selectfield mdl-js-selectfield">
+          <h:selectOneMenu converter="departmentConverter"
+                           update="addIfeedDepartmentAndGroup"
+                           ajax="true"
+                           id="selectGovernance"
+                           immediate="true"
+                           value="#{iFeedModelBean.department}">
+            <f:selectItem itemLabel="-" itemValue="#{null}"/>
+            <f:selectItems value="#{app.getVgrDepartments()}"
+                           var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
+            <f:ajax render="addIfeedDepartmentAndGroup"/>
+          </h:selectOneMenu>
+          </div>
+
+          <h:outputLabel value="Välj grupptillhörighet"/>
+
+          <div class="mdl-selectfield mdl-js-selectfield">
+          <h:selectOneMenu converter="groupConverter"
+                           update="addIfeedDepartmentAndGroup"
+                           ajax="true"
+                           rendered="#{iFeedModelBean.department != null}"
+                           value="#{iFeedModelBean.group}">
+            <f:selectItem itemLabel="-" itemValue="#{null}"/>
+            <f:selectItems value="#{iFeedModelBean.department.vgrGroups}"
+                           var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
+            <f:ajax render="addIfeedDepartmentAndGroup"/>
+          </h:selectOneMenu>
+          </div>
+
+          <div class="mdl-selectfield mdl-js-selectfield">
+          <h:selectOneMenu converter="groupConverter"
+                           update="addIfeedDepartmentAndGroup"
+                           disabled="true"
+                           rendered="#{iFeedModelBean.department == null}">
+            <f:selectItem itemLabel="-" itemValue="#{null}"/>
+          </h:selectOneMenu>
+          </div>
+
+        </h:panelGroup>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <p:commandLink styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                   actionListener="#{editIFeedBackingBean.goBackToIFeedList}" update=":ifeed_view"
+                   ajax="false" async="true">
+      <icon:arrow-back/>
+      <h:outputText value="Avbryt"/>
+    </p:commandLink>
+
+      <p:commandLink styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                     update=":ifeed_view" actionListener="#{editIFeedBackingBean.addIFeed(app)}" ajax="false"
+                     async="true">
+        <icon:arrow-forward/>
+        <h:outputText value="Spara och fortsätt"/>
+    </p:commandLink>
+  </div>
+
+</ui:composition>

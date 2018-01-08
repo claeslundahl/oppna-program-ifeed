@@ -239,14 +239,14 @@
           <h:outputText value="Kod att klistra in"/>
         </f:facet>
 
-        <h:panelGroup layout="inline" styleClass="row-fluid">
+        <h:panelGroup layout="inline" styleClass="">
           <h3>Förhandsgranskning</h3>
           <ui:repeat value="#{tableDef.toTableMarkupWithLineBreaks()}" var="markupLine">
             <h:outputText value="#{markupLine}" styleClass="preformatted"/>
           </ui:repeat>
         </h:panelGroup>
 
-        <h:panelGroup layout="block" styleClass="row-fluid">
+        <h:panelGroup layout="block" styleClass="">
           <div class="span6 first">
             <aui:button-row>
               <h:commandLink value="#{app.inEditMode ? 'Avbryt' : 'Tillbaka'}"
@@ -283,7 +283,7 @@
 
         </h:panelGroup>
 
-        <h:panelGroup layout="inline" styleClass="row-fluid">
+        <h:panelGroup layout="inline" styleClass="">
           <h3>Förhandsgranskning</h3>
           <h:outputText value="#{tableDef.toPostingTableMarkup()}" escape="false"/>
         </h:panelGroup>

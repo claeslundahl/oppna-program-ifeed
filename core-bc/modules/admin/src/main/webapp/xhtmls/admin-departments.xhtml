@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:icon="http://se.vgregion.ifeed.icon"
+>
+
+  <div>
+    <div class="mdl-grid">
+      <h2 class="mdl-cell mdl-cell--10-col">
+        #{app.isSuperUser() ? 'Administrera Förvaltningar' : 'Välj en administration för att ändra dess grupper'}
+      </h2>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <h:commandLink
+                actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}"
+                styleClass="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+                valueXX="Avbryt"
+                update="ifeed_view" ajax="false" async="true">
+          <icon:arrow-back/>
+        </h:commandLink>
+
+        <h:commandLink
+                actionListener="#{app.createNewDepartment()}"
+                styleClass="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+                rendered="#{app.isSuperUser()}"
+                update="ifeed_view" ajax="false" async="true">
+          <icon:add/>
+        </h:commandLink>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+      <thead>
+      <tr>
+        <th class="filter-result-h mdl-data-table__cell--non-numeric">Namn</th>
+        <th class="filter-result-h mdl-data-table__cell--non-numeric">Grupper</th>
+        <th class="filter-result-h mdl-data-table__cell--non-numeric">id</th>
+        <th class="filter-result-d mdl-data-table__cell--non-numeric">#{app.isSuperUser() ? 'Ta bort' : 'Beskrivning'}
+        </th>
+      </tr>
+      </thead>
+      <tbody class="ui-datatable-data ui-widget-content">
+      <ui:repeat value="#{app.getVgrDepartments()}" var="department" varStatus="status">
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                           value="#{department.name}"
+                           actionListener="#{app.editDepartment(department)}"/>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric" style="white-space: normal;">
+            <ui:repeat value="#{department.getVgrGroups()}" var="group">
+              <span class="ltr-flowing-department border"
+                    style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
+                #{group.name}
+              </span>
+            </ui:repeat>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">${department.id}</td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <p:commandLink
+                    action="#{app.deleteDepartment(department)}"
+                    styleClass="link-button-trash"
+                    update=":ifeed_view"
+                    ajax="false"
+                    rendered="#{app.isSuperUser()}"
+                    onclick="confirm('Är du säker du vill ta bort den här posten?')"
+                    async="true">
+            </p:commandLink>
+            ${app.isSuperUser() ? '' : department.description}
+          </td>
+        </tr>
+      </ui:repeat>
+      </tbody>
+    </table>
+  </div>
+
+</f:view>

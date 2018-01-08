@@ -8,51 +8,50 @@
   Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA -->
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context" xmlns:jaxws="http://cxf.apache.org/jaxws"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                http://www.springframework.org/schema/context
-                http://www.springframework.org/schema/context/spring-context-3.0.xsd
-            http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-  <import resource="classpath:META-INF/cxf/cxf.xml" />
-  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
-  <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+  <import resource="classpath:META-INF/cxf/cxf.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
-    <bean id="iFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
-        <constructor-arg value="${ifeed.feed}" />
-    </bean>
+  <bean id="iFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
+    <constructor-arg value="${ifeed.feed}"/>
+  </bean>
 
-    <bean id="rssIFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
-        <constructor-arg value="${ifeed.rss-feed}" />
-    </bean>
+  <bean id="rssIFeedAtomFeed" class="org.springframework.web.util.UriTemplate">
+    <constructor-arg value="${ifeed.rss-feed}"/>
+  </bean>
 
   <bean id="iFeedWebFeed" class="org.springframework.web.util.UriTemplate">
-    <constructor-arg value="${ifeed.web}" />
+    <constructor-arg value="${ifeed.web}"/>
   </bean>
 
   <bean id="iFeedJsonFeed" class="org.springframework.web.util.UriTemplate">
-    <constructor-arg value="${ifeed.json}" />
+    <constructor-arg value="${ifeed.json}"/>
   </bean>
 
   <bean id="iFeedExcelFeed" class="org.springframework.web.util.UriTemplate">
-    <constructor-arg value="${ifeed.excel}" />
+    <constructor-arg value="${ifeed.excel}"/>
   </bean>
 
   <bean id="solrServiceUrl" class="java.lang.String">
-    <constructor-arg value="${solr.service}" />
+    <constructor-arg value="${solr.service}"/>
   </bean>
 
-  <bean id="objectRepo" class="se.vgregion.ifeed.service.ifeed.ObjectRepo" />
+  <bean id="objectRepo" class="se.vgregion.ifeed.service.ifeed.ObjectRepo"/>
 
-  <bean id="solrServer" class="se.vgregion.ifeed.service.solr.SolrServerFactory" factory-method="create" scope="prototype">
+  <bean id="ldapLoginService" class="se.vgregion.ifeed.service.LdapLoginService"/>
+
+  <bean id="solrServer" class="se.vgregion.ifeed.service.solr.SolrServerFactory" factory-method="create"
+        scope="prototype">
   </bean>
 
   <bean id="iFeedSolrQuery" class="se.vgregion.ifeed.service.solr.IFeedSolrQuery" scope="prototype">
-    <constructor-arg ref="solrServer" />
-    <constructor-arg ref="iFeedService" />
-    <property name="rows" value="501" />
-    <property name="showDebugInfo" value="true" />
+    <constructor-arg ref="solrServer"/>
+    <constructor-arg ref="iFeedService"/>
+    <property name="rows" value="501"/>
+    <property name="showDebugInfo" value="true"/>
   </bean>
 
   <bean id="solrQueryBuilderDummy" class="se.vgregion.ifeed.service.solr.SolrQueryBuilder">
@@ -60,36 +59,36 @@
   </bean>
 
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
-    <property name="iFeedRepo" ref="iFeedRepo" />
-    <property name="fieldsInfRepo" ref="fieldsInfRepo" />
-    <property name="departmentRepo" ref="departmentRepo" />
-    <property name="solrServiceUrl" value="${solr.service}" />
-    <property name="objectRepo" ref="objectRepo" />
+    <property name="iFeedRepo" ref="iFeedRepo"/>
+    <property name="fieldsInfRepo" ref="fieldsInfRepo"/>
+    <property name="departmentRepo" ref="departmentRepo"/>
+    <property name="solrServiceUrl" value="${solr.service}"/>
+    <property name="objectRepo" ref="objectRepo"/>
   </bean>
 
   <bean id="iFeedRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
-    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.IFeed" />
+    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.IFeed"/>
   </bean>
 
   <bean id="fieldsInfRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
-    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.FieldsInf" />
+    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.FieldsInf"/>
   </bean>
 
   <bean id="departmentRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
-    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.VgrDepartment" />
+    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.VgrDepartment"/>
   </bean>
 
   <bean id="metadataRepo" class="se.vgregion.dao.domain.patterns.repository.db.jpa.DefaultJpaRepository">
-    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.Metadata" />
+    <constructor-arg type="java.lang.Class" value="se.vgregion.ifeed.types.Metadata"/>
   </bean>
 
   <bean id="alfrescoDocumentService" class="se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService">
-    <constructor-arg value="${alfresco.metadata.service}" />
+    <constructor-arg value="${alfresco.metadata.service}"/>
     <constructor-arg>
       <bean class="org.springframework.web.client.RestTemplate">
         <property name="messageConverters">
           <list>
-            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
           </list>
         </property>
       </bean>
@@ -104,8 +103,8 @@
   </bean>
 
   <bean name="metadataService" class="se.vgregion.ifeed.service.metadata.MetadataServiceImpl">
-    <constructor-arg ref="vocabularyService" />
-    <constructor-arg ref="metadataRepo" />
+    <constructor-arg ref="vocabularyService"/>
+    <constructor-arg ref="metadataRepo"/>
     <property name="metadataRoots">
       <set>
         <value>Dokumentstatus</value>

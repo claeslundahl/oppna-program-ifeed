@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        locale="SV" encoding="UTF-8" contentType="text/html">
+
+  <h2>Fältinställningar</h2>
+
+  <h:form styleClass="clearfix" id="field-config" acceptcharset="UTF-8">
+
+    <p:inputTextarea rows="8" cols="200" style="width: 97%; overflow-y: auto;"
+                     styleClass="mdl-textfield__input auto-grow"
+                     value="#{iFeedBackingBean.fieldInfString}">
+    </p:inputTextarea>
+
+    <h:commandButton styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" value="Spara"
+                     ajax="false" async="false" actionListener="#{iFeedBackingBean.saveFieldInfString()}"/>
+
+    <h:commandButton styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" value="Avbryt"
+                     type="submit"
+                     ajax="false" async="false"
+                     actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
+    </h:commandButton>
+    <script type="text/javascript">
+      autosize($('.auto-grow'));
+    </script>
+  </h:form>
+
+</f:view>

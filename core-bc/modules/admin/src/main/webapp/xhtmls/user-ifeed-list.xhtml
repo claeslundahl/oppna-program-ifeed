@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+>
+
+  <div class="">
+    <div class="">
+        <h1>Administrera dokumentflöden</h1>
+    </div>
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--6-col">
+        <h:outputText value="Välkommen till iFeed Manager. Här kan du skapa och administrera dokumentpubliceringar.
+            Innehållet i dokumentpubliceringen styrs av vilka metadata man valt att filtrera på.
+            Det val man gjort sparas som ett feed, länken till feedet kan användas för att t.ex visa listan på intranätet,
+             internet eller regionportalen. Man måste spara sina ändringar innan dom slår igenom i feedet."></h:outputText>
+      </div>
+      <div class="mdl-cell mdl-cell--6-col">
+          <p:commandLink actionListener="#{navigationModelBean.setUiNavigation('ADMIN_DEPARTMENTS')}"
+                         styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                         value="#{app.isSuperUser() ? 'Ändra förvaltningar' : 'Ändra grupper'}"
+                         update=":ifeed_view" ajax="true" async="true"/>
+
+          <p:commandLink actionListener="#{navigationModelBean.setUiNavigation('FIELD_CONFIG')}"
+                         styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" value="Fältinställningar"
+                         rendered="#{app.isSuperUser() or true}"
+                         update=":ifeed_view" ajax="true" async="true"/>
+
+          <p:commandLink actionListener="#{app.goToAddIfeed()}"
+                         styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" value="Lägg till iFeed"
+                         update=":ifeed_view" ajax="true" async="true"/>
+
+        </div>
+    </div>
+    <div class="">
+      <div class="span12 first last">
+        <br/>
+        <ui:include src="list.xhtml"/>
+
+      </div>
+    </div>
+  </div>
+
+</f:view>

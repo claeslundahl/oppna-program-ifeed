@@ -1,19 +1,18 @@
 package se.vgregion.ifeed.el;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import se.vgregion.ifeed.formbean.BaseVgrOrganization;
-import se.vgregion.ifeed.formbean.VgrOrganization;
+import se.vgregion.ifeed.admin.formbean.BaseVgrOrganization;
+import se.vgregion.ifeed.admin.formbean.VgrOrganization;
 import se.vgregion.ldap.LdapSupportService;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class Json {
@@ -38,10 +37,10 @@ public class Json {
     }
 
     public static String vgrHsaIdToJson(String id, Integer maxHits) throws JsonGenerationException,
-            JsonMappingException, IOException {
+        JsonMappingException, IOException {
 
         List<VgrOrganization> findings = ldapSupportService.find(new BaseVgrOrganization("Ou=Org", id),
-                VgrOrganization.class);
+            VgrOrganization.class);
 
         if (maxHits != null && findings.size() > maxHits.intValue()) {
             VgrOrganization vo = new VgrOrganization();
@@ -54,7 +53,7 @@ public class Json {
     }
 
     public static String dnToJson(String id, Integer maxHits) throws JsonGenerationException,
-            JsonMappingException, IOException {
+        JsonMappingException, IOException {
 
         BaseVgrOrganization sample = new BaseVgrOrganization();
         sample.setDn(id);

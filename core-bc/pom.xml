@@ -6,7 +6,8 @@ This is the Business Component Maven POM.
 Template version: 1.5-SNAPSHOT
 Generation time : 2011-01-14 11:17:18 CET
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <dependencies>
     <dependency>
@@ -33,18 +34,19 @@ Generation time : 2011-01-14 11:17:18 CET
     <module>composites/webcomp</module>
     <module>composites/ldap</module>
     <module>modules/web-script</module>
-    <module>modules/portlet</module>
+    <!-- <module>modules/portlet</module> -->
     <module>modules/intsvc</module>
     <module>modules/web</module>
     <module>modules/web-batch</module>
+    <module>modules/admin</module>
   </modules>
 
-<!--  <dependencies>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>-->
+  <!--  <dependencies>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>-->
 
 </project>

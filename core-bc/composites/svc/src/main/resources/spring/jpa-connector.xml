@@ -24,7 +24,7 @@
     <property name="jpaPropertyMap">
       <map>
         <entry key="hibernate.hbm2ddl.auto" value="auto" />
-        <!--<entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />-->
+        <entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
         <entry key="hibernate.format_sql" value="${hibernate.database.showsql}" />
       </map>
     </property>

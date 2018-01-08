@@ -1,7 +1,7 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
-	version="2.0">
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
   <persistence-unit name="ifeed_pu">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>se.vgregion.ifeed.types.IFeed</class>
@@ -11,6 +11,7 @@
     <class>se.vgregion.ifeed.types.Ownership</class>
     <class>se.vgregion.ifeed.types.VgrDepartment</class>
     <class>se.vgregion.ifeed.types.VgrGroup</class>
+    <class>se.vgregion.ifeed.types.User</class>
     <class>se.vgregion.ifeed.shared.DynamicTableDef</class>
     <class>se.vgregion.ifeed.shared.ColumnDef</class>
     <class>se.vgregion.ifeed.shared.DynamicTableSortingDef</class>

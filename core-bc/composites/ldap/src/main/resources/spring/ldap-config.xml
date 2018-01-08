@@ -75,7 +75,7 @@
   </bean>
 
 
-  <bean id="ldapJsonBean" class="se.vgregion.ifeed.el.Json">
+  <bean id="ldapJsonBean" class="se.vgregion.ifeed.admin.el.Json">
     <property name="ldapSupportService" ref="ldapOrganizationService" />
   </bean>
   

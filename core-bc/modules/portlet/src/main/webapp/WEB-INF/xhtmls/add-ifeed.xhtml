@@ -9,15 +9,15 @@
 
   <p:messages id="error-messages"/>
 
-    <div class="container-fluid">
-        <div class="row-fluid">
+    <div class="">
+        <div class="">
             <div class="span4 first">
-                <h:outputLabel value="Namnge dokumentpubliceringen" />
-                <h:inputText id="title" name="title" value="#{iFeedModelBean.name}" />
+                <h:inputText id="title" name="title" value="#{iFeedModelBean.name}"/>
+                <h:outputLabel value="Namnge dokumentpubliceringen" for="title"/>
             </div>
             <div class="span4">
-                <h:outputLabel value="Beskriv syftet med publiceringen "/>
-                <h:inputTextarea autoResize="false" value="#{iFeedModelBean.description}" maxlength="1000" />
+                <h:inputTextarea id="description" autoResize="false" value="#{iFeedModelBean.description}" maxlength="1000" />
+                <h:outputLabel value="Beskriv syftet med publiceringen " for="description"/>
             </div>
             <div class="span4 last">
                 <h:panelGroup id="addIfeedDepartmentAndGroup" layout="block">

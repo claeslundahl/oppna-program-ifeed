@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui"
         >
 
-    <div class="container-fluid">
+    <div class="">
 
         <div style="float: left;">
             <h1>#{iFeedModelBean.name}
@@ -60,7 +60,7 @@
 
         <div id="basicFeedInfo">
 
-            <h:panelGroup layout="block" styleClass="row-fluid border" style="display:block;" id="basicFeedInfo">
+            <h:panelGroup layout="block" styleClass=" border" style="display:block;" id="basicFeedInfo">
                 <div class="span4 first">
                     <h:panelGroup>
                         <h:outputText style="font-weight: bold;" value="Namn: "></h:outputText>
@@ -215,7 +215,7 @@
         </div>
     </div>
 
-    <div class="container-fluid">
+    <div class="">
         <h3 style="display: inline;">
             EPI-konfigurationer (JSON):
         </h3>
@@ -244,7 +244,7 @@
     </div>
 
 
-    <div class="container-fluid">
+    <div class="">
         <h3 style="display: inline;">
             Filter:
         </h3>
@@ -282,9 +282,9 @@
     </div>
 
 
-    <div class="container-fluid">
+    <div class="">
 
-        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{app.inEditMode}">
+        <h:panelGroup layout="block" styleClass="" rendered="#{app.inEditMode}">
             <div class="span4 first">
                 <ui:include src="add-filter.xhtml"/>
             </div>
@@ -296,7 +296,7 @@
             </div>
         </h:panelGroup>
 
-        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{!app.inEditMode}">
+        <h:panelGroup layout="block" styleClass="" rendered="#{!app.inEditMode}">
             <div class="span6 first">
                 <ui:include src="results.xhtml"/>
             </div>

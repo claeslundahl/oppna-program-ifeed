@@ -1,0 +1,229 @@
+<ui:component id="jsonpMaker"
+              xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:f="http://java.sun.com/jsf/core"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+>
+
+  <!-- #{app.fixDublicateIdProblem()} -->
+
+  <h:panelGroup id="editJsonpDialogWindowFirst">
+    <div>
+      <h:panelGrid columns="3" border="1" cellpadding="5" cellspacing="2" styleClass="rp-table">
+        <f:facet name="header">
+          <h:outputText value="Inställningar för listan"/>
+        </f:facet>
+
+        <h:outputText value="Namn" rendered="#{app.mayEditFeed(request, iFeedModelBean)}"/>
+        <h:inputText value="#{tableDef.name}" rendered="#{app.mayEditFeed(request, iFeedModelBean)}" styleClass="mdl-textfield__input">
+          <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:inputText>
+        <h:outputText
+            value="Skriv ett namn som representerar den här flödesdeklarationen. Används bara internt, här på den här vyn."
+            rendered="#{app.mayEditFeed(request, iFeedModelBean)}"/>
+
+        <h:outputText value="Antal rader"/>
+        <h:selectOneMenu value="#{tableDef.maxHitLimit}" id="limit1">
+          <f:selectItem itemValue="0" itemLabel="Ingen begränsning"/>
+          <f:selectItems value="#{fn:split('5,10,20,30,40,50,60,70,80,90,100,150,200', ',')}" itemVar="i"
+                         itemValue="#{i}" itemLabel="#{i}"/>
+          <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:selectOneMenu>
+        <h:outputText value="Välj antal rader du vill begränsa listan till"/>
+
+        <h:outputText value="Dölj EPI högerkolumn "/>
+        <h:selectBooleanCheckbox value="#{tableDef.hideRightColumn}" id="hideRightColumn1">
+          <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:selectBooleanCheckbox>
+        <h:outputText value="Vill du dölja högerkolumnen i EPI-port för att få mer plats?"/>
+
+        <h:outputText value="Välj sorterings-fält"/>
+        <h:selectOneMenu style="text-align:left;" value="#{tableDef.defaultSortColumn}" id="defaultSortColumn1">
+          <f:selectItems value="#{app.fieldInfsAsSelectItemGroups()}"/>
+          <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:selectOneMenu>
+        <h:outputText value="Välj sorteringskolumn"/>
+
+        <h:outputText value="Välj sorterings-ordning"/>
+        <h:selectOneMenu style="text-align:left;" value="#{tableDef.defaultSortOrder}" id="defaultSortOrder1">
+          <f:selectItem itemLabel="Stigande (a - ö)" itemValue="asc"/>
+          <f:selectItem itemLabel="Fallande (ö - a)" itemValue="desc"/>
+          <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:selectOneMenu>
+        <h:outputText value="Välj om sortering skall ske stigande eller fallande"/>
+
+        <h:outputText value="Visa tabellhuvud"/>
+        <h:selectBooleanCheckbox value="#{tableDef.showTableHeader}" id="showTableHeader1">
+          <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:selectBooleanCheckbox>
+        <h:outputText value="Vill du visa tabellhuvudet (rubrikerna för kolumnerna)?"/>
+
+        <h:outputText value="Teckenstorlek"/>
+        <h:selectOneMenu value="#{tableDef.fontSize}" id="fontSize1">
+          <f:selectItem itemValue="auto" itemLabel="Automatisk"/>
+          <f:selectItems value="#{fn:split('10,11,12,13,14,15,16,17,18,19,20', ',')}"/>
+          <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:selectOneMenu>
+        <h:outputText value="Välj teckenstorlek för listan"/>
+
+        <h:outputText value="Länka till orginaldokument"/>
+        <h:selectBooleanCheckbox value="#{tableDef.linkOriginalDoc}" id="linkOriginalDoc1">
+          <f:ajax event="click" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
+        </h:selectBooleanCheckbox>
+        <h:outputText value=""/>
+      </h:panelGrid>
+    </div>
+    <br/>
+    <br/>
+    <h:panelGroup id="jsonpColumns">
+
+      <table class="rp-table">
+        <thead>
+        <tr>
+          <td colspan="5">
+            <div>
+              <h:outputText value="Kolumner"/>
+            </div>
+            <h:commandLink value="Lägg till ny kolumn" id="addColumnLink"
+                           styleClass="rp-link-button secondary">
+              <f:ajax render=":ifeed_view" listener="#{tableDef.createColumn}"/>
+            </h:commandLink>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <h:outputText value="Fält"/>
+          </td>
+          <td>
+            <h:outputText value="Alias"/>
+          </td>
+          <td>
+            <h:outputText value="Justering"/>
+          </td>
+          <td>
+            <h:outputText value="Bredd"/>
+          </td>
+          <td>
+            <h:outputText value="Ta bort"/>
+          </td>
+        </tr>
+
+        </thead>
+
+        <ui:repeat value="#{tableDef.getColumnDefs()}" var="colDef123" varStatus="colDefVarStatus">
+          <tr>
+            <td>
+              <h:selectOneMenu style="text-align:left;" value="#{colDef123.name}"
+                               id="name_#{colDefVarStatus.index}"
+                               immediate="false">
+                <f:selectItems value="#{app.fieldInfsAsSelectItemGroups()}" itemVar="f"
+                               itemValue="#{f.value}" itemLabel="#{f.label}"/>
+                <f:ajax event="change" render=":ifeed_view"
+                        listener="#{app.onTypeChangeInColumnDef(tableDef, colDef123)}"/>
+              </h:selectOneMenu>
+            </td>
+
+            <td>
+              <h:inputText value="#{colDef123.label}" id="label_#{colDefVarStatus.index}" styleClass="mdl-textfield__input">
+                <f:ajax event="change" render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
+              </h:inputText>
+            </td>
+
+            <td>
+              <h:selectOneMenu style="text-align:left;" value="#{colDef123.alignment}"
+                               id="alignment_#{colDefVarStatus.index}">
+                <f:selectItem itemValue="left" itemLabel=" Vänsterställd kolumn "/>
+                <f:selectItem itemValue="right" itemLabel="Högerställd kolumn"/>
+                <f:selectItem itemValue="center" itemLabel="Centrerad kolumn"/>
+                <f:ajax event="change" render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
+              </h:selectOneMenu>
+            </td>
+
+            <td>
+              <h:inputText value="#{colDef123.width}" id="width_#{colDefVarStatus.index}" styleClass="mdl-textfield__input">
+                <f:ajax event="change" render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
+              </h:inputText>
+            </td>
+
+            <td>
+              <h:commandLink styleClass="ui-commandlink ui-widget link-button-trash" value=" "
+                             id="trash_#{colDefVarStatus.index}"
+                             action="#{tableDef.getColumnDefs().remove(colDef123)}">
+                <f:ajax render=":ifeed_view" listener="#{tableDef.toTableMarkup()}"/>
+              </h:commandLink>
+            </td>
+
+          </tr>
+        </ui:repeat>
+      </table>
+    </h:panelGroup>
+    <br/>
+
+    <div>
+      <h:panelGrid columns="1" border="1" cellpadding="0" cellspacing="2" styleClass="rp-table" id="jsonp-result">
+        <f:facet name="header">
+          <h:outputText value="Kod att klistra in"/>
+        </f:facet>
+
+        <h:panelGroup layout="inline" styleClass="">
+          <h3>Förhandsgranskning</h3>
+          <ui:repeat value="#{tableDef.toTableMarkupWithLineBreaks()}" var="markupLine">
+            <h:outputText value="#{markupLine}" styleClass="preformatted"/>
+          </ui:repeat>
+        </h:panelGroup>
+
+        <h:panelGroup layout="block" styleClass="">
+          <div class="span6 first">
+            <div class="button-row">
+              <h:commandLink value="#{app.inEditMode ? 'Avbryt' : 'Tillbaka'}"
+                             styleClass="rp-link-button secondary"
+                             actionListener="#{navigationModelBean.setUiNavigation('VIEW_IFEED')}"
+                             id="closeEditJsonpViewLink"
+                             update=":ifeed_view"
+                             ajax="true">
+              </h:commandLink>
+
+              <h:commandLink value="Spara"
+                             styleClass="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                             actionListener="#{app.putFlowInFeed(tableDef)}"
+                             id="okCloseEditJsonpViewLink"
+                             update=":ifeed_view"
+                             rendered="#{app.mayEditFeed(request, iFeedModelBean)}"
+                             onclick="#{empty tableDef.name ? 'alert(\'Namn måste vara ifyllt innan du godkänner inmatningen.\'); return false;' : ''}"
+                             ajax="true">
+              </h:commandLink>
+            </div>
+          </div>
+          <div class="span6 last">
+            <div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>
+            <button id="rerun-ifeed-loading" style="display:none;">Should be hidden</button>
+          </div>
+
+          <h:outputScript>
+            function on() {
+              if (console) console.log("se.vgregion.ifeed.client.Starter.init()");
+              try {
+                se.vgregion.ifeed.client.Starter.init();
+              } catch(e){
+
+              }
+            }
+            setTimeout(on, 300);
+          </h:outputScript>
+
+        </h:panelGroup>
+
+        <h:panelGroup layout="inline" styleClass="">
+          <h3>Förhandsgranskning</h3>
+          <h:outputText value="#{tableDef.toPostingTableMarkup()}" escape="false"/>
+        </h:panelGroup>
+
+      </h:panelGrid>
+    </div>
+    <br/>
+
+
+  </h:panelGroup>
+
+</ui:component>

@@ -20,59 +20,7 @@
     <pluginManagement>
       <!-- maven-license-plugin helps you managing license headers in source files. -->
       <plugins>
-        <!--
-        <plugin>
-            <groupId>com.mycila.maven-license-plugin</groupId>
-            <artifactId>maven-license-plugin</artifactId>
-            <version>1.8.0</version>
-            <configuration>
-                <header>http://oppna-program.googlecode.com/files/header.txt</header>
-                <skipExistingHeaders>true</skipExistingHeaders>
-                <excludes>
-                    <exclude>target/**</exclude>
-                    <exclude>**/NOTICES.txt</exclude>
-                    <exclude>thirdpartylicenses/**</exclude>
-                    <exclude>**/LICENSE.rtf</exclude>
-                    <exclude>**/context.xml</exclude>
-                    <exclude>**/*.properties</exclude>
-                    <exclude>**/*.sql</exclude>
-                    <exclude>**/*.xsl</exclude>
-                    <exclude>**/sample-atom-feed.xsl</exclude>
-                </excludes>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>format</id>
-                    <phase>process-sources</phase>
-                    <goals>
-                        <goal>format</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>check</id>
-                    <phase>compile</phase>
-                    <goals>
-                        <goal>check</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-        -->
 
-        <plugin>
-          <groupId>org.zeroturnaround</groupId>
-          <artifactId>jrebel-maven-plugin</artifactId>
-          <!--          <version>1.1.3</version>-->
-          <executions>
-            <execution>
-              <id>generate-rebel-xml</id>
-              <phase>process-resources</phase>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
       </plugins>
     </pluginManagement>
   </build>

@@ -8,6 +8,7 @@ import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.sun.faces.component.visit.FullVisitContext;
 import org.apache.commons.beanutils.BeanMap;
+import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.InvocerUtil;
 import se.vgregion.ifeed.el.AccessGuard;
+import se.vgregion.ifeed.formbean.Note;
 import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
@@ -31,7 +33,7 @@ import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
-import se.vgregion.varnish.VarnishClient;
+// import se.vgregion.varnish.VarnishClient;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -51,6 +53,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 /**
  * Created by clalu4 on 2014-06-10.
@@ -144,6 +148,7 @@ public class Application {
     private List<IFeed> page;
     private IFeedResults currentResult = new IFeedResults();
     private Map<String, FieldInf> fieldsByNameIndex;
+    private List<Map<String, Object>> searchResults;
 
     public Application() {
         super();
@@ -344,7 +349,7 @@ public class Application {
             updateQuery();
         } catch (Exception e) {
             LOGGER.error("Trying to update IFeed failed. " + iFeedModelBean == null
-                ? "iFeedModelBean where null." : "iFeedModelBean.id = " + iFeedModelBean.getId(), e);
+                    ? "iFeedModelBean where null." : "iFeedModelBean.id = " + iFeedModelBean.getId(), e);
             throw new RuntimeException(e);
         }
     }
@@ -1019,36 +1024,35 @@ public class Application {
         return multiValueKeys.get();
     }
 
-    private VarnishClient varnishClient;
+    // private VarnishClient varnishClient;
 
     {
         try {
-            this.varnishClient = VarnishClient.newVarnishClient();
+            // this.varnishClient = VarnishClient.newVarnishClient();
         } catch (Exception e) {
             // Do nothing. The client might not be needed.
         }
     }
 
     public String uncache(String thatUrl) {
-        //System.out.println("How many times is this called?");
-        LOGGER.debug("How many times is this called?");
+/*        LOGGER.debug("How many times is this called?");
         if (varnishClient == null) {
             return thatUrl;
         }
-        varnishClient.clear(thatUrl);
+        varnishClient.clear(thatUrl);*/
         return thatUrl;
     }
 
     public String uncacheJson(String thatUrl) {
 
-        LOGGER.debug("How many times is this called?");
+        /*LOGGER.debug("How many times is this called?");
         if (varnishClient == null) {
             return thatUrl;
         }
         if (getIFeedModelBean().getFilters().isEmpty()) {
             return thatUrl;
         }
-        varnishClient.clearJson(thatUrl);
+        varnishClient.clearJson(thatUrl);*/
         return thatUrl;
     }
 
@@ -1068,10 +1072,134 @@ public class Application {
     }
 
     public void copyAndPersistFeed(PortletRequest request, Long withThatKey)
-        throws SystemException, PortalException {
+            throws SystemException, PortalException {
         User user = getUser(request);
         viewIFeed(iFeedService.copyAndPersistFeed(withThatKey, user.getScreenName()).getId());
         setInEditMode(true);
     }
 
+
+    @Autowired
+    private SolrServer solrServer;
+
+    public void updateSearchResults() {
+        if (searchResults == null) {
+            searchResults = new ArrayList<>();
+        }
+        if (iFeedModelBean.getFilters().isEmpty()) {
+            searchResults.clear();
+        } else {
+            updateSearchResults(iFeedModelBean);
+        }
+    }
+
+    public void updateSearchResults(IFeed retrievedFeed) {
+        updateSearchResults(
+                retrievedFeed,
+                "dc.title",
+                "asc",
+                0,
+                500,
+                new String[]{
+                        "dc.title",
+                        "dc.date.issued"
+                }
+        );
+    }
+
+    public void updateSearchResults(IFeed retrievedFeed,
+                                    String sortField,
+                                    String sortDirection,
+                                    Integer startBy,
+                                    Integer endBy,
+                                    String[] fieldToSelect) {
+        if (retrievedFeed == null) {
+            // Throw 404 if the feed doesn't exist
+            throw new RuntimeException("404");
+        }
+
+        IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
+        if (startBy != null && startBy >= 0) {
+            solrQuery.setStart(startBy);
+            if (endBy != null && endBy > startBy) {
+                solrQuery.setRows(endBy - startBy);
+            }
+        } else {
+            solrQuery.setRows(25000);
+        }
+        solrQuery.setShowDebugInfo(true);
+        List<Map<String, Object>> result = null;
+
+        result = solrQuery.getIFeedResults(retrievedFeed, sortField,
+                getEnum(IFeedSolrQuery.SortDirection.class, sortDirection), fieldToSelect);
+
+        for (Map<String, Object> item : result) {
+            String alfrescoId = (String) item.get("dc.identifier.documentid");
+            alfrescoId = alfrescoId.replace("workspace://SpacesStore/", "");
+            item.put("alfrescoId", alfrescoId);
+            formatDates(item);
+        }
+
+        this.searchResults = result;
+    }
+
+    private void formatDate(String withThatKey, Map<String, Object> insideHere) {
+        String issued = (String) insideHere.get(withThatKey);
+        if (issued != null && issued.contains("T")) {
+            String[] parts = issued.split(Pattern.quote("T"));
+            issued = parts[0];
+        }
+        insideHere.put(withThatKey, issued);
+    }
+
+    private void formatDates(Map<String, Object> within) {
+        formatDate("dc.date.validfrom", within);
+        formatDate("dc.date.issued", within);
+        formatDate("dc.date.validto", within);
+    }
+
+    public static List<Note> toTooltipRows(Map<String, Object> item) {
+        if (item == null) {
+            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
+        }
+
+        List<Note> result = new ArrayList<>();
+
+        toTooltipRow(item, "dc.title", "Titel", result);
+        toTooltipRow(item, "dc.description", "Beskrivning", result);
+        toTooltipRow(item, "dc.creator.document", "Innehållsansvarig", result);
+        toTooltipRow(item, "dc.creator.function", "Innehållsansvarig, roll", result);
+        toTooltipRow(item, "dc.contributor.acceptedby", "Godkänt av", result);
+        toTooltipRow(item, "dc.date.validfrom", "Giltig fr o m", result);
+        toTooltipRow(item, "dc.date.validto", "Giltig t o m", result);
+        toTooltipRow(item, "dc.type.document.structure", "Dokumentstruktur VGR", result);
+
+        if (result.isEmpty()) {
+            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
+        }
+        return result;
+    }
+
+    private static void toTooltipRow(Map<String, Object> item, String key, String label, List<Note> notes) {
+        Note note = toTooltipRow(item, key, label);
+        if (note != null) {
+            notes.add(note);
+        }
+    }
+
+    public static Note toTooltipRow(Map<String, Object> item, String key, String label) {
+        Object value = item.get(key);
+        if (value == null || value.toString().isEmpty()) {
+            return null;
+        }
+        return new Note(label, String.valueOf(value));
+    }
+
+    public List<Map<String, Object>> getSearchResults() {
+        return searchResults;
+    }
+
+    public void setSearchResults(List<Map<String, Object>> searchResults) {
+        this.searchResults = searchResults;
+    }
 }

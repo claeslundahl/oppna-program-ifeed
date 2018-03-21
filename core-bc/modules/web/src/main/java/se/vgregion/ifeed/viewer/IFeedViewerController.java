@@ -355,7 +355,7 @@ public class IFeedViewerController {
                                    Integer endBy,
                                    String fromPage,
                                    String[] fieldToSelect) {
-    Util.setLocalValue(retrievedFeed);
+    // Util.setLocalValue(retrievedFeed);
 
     if (fromPage != null && !"".equals(fromPage.trim())) {
       Integer i = callsToJsonpMetadata.get(fromPage);

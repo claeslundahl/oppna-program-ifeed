@@ -245,6 +245,9 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         // IFeed result = iFeedRepo.find(id);
 
         IFeed result = objectRepo.findByPrimaryKey(IFeed.class, id);
+        if (result == null) {
+            throw new RuntimeException();
+        }
         initializedFeeds.set(null);
         for (DynamicTableDef dtd : result.getDynamicTableDefs()) {
             dtd.getExtraSorting();

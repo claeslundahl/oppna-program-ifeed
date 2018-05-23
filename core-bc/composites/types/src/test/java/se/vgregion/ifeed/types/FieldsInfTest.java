@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -39,8 +41,23 @@ public class FieldsInfTest {
         System.out.println(filter.getFieldInf().getName());
     }
 
+    @Test
+    public void produceJson() throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        FieldsInf fi = new FieldsInf();
+        fi.setText(loadFieldsConfigText());
+        List<FieldInf> result = fi.getFieldInfs();
+        String json = gson.toJson(result);
+        System.out.println(
+                json
+        );
+
+        System.out.println(json.length());
+    }
+
     private String loadFieldsConfigText() throws IOException {
-        URL url = FieldsInfTest.class.getResource("/fields-config.txt");
+        URL url = FieldsInfTest.class.getResource("/fields-config.json");
         FileReader fr = new FileReader(url.getFile());
         FieldsInf fi = new FieldsInf();
 

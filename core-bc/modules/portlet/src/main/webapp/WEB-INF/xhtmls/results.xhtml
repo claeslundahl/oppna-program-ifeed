@@ -76,7 +76,7 @@
                    styleClass="alert alert-info"
                    rendered="#{app.searchResults.size() eq 500}"/>
 
-    <table class="doc-list">
+    <table class="doc-list" style="#{empty app.searchResults ? 'display:none;' : ''}">
         <tbody>
         <tr>
             <th></th>

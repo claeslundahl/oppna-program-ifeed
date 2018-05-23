@@ -107,6 +107,8 @@ public class Application {
 
     private String solrServiceUrl;
 
+    private String selectedFieldInfRootName;
+
     private VgrGroup group;
 
     private FieldInf newFilter;
@@ -149,6 +151,7 @@ public class Application {
     private IFeedResults currentResult = new IFeedResults();
     private Map<String, FieldInf> fieldsByNameIndex;
     private List<Map<String, Object>> searchResults;
+    private Map<String, FieldInf> filtersMap;
 
     public Application() {
         super();
@@ -258,6 +261,11 @@ public class Application {
         }
 
         this.filters = iFeedService.getFieldInfs();
+        selectedFieldInfRootName = filters.get(0).getName();
+        this.filtersMap = new HashMap<>();
+        for (FieldInf root : filters) {
+            filtersMap.put(root.getName(), root);
+        }
 
         navigationModelBean.setUiNavigation("VIEW_IFEED");
         setInEditMode(false);
@@ -1202,4 +1210,21 @@ public class Application {
     public void setSearchResults(List<Map<String, Object>> searchResults) {
         this.searchResults = searchResults;
     }
+
+    public String getSelectedFieldInfRootName() {
+        return selectedFieldInfRootName;
+    }
+
+    public void setSelectedFieldInfRootName(String selectedFieldInfRootName) {
+        this.selectedFieldInfRootName = selectedFieldInfRootName;
+    }
+
+    public Map<String, FieldInf> getFiltersMap() {
+        return filtersMap;
+    }
+
+    public void setFiltersMap(Map<String, FieldInf> filtersMap) {
+        this.filtersMap = filtersMap;
+    }
+
 }

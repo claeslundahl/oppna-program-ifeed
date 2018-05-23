@@ -1,21 +1,17 @@
 package se.vgregion.ifeed.types;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.sf.cglib.beans.BeanMap;
+import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
-import net.sf.cglib.beans.BeanMap;
-import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 @Entity
 @Table(name = "vgr_fields_inf")
@@ -36,7 +32,7 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
 
     private String creatorId;
 
-    @Column(length = 100000)
+    @Column(length = 200_000)
     private String text;
 
     @Override
@@ -73,6 +69,11 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
     }
 
     public List<FieldInf> getFieldInfs() {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson("{ fieldInfs: " + text.trim() + "}", FieldsJsonWrapper.class).getFieldInfs();
+    }
+
+    public List<FieldInf> getFieldInfsOld() {
         List<FieldInf> result = new ArrayList<FieldInf>();
 
         String[] rows = getText().split(Pattern.quote("\n"));
@@ -152,6 +153,29 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
     @Override
     public int compareTo(FieldsInf o) {
         return (int) (id - o.id);
+    }
+
+    public static class FieldsJsonWrapper {
+
+        public FieldsJsonWrapper() {
+            super();
+        }
+
+        public FieldsJsonWrapper(List<FieldInf> fieldInfs) {
+            super();
+            this.fieldInfs = fieldInfs;
+        }
+
+        private List<FieldInf> fieldInfs;
+
+        public List<FieldInf> getFieldInfs() {
+            return fieldInfs;
+        }
+
+        public void setFieldInfs(List<FieldInf> fieldInfs) {
+            this.fieldInfs = fieldInfs;
+        }
+
     }
 
 }

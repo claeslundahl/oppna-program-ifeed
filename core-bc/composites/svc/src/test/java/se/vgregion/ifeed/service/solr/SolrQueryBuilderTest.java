@@ -43,7 +43,9 @@ public class SolrQueryBuilderTest {
         String expectedQueryString = "language:Svenska";
 
         IFeedFilter filter = new IFeedFilter(Filter.LANGUAGE, "Svenska", "foo.bar.baz");
-        String queryString = SolrQueryBuilder.createQuery(filter, iFeedService.mapFieldInfToId());
+        Map<String, FieldInf> map = iFeedService.mapFieldInfToId();
+
+        String queryString = SolrQueryBuilder.createQuery(filter, map);
         assertEquals(expectedQueryString, queryString);
     }
 
@@ -65,11 +67,6 @@ public class SolrQueryBuilderTest {
         IFeedFilter filter = new IFeedFilter(Filter.VALID_TO_DATE, toDate, "foo.bar.baz");
         String queryString = SolrQueryBuilder.createQuery(filter, iFeedService.mapFieldInfToId());
         assertEquals(expectedQueryString, queryString);
-    }
-
-    public static void main(String[] args) {
-        System.out.println("+123".matches("[\\\\+\\\\-][0-9]+"));
-        System.out.println("-123".matches("[\\\\+\\\\-][0-9]+"));
     }
 
 }

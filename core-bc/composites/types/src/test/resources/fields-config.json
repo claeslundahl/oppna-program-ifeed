@@ -8,37 +8,15 @@
     "children": [
       {
         "id": "",
-        "name": "Dokumentegenskaper",
+        "name": "Dokumentutsökning",
         "help": "",
         "type": "",
         "apelonKey": "",
         "children": [
           {
-            "id": "dc.type.process.name",
-            "name": "Processnamn",
-            "help": "Sammanhållen hantering som avgränsas och namnges av verksamheten. (Fritext)",
-            "type": "d:text",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "dc.type.document",
-            "name": "Gruppering av handlingstyper",
-            "help": "Grupp av handlingstyper, används för att enklare hitta handlingstyp",
-            "type": "d:text_fix",
-            "apelonKey": "Dokumenttyp VGR",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "dc.source.documentid",
-            "name": "Dokumentid källa",
-            "help": "För systemet unikt id för dokumentet. (Systemstyrt)",
+            "id": "core_ArchivalObject_core_Producer",
+            "name": "Myndighet",
+            "help": "Myndighet",
             "type": "d:text_facet",
             "apelonKey": "",
             "children": [],
@@ -47,10 +25,87 @@
             "expanded": false
           },
           {
-            "id": "dc.publisher.forunit.id",
-            "name": "Publicerat för enhet ID (VGR:s organisationsträd)",
-            "help": "ID för den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)",
+            "id": "core_ArchivalObject_core_Classification_core_Classification_name",
+            "name": "Klassificeringsstrukturen (process)",
+            "help": "Klassificeringsstrukturen (process)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core_ArchivalObject_core_ObjectType",
+            "name": "Handlingstyp",
+            "help": "Handlingstyp",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr_VgrExtension_vgr_PublishedForUnit_id",
+            "name": "Upprättat för enhet",
+            "help": "Upprättat för enhet",
             "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgrsy_DomainExtension_vgrsy_SubjectClassification",
+            "name": "Regional ämnesindelning",
+            "help": "Regional ämnesindelning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgrsy_DomainExtension_vgrsy_SubjectLocalClassification",
+            "name": "Egen ämnesindelning",
+            "help": "Egen ämnesindelning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr_VgrExtension_vgr_Tag",
+            "name": "Företagsnyckelord",
+            "help": "Företagsnyckelord",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core_ArchivalObject_core_ObjectType",
+            "name": "Handlingstyp",
+            "help": "Handlingstyp",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr_VgrExtension_vgr_SourceSystem",
+            "name": "Källsystem",
+            "help": "Källsystem",
+            "type": "d:text_facet",
             "apelonKey": "",
             "children": [],
             "filter": true,
@@ -59,6 +114,69 @@
           }
         ],
         "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Statistik-fält",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "vgr_VgrExtension_vgr_CreatedByUnit_id",
+            "name": "Upprättat av enhet",
+            "help": "Upprättat av enhet",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },{
+            "id": "vgr_VgrExtension_vgr_CreatedBy",
+            "name": "Upprättat av (person)",
+            "help": "Upprättat av (person)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },{
+            "id": "vgr_VgrExtension_vgr_RevisedAvailableFrom",
+            "name": "Tillgänglighetsdatum from",
+            "help": "Tillgänglighetsdatum from",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },{
+            "id": "vgr_VgrExtension_vgr_RevisedAvailableTo",
+            "name": "Tillgänglighetsdatum tom",
+            "help": "Tillgänglighetsdatum tom",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },{
+            "id": "vgr_VgrExtension_vgr_SecurityClass",
+            "name": "Åtkomsträtt",
+            "help": "Åtkomsträtt",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": true,
         "inHtmlView": true,
         "expanded": false
       }

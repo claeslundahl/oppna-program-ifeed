@@ -98,23 +98,14 @@
                         <ui:repeat value="#{app.toTooltipRows(value)}" var="tip">
                             <div style="max-width:450px;">
                                 <div><b><h:outputText for="tip-value" value="#{tip.label}:"/></b></div>
-                                <div style="padding-bottom: 4px;"><h:outputText id="tip-value" value="#{tip.text}"/></div>
+                                <div style="padding-bottom: 4px;"><h:outputText id="tip-value" value="#{tip.text}"/>
+                                </div>
                             </div>
                         </ui:repeat>
                     </p:tooltip>
 
-                    <!--          <a href="#{app.webScriptJsonUrl}/iFeed-web/documents/#{value['alfrescoId']}/metadata" target="_blank">
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACoElEQVR42q2T3U+SYRjG/VvgT+B9PaiD8qC51odvkHpgWWGZqK10FWWDVX4FaPKRIA2B/MrETIWSlKSA14/eUCDMjzcHZtDWVieStSyvHmnTuTmPfLbf2XNd9309z31nZOz1Ycy88Lgpqjiqj/CHGoIrWRpu5aBmkj+gmVDsU7PC3cWmWclhXSRZag/B7o2jj11OY/PEIDVNgFZ4kpRyRLKj+JgpKslunE41DM7DHUyidTiOWscs7j75AJ1zHg7fEur6oqDLBlLU5cHtJkeMEUF201RiQ+x8m4SCiG52htEd+IRu/xKut4Ug7wij7dUiantDoIsdCepcr2DTIFs/pSyxBOHivqCqMwo5iXDVOo0fv9bSVFg5VLRykD8KovN1DAXql6ALOpSbBln3Od7micPg5HHNPo1KaxAVFg7t3kW0EcrM7H9aAiRWGKbhOWTmWflNg/217Gr/5GdUtYdIpXcofzhOLrPYOOsEmdGPkgdvCD5cavHDwcZASZpXNw1opXf12fhyOutGpVJTgIgCiMa/I/VzDcVaLy40jeI8QaYfRc8YMWD0WwaZyhHe4uGhejqD8pZxyJr9uGh4g/exb8TgN4o0IygiuaVqN260sjC4I8gUa7ci0HK3slDnRbcvjnIjC5nOBze3hD9/19MRQh+/orDWRXDC/DyKvFt9oE9otx6RutIroGWOxJ2eabR5FlCsG4W0YRhnVEMorHHidPUATlX3o7EnSL53jLSvSlDiesG2WaCkXRJRri2leMzBNjIHucVPWn6Bs3UuVBpHYXKGIW9nQefUpChGvfM0Unl2CZVrTubfHoRhaAZdfp6wAK0rAnGVA1ROXZJi6iW77oMo3ywUnWxWUGI9TzGaFSrn3komo+JpRqUQMdXCPd/ef9SW0N736u7wAAAAAElFTkSuQmCC"
-                                     width="16" height="16" class="gwt-Image" id="yui_patched_v3_11_0_1_1515744592927_549"
-                                     title="#{app.toTooltipRows(value)}"></img>
-
-                              </a>-->
-
                 </td>
                 <td>
-                    <!--
-                    https://alfresco-stage.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/3ec21181-fa63-4bd0-8248-070a7e026e85?a=false&guest=true
-                    -->
                     <a href="#{value['url']}" target="_blank">
                         #{value['dc.title']}
                     </a>

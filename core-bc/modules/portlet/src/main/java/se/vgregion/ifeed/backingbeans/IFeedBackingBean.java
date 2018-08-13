@@ -331,6 +331,7 @@ public class IFeedBackingBean implements Serializable {
             inf.setVersion(0l);
         }
         iFeedService.storeFieldsInf(inf);
+        FieldsInf.putDataIntoCache(fieldInfString);
         this.navigationModelBean.setUiNavigation("USER_IFEEDS");
     }
 

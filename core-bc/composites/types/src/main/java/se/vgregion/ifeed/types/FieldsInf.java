@@ -2,11 +2,17 @@ package se.vgregion.ifeed.types;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import net.sf.cglib.beans.BeanMap;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +20,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 @Entity
-@Table(name = "vgr_fields_inf")
+@Table(name = "vgr_ifeed_fields_inf")
 public class FieldsInf extends AbstractEntity<Long> implements Serializable, Comparable<FieldsInf> {
 
     private static final long serialVersionUID = 1L;
@@ -65,12 +71,32 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
     }
 
     public void setText(String text) {
+        toList(text);
         this.text = text;
     }
 
+    private List<FieldInf> toList(String json) {
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            return gson.fromJson(json, List.class);
+        } catch (JsonSyntaxException je) {
+            throw new RuntimeException("Could not parse: " + json, je);
+        }
+    }
+
+    private List<FieldInf> toList() {
+        return toList(getText());
+    }
+
     public List<FieldInf> getFieldInfs() {
-        Gson gson = new GsonBuilder().create();
-        return gson.fromJson("{ fieldInfs: " + text.trim() + "}", FieldsJsonWrapper.class).getFieldInfs();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String t = "{ \"fieldInfs\": " + text.trim() + "}";
+
+        FieldsJsonWrapper result = gson.fromJson(t, FieldsJsonWrapper.class);
+        for (FieldInf fi : result.getFieldInfs()) {
+            fi.init();
+        }
+        return result.getFieldInfs();
     }
 
     public List<FieldInf> getFieldInfsOld() {
@@ -176,6 +202,34 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
             this.fieldInfs = fieldInfs;
         }
 
+    }
+
+    public static void putDataIntoCache(String jsonTxt) {
+        try {
+            putDataIntoCacheImp(jsonTxt);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void putDataIntoCacheImp(String jsonTxt) throws IOException {
+        File userHome = new File(System.getProperty("user.home"));
+        Path path = Paths.get(userHome.getAbsolutePath(), ".hotell", "ifeed", "fields.cache.json");
+        Files.write(path, jsonTxt.getBytes());
+    }
+
+    public static String getDataFromCache() {
+        try {
+            return getDataFromCacheImp();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String getDataFromCacheImp() throws IOException {
+        File userHome = new File(System.getProperty("user.home"));
+        Path path = Paths.get(userHome.getAbsolutePath(), ".hotell", "ifeed", "fields.cache.json");
+        return new String(Files.readAllBytes(path));
     }
 
 }

@@ -1,12 +1,12 @@
 package se.vgregion.ifeed.types;
 
+import net.sf.cglib.beans.BeanMap;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.sf.cglib.beans.BeanMap;
 
 public class FieldInf implements Serializable {
 
@@ -16,6 +16,8 @@ public class FieldInf implements Serializable {
 
     private boolean filter, inHtmlView, expanded;
     private String operator;
+
+    private transient FieldInf parent;
 
     public String getId() {
         return id;
@@ -59,9 +61,10 @@ public class FieldInf implements Serializable {
 
     @Override
     public String toString() {
-        BeanMap bm = BeanMap.create(this);
+        return FieldInf.class.getSimpleName() + "(" + getId() + ")";
+        /*BeanMap bm = BeanMap.create(this);
         Map<?, ?> outer = new HashMap<Object, Object>(bm);
-        return outer.toString();
+        return outer.toString();*/
     }
 
     public boolean isLabel() {
@@ -135,4 +138,20 @@ public class FieldInf implements Serializable {
     public void setOperator(String operator) {
         this.operator = operator;
     }
+
+    public FieldInf getParent() {
+        return parent;
+    }
+
+    public void setParent(FieldInf parent) {
+        this.parent = parent;
+    }
+
+    public void init() {
+        for (FieldInf child : children) {
+            child.setParent(this);
+            child.init();
+        }
+    }
+
 }

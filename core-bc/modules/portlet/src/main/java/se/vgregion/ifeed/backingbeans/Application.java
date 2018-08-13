@@ -683,28 +683,38 @@ public class Application {
         tableDefModel.toTableMarkup();
     }
 
+    public List<SelectItem> getRootFieldInfs() {
+        List<SelectItem> result = new ArrayList<>();
+        for (FieldInf fi : getFilters()) {
+            result.add(new SelectItem(fi.getId(), fi.getName()));
+        }
+        return result;
+    }
+
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
         Set<String> blackList = getMultiValueKeys();
-        List<SelectItemGroup> result = new ArrayList<SelectItemGroup>();
+        List<SelectItemGroup> result = new ArrayList();
         if (filters == null) {
             this.filters = iFeedService.getFieldInfs();
         }
         for (FieldInf parent : getFilters()) {
-            SelectItemGroup group = new SelectItemGroup(parent.getName());
-            //SelectItem[] selectItems = new SelectItem[parent.getChildren().size()];
-            List<SelectItem> items = new ArrayList<SelectItem>();
-            int c = 0;
+
             for (FieldInf child : parent.getChildren()) {
-                if (child.isInHtmlView()) {
-                    //selectItems[c++] = new SelectItem(child.getId(), child.getName());
-                    if (!blackList.contains(child.getId())) {
-                        items.add(new SelectItem(child.getId(), child.getName()));
+                SelectItemGroup group = new SelectItemGroup(child.getName() + " (" + parent.getName() + ")");
+                List<SelectItem> items = new ArrayList<SelectItem>();
+
+                for (FieldInf grandChild : child.getChildren()) {
+                    if (grandChild.isInHtmlView()) {
+                        if (!blackList.contains(grandChild.getId())) {
+                            items.add(new SelectItem(grandChild.getId(), grandChild.getName()));
+                        }
                     }
                 }
+
+                group.setSelectItems(items.toArray(new SelectItem[items.size()]));
+                result.add(group);
             }
-            //group.setSelectItems(selectItems);
-            group.setSelectItems(items.toArray(new SelectItem[items.size()]));
-            result.add(group);
+
         }
         return result;
     }
@@ -1027,7 +1037,7 @@ public class Application {
 
     public Set<String> getMultiValueKeys() {
         if (multiValueKeys.get() == null) {
-            multiValueKeys = new WeakReference<>(InvocerUtil.getKeysWithMultiValues());
+            multiValueKeys = new WeakReference<>(InvocerUtil.getKeysWithMultiValues(iFeedService.getFieldsInfs()));
         }
         return multiValueKeys.get();
     }

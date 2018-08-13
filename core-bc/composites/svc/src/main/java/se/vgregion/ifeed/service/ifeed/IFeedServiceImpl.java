@@ -531,7 +531,9 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     public List<FieldsInf> getFieldsInfs() {
-        return new ArrayList<FieldsInf>(fieldsInfRepo.findByQuery("select fi from FieldsInf fi order by fi.version asc, fi.id asc"));
+        // return new ArrayList<FieldsInf>(fieldsInfRepo.findByQuery("select fi from FieldsInf fi order by fi.version asc, fi.id asc"));
+        ArrayList<FieldsInf> result = new ArrayList<FieldsInf>(fieldsInfRepo.findByQuery("select fi from FieldsInf fi order by fi.id asc"));
+        return result;
     }
 
     @Transactional

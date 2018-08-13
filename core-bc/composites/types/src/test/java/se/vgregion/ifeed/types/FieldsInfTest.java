@@ -66,7 +66,13 @@ public class FieldsInfTest {
             sb.append((char) c);
         }
 
-        return sb.toString();
+        return sb.toString().trim();
+    }
+
+    @Test
+    public void getDataFromCache() {
+        FieldsInf.putDataIntoCache("[]");
+        System.out.println(FieldsInf.getDataFromCache());
     }
 
 }

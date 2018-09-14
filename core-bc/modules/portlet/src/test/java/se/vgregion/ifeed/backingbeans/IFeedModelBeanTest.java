@@ -12,7 +12,7 @@ public class IFeedModelBeanTest {
         IFeed iFeed = new IFeed();
 
         System.out.println(iFeedModelBean.toJson());
-        System.out.println(iFeed.toJson());
+        // System.out.println(iFeed.toJson());
     }
 
 }

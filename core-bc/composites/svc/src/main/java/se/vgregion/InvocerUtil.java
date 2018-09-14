@@ -5,6 +5,7 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.service.solr.SolrHttpClient;
 import se.vgregion.ifeed.service.solr.SolrServerFactory;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
@@ -97,9 +98,11 @@ public class InvocerUtil {
 
     public static Set<String> getKeysWithMultiValues(final List<FieldsInf> fieldsToUseInTheSearch) {
         try {
-            InvocerUtil invocerUtil = new InvocerUtil();
-            IFeedResults result = invocerUtil.findByDocumentName("*", fieldsToUseInTheSearch);
-            for (Map<String, Object> map : result) {
+            /*InvocerUtil invocerUtil = new InvocerUtil();
+            IFeedResults result = invocerUtil.findByDocumentName("*", fieldsToUseInTheSearch);*/
+
+            SolrHttpClient.Result result = SolrHttpClient.newInstanceFromConfig().query("", 0, 500, null);
+            for (Map<String, Object> map : result.getResponse().getDocs()) {
                 return getKeysWithMultiValues(map);
             }
         } catch (Exception e) {
@@ -112,7 +115,7 @@ public class InvocerUtil {
     public static Set<String> getKeysWithMultiValues(Map<String, Object> fromThisSample) {
         Set<String> result = new HashSet<>();
         for (Map.Entry<String, Object> entry : fromThisSample.entrySet()) {
-            if (entry.getValue() instanceof List) {
+            if (entry.getValue() instanceof Collection) {
                 result.add(entry.getKey());
             }
         }

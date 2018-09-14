@@ -6,6 +6,7 @@ import net.sf.cglib.beans.FixedKeySet;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.common.utils.CommonUtils;
+import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
@@ -294,9 +295,9 @@ public class IFeedModelBean extends IFeed implements Serializable {
     }
 
 
-    @Override
+    // @Override
     public String toJson() {
-        return toIFeed().toJson();
+        return Json.toJson(toIFeed()); //.toJson();
     }
 
     public boolean hasAnyFilter() {

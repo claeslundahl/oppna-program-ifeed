@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.shared;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class ColumnDef extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_table_def_id")
+    @Expose(serialize = false, deserialize = true)
     private DynamicTableDef tableDef;
 
     private String name;

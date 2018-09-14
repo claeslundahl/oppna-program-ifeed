@@ -1,8 +1,6 @@
 package se.vgregion.ifeed.service.solr;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.solr.client.solrj.SolrServer;
-import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -17,6 +15,8 @@ import java.util.regex.Pattern;
  * Created by clalu4 on 2014-06-27.
  */
 public class SolrFacetUtil {
+
+    static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     /**
      * Calls the solr server to get facet result of a certain IFeed and field.
@@ -37,19 +37,17 @@ public class SolrFacetUtil {
 
     private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field) throws Exception {
 
-        /*
-        SolrServer solrServer = SolrServerFactory.create();
-        IFeedSolrQuery iFeedSolrQuery = new IFeedSolrQuery(solrServer, null);
-        List<Map<String, Object>> r = iFeedSolrQuery.getIFeedResults(feed, field, IFeedSolrQuery.SortDirection.asc);
+        System.out.println("solrBaseUrl: " + solrBaseUrl);
 
-        if (true == true) {
-            SortedSet<String> values = new TreeSet<>();
-            for (Map<String, Object> map : r) {
-                values.add((String) map.get(field));
-            }
-            return new ArrayList<>(values);
+        if (true) {
+            SolrHttpClient.Result result = client.query(
+                    feed.toQuery(),
+                    0,
+                    10,
+                    field + "%20asc"
+            );
+            return new ArrayList<>(SolrHttpClient.toFacetSet(result, field));
         }
-        */
 
         String fu = facetUrl(solrBaseUrl, feed, field);
         URL url = new URL(fu);
@@ -74,8 +72,6 @@ public class SolrFacetUtil {
         }
 
         Object tree = Json.parse(result);
-
-
 
 
         Map facetCounts = (Map) ((Map) tree).get("facet_counts");

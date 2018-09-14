@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!-- This is the Web-app Maven POM. Template version: 1.5-SNAPSHOT Generation time : 2011-01-14 11:17:18 CET -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>se.vgregion.iFeed</groupId>
+    <artifactId>iFeed-core-bc</artifactId>
+    <version>1.13-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <groupId>se.vgregion.iFeed</groupId>
+  <artifactId>iFeed-core-bc-module-scripts</artifactId>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+
+  <repositories>
+    <repository>
+      <id>liferay-repository</id>
+      <name>Liferay's Maven repository</name>
+      <url>http://oss.sonatype.org/content/groups/public</url>
+    </repository>
+    <!--Added for jsf-->
+
+    <repository>
+      <id>prime-repo</id>
+      <name>PrimeFaces Maven Repository</name>
+      <url>http://repository.primefaces.org</url>
+      <layout>default</layout>
+    </repository>
+    <!--End  - Added for jsf-->
+  </repositories>
+
+  <properties>
+    <gwtVersion>2.8.1</gwtVersion>
+  </properties>
+
+  <build>
+    <finalName>iFeed-scripts</finalName>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>se.vgregion.arbetsplatskoder</groupId>
+      <artifactId>arbetsplatskoder-bc-composite-db-migration-svc</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.1.4</version>
+    </dependency>
+  </dependencies>
+
+</project>

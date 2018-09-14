@@ -24,22 +24,23 @@
     <!-- If you add any GWT meta tags, they must   -->
     <!-- be added before this line.                -->
 
-    <script type="text/javascript" language="javascript" XXXsrc="se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js">
+    <script type="text/javascript" language="javascript"
+            XXXsrc="se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js">
 
-      function find(key, value) {
-        try {
-          var all = document.getElementsByTagName("*");
-          var r = [];
-          for (var i = 0; i < all.length; i++) {
-            var element = all[i];
-            if(element[key] == value) {
-              r[r.length] = element;
+        function find(key, value) {
+            try {
+                var all = document.getElementsByTagName("*");
+                var r = [];
+                for (var i = 0; i < all.length; i++) {
+                    var element = all[i];
+                    if (element[key] == value) {
+                        r[r.length] = element;
+                    }
+                }
+                return r;
+            } catch (e) {
+                window.alert("Problem i querySelectorAll " + e.message);
             }
-          }
-          return r;
-        }catch(e){
-          window.alert("Problem i querySelectorAll " + e.message);
-        }
         }
 
 
@@ -58,7 +59,6 @@
 <body onload="console.log(find('className' , 'ifeedDocList'));">
 
 
-
 <!-- OPTIONAL: include this if you want history support -->
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
         style="position:absolute;width:0;height:0;border:0"></iframe>
@@ -75,15 +75,27 @@
 
 <div id="ifeed-data2-old" style="display:none;">http://vgas0564.vgregion.se:8081</div>
 
-<div class="ifeedDocList" columnes="dc.title|Titel|left|100%" fontsize="auto" defaultsortcolumn="dc.title" defaultsortorder="asc" showtableheader="yes" linkoriginaldoc="no" limit="0" hiderightcolumn="no" feedid="1594612">
+<div class="ifeedDocList" columnes="dc.title|Titel|left|100%" fontsize="auto" defaultsortcolumn="dc.title"
+     defaultsortorder="asc" showtableheader="yes" linkoriginaldoc="no" limit="0" hiderightcolumn="no" feedid="1594612">
 </div>
 
 <td class="ifeed-link-td ifeed-field-title" style="text-align: left; width: 70pc;">
-  <a class="gwt-Anchor" href="https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/1d363e65-3c34-4b38-8340-eb30b73ddb88?a=false&amp;guest=true"
-            target="_blank">Minnesanteckningar DKR Skaraborg 140321
-  </a>
+    <a class="gwt-Anchor"
+       href="https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/1d363e65-3c34-4b38-8340-eb30b73ddb88?a=false&amp;guest=true"
+       target="_blank">Minnesanteckningar DKR Skaraborg 140321
+    </a>
 </td>
 
+
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <symbol id="icon-home" viewBox="0 0 1024 1024">
+            <title>home</title>
+            <path class="path1"
+                  d="M512 96l-512 512 96 96 96-96v416h256v-192h128v192h256v-416l96 96 96-96-512-512zM512 512c-35.346 0-64-28.654-64-64s28.654-64 64-64c35.346 0 64 28.654 64 64s-28.654 64-64 64z"></path>
+        </symbol>
+    </defs>
+</svg>
 
 </body>
 </html>

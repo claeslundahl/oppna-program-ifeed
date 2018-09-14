@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.types;
 
 
+import com.google.gson.annotations.Expose;
 import org.apache.commons.collections.BeanMap;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
@@ -26,8 +27,10 @@ public class VgrGroup extends AbstractEntity<Long> implements Serializable, Comp
 
     private String description;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
+    @Expose(serialize = false, deserialize = false)
     private VgrDepartment department;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)

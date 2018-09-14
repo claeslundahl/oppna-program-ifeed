@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.types;
 
+import com.google.gson.annotations.Expose;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Ownership extends AbstractEntity<Long> implements Serializable, Com
 
     @ManyToOne
     @JoinColumn(name = "ifeed_id", nullable = false)
+    @Expose(serialize = false, deserialize = true)
     private IFeed ifeed;
 
     @Override

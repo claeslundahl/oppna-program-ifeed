@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.shared;
 
+import com.google.gson.annotations.Expose;
 import com.google.gwt.core.shared.GwtIncompatible;
 
 import javax.persistence.*;
@@ -43,6 +44,7 @@ public class DynamicTableDef extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "fk_ifeed_id")
     @GwtIncompatible
+    @Expose(serialize = false, deserialize = false)
     private se.vgregion.ifeed.types.IFeed ifeed;
 
     @Column(name = "fk_ifeed_id", updatable = false, insertable = false)

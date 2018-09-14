@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.vgregion.common.utils.Json;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
 import se.vgregion.ifeed.shared.ColumnDef;
@@ -18,6 +19,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -131,11 +134,12 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     @Transactional
     public IFeed getFeedForSolrQuery(final Long id) {
-        return getFeedForSolrQueryImpl(id, new HashSet<>());
+        IFeed result = getFeedForSolrQueryImpl(id, new HashSet<>());
+        return result;
     }
 
     @Transactional
-    private IFeed getFeedForSolrQueryImpl(final Long id, Set<Long> traversal) {
+    protected IFeed getFeedForSolrQueryImpl(final Long id, Set<Long> traversal) {
         traversal.add(id);
         // long now = System.currentTimeMillis();
         ArrayList<IFeed> result = new ArrayList<IFeed>(
@@ -153,7 +157,6 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
 
         IFeed ifeed = result.get(0);
-        entityManager.detach(ifeed);
 
         if (!ifeed.getComposites().isEmpty()) {
             List<IFeed> comps = new ArrayList<>();
@@ -165,7 +168,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             ifeed.getComposites().clear();
             ifeed.getComposites().addAll(comps);
         }
-
+        Json.toJson(ifeed);
+        entityManager.detach(ifeed);
         return ifeed;
     }
 
@@ -198,6 +202,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }*/
         initializedFeeds.set(null);
         now = System.currentTimeMillis() - now;
+
+        try {
+            Files.write(Paths.get(System.getProperty("user.home"), "feed.json"), Json.toJson(rv).getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return rv;
     }
 
@@ -272,7 +283,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     private static ThreadLocal<Set<IFeed>> initializedFeeds = new ThreadLocal<>();
 
     @Transactional
-    private void init(IFeed result) {
+    protected void init(IFeed result) {
         try {
             initImp(result);
         } catch (Exception e) {
@@ -327,7 +338,12 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             init(feed);
         }
         result.getFilters().toString();
-        result.toJson();
+        // result.toJson();
+        Json.toJson(result);
+        /*for (IFeed feed : result.getPartOf()) {
+            Json.toJson(feed);
+            feed.getPartOf().toString();
+        }*/
     }
 
     @Override
@@ -335,7 +351,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public final IFeed addIFeed(final IFeed iFeed) {
         IFeed r = iFeedRepo.store(iFeed);
         if (r != null) {
-            r.toJson();
+            Json.toJson(r);
+            //r.toJson();
         }
         return r;
     }
@@ -403,6 +420,10 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             if (!iFeed.getDynamicTableDefs().contains(dynamicTableDef)) {
                 objectRepo.delete(dynamicTableDef);
             }
+        }
+
+        for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
+            iFeedFilter.setFeed(iFeed);
         }
 
         IFeed result = iFeedRepo.merge(iFeed);

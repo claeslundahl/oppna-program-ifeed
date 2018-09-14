@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.InvocerUtil;
+import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.Note;
 import se.vgregion.ifeed.formbean.VgrOrganization;
@@ -33,7 +34,6 @@ import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
-// import se.vgregion.varnish.VarnishClient;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -50,11 +50,15 @@ import javax.portlet.PortletRequest;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import static se.vgregion.common.utils.CommonUtils.getEnum;
+
+// import se.vgregion.varnish.VarnishClient;
 
 /**
  * Created by clalu4 on 2014-06-10.
@@ -188,6 +192,7 @@ public class Application {
 
             long now = System.currentTimeMillis();
             List<IFeed> result = new ArrayList<>(iFeedService.getIFeedsByFilter(filter, start, end));
+
             return page = result;
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getLocalizedMessage()));
@@ -250,7 +255,7 @@ public class Application {
     }
 
     public void viewIFeed(Long id) throws PortalException, SystemException {
-        IFeed feed = iFeedService.getIFeed(id);
+        final IFeed feed = iFeedService.getIFeed(id);
         newFilter = null;
         iFeedModelBean.copyValuesFromIFeed(feed);
 
@@ -281,7 +286,13 @@ public class Application {
                     filter.setFilterQueryForDisplay(organization.getLabel());
                 }
             }
-            filter.setFieldInf(field);
+            filter.initFieldInfs(getFieldsByNameIndex().values());
+        }
+
+        try {
+            Files.write(Paths.get(System.getProperty("user.home"), "feed.json"), Json.toJson(feed).getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -379,13 +390,29 @@ public class Application {
                 return result;
             }
         };
-        for (FieldInf parent : filters) {
+        /*for (FieldInf parent : filters) {
             fieldsByNameIndex.put(parent.getId(), parent);
             if (!parent.getChildren().isEmpty()) {
                 for (FieldInf child : parent.getChildren()) {
                     fieldsByNameIndex.put(child.getId(), child);
                 }
             }
+        }*/
+        initFieldsByNameIndex(filters);
+    }
+
+    void initFieldsByNameIndex(Iterable<FieldInf> fields) {
+        initFieldsByNameIndex(fields, new HashSet<>());
+    }
+
+    void initFieldsByNameIndex(Iterable<FieldInf> fields, Set<FieldInf> blacklist) {
+        for (FieldInf child : fields) {
+            if (blacklist.contains(child)) {
+                continue;
+            }
+            blacklist.add(child);
+            fieldsByNameIndex.put(child.getId(), child);
+            initFieldsByNameIndex(child.getChildren());
         }
     }
 
@@ -982,7 +1009,8 @@ public class Application {
         /*IFeed first = iFeedService.getIFeed(nf.get(0).getId());
         first.toJson();
         iFeedModelBean.getComposites().add(first);*/
-                otherFeed.toJson();
+                Json.toJson(otherFeed);
+                // otherFeed.toJson();
                 iFeedModelBean.getComposites().add(otherFeed);
             }
             newCompositeName = "";

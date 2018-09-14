@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.shared;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ public class DynamicTableSortingDef extends AbstractEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "fk_table_def_id")
+  @Expose(serialize = false, deserialize = false)
   private DynamicTableDef tableDef;
 
   private String name;

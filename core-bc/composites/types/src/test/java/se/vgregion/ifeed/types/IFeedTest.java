@@ -1,8 +1,16 @@
 package se.vgregion.ifeed.types;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+import net.sf.cglib.beans.BeanMap;
 import org.junit.Test;
+import se.vgregion.ifeed.shared.ColumnDef;
+import se.vgregion.ifeed.shared.DynamicTableDef;
+import se.vgregion.ifeed.shared.DynamicTableSortingDef;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 public class IFeedTest {
     private IFeed makeSample() {
@@ -36,15 +44,4 @@ public class IFeedTest {
         return feed;
     }
 
-    public String toJson() {
-        String s = makeSample().toJson();
-        System.out.println(s);
-        return s;
-    }
-
-    @Test
-    public void toIFeed() {
-        IFeed r = IFeed.fromJson(toJson());
-        Assert.assertEquals(makeSample(), r);
-    }
 }

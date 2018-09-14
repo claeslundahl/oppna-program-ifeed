@@ -36,11 +36,6 @@ public class Main implements EntryPoint {
     public void onModuleLoad() {
         changesForOldBrowser();
         Starter.init();
-        String s = "<td class=\"ifeed-link-td ifeed-field-title\" style=\"text-align: left; width: 70pc;\">\n" +
-                "  <a class=\"gwt-Anchor\" href=\"https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/1d363e65-3c34-4b38-8340-eb30b73ddb88?a=false&amp;guest=true\"\n" +
-                "            target=\"_blank\">Minnesanteckningar DKR Skaraborg 140321\n" +
-                "  </a>\n" +
-                "</td>";
     }
 
 }

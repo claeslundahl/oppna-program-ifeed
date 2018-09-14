@@ -1,24 +1,9 @@
 package se.vgregion.ifeed.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.annotation.Resource;
-import javax.portlet.*;
-
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.model.User;
+import com.liferay.portal.util.PortalUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
@@ -37,11 +22,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 import org.springframework.web.util.UriTemplate;
-
 import se.vgregion.ifeed.el.AccessGuard;
-import se.vgregion.ifeed.el.Json;
 import se.vgregion.ifeed.formbean.FilterFormBean;
 import se.vgregion.ifeed.formbean.SearchResultList;
 import se.vgregion.ifeed.formbean.VgrOrganization;
@@ -49,21 +31,21 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.FieldsInf;
-import se.vgregion.ifeed.types.FilterType;
+import se.vgregion.ifeed.types.*;
 import se.vgregion.ifeed.types.FilterType.Filter;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
-import se.vgregion.ifeed.types.Ownership;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.util.PortalUtil;
+import javax.annotation.Resource;
+import javax.portlet.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("VIEW")
@@ -290,7 +272,7 @@ public class EditIFeedController {
         // }
 
         filterFormBean.setFilterValue(replace(filterFormBean.getFilterValue(), charDecodeing));
-        
+
         iFeed.addFilter(new IFeedFilter(null, filterFormBean.getFilterValue(), filterFormBean.getFilterTypeId()));
 
         // Fix here!

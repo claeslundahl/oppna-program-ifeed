@@ -1,11 +1,10 @@
 package se.vgregion.ifeed.formbean;
 
-import se.vgregion.ifeed.el.Json;
+import se.vgregion.common.utils.Json;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class VgrOrganization extends BaseVgrOrganization {
 

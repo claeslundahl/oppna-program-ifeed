@@ -27,6 +27,7 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.service.solr.SolrHttpClient;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.shared.DynamicTableSortingDef;
@@ -55,8 +56,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
-
-import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 // import se.vgregion.varnish.VarnishClient;
 
@@ -1140,20 +1139,26 @@ public class Application {
     }
 
     public void updateSearchResults(IFeed retrievedFeed) {
-        updateSearchResults(
+        /*updateSearchResults(
                 retrievedFeed,
-                "dc.title",
+                //"dc.title",
+                "title",
                 "asc",
                 0,
                 500,
                 new String[]{
-                        "dc.title",
+                        //"dc.title",
+                        "title",
                         "dc.date.issued"
                 }
-        );
+        );*/
+        List<Map<String, Object>> result = null;
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        result = client.query(retrievedFeed.toQuery(), 0, 501, "title asc").getResponse().getDocs();
+        this.searchResults = result;
     }
 
-    public void updateSearchResults(IFeed retrievedFeed,
+    /*public void updateSearchResults(IFeed retrievedFeed,
                                     String sortField,
                                     String sortDirection,
                                     Integer startBy,
@@ -1164,30 +1169,39 @@ public class Application {
             throw new RuntimeException("404");
         }
 
-        IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
-        if (startBy != null && startBy >= 0) {
-            solrQuery.setStart(startBy);
-            if (endBy != null && endBy > startBy) {
-                solrQuery.setRows(endBy - startBy);
-            }
-        } else {
-            solrQuery.setRows(25000);
-        }
-        solrQuery.setShowDebugInfo(true);
         List<Map<String, Object>> result = null;
-
-        result = solrQuery.getIFeedResults(retrievedFeed, sortField,
-                getEnum(IFeedSolrQuery.SortDirection.class, sortDirection), fieldToSelect);
-
-        for (Map<String, Object> item : result) {
-            String alfrescoId = (String) item.get("dc.identifier.documentid");
-            alfrescoId = alfrescoId.replace("workspace://SpacesStore/", "");
-            item.put("alfrescoId", alfrescoId);
-            formatDates(item);
-        }
-
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        result = client.query(retrievedFeed.toQuery(), 0, 501, sortField + " " + sortDirection).getResponse().getDocs();
         this.searchResults = result;
-    }
+
+        if (false) {
+            IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
+            if (startBy != null && startBy >= 0) {
+                solrQuery.setStart(startBy);
+                if (endBy != null && endBy > startBy) {
+                    solrQuery.setRows(endBy - startBy);
+                }
+            } else {
+                solrQuery.setRows(25000);
+            }
+            solrQuery.setShowDebugInfo(true);
+
+
+            result = solrQuery.getIFeedResults(retrievedFeed, sortField,
+                    getEnum(IFeedSolrQuery.SortDirection.class, sortDirection), fieldToSelect);
+
+            for (Map<String, Object> item : result) {
+                String alfrescoId = (String) item.get("dc.identifier.documentid");
+                if (alfrescoId != null) {
+                    alfrescoId = alfrescoId.replace("workspace://SpacesStore/", "");
+                    item.put("alfrescoId", alfrescoId);
+                    formatDates(item);
+                }
+            }
+
+            this.searchResults = result;
+        }
+    }*/
 
     private void formatDate(String withThatKey, Map<String, Object> insideHere) {
         String issued = (String) insideHere.get(withThatKey);
@@ -1208,10 +1222,84 @@ public class Application {
         if (item == null) {
             return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
         }
+        String sourceSystem = (String) item.get("vgr:VgrExtension.vgr:SourceSystem");
+        if (sourceSystem != null && "SOFIA".equals(sourceSystem)) {
+            return toSofiaTooltipRows(item);
+        } else {
+            return toAlfrescoBariumTooltipRows(item);
+        }
+    }
 
+    public static List<Note> toSofiaTooltipRows(Map<String, Object> item) {
         List<Note> result = new ArrayList<>();
 
-        toTooltipRow(item, "dc.title", "Titel", result);
+        toTooltipRow(item, "core:ArchivalObject.idType", "N/A", result);
+        toTooltipRow(item, "core:ArchivalObject.id", "N/A", result);
+        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Upprättad datum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd", result);
+        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut", result);
+        toTooltipRow(item, "revisiondate", "Gallringsdatum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Description", "Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet", result);
+        toTooltipRow(item, "core:ArchivalObject.core:ObjectType", "Handlingstyp", result);
+        toTooltipRow(item, "core:ArchivalObject.core:ObjectType.id", "", result);
+        toTooltipRow(item, "core:ArchivalObject.core:ObjectType.filePlan", "Dokumenthanteringsplan", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.id", "Id på klassificering", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.classCode", "Punktnotation på klassificering", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.level", "Nivå på klassificering", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.name", "Namn på klassificering", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Unit", "Rubrik", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Unit.refcode", "Signum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Unit.level", "Nivå i arkivförteckningen", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Producer", "Myndighet/Arkivbildare", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Producer.idType", "", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Producer.id", "Myndighetens HSA-ID", result);
+        toTooltipRow(item, "vgr:VgrExtension.itemId", "Arkivobjekt-ID", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:SourceSystem", "Källsystem", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:SourceSystem.id", "Källsystem-ID", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.id", "Käll-ID", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.version", "Version i källsystem", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.versionId", "N/A", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Title", "Rubrik i Sharepoint, Titel i Mellanarkivet", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:AvailableFrom", "Tillgänglig från", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig till", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:RevisedAvailableFrom", "Reviderat tillgänglig från", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:RevisedAvailableTo", "Reviderat tillgänglig till", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:RestrictionCode", "Skyddskod", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:LegalParagraph", "Lagparagraf", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedByUnit", "Upprättad av enhet", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedByUnit.id", "", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:PublishedForUnit", "Upprättad för enhet", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:PublishedForUnit.id", "", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy", "Upprättad av", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy.id", "Upprättad av (vgrid)", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy.org", "Upprättad av (org)", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Tag", "Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.itemId", "", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.domain", "Domännamn", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.domain", "", result);
+        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Skapad datum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd", result);
+        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut", result);
+        toTooltipRow(item, "revisiondate", "Gallringsdatum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Description", "", result);
+        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Skapad datum", result);
+
+        if (result.isEmpty()) {
+            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
+        }
+        return result;
+    }
+
+    public static List<Note> toAlfrescoBariumTooltipRows(Map<String, Object> item) {
+        List<Note> result = new ArrayList<>();
+
+        //toTooltipRow(item, "dc.title", "Titel", result);
+        toTooltipRow(item, "title", "Titel", result);
         toTooltipRow(item, "dc.description", "Beskrivning", result);
         toTooltipRow(item, "dc.creator.document", "Innehållsansvarig", result);
         toTooltipRow(item, "dc.creator.function", "Innehållsansvarig, roll", result);
@@ -1225,6 +1313,7 @@ public class Application {
         }
         return result;
     }
+
 
     private static void toTooltipRow(Map<String, Object> item, String key, String label, List<Note> notes) {
         Note note = toTooltipRow(item, key, label);

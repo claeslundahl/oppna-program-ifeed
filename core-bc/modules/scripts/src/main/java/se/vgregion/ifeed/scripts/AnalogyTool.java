@@ -11,36 +11,34 @@ public class AnalogyTool {
 
     static Set<String> fromOwnClassificationTags = new HashSet<>(
             Arrays.asList(
-                    "dc.publisher.project-assignment",
-                    "dc.type.process.name",
-                    "dc.type.file.process",
-                    "dc.type.file",
-                    "dc.identifier.diarie.id",
-                    "dc.type.document.serie",
-                    "dc.type.document.id"
+                    "dc.publisher.project-assignment", "dc.type.process.name", "dc.type.file.process", "dc.type.file", "dc.type.document.serie", "dc.type.document.id", "dc.type.document", "dc.type.record", "dc.creator.project-assignment", "dc.type.document.structure"
             )
     );
 
-    static String ownClassificationTag = "vgrsy_DomainExtension_vgrsy_SubjectLocalClassification";
+    static String ownClassificationTag = "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification";
 
     static Set<String> allTagsToConsider = new HashSet<>();
 
     static {
         allTagsToConsider.addAll(fromOwnClassificationTags);
-        allTagsToConsider.add("dc.publisher.forunit");
+        allTagsToConsider.add("dc.publisher.forunit.id");
         allTagsToConsider.add("dc.source.origin");
+        allTagsToConsider.add("dc.creator.forunit.id");
     }
 
 
-    static ConnectionExt main = CreateAnalogNewTags.getStageConnectionExt();
+    static ConnectionExt main = CopyDatabaseUtil.getMainConnectionExt();
 
     public static void main(String[] args) throws ClassNotFoundException {
+
         System.out.println(main.getUrl());
 
-        if(true) return;
+        // if (true) return;
 
-/*        System.out.println(toJavaFactoryMethod(main.getSchemas("public").get(0).getTable("vgr_ifeed_vgr_ifeed")));
-        if(true)return;*/
+        main.update("delete from vgr_ifeed_vgr_ifeed where composites_id < 0 or partof_id < 0");
+        main.update("delete from vgr_ifeed_filter where id < 0");
+        main.update("delete from vgr_ifeed_ownership where ifeed_id < 0");
+        main.update("delete from vgr_ifeed where id < 0");
 
         List<Map<String, Object>> feeds = main.query("select * from vgr_ifeed", 0, 1_000_000);
         for (Map<String, Object> feed : feeds) {
@@ -51,6 +49,9 @@ public class AnalogyTool {
                     1_000_000,
                     feed.get("id")
             );
+            if (filters.isEmpty()) {
+                continue;
+            }
             MultiMap<String, Map<String, Object>> keyedValues = new MultiMap<>();
             for (Map<String, Object> filter : filters) {
                 keyedValues.get(filter.get("filterkey")).add(filter);
@@ -58,9 +59,23 @@ public class AnalogyTool {
 
             keyedValues.keySet().retainAll(allTagsToConsider);
 
-            insertOne(feed, keyedValues, fromOwnClassificationTags, ownClassificationTag);
-            insertOne((feed), keyedValues, new HashSet<>(Arrays.asList("dc.publisher.forunit")), "vgr_VgrExtension_vgr_PublishedForUnit_id");
-            insertOne((feed), keyedValues, new HashSet<>(Arrays.asList("dc.source.origin")), "vgr_VgrExtension_vgr_SourceSystem");
+            int result = 0;
+            result += insertOne(feed, keyedValues, fromOwnClassificationTags, ownClassificationTag);
+            result += insertOne((feed), keyedValues, new HashSet<>(Arrays.asList("dc.publisher.forunit.id")), "vgr:VgrExtension.vgr:PublishedForUnit.id");
+            result += insertOne((feed), keyedValues, new HashSet<>(Arrays.asList("dc.subject.authorkeywords")), "vgr:VgrExtension.vgr:Tag");
+            result += insertOne(feed, keyedValues, new HashSet<>(Arrays.asList("dc.creator.forunit.id")), "vgr:VgrExtension.vgr:CreatedByUnit.id");
+
+            if (result == 0) continue;
+            Map<String, Object> sofia = vgr_ifeed_filter(
+                    ((long) feed.get("id")) * -1,
+                    null,
+                    "vgr:VgrExtension.vgr:SourceSystem",
+                    "SOFIA",
+                    "matching",
+                    filterSeq--,
+                    null
+            );
+            main.insert("vgr_ifeed_filter", sofia);
         }
         System.out.println(filterSeq);
 
@@ -72,11 +87,13 @@ public class AnalogyTool {
         main.commit();
     }
 
+
     static long filterSeq = -1;
 
 
-    static void insertOne(Map<String, Object> feed, MultiMap<String, Map<String, Object>> keyedValues, Set<String> fromTag, String toTag) {
-        if (keyedValues.isEmpty()) return;
+    static int insertOne(Map<String, Object> feed, MultiMap<String, Map<String, Object>> keyedValues, Set<String> fromTag, String toTag) {
+        if (keyedValues.isEmpty()) return 0;
+        int result = 0;
         feed = new HashMap<>(feed);
         long id = ((long) feed.get("id")) * -1;
         feed.put("id", id);
@@ -104,10 +121,11 @@ public class AnalogyTool {
             ).get(0);
             System.out.println("Hämtade " + and);
         }
-        insertOne(feed, and, keyedValues, fromTag, toTag);
+        return insertOne(feed, and, keyedValues, fromTag, toTag);
     }
 
-    static void insertOne(Map<String, Object> feed, Map<String, Object> rootAnd, MultiMap<String, Map<String, Object>> keyedValues, Set<String> fromTag, String toTag) {
+    static int insertOne(Map<String, Object> feed, Map<String, Object> rootAnd, MultiMap<String, Map<String, Object>> keyedValues, Set<String> fromTag, String toTag) {
+        int result = 0;
         for (String key : keyedValues.keySet()) {
             List<Map<String, Object>> values = keyedValues.get(key);
             if (values.size() > 1) {
@@ -121,6 +139,7 @@ public class AnalogyTool {
                         (Long) rootAnd.get("id")
                 );
                 main.insert("vgr_ifeed_filter", or);
+                result++;
                 for (Map<String, Object> one : values) {
                     if (fromTag.contains(one.get("filterkey"))) {
                         one.put("id", filterSeq--);
@@ -128,6 +147,7 @@ public class AnalogyTool {
                         one.put("parent_id", or.get("id"));
                         one.put("filterkey", toTag);
                         main.insert("vgr_ifeed_filter", one);
+                        result++;
                     }
                 }
             } else {
@@ -138,10 +158,13 @@ public class AnalogyTool {
                     one.put("parent_id", rootAnd.get("id"));
                     one.put("filterkey", toTag);
                     main.insert("vgr_ifeed_filter", one);
+                    result++;
                 }
             }
             // main.commit();
         }
+
+        return result;
     }
 
 
@@ -196,6 +219,19 @@ public class AnalogyTool {
         result.put("partof_id", partof_id);
         result.put("composites_id", composites_id);
         return result;
+    }
+
+    public static void core_ArchivalObject_core_Producer() {
+        /*
+        dc.creator.recordscreator.id (Arkivbildare)
+        dc.creator.recordscreator.id (tre värden som översätts till sitt namn)
+
+        "SE2321000131-E000000011326" ;1
+        "SE2321000131-E000000000106" ;21
+        "SE2321000131-E000000000108" ;168
+
+        core_ArchivalObject_core_Producer
+         */
     }
 
 }

@@ -16,11 +16,11 @@ import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
 import se.vgregion.ifeed.service.solr.SolrHttpClient;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -32,8 +32,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
-
-import static se.vgregion.common.utils.CommonUtils.getEnum;
 
 /**
  * Controller to view feeds.
@@ -387,23 +385,29 @@ public class IFeedViewerController {
         System.out.println("sortField: " + sortField);
         System.out.println("sortDirection: " + sortDirection);
 
-        if(sortField == null || sortField.isEmpty()) sortField = IFeedSolrQuery.DEFAULT_SORT_FIELD;
-        if(sortDirection == null || sortDirection.isEmpty()) sortDirection = IFeedSolrQuery.DEFAULT_SORT_DIRECTION.toString();
+        if (sortField == null || sortField.isEmpty()) sortField = IFeedSolrQuery.DEFAULT_SORT_FIELD;
+        if (sortDirection == null || sortDirection.isEmpty())
+            sortDirection = IFeedSolrQuery.DEFAULT_SORT_DIRECTION.toString();
 
-        List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField,
-                getEnum(SortDirection.class, sortDirection), fieldToSelect);
+
+        if (sortField == null || sortField.trim().isEmpty() || "null".equalsIgnoreCase(sortField)) {
+            sortField = "dc.title";
+            sortField = "title";
+        }
+        /*List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField,
+                getEnum(SortDirection.class, sortDirection), fieldToSelect);*/
 
         SolrHttpClient.Result otherResult = client.query(
                 retrievedFeed.toQuery(),
-                (startBy != null && startBy >= 0) ? startBy: 25_000,
-                endBy,
+                (startBy != null && startBy >= 0) ? startBy : 0,
+                (endBy != null ? endBy : 25_000),
                 sortField + "%20" + sortDirection
         );
 
-        System.out.println("IFeedViewerController " + (otherResult.getResponse().getDocs().size() + " == " + result.size()));
+        // System.out.println("IFeedViewerController " + (otherResult.getResponse().getDocs().size() + " == " + result.size()));
 
         //model.addAttribute("result", result);
-        model.addAttribute("result", otherResult);
+        model.addAttribute("result", otherResult.getResponse().getDocs());
         return "documentList";
     }
 
@@ -505,7 +509,247 @@ public class IFeedViewerController {
         } else {
             fullId = "workspace://SpacesStore/" + documentId;
         }
+        // final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
+        final SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        IFeedFilter filter = new IFeedFilter();
+        filter.setFilterQuery(documentId);
+        filter.setFilterKey("id");
+        Map<String, Object> doc = client.query(filter.toQuery(), 0, 1, "").getResponse().getDocs().get(0);
+        String sourceSystem = (String) doc.get("vgr:VgrExtension.vgr:SourceSystem");
+        List<LabelledValue> result = (sourceSystem != null && "SOFIA".equals(sourceSystem)) ?
+                newSofiaDisplayFieldsWithoutValue() : newAlfrescoBariumDisplayFieldsWithoutValue();
+        for (LabelledValue lv : new ArrayList<>(result)) {
+            Object v = doc.get(lv.getKey());
+            if (v != null && !v.toString().trim().isEmpty()) {
+                if (v instanceof List) {
+                    List list = (List) v;
+                    v = org.apache.commons.lang.StringUtils.join(list, ", ");
+                }
+                lv.setValue(v);
+            }else{
+                result.remove(lv);
+            }
+        }
+        model.addAttribute("item", doc);
+        model.addAttribute("fields", result);
+        return "documentDetails";
+    }
+
+    private List<LabelledValue> newAlfrescoBariumDisplayFieldsWithoutValue() {
+        List<LabelledValue> result = new ArrayList<>();
+        result.add(new LabelledValue("", "Dokumentbeskrivning"));
+        result.add(new LabelledValue("dc.title", "Titel (autokomplettering)"));
+        result.add(new LabelledValue("dc.title.filename", "Filnamn, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.title.filename.native", "Filnamn, original"));
+        result.add(new LabelledValue("dc.title.alternative", "Alternativ titel"));
+        result.add(new LabelledValue("dc.description", "Beskrivning"));
+        result.add(new LabelledValue("dc.type.document", "Gruppering av handlingstyper"));
+        result.add(new LabelledValue("dc.type.document.structure", "Dokumentstruktur VGR"));
+        result.add(new LabelledValue("dc.type.document.structure.id", "Dokumentstruktur VGR ID"));
+        result.add(new LabelledValue("dc.type.record", "Handlingstyp (autokomplettering)"));
+        result.add(new LabelledValue("dc.coverage.hsacode", "Verksamhetskod enligt HSA"));
+        result.add(new LabelledValue("dcterms.audience", "Målgrupp HoS (autokomplettering)"));
+        result.add(new LabelledValue("dc.audience", "Målgrupp HoS (autokomplettering)"));
+        result.add(new LabelledValue("dc.identifier.version", "Version"));
+        result.add(new LabelledValue("dc.contributor.savedby", "Sparat av"));
+        result.add(new LabelledValue("dc.contributor.savedby.id", "Sparat av ID"));
+        result.add(new LabelledValue("dc.date.saved", "Sparat datum"));
+        result.add(new LabelledValue("vgregion.status.document", "Dokumentstatus"));
+        result.add(new LabelledValue("vgr.status.document", "Dokumentstatus"));
+        result.add(new LabelledValue("vgr.status.document.id", "Dokumentstatus"));
+        result.add(new LabelledValue("dc.source.documentid", "Dokumentid källa"));
+        result.add(new LabelledValue("dc.source", "Länk till dokumentets källa"));
+        result.add(new LabelledValue("", "Skapat av och för"));
+        result.add(new LabelledValue("dc.creator", "Skapat av"));
+        result.add(new LabelledValue("dc.creator.id", "Skapat av ID"));
+        result.add(new LabelledValue("dc.creator.freetext", "Skapat av (Fritext)"));
+        result.add(new LabelledValue("dc.creator.forunit", "Skapat av enhet (autokomplettering)"));
+        result.add(new LabelledValue("dc.creator.forunit.id", "Skapat av enhet ID (VGR:s organisationsträd)"));
+        result.add(new LabelledValue("dc.creator.project-assignment", "Skapat av Projekt/Uppdrag/Grupp"));
+        result.add(new LabelledValue("", "Ansvariga"));
+        result.add(new LabelledValue("dc.creator.document", "Innehållsansvarig/Dokumentansvarig"));
+        result.add(new LabelledValue("dc.creator.document.id", "Innehållsansvarig/Dokumentansvarig ID"));
+        result.add(new LabelledValue("dc.creator.function", "Funktionsansvar"));
+        result.add(new LabelledValue("dc.creator.recordscreator", "Arkivbildare (autokomplettering)"));
+        result.add(new LabelledValue("dc.creator.recordscreator.id", "Arkivbildare ID (VGR:s organisationsträd)"));
+        result.add(new LabelledValue("", "Giltighet och tillgänglighet"));
+        result.add(new LabelledValue("dc.date.validfrom", "Giltighetsdatum from"));
+        result.add(new LabelledValue("dc.date.validto", "Giltighetsdatum tom"));
+        result.add(new LabelledValue("dc.date.availablefrom", "Tillgänglighetsdatum from"));
+        result.add(new LabelledValue("dc.date.availableto", "Tillgänglighetsdatum tom"));
+        result.add(new LabelledValue("dc.date.copyrighted", "Copyrightdatum"));
+        result.add(new LabelledValue("", "Granskat/Godkänt"));
+        result.add(new LabelledValue("dc.contributor.acceptedby", "Godkänt av"));
+        result.add(new LabelledValue("dc.contributor.acceptedby.id", "Godkänt av ID"));
+        result.add(new LabelledValue("dc.contributor.acceptedby.freetext", "Godkänt av (Fritext)"));
+        result.add(new LabelledValue("dc.date.accepted", "Godkänt datum"));
+        result.add(new LabelledValue("dc.contributor.acceptedby.role", "Godkänt av Egenskap/Roll"));
+        result.add(new LabelledValue("dc.contributor.acceptedby.unit.freetext", "Enhet (Fritext)"));
+        result.add(new LabelledValue("dc.contributor.controlledby", "Granskat av"));
+        result.add(new LabelledValue("dc.contributor.controlledby.id", "Granskat av ID"));
+        result.add(new LabelledValue("dc.contributor.controlledby.freetext", "Granskat av (Fritext)"));
+        result.add(new LabelledValue("dc.date.controlled", "Granskningsdatum"));
+        result.add(new LabelledValue("dc.contributor.controlledby.role", "Granskat av Egenskap/Roll"));
+        result.add(new LabelledValue("dc.contributor.controlledby.unit.freetext", "Enhet (Fritext)"));
+        result.add(new LabelledValue("", "Publicerat"));
+        result.add(new LabelledValue("dc.publisher.forunit", "Publicerat för enhet (autokomplettering)"));
+        result.add(new LabelledValue("dc.publisher.forunit.flat", "Publicerat för enhet (för sortering)"));
+        result.add(new LabelledValue("dc.publisher.forunit.id", "Publicerat för enhet ID (VGR:s organisationsträd)"));
+        result.add(new LabelledValue("dc.publisher.project-assignment", "Publicerat för Projekt/Uppdrag/Grupp"));
+        result.add(new LabelledValue("dc.rights.accessrights", "Publik åtkomsträtt"));
+        result.add(new LabelledValue("dc.publisher", "Publicerat av"));
+        result.add(new LabelledValue("dc.publisher.id", "Publicerat av ID"));
+        result.add(new LabelledValue("dc.date.issued", "Publiceringsdatum"));
+        result.add(new LabelledValue("dc.identifier", "Länk till publicerat/utgivet dokument"));
+        result.add(new LabelledValue("dc.identifier.native", "Länk till utgivet originaldokument"));
+        result.add(new LabelledValue("", "Sammanhang"));
+        result.add(new LabelledValue("dc.type.process.name", "Processnamn"));
+        result.add(new LabelledValue("dc.type.file.process", "Ärendetyp"));
+        result.add(new LabelledValue("dc.type.file", "Ärende"));
+        result.add(new LabelledValue("dc.identifier.diarie.id", "Diarienummer"));
+        result.add(new LabelledValue("dc.type.document.serie", "Dokumentserie"));
+        result.add(new LabelledValue("dc.type.document.id", "Referensnummer i dokumentserie"));
+        result.add(new LabelledValue("", "Nyckelord"));
+        result.add(new LabelledValue("dc.subject.keywords", "Nyckelord (autokomplettering)"));
+        result.add(new LabelledValue("dc.subject.authorkeywords", "Författarens nyckelord"));
+        result.add(new LabelledValue("", "Övrigt"));
+        result.add(new LabelledValue("language", "Språk"));
+        result.add(new LabelledValue("dc.relation.isversionof", "Alternativ variant av"));
+        result.add(new LabelledValue("dc.relation.replaces", "Ersätter"));
+        result.add(new LabelledValue("dc.format.extent", "Omfattning"));
+        result.add(new LabelledValue("dc.identifier.location", "Fysisk placering"));
+        result.add(new LabelledValue("dc.type.templatename", "Mallnamn"));
+        result.add(new LabelledValue("dc.format.extent.mimetype", "Mimetyp, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.format.extent.mimetype.native", "Mimetyp, original"));
+        result.add(new LabelledValue("dc.format.extension", "Filändelse, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.format.extension.native", "Filändelse, original"));
+        result.add(new LabelledValue("dc.identifier.checksum", "Kontrollsumma dokument, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.identifier.checksum.native", "Kontrollsumma dokument, original"));
+        result.add(new LabelledValue("dc.source.origin", "Källsystem"));
+        return result;
+
+    }
+
+    private List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
+        List<LabelledValue> result = new ArrayList<>();
+        result.add(new LabelledValue("core:ArchivalObject.idType", "N/A"));
+        result.add(new LabelledValue("core:ArchivalObject.id", "N/A"));
+        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Upprättad datum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
+        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
+        result.add(new LabelledValue("revisiondate", "Gallringsdatum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Description", "Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet"));
+        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType", "Handlingstyp"));
+        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType.id", ""));
+        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType.filePlan", "Dokumenthanteringsplan"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.id", "Id på klassificering"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.classCode", "Punktnotation på klassificering"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.level", "Nivå på klassificering"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.name", "Namn på klassificering"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Unit", "Rubrik"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Unit.refcode", "Signum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Unit.level", "Nivå i arkivförteckningen"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Producer", "Myndighet/Arkivbildare"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Producer.idType", ""));
+        result.add(new LabelledValue("core:ArchivalObject.core:Producer.id", "Myndighetens HSA-ID"));
+        result.add(new LabelledValue("vgr:VgrExtension.itemId", "Arkivobjekt-ID"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:SourceSystem", "Källsystem"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:SourceSystem.id", "Källsystem-ID"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.id", "Käll-ID"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.version", "Version i källsystem"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.versionId", "N/A"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Title", "Rubrik i Sharepoint, Titel i Mellanarkivet"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:AvailableFrom", "Tillgänglig från"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig till"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:RevisedAvailableFrom", "Reviderat tillgänglig från"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:RevisedAvailableTo", "Reviderat tillgänglig till"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:RestrictionCode", "Skyddskod"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:LegalParagraph", "Lagparagraf"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedByUnit", "Upprättad av enhet"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedByUnit.id", ""));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:PublishedForUnit", "Upprättad för enhet"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:PublishedForUnit.id", ""));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy", "Upprättad av"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy.id", "Upprättad av (vgrid)"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy.org", "Upprättad av (org)"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet"));
+        result.add(new LabelledValue("vgrsy:DomainExtension.itemId", ""));
+        result.add(new LabelledValue("vgrsy:DomainExtension.domain", "Domännamn"));
+        result.add(new LabelledValue("vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning"));
+        result.add(new LabelledValue("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning"));
+        result.add(new LabelledValue("vgrsy:DomainExtension.domain", ""));
+        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
+        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
+        result.add(new LabelledValue("revisiondate", "Gallringsdatum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Description", ""));
+        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
+        return result;
+    }
+
+
+    public static class LabelledValue {
+
+        private String key;
+        private String label;
+        private Object value;
+
+        public LabelledValue(String key, String label) {
+            this.key = key;
+            this.label = label;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public void setValue(Object value) {
+            this.value = value;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+    }
+
+
+    // @RequestMapping(value = "/documents/{documentId}/metadata")
+    public String detailsOld(@PathVariable String documentId, Model model) {
+        if (documentId.startsWith("[")) {
+            if (documentId.endsWith("]")) {
+                documentId = documentId.substring(1, documentId.length() - 1);
+            } else {
+                throw new RuntimeException("Strange document id " + documentId);
+            }
+        }
+        // We are flexible here; "workspace://SpacesStore/" is added if it isn't provided and vice versa.
+        String fullId;
+        if (documentId.contains("workspace://SpacesStore/")) {
+            fullId = documentId;
+        } else {
+            fullId = "workspace://SpacesStore/" + documentId;
+        }
         final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
+        final SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        IFeedFilter filter = new IFeedFilter();
+        filter.setFilterQuery(documentId);
+        filter.setFilterKey("id");
+        Map<String, Object> doc = client.query(filter.toQuery(), 0, 1, "").getResponse().getDocs().get(0);
 
         Map<String, String> idValueMap = new HashMap<String, String>();
         List<FieldsInf> infs = iFeedService.getFieldsInfs(); // todo cache?

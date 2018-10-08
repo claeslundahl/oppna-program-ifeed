@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
@@ -552,9 +553,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     public List<FieldsInf> getFieldsInfs() {
-        // return new ArrayList<FieldsInf>(fieldsInfRepo.findByQuery("select fi from FieldsInf fi order by fi.version asc, fi.id asc"));
         ArrayList<FieldsInf> result = new ArrayList<FieldsInf>(fieldsInfRepo.findByQuery("select fi from FieldsInf fi order by fi.id asc"));
         return result;
+    }
+
+    @Override
+    public Config getConfig(String withThatId) {
+        return objectRepo.findByPrimaryKey(Config.class, withThatId);
     }
 
     @Transactional
@@ -708,6 +713,22 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         result.setCreatorName(otherUserId);
         objectRepo.persist(result);
         return result;
+    }
+
+    @Override
+    public String toDocumentPopupHtml(Map<String, Object> forThatItem) {
+        Config config = objectRepo.findByPrimaryKey(Config.class, "popup");
+        List<DocumentPopupConf> confs = CommonUtils.fromCsv(DocumentPopupConf.class, config.getSetting());
+        StringBuilder sb = new StringBuilder();
+        for (DocumentPopupConf conf : confs) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public void save(Config inf) {
+        objectRepo.merge(inf);
     }
 
     static IFeed copy(IFeed that) {

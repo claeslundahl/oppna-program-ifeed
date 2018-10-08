@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.types.Config;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
@@ -57,6 +58,7 @@ public class IFeedBackingBean implements Serializable {
     private FieldsInf fieldsInf = new FieldsInf();
     private List<FieldInf> fieldInfs;
     private String fieldInfString;
+    private String popupConfString;
     private List<String> governance;
 
     @Value("#{navigationModelBean}")
@@ -335,6 +337,15 @@ public class IFeedBackingBean implements Serializable {
         this.navigationModelBean.setUiNavigation("USER_IFEEDS");
     }
 
+    public void savePopupConfString() {
+        Config inf = new Config();
+        inf.setSetting(popupConfString);
+        inf.setId("popup");
+
+        iFeedService.save(inf);
+        this.navigationModelBean.setUiNavigation("USER_IFEEDS");
+    }
+
     private FieldsInf getLatestFieldInf() {
         List<FieldsInf> infs = iFeedService.getFieldsInfs();
         if (infs.isEmpty()) {
@@ -351,7 +362,6 @@ public class IFeedBackingBean implements Serializable {
             fieldInfString = f.getText();
         }
         return fieldInfString;
-
     }
 
     public void setFieldInfString(String fieldInfString) {
@@ -393,5 +403,16 @@ public class IFeedBackingBean implements Serializable {
 
     public void setFilteredUserIFeedModelBeans(List<IFeedModelBean> filteredUserIFeedModelBeans) {
         this.filteredUserIFeedModelBeans = filteredUserIFeedModelBeans;
+    }
+
+    public String getPopupConfString() {
+        if (popupConfString == null) {
+            popupConfString = iFeedService.getConfig("popup").getSetting();
+        }
+        return popupConfString;
+    }
+
+    public void setPopupConfString(String popupConfString) {
+        this.popupConfString = popupConfString;
     }
 }

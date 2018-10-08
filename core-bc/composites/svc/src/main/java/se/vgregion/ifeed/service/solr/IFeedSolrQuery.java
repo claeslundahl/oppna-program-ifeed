@@ -14,10 +14,6 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.Collator;
 import java.util.*;
 
@@ -33,7 +29,9 @@ public class IFeedSolrQuery extends SolrQuery {
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedSolrQuery.class);
 
     public static final SortDirection DEFAULT_SORT_DIRECTION = SortDirection.desc;
-    public static final String DEFAULT_SORT_FIELD = "dc.title";
+    //public static final String DEFAULT_SORT_FIELD = "dc.title";
+    public static final String DEFAULT_SORT_FIELD = "title";
+    public static final int DEFAULT_SOLR_RESULT_SIZE = 1_000_000;
 
     private static final SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
@@ -111,7 +109,8 @@ public class IFeedSolrQuery extends SolrQuery {
                 set.addAll(Arrays.asList("DC.publisher.forunit", "DC.description", "DC.creator.document", "dc.identifier.documentid",
                         "DC.creator.function", "DC.contributor.acceptedby", "id",
                         "DC.contributor.acceptedby.role", "DC.date.validfrom", "DC.date.validto", "DC.type.document.structure",
-                        "dc.title", "dc.identifier.native", "url"));
+                        //"dc.title", "dc.identifier.native", "url"));
+                "title", "dc.identifier.native", "url"));
                 List<String> result = new ArrayList<>();
                 for (String s : set) {
                     result.add(s.toLowerCase());
@@ -268,14 +267,17 @@ public class IFeedSolrQuery extends SolrQuery {
         return prepareAndPerformQuery(sortField, sortDirection, iFeed, fieldsToSelect);
     }
 
-    private List<Map<String, Object>> prepareAndPerformQuery(final String sortField,
+    private List<Map<String, Object>> prepareAndPerformQuery( String sortField,
                                                              final SortDirection sortDirection, IFeed feed,
                                                              final String[] fieldsToSelect) {
         long before = System.currentTimeMillis();
         // List<Map<String, Object>> result = prepareAndPerformQueryImpl(sortField, sortDirection, fieldsToSelect);
         LOGGER.debug("Time for solr " + (System.currentTimeMillis() - before) + " for id " + (feed != null ? feed.getId() : "null"));
-
-        SolrHttpClient.Result someOtherResult = client.query(feed.toQuery(), null, null, sortField + "%20" + sortDirection);
+        if (sortField == null || sortField.trim().isEmpty() || "null".equalsIgnoreCase(sortField)) {
+            //sortField = "dc.title";
+            sortField = "title";
+        }
+        SolrHttpClient.Result someOtherResult = client.query(feed.toQuery(), 0, DEFAULT_SOLR_RESULT_SIZE, sortField + "%20" + sortDirection);
         // System.out.println("Diff on results " + (someOtherResult.getResponse().getDocs().size() + " == " + result.size()));
         return someOtherResult.getResponse().getDocs();
         // return result;

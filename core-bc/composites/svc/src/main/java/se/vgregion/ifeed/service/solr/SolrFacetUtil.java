@@ -7,6 +7,8 @@ import se.vgregion.ifeed.types.IFeedFilter;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -30,6 +32,11 @@ public class SolrFacetUtil {
         try {
             return fetchFacetsImpl(solrBaseUrl, feed, field);
         } catch (Exception e) {
+            try {
+                Files.write(Paths.get(System.getProperty("user.home"), "feed.json"), se.vgregion.common.utils.Json.toJson(feed).getBytes());
+            } catch (Exception iff) {
+                iff.printStackTrace();
+            }
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -40,6 +47,8 @@ public class SolrFacetUtil {
         System.out.println("solrBaseUrl: " + solrBaseUrl);
 
         if (true) {
+            if (feed == null) throw new NullPointerException();
+            System.out.println("The facet-question to ask: " + feed.toQuery());
             SolrHttpClient.Result result = client.query(
                     feed.toQuery(),
                     0,

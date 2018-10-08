@@ -71,7 +71,7 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
     }
 
     public void setText(String text) {
-        toList(text);
+        // toList(text);
         this.text = text;
     }
 
@@ -99,7 +99,7 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
         return result.getFieldInfs();
     }
 
-    public List<FieldInf> getFieldInfsOld() {
+    public List<FieldInf> getFieldInfsFromTabularText() {
         List<FieldInf> result = new ArrayList<FieldInf>();
 
         String[] rows = getText().split(Pattern.quote("\n"));

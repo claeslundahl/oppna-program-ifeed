@@ -25,11 +25,18 @@
     </span>
     
     <%if(com.liferay.portal.util.PortalUtil.getUser(request) != null && se.vgregion.ifeed.el.AccessGuard.mayEditAllFeeds(com.liferay.portal.util.PortalUtil.getUser(request))){%>
-      <portlet:actionURL var="adminFieldsURL">
-          <portlet:param name="action" value="adminFields" />
-      </portlet:actionURL>
-      <span class="lfr-toolbar-button add-button <c:if test='${toolbarItem eq "adminFields"}'>current</c:if>">
+    <portlet:actionURL var="adminFieldsURL">
+        <portlet:param name="action" value="adminFields" />
+    </portlet:actionURL>
+    <span class="lfr-toolbar-button add-button <c:if test='${toolbarItem eq "adminFields"}'>current</c:if>">
           <a href="<%=adminFieldsURL%>"><liferay-ui:message key="Fältinställningar" /></a>
+      </span>
+
+    <portlet:actionURL var="adminFieldsPopupURL">
+        <portlet:param name="action" value="adminFieldsPopup" />
+    </portlet:actionURL>
+    <span class="lfr-toolbar-button add-button <c:if test='${toolbarItem eq "adminFieldsPopup"}'>current</c:if>">
+          <a href="<%=adminFieldsPopupURL%>"><liferay-ui:message key="Popupinställningar" /></a>
       </span>
     <%}%>
 	

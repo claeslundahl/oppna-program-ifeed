@@ -1,9 +1,9 @@
 package se.vgregion.ifeed.types;
 
 import com.google.gson.annotations.Expose;
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.ForeignKey;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+import se.vgregion.ifeed.types.util.Junctor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -173,7 +173,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
         String label = (getFieldInf() != null && getFieldInf().getName() != null) ? getFieldInf().getName() : filterKey;
         if (children.isEmpty()) {
             if (operator == null || operator.equals("matching") || operator.isEmpty()) {
-                return label + " = " + escapeValue(filterQuery);
+                return label + " = " + (filterQuery);
             } else {
                 if (operator.equals("greater")) {
                     return label + " > " + (filterQuery);
@@ -182,54 +182,61 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
                 }
             }
         } else {
-            List<String> ls = new ArrayList<>();
             String o = operator.equalsIgnoreCase("and") ? " OCH " : " ELLER ";
+            Junctor ls = new Junctor(o);
             for (IFeedFilter child : children) {
                 ls.add(child.toText());
             }
-            if (children.size() > 1) {
-                return "(" + StringUtils.join(ls, o) + ")";
-            }
-            return StringUtils.join(ls, o);
+            return ls.toQuery();
         }
-        throw new RuntimeException();
+        return "";
     }
 
     public String toQuery() {
         if (children.isEmpty()) {
             if (operator == null || operator.equals("matching") || operator.isEmpty()) {
-                return filterKey + ":" + escapeValue(filterQuery);
+                return escapeFieldName(filterKey) + ":" + escapeValue(filterQuery);
             } else {
                 if (operator.equals("greater")) {
-                    return filterKey + ":[" + escapeValue(filterQuery) + "TO *]";
+                    return escapeFieldName(filterKey) + ":[" + escapeValue(filterQuery) + "TO *]";
                 } else if (operator.equals("lesser")) {
-                    return filterKey + ":[* TO " + escapeValue(filterQuery) + "]";
+                    return escapeFieldName(filterKey) + ":[* TO " + escapeValue(filterQuery) + "]";
                 }
             }
         } else {
-            List<String> ls = new ArrayList<>();
             String o = operator.equalsIgnoreCase("and") ? " AND " : " OR ";
+            Junctor ls = new Junctor(o);
             for (IFeedFilter child : children) {
                 ls.add(child.toQuery());
             }
-            if (children.size() > 1) {
-                return "(" + StringUtils.join(ls, o) + ")";
-            }
-            return StringUtils.join(ls, o);
+            return ls.toQuery();
         }
-        throw new RuntimeException();
+        return "";
     }
 
-    static String regex = "([+\\-!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
+    static String keyRegex = "([+\\-!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
+
+    static String valueRegex = "([+!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
 
     static String escapeValue(String forSolr) {
-        String escaped = forSolr.replaceAll(regex, "\\\\$1");
-        // return myEscapedString;
-        if (escaped.contains(" ")) {
+        String escaped = forSolr.replaceAll(valueRegex, "\\\\$1");
+        /*if (escaped.contains(" ")) {
             return String.format("\"%s\"", escaped);
         } else {
             return escaped;
-        }
+        }*/
+        return escaped;
+    }
+
+    static String escapeFieldName(String forSolr) {
+        String escaped = forSolr.replaceAll(keyRegex, "\\\\$1");
+        // return myEscapedString;
+        /*if (escaped.contains(" ")) {
+            return String.format("\"%s\"", escaped);
+        } else {
+            return escaped;
+        }*/
+        return escaped;
     }
 
     public boolean isContainer() {

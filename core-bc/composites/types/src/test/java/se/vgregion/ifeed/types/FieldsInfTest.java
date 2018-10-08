@@ -1,17 +1,19 @@
 package se.vgregion.ifeed.types;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import junit.framework.Assert;
-
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class FieldsInfTest {
 
@@ -73,6 +75,30 @@ public class FieldsInfTest {
     public void getDataFromCache() {
         FieldsInf.putDataIntoCache("[]");
         System.out.println(FieldsInf.getDataFromCache());
+    }
+
+    @Test
+    public void getFieldInfsFromTabularText() throws IOException {
+        FieldsInf fi = new FieldsInf();
+        // File resourcesDirectory = new File("src/test/resources");
+        String toTypes = (new File(".").getAbsolutePath().replace(".", ""));
+        Path path = Paths.get(toTypes, "src", "test", "resources", "fields-config.txt");
+        fi.setText(new String(Files.readAllBytes(path)));
+        List<FieldInf> rows = fi.getFieldInfsFromTabularText();
+        for (FieldInf row : rows) {
+            String template = "result.add(new LabelledValue(\"%s\", \"%s\"));";
+            //System.out.println(row.getName());
+            String heading = String.format(template, row.getId(), row.getName());
+            System.out.println(heading);
+            for (FieldInf child : row.getChildren()) {
+                // result.add(new LabelledValue("core:ArchivalObject.idType", "N/A"));
+                if (child.isInHtmlView()) {
+                    String signature = String.format(template, child.getId(), child.getName());
+                    System.out.println(signature);
+                }
+                // System.out.println(child.getId() + " '" + child.getName() + "'" + child.isInHtmlView());
+            }
+        }
     }
 
 }

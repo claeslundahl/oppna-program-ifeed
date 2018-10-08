@@ -318,6 +318,10 @@
             <ui:include src="field-config.xhtml"/>
           </p:panel>
 
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'POPUP_CONFIG'}">
+            <ui:include src="popup-config.xhtml"/>
+          </p:panel>
+
           <p:panel rendered="#{navigationModelBean.uiNavigation eq 'EDIT_IFEED'}">
             <ui:include src="edit-ifeed.xhtml"/>
           </p:panel>

@@ -3,6 +3,8 @@ package se.vgregion.ifeed.service.solr;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -27,6 +29,21 @@ public class DateFormatter {
         /*public DateTimeFormatter formatter() {
             return formatter;
         }*/
+    }
+
+    public void formatTextDate(String withThatKey, Map<String, Object> insideHere) {
+        String issued = (String) insideHere.get(withThatKey);
+        if (issued != null && issued.contains("T")) {
+            String[] parts = issued.split(Pattern.quote("T"));
+            issued = parts[0];
+        }
+        insideHere.put(withThatKey, issued);
+    }
+
+    public void formatDates(Map<String, Object> within) {
+        formatTextDate("dc.date.validfrom", within);
+        formatTextDate("dc.date.issued", within);
+        formatTextDate("dc.date.validto", within);
     }
 
     public static String format(int year, final int month, final int date, final DateFormat dateFormat) {

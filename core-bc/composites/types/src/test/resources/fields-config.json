@@ -1,20 +1,20 @@
 [
   {
     "id": "",
-    "name": "2018",
+    "name": "SOFIA",
     "help": "",
     "type": "",
     "apelonKey": "",
     "children": [
       {
         "id": "",
-        "name": "Dokumentutsökning",
+        "name": "Populära filter",
         "help": "",
         "type": "",
         "apelonKey": "",
         "children": [
           {
-            "id": "core_ArchivalObject_core_Producer",
+            "id": "core:ArchivalObject.core:Producer",
             "name": "Myndighet",
             "help": "Myndighet",
             "type": "d:text_facet",
@@ -25,7 +25,7 @@
             "expanded": false
           },
           {
-            "id": "core_ArchivalObject_core_Classification_core_Classification_name",
+            "id": "core:ArchivalObject.core:Classification.core:Classification.name",
             "name": "Klassificeringsstrukturen (process)",
             "help": "Klassificeringsstrukturen (process)",
             "type": "d:text_facet",
@@ -36,7 +36,7 @@
             "expanded": false
           },
           {
-            "id": "core_ArchivalObject_core_ObjectType",
+            "id": "core:ArchivalObject.core:ObjectType",
             "name": "Handlingstyp",
             "help": "Handlingstyp",
             "type": "d:text_facet",
@@ -47,7 +47,7 @@
             "expanded": false
           },
           {
-            "id": "vgr_VgrExtension_vgr_PublishedForUnit_id",
+            "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
             "name": "Upprättat för enhet",
             "help": "Upprättat för enhet",
             "type": "d:ldap_org_value",
@@ -58,7 +58,7 @@
             "expanded": false
           },
           {
-            "id": "vgrsy_DomainExtension_vgrsy_SubjectClassification",
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
             "name": "Regional ämnesindelning",
             "help": "Regional ämnesindelning",
             "type": "d:text_facet",
@@ -69,7 +69,7 @@
             "expanded": false
           },
           {
-            "id": "vgrsy_DomainExtension_vgrsy_SubjectLocalClassification",
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
             "name": "Egen ämnesindelning",
             "help": "Egen ämnesindelning",
             "type": "d:text_facet",
@@ -80,7 +80,7 @@
             "expanded": false
           },
           {
-            "id": "vgr_VgrExtension_vgr_Tag",
+            "id": "vgr:VgrExtension.vgr:Tag",
             "name": "Företagsnyckelord",
             "help": "Företagsnyckelord",
             "type": "d:text_facet",
@@ -91,7 +91,7 @@
             "expanded": false
           },
           {
-            "id": "core_ArchivalObject_core_ObjectType",
+            "id": "core:ArchivalObject.core:ObjectType",
             "name": "Handlingstyp",
             "help": "Handlingstyp",
             "type": "d:text_facet",
@@ -102,7 +102,7 @@
             "expanded": false
           },
           {
-            "id": "vgr_VgrExtension_vgr_SourceSystem",
+            "id": "vgr:VgrExtension.vgr:SourceSystem",
             "name": "Källsystem",
             "help": "Källsystem",
             "type": "d:text_facet",
@@ -119,13 +119,13 @@
       },
       {
         "id": "",
-        "name": "Statistik-fält",
+        "name": "Ytterligare filter",
         "help": "",
         "type": "",
         "apelonKey": "",
         "children": [
           {
-            "id": "vgr_VgrExtension_vgr_CreatedByUnit_id",
+            "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
             "name": "Upprättat av enhet",
             "help": "Upprättat av enhet",
             "type": "d:text_facet",
@@ -135,7 +135,7 @@
             "inHtmlView": true,
             "expanded": false
           },{
-            "id": "vgr_VgrExtension_vgr_CreatedBy",
+            "id": "vgr:VgrExtension.vgr:CreatedBy",
             "name": "Upprättat av (person)",
             "help": "Upprättat av (person)",
             "type": "d:text_facet",
@@ -145,7 +145,7 @@
             "inHtmlView": true,
             "expanded": false
           },{
-            "id": "vgr_VgrExtension_vgr_RevisedAvailableFrom",
+            "id": "vgr:VgrExtension.vgr:RevisedAvailableFrom",
             "name": "Tillgänglighetsdatum from",
             "help": "Tillgänglighetsdatum from",
             "type": "d:text_facet",
@@ -155,7 +155,7 @@
             "inHtmlView": true,
             "expanded": false
           },{
-            "id": "vgr_VgrExtension_vgr_RevisedAvailableTo",
+            "id": "vgr:VgrExtension.vgr:RevisedAvailableTo",
             "name": "Tillgänglighetsdatum tom",
             "help": "Tillgänglighetsdatum tom",
             "type": "d:text_facet",
@@ -165,7 +165,7 @@
             "inHtmlView": true,
             "expanded": false
           },{
-            "id": "vgr_VgrExtension_vgr_SecurityClass",
+            "id": "vgr:VgrExtension.vgr:SecurityClass",
             "name": "Åtkomsträtt",
             "help": "Åtkomsträtt",
             "type": "d:text_facet",
@@ -187,7 +187,7 @@
   },
   {
     "id": "",
-    "name": "Dublin-Core",
+    "name": "Alfresco, Barium",
     "help": "",
     "type": "",
     "apelonKey": "",
@@ -247,7 +247,7 @@
             "id": "dc.description",
             "name": "Beskrivning",
             "help": "En kort redogörelse för dokumentet, handlingen eller resursens innehåll. (Fritext)",
-            "type": "d:mltext",
+            "type": "d:text",
             "apelonKey": "",
             "children": [],
             "filter": false,
@@ -1249,6 +1249,30 @@
     ],
     "filter": false,
     "inHtmlView": true,
+    "expanded": false
+  },
+  {
+    "id": "",
+    "name": "Hidden",
+    "help": "Sådant som inte ska synas i filter-listan",
+    "type": "d:text",
+    "apelonKey": "",
+    "children": [
+      {
+        "id": "title",
+        "name": "Titel",
+        "help": "Titel både för nya och gamla specen.",
+        "type": "d:text",
+        "apelonKey": "",
+        "children": [],
+        "filter": false,
+        "inHtmlView": true,
+        "inTooltip": true,
+        "expanded": false
+      }
+    ],
+    "filter": false,
+    "inHtmlView": false,
     "expanded": false
   }
 ]

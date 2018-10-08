@@ -491,7 +491,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     public String toQuery() {
         Junctor or = new Junctor(" OR ");
-        for (IFeed feed : getAllNestedFeedsFlattly()) {
+        Set<IFeed> flat = getAllNestedFeedsFlattly();
+        for (IFeed feed : flat) {
             or.add(feed.toQueryImp());
         }
         return or.toQuery();
@@ -506,7 +507,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             return filters.iterator().next().toQuery();
         }
 
-        Junctor sb = new Junctor(" AND ");
+        Junctor and = new Junctor(" AND ");
         Map<String, List<IFeedFilter>> keyToFilters = new HashMap<String, List<IFeedFilter>>() {
             @Override
             public List<IFeedFilter> get(Object key) {
@@ -518,7 +519,11 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         };
 
         for (IFeedFilter filter : filters) {
-            keyToFilters.get(filter.getFilterKey()).add(filter);
+            if (filter.isContainer()) {
+                and.add(filter.toQuery());
+            } else {
+                keyToFilters.get(filter.getFilterKey()).add(filter);
+            }
         }
 
         for (String key : keyToFilters.keySet()) {
@@ -526,16 +531,15 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             if (values.size() > 1 && !values.get(0).isContainer()) {
                 Junctor or = new Junctor(" OR ");
                 for (IFeedFilter value : values) {
-                    //or.add(key + ":" + IFeedFilter.escapeValue(value.getFilterQuery()));
                     or.add(value.toQuery());
                 }
-                sb.add(or.toQuery());
+                and.add(or.toQuery());
             } else {
-                sb.add(values.get(0).toQuery());
+                and.add(values.get(0).toQuery());
             }
         }
 
-        return sb.toQuery();
+        return and.toQuery();
     }
 
 }

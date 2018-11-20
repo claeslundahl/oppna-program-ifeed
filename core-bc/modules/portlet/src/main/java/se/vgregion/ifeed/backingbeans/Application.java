@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.InvocerUtil;
+import se.vgregion.common.utils.InstrumentationHome;
 import se.vgregion.common.utils.Json;
+import se.vgregion.common.utils.MemoryTool;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.Note;
 import se.vgregion.ifeed.formbean.VgrOrganization;
@@ -27,7 +29,8 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.SolrHttpClient;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.shared.DynamicTableSortingDef;
@@ -49,10 +52,9 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
 import java.io.*;
+import java.lang.instrument.Instrumentation;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -253,7 +255,28 @@ public class Application {
         this.currentPage = currentPage;
     }
 
-    public void viewIFeed(Long id) throws PortalException, SystemException {
+    public void viewIFeed(Long id) {
+        long now = System.currentTimeMillis();
+        viewIFeedImp(id);
+        long executionTime = System.currentTimeMillis() - now;
+        System.out.println("Time for viewIFeedImp " + executionTime);
+
+        long executionTimeSum = executionTime;
+
+        now = System.currentTimeMillis();
+        initFieldsInsideModel();
+        executionTime = System.currentTimeMillis() - now;
+        System.out.println("Time for initFieldsInsideModel " + executionTime);
+
+        executionTimeSum += executionTime;
+
+        MemoryTool memoryTool = new MemoryTool();
+        memoryTool.measure(this);
+    }
+
+
+    private void viewIFeedImp(Long id) {
+
         final IFeed feed = iFeedService.getIFeed(id);
         newFilter = null;
         iFeedModelBean.copyValuesFromIFeed(feed);
@@ -273,9 +296,12 @@ public class Application {
 
         navigationModelBean.setUiNavigation("VIEW_IFEED");
         setInEditMode(false);
-        //findResultsByCurrentFeedConditions();
 
         setFilters(filters);
+
+    }
+
+    private void initFieldsInsideModel() {
 
         for (IFeedFilter filter : iFeedModelBean.getFilters()) {
             FieldInf field = getFieldsByNameIndex().get(filter.getFilterKey());
@@ -288,12 +314,44 @@ public class Application {
             filter.initFieldInfs(getFieldsByNameIndex().values());
         }
 
-        try {
+        /*try {
             Files.write(Paths.get(System.getProperty("user.home"), "feed.json"), Json.toJson(feed).getBytes());
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+
+        // Tro to find what list of filters to display initially.
+        for (IFeedFilter filter : iFeedModelBean.getFilters()) {
+            FieldInf field = getFieldInfById(filter.getFilterKey());
+            if (field != null && field.getParent() != null && field.getParent().getParent() != null) {
+                selectedFieldInfRootName = field.getParent().getParent().getName();
+                break;
+            }
         }
 
+    }
+
+    private FieldInf getFieldInfById(String toLookFor) {
+        return getFieldInfById(toLookFor, filters);
+    }
+
+    private FieldInf getFieldInfById(String toLookFor, Collection<FieldInf> inHere) {
+        if (toLookFor == null) {
+            return null;
+        }
+        for (FieldInf item : inHere) {
+            if (item == null) {
+                continue;
+            }
+            if (toLookFor.equalsIgnoreCase(item.getId())) {
+                return item;
+            }
+            FieldInf result = getFieldInfById(toLookFor, item.getChildren());
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 
     User getUser(PortletRequest request) throws PortalException, SystemException {
@@ -544,7 +602,11 @@ public class Application {
     }
 
     public void findResultsByCurrentFeedConditions() {
-        this.currentResult = iFeedSolrQuery.getIFeedResults(getIFeedModelBean(), null);
+        try {
+            this.currentResult = iFeedSolrQuery.getIFeedResults(getIFeedModelBean(), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Transactional
@@ -580,17 +642,27 @@ public class Application {
     }
 
     public List<String> newFilterSuggestion(String value) {
-        final Set<IFeedFilter> presentFilters = new HashSet<IFeedFilter>(iFeedModelBean.getFilters());
-        IFeedFilter currentDraft = new IFeedFilter(value + "*", newFilter.getId());
-        presentFilters.add(currentDraft);
-        IFeed feed = new IFeed() {
+        try {
+            System.out.println("newFilterSuggestion");
+            final Set<IFeedFilter> presentFilters = new HashSet<IFeedFilter>(iFeedModelBean.getFilters());
+            IFeedFilter currentDraft = new IFeedFilter(value + "*", newFilter.getId());
+            presentFilters.add(currentDraft);
+        /*IFeed feed = new IFeed() {
             @Override
             public Set<IFeedFilter> getFilters() {
                 return presentFilters;
             }
-        };
+        };*/
+            IFeed feed = new IFeed();
+            feed.getFilters().addAll(presentFilters);
 
-        return iFeedService.fetchFilterSuggestion(feed, newFilter.getId());
+            List<String> result = iFeedService.fetchFilterSuggestion(feed, newFilter.getId());
+            System.out.println(result);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public List<VgrDepartment> getSelectableDepartments() {
@@ -1154,7 +1226,9 @@ public class Application {
         );*/
         List<Map<String, Object>> result = null;
         SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
-        result = client.query(retrievedFeed.toQuery(), 0, 501, "title asc").getResponse().getDocs();
+        Result fromSolr = client.query(retrievedFeed.toQuery(), 0, 501, "title asc");
+        if (fromSolr != null && fromSolr.getResponse() != null && fromSolr.getResponse().getDocs() != null)
+            result = client.query(retrievedFeed.toQuery(), 0, 501, "title asc").getResponse().getDocs();
         this.searchResults = result;
     }
 
@@ -1218,12 +1292,15 @@ public class Application {
         formatDate("dc.date.validto", within);
     }
 
+    static List<String> sofiaSystems = new ArrayList<>(Arrays.asList("SOFIA", "SISOM"));
+
     public static List<Note> toTooltipRows(Map<String, Object> item) {
         if (item == null) {
             return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
         }
         String sourceSystem = (String) item.get("vgr:VgrExtension.vgr:SourceSystem");
-        if (sourceSystem != null && "SOFIA".equals(sourceSystem)) {
+
+        if (sourceSystem != null && sofiaSystems.contains(sourceSystem)) {
             return toSofiaTooltipRows(item);
         } else {
             return toAlfrescoBariumTooltipRows(item);
@@ -1324,7 +1401,7 @@ public class Application {
 
     public static Note toTooltipRow(Map<String, Object> item, String key, String label) {
         Object value = item.get(key);
-        if (value == null || value.toString().isEmpty()) {
+        if ("undefined".equals(value) || value == null || value.toString().isEmpty()) {
             return null;
         }
         return new Note(label, String.valueOf(value));
@@ -1352,6 +1429,14 @@ public class Application {
 
     public void setFiltersMap(Map<String, FieldInf> filtersMap) {
         this.filtersMap = filtersMap;
+    }
+
+    public static String encode(String raw) {
+        try {
+            return URLEncoder.encode(raw, "UTF-8").replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

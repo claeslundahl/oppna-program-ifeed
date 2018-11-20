@@ -1,4 +1,4 @@
-package se.vgregion.ifeed.service.solr;
+package se.vgregion.ifeed.service.solr.client;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -39,9 +39,10 @@ public class SolrHttpClient {
     }
 
     public Result query(String qf, Integer start, Integer rows, String sort) {
+        System.out.println(qf);
         try {
             Result result = queryImp(qf, start, rows, sort);
-            addTranslationProperties(result);
+            // addTranslationProperties(result);
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -70,6 +71,7 @@ public class SolrHttpClient {
     }
 
     private Result queryImp(String fq, Integer start, Integer rows, String sort) throws IOException {
+
         if (fq == null || fq.trim().isEmpty()) fq = "";
         else fq = URLEncoder.encode(fq, "UTF-8");
         if (!fq.isEmpty()) {
@@ -111,7 +113,7 @@ public class SolrHttpClient {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
@@ -210,101 +212,6 @@ public class SolrHttpClient {
         return result;
     }
 
-    public static class Result {
-
-        private Header responseHeader;
-        private Response response;
-
-
-        public Header getResponseHeader() {
-            return responseHeader;
-        }
-
-        public void setResponseHeader(Header responseHeader) {
-            this.responseHeader = responseHeader;
-        }
-
-        public Response getResponse() {
-            return response;
-        }
-
-        public void setResponse(Response response) {
-            this.response = response;
-        }
-    }
-
-    public static class Header {
-
-        private boolean zkConnected;
-        private int status;
-        private int QTime;
-        private Map<String, String> params;
-
-        public boolean isZkConnected() {
-            return zkConnected;
-        }
-
-        public void setZkConnected(boolean zkConnected) {
-            this.zkConnected = zkConnected;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public void setStatus(int status) {
-            this.status = status;
-        }
-
-        public int getQTime() {
-            return QTime;
-        }
-
-        public void setQTime(int QTime) {
-            this.QTime = QTime;
-        }
-
-        public Map<String, String> getParams() {
-            return params;
-        }
-
-        public void setParams(Map<String, String> params) {
-            this.params = params;
-        }
-    }
-
-    public static class Response {
-        private int numFound;
-
-        private int start;
-        private List<Map<String, Object>> docs;
-
-        public int getNumFound() {
-            return numFound;
-        }
-
-        public void setNumFound(int numFound) {
-            this.numFound = numFound;
-        }
-
-        public int getStart() {
-            return start;
-        }
-
-        public void setStart(int start) {
-            this.start = start;
-        }
-
-        public List<Map<String, Object>> getDocs() {
-            return docs;
-        }
-
-        public void setDocs(List<Map<String, Object>> docs) {
-            this.docs = docs;
-        }
-
-    }
-
     public Set<String> fetchAllFieldNames() {
         Set<String> result = new TreeSet<>();
 
@@ -335,137 +242,7 @@ public class SolrHttpClient {
         return new SolrHttpClient(baseUrl);
     }
 
-    public static class Field {
 
-        public Field() {
-            super();
-        }
-
-        private String name;
-
-        public String getName() {
-            return this.name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        private String type;
-
-        public String getType() {
-            return this.type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        private boolean multiValued;
-
-        public boolean getMultiValued() {
-            return this.multiValued;
-        }
-
-        public void setMultiValued(boolean multiValued) {
-            this.multiValued = multiValued;
-        }
-
-        private boolean indexed;
-
-        public boolean getIndexed() {
-            return this.indexed;
-        }
-
-        public void setIndexed(boolean indexed) {
-            this.indexed = indexed;
-        }
-
-        private boolean required;
-
-        public boolean getRequired() {
-            return this.required;
-        }
-
-        public void setRequired(boolean required) {
-            this.required = required;
-        }
-
-        private boolean stored;
-
-        public boolean getStored() {
-            return this.stored;
-        }
-
-        public void setStored(boolean stored) {
-            this.stored = stored;
-        }
-
-        private String _default;
-
-        public String getDefault() {
-            return this._default;
-        }
-
-        public void setDefault(String _default) {
-            this._default = _default;
-        }
-
-        private Boolean omitNorms;
-
-        public Boolean getOmitNorms() {
-            return this.omitNorms;
-        }
-
-        public void setOmitNorms(Boolean omitNorms) {
-            this.omitNorms = omitNorms;
-        }
-
-
-        @Override
-        public String toString() {
-            return "Field{" +
-                    "name='" + name + '\'' +
-                    ", type='" + type + '\'' +
-                    ", multiValued=" + multiValued +
-                    ", indexed=" + indexed +
-                    ", required=" + required +
-                    ", stored=" + stored +
-                    ", _default='" + _default + '\'' +
-                    ", omitNorms=" + omitNorms +
-                    '}';
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Field)) return false;
-
-            Field field = (Field) o;
-
-            if (multiValued != field.multiValued) return false;
-            if (indexed != field.indexed) return false;
-            if (required != field.required) return false;
-            if (stored != field.stored) return false;
-            if (name != null ? !name.equals(field.name) : field.name != null) return false;
-            if (type != null ? !type.equals(field.type) : field.type != null) return false;
-            if (_default != null ? !_default.equals(field._default) : field._default != null) return false;
-            return omitNorms != null ? omitNorms.equals(field.omitNorms) : field.omitNorms == null;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = name != null ? name.hashCode() : 0;
-            result = 31 * result + (type != null ? type.hashCode() : 0);
-            result = 31 * result + (multiValued ? 1 : 0);
-            result = 31 * result + (indexed ? 1 : 0);
-            result = 31 * result + (required ? 1 : 0);
-            result = 31 * result + (stored ? 1 : 0);
-            result = 31 * result + (_default != null ? _default.hashCode() : 0);
-            result = 31 * result + (omitNorms != null ? omitNorms.hashCode() : 0);
-            return result;
-        }
-    }
 
     public String getBaseUrl() {
         return baseUrl;
@@ -473,7 +250,7 @@ public class SolrHttpClient {
 
 
     public Map<String, Set<Object>> findAllValues() {
-        Map<String, Set<Object>> result = new TreeMap<String, Set<Object>>() {
+       final  Map<String, Set<Object>> result = new TreeMap<String, Set<Object>>() {
             @Override
             public Set<Object> get(Object key) {
                 if (!containsKey(key)) {
@@ -496,7 +273,7 @@ public class SolrHttpClient {
                 }
             }
         }
-
+        System.out.println("Antal mappningar " + result.size());
         return result;
     }
 

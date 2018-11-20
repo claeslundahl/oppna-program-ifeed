@@ -16,7 +16,9 @@ import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.SolrHttpClient;
+import se.vgregion.ifeed.service.solr.OldIndexData;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
@@ -255,6 +257,47 @@ public class IFeedViewerController {
             bos.write(0xBB);
             bos.write(0xBF);
 
+            NavigableSet<String> keys = new TreeSet<>();
+            for (Map<String, Object> item : resultAccumulator) {
+                for (String s : item.keySet()) {
+                    if (item.get(s) != null && !"".equals(item.get(s).toString().trim())) {
+                        keys.add(s);
+                    }
+                }
+            }
+
+            if (!resultAccumulator.isEmpty()) {
+                for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
+                    if (keys.contains(labelledValue.key)) {
+                        bos.write(prettifyFeedValue(labelledValue.getLabel()));
+                        bos.write(";".getBytes());
+                    }
+                }
+                for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
+                    if (keys.contains(labelledValue.key)) {
+                        bos.write(prettifyFeedValue(labelledValue.getLabel()));
+                        bos.write(";".getBytes());
+                    }
+                }
+
+                for (Map<String, Object> item : resultAccumulator) {
+                    bos.write("\n".getBytes());
+                    for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
+                        if (keys.contains(labelledValue.key)) {
+                            bos.write(prettifyFeedValue(String.valueOf(item.get(labelledValue.getKey()))));
+                            bos.write(";".getBytes());
+                        }
+                    }
+                    for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
+                        if (keys.contains(labelledValue.key)) {
+                            bos.write(prettifyFeedValue(String.valueOf(item.get(labelledValue.getKey()))));
+                            bos.write(";".getBytes());
+                        }
+                    }
+                }
+            }
+
+/*
             if (!resultAccumulator.isEmpty()) {
                 for (FieldInf fi : fields) {
                     if (fi.isInHtmlView()) {
@@ -281,6 +324,7 @@ public class IFeedViewerController {
                     bos.write("\n".getBytes());
                 }
             }
+*/
 
             bos.close();
             portletOutputStream.close();
@@ -390,28 +434,121 @@ public class IFeedViewerController {
             sortDirection = IFeedSolrQuery.DEFAULT_SORT_DIRECTION.toString();
 
 
-        if (sortField == null || sortField.trim().isEmpty() || "null".equalsIgnoreCase(sortField)) {
-            sortField = "dc.title";
+        if (sortField == null || sortField.trim().isEmpty() || "null".equalsIgnoreCase(sortField) || "dc.title".equalsIgnoreCase(sortField)) {
+            // sortField = "dc.title";
             sortField = "title";
         }
-        /*List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField,
-                getEnum(SortDirection.class, sortDirection), fieldToSelect);*/
 
-        SolrHttpClient.Result otherResult = client.query(
+        Result otherResult = client.query(
                 retrievedFeed.toQuery(),
                 (startBy != null && startBy >= 0) ? startBy : 0,
                 (endBy != null ? endBy : 25_000),
                 sortField + "%20" + sortDirection
         );
 
-        // System.out.println("IFeedViewerController " + (otherResult.getResponse().getDocs().size() + " == " + result.size()));
+        for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
+            copyValueFromSofiaToAlfrescoBariumFields(item);
+        }
 
-        //model.addAttribute("result", result);
         model.addAttribute("result", otherResult.getResponse().getDocs());
+
+        System.out.println("Found " + otherResult.getResponse().getDocs().size());
+
         return "documentList";
     }
 
     SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+
+
+    /**
+     * There are other names for the fields in the SOFIA-specification. That could lead to strange behavior for the
+     * script-rendered lists on the pages - that is if those lists where using some of the old fields and got a null /
+     * blank in response. To mitigate that - copy values into the fields that might be empty.
+     * Here is a list of used fields from 20181009:
+     * <code>
+     * dc.contributor.acceptedby 1
+     * dc.creator.document 12
+     * dc.creator.freetext 1
+     * dc.creator.function 10
+     * dc.date.issued 157
+     * dc.date.saved 19
+     * dc.date.validfrom 67
+     * dc.date.validto 175
+     * dc.description 42
+     * dc.publisher.forunit 74
+     * dc.publisher.forunit.flat 2
+     * dc.relation.replaces 17
+     * dc.title 3793
+     * dc.title.filename 1
+     * dc.type.document.id 1
+     * dc.type.document.serie 5
+     * dc.type.document.structure 301
+     * title 4
+     * </code>
+     * The number after the field is the count, number of times the field exists in various lists.
+     *
+     * @param inThatItem
+     */
+    private void copyValueFromSofiaToAlfrescoBariumFields(Map<String, Object> inThatItem) {
+        putValueInsideWhenTargetIsNull("title", "dc.title", inThatItem);
+        putValueInsideWhenTargetIsNull("vgr:VgrExtension.vgr:CreatedBy", "dc.creator.freetext", inThatItem);
+
+        putValueInsideWhenTargetIsNull("core:ArchivalObject.core:CreatedDateTime", "dc.date.issued", inThatItem);
+        putValueInsideWhenTargetIsNull("core:ArchivalObject.core:CreatedDateTime", "dc.date.saved", inThatItem);
+        putValueInsideWhenTargetIsNull("core:ArchivalObject.core:Description", "dc.description", inThatItem);
+        putValueInsideWhenTargetIsNull("vgr:VgrExtension.vgr:PublishedForUnit", "dc.publisher.forunit", inThatItem);
+
+        putValueInsideWhenTargetIsNull("vgr:VgrExtension.vgr:PublishedForUnit", "dc.publisher.forunit.flat", inThatItem);
+
+        putValueInsideWhenTargetIsNullAndValueExistInOldIndex(
+                "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                "dc.type.document.serie",
+                inThatItem,
+                OldIndexData.getCachedAlfrescoBariumValues().get("dc.type.document.serie")
+        );
+
+        /*putValueInsideWhenTargetIsNullAndValueExistInOldIndex(
+                "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                "dc.type.document.structure",
+                inThatItem,
+                OldIndexData.getCachedAlfrescoBariumValues().get("dc.type.document.structure")
+        );*/
+    }
+
+    private void putValueInsideWhenTargetIsNullAndValueExistInOldIndex(String sourceKey, String targetKey, Map<String, Object> inThatItem, List<Object> withThosePossibleValues) {
+        List targetValue = (List) inThatItem.get(targetKey);
+        if (targetValue == null) {
+            targetValue = new ArrayList();
+            inThatItem.put(targetKey, targetValue);
+        }
+        List sourceValue = (List) inThatItem.get(sourceKey);
+
+        if (sourceValue == null) {
+            return;
+        }
+
+        if (sourceValue.isEmpty() || targetValue.equals(sourceValue)) {
+            return;
+        }
+
+        for (Object possibleValue : withThosePossibleValues) {
+            if (sourceValue.contains(possibleValue) && !targetValue.contains(possibleValue)) {
+                targetValue.add(possibleValue);
+            }
+        }
+    }
+
+
+    private void putValueInsideWhenTargetIsNull(String sourceKey, String targetKey, Map<String, Object> inThatItem) {
+        Object targetValue = inThatItem.get(targetKey);
+        if (targetValue == null || targetValue.toString().trim().isEmpty()) {
+            Object sourceValue = inThatItem.get(sourceKey);
+            if (sourceValue != null && !sourceValue.toString().trim().isEmpty()) {
+                inThatItem.put(targetKey, sourceValue);
+            }
+        }
+    }
+
 
     /**
      * Showing detial for an document.
@@ -486,6 +623,8 @@ public class IFeedViewerController {
         return sdfForView.format(date);
     }
 
+    //static List<String> sofiaSystems = new ArrayList<>(Arrays.asList("SOFIA", "SISOM"));
+
     /**
      * Using path variables to asscess a feed from a http client.
      *
@@ -514,24 +653,45 @@ public class IFeedViewerController {
         IFeedFilter filter = new IFeedFilter();
         filter.setFilterQuery(documentId);
         filter.setFilterKey("id");
-        Map<String, Object> doc = client.query(filter.toQuery(), 0, 1, "").getResponse().getDocs().get(0);
-        String sourceSystem = (String) doc.get("vgr:VgrExtension.vgr:SourceSystem");
-        List<LabelledValue> result = (sourceSystem != null && "SOFIA".equals(sourceSystem)) ?
-                newSofiaDisplayFieldsWithoutValue() : newAlfrescoBariumDisplayFieldsWithoutValue();
-        for (LabelledValue lv : new ArrayList<>(result)) {
-            Object v = doc.get(lv.getKey());
-            if (v != null && !v.toString().trim().isEmpty()) {
-                if (v instanceof List) {
-                    List list = (List) v;
-                    v = org.apache.commons.lang.StringUtils.join(list, ", ");
-                }
-                lv.setValue(v);
-            }else{
-                result.remove(lv);
-            }
+        Result findigs = client.query(filter.toQuery(), null, null, "title asc");
+        if (findigs.getResponse().getDocs().isEmpty()) {
+            filter.setFilterQuery("workspace://SpacesStore/" + documentId);
+            findigs = client.query(filter.toQuery(), null, null, "title asc");
         }
-        model.addAttribute("item", doc);
-        model.addAttribute("fields", result);
+        if (!findigs.getResponse().getDocs().isEmpty()) {
+            System.out.println("Antal findings " + findigs.getResponse().getDocs().size());
+            System.out.println("Antal findings.size() " + findigs.getResponse().getDocs().get(0).size());
+            System.out.println("Nycklar i findings: " + new TreeSet<>(findigs.getResponse().getDocs().get(0).keySet()));
+            Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
+            String sourceSystem = (String) doc.get("vgr:VgrExtension.vgr:SourceSystem");
+            // String sourceSystem = (String) doc.get("SourceSystem");
+            /*List<LabelledValue> result = (sourceSystem != null && sofiaSystems.contains(sourceSystem)) ?
+                    newSofiaDisplayFieldsWithoutValue() : newAlfrescoBariumDisplayFieldsWithoutValue();*/
+
+            List<LabelledValue> result = new ArrayList<>();
+            result.addAll(newSofiaDisplayFieldsWithoutValue());
+            result.addAll(newAlfrescoBariumDisplayFieldsWithoutValue());
+
+            for (LabelledValue lv : new ArrayList<>(result)) {
+                Object v = doc.get(lv.getKey());
+                if (v != null && !v.toString().trim().isEmpty()) {
+                    if (v instanceof List) {
+                        List list = (List) v;
+                        v = org.apache.commons.lang.StringUtils.join(list, ", ");
+                    }
+                    if (v instanceof String && v.toString().startsWith("http")) {
+                        v = String.format("<a href=\"%s\">%s</a>", v, v);
+                    }
+                    lv.setValue(v);
+                } else {
+                    result.remove(lv);
+                }
+            }
+            model.addAttribute("item", doc);
+            model.addAttribute("fields", result);
+        } else {
+            throw new RuntimeException("Kunde inte hitta dokument med id '" + documentId + "'");
+        }
         return "documentDetails";
     }
 
@@ -687,6 +847,10 @@ public class IFeedViewerController {
         result.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
         result.add(new LabelledValue("core:ArchivalObject.core:Description", ""));
         result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
+
+        result.add(new LabelledValue("productionDownloadLatestVersionUrl", "Webblänk produktionsformat"));
+        result.add(new LabelledValue("originalDownloadLatestVersionUrl", "Webblänk urspurungsformat"));
+        result.add(new LabelledValue("archivalDownloadLatestVersionUrl", "Webblänk arkivformat"));
         return result;
     }
 

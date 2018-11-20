@@ -5,17 +5,16 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.SolrHttpClient;
 import se.vgregion.ifeed.service.solr.SolrServerFactory;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -101,7 +100,7 @@ public class InvocerUtil {
             /*InvocerUtil invocerUtil = new InvocerUtil();
             IFeedResults result = invocerUtil.findByDocumentName("*", fieldsToUseInTheSearch);*/
 
-            SolrHttpClient.Result result = SolrHttpClient.newInstanceFromConfig().query("", 0, 500, null);
+            Result result = SolrHttpClient.newInstanceFromConfig().query("", 0, 500, null);
             for (Map<String, Object> map : result.getResponse().getDocs()) {
                 return getKeysWithMultiValues(map);
             }

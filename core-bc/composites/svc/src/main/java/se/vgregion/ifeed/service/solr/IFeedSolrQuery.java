@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -110,7 +112,7 @@ public class IFeedSolrQuery extends SolrQuery {
                         "DC.creator.function", "DC.contributor.acceptedby", "id",
                         "DC.contributor.acceptedby.role", "DC.date.validfrom", "DC.date.validto", "DC.type.document.structure",
                         //"dc.title", "dc.identifier.native", "url"));
-                "title", "dc.identifier.native", "url"));
+                        "title", "dc.identifier.native", "url"));
                 List<String> result = new ArrayList<>();
                 for (String s : set) {
                     result.add(s.toLowerCase());
@@ -267,7 +269,7 @@ public class IFeedSolrQuery extends SolrQuery {
         return prepareAndPerformQuery(sortField, sortDirection, iFeed, fieldsToSelect);
     }
 
-    private List<Map<String, Object>> prepareAndPerformQuery( String sortField,
+    private List<Map<String, Object>> prepareAndPerformQuery(String sortField,
                                                              final SortDirection sortDirection, IFeed feed,
                                                              final String[] fieldsToSelect) {
         long before = System.currentTimeMillis();
@@ -277,7 +279,7 @@ public class IFeedSolrQuery extends SolrQuery {
             //sortField = "dc.title";
             sortField = "title";
         }
-        SolrHttpClient.Result someOtherResult = client.query(feed.toQuery(), 0, DEFAULT_SOLR_RESULT_SIZE, sortField + "%20" + sortDirection);
+        Result someOtherResult = client.query(feed.toQuery(), 0, DEFAULT_SOLR_RESULT_SIZE, sortField + "%20" + sortDirection);
         // System.out.println("Diff on results " + (someOtherResult.getResponse().getDocs().size() + " == " + result.size()));
         return someOtherResult.getResponse().getDocs();
         // return result;

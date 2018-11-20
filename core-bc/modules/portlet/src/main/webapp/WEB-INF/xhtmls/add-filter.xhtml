@@ -52,7 +52,9 @@
                                                        onclick="refreshResults()"
                                                        action="#{app.setNewFilter(child)}">
                                             <f:ajax render="@form" onevent="refreshResults()"/>
-                                            <span title="#{child.help}" class="ifeed-filter-add"> </span>
+                                            <span title="#{child.help}" class="ifeed-filter-add">
+                                                <span style="display: none;">#{child.id}</span>
+                                            </span>
                                         </h:commandLink>
                                     </td>
                                 </tr>

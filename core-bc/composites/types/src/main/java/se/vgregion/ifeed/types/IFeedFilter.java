@@ -7,6 +7,8 @@ import se.vgregion.ifeed.types.util.Junctor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -198,7 +200,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
                 return escapeFieldName(filterKey) + ":" + escapeValue(filterQuery);
             } else {
                 if (operator.equals("greater")) {
-                    return escapeFieldName(filterKey) + ":[" + escapeValue(filterQuery) + "TO *]";
+                    return escapeFieldName(filterKey) + ":[" + escapeValue(filterQuery) + " TO *]";
                 } else if (operator.equals("lesser")) {
                     return escapeFieldName(filterKey) + ":[* TO " + escapeValue(filterQuery) + "]";
                 }
@@ -218,14 +220,28 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
 
     static String valueRegex = "([+!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
 
-    static String escapeValue(String forSolr) {
+    @Deprecated // Move this to a general purpose lib.
+    public static String toUtcDateIfPossible(String dateStr) {
+        SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        // Add other parsing formats to try as you like:
+        String[] dateFormats = {"yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z"};
+        for (String dateFormat : dateFormats) {
+            try {
+                return out.format(new SimpleDateFormat(dateFormat).parse(dateStr));
+            } catch (ParseException ignore) { }
+        }
+        return dateStr;
+    }
+
+    public static String escapeValue(String forSolr) {
+        forSolr = toUtcDateIfPossible(forSolr);
         String escaped = forSolr.replaceAll(valueRegex, "\\\\$1");
-        /*if (escaped.contains(" ")) {
+        if (escaped.contains(" ")) {
             return String.format("\"%s\"", escaped);
         } else {
             return escaped;
-        }*/
-        return escaped;
+        }
+        // return escaped;
     }
 
     static String escapeFieldName(String forSolr) {

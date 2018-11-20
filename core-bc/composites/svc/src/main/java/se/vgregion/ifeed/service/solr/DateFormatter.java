@@ -70,6 +70,18 @@ public class DateFormatter {
         }
     }
 
+    public static String toUtcDateIfPossible(String dateStr) {
+        SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        // Add other parsing formats to try as you like:
+        String[] dateFormats = {"yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z"};
+        for (String dateFormat : dateFormats) {
+            try {
+                return out.format(new SimpleDateFormat(dateFormat).parse(dateStr));
+            } catch (ParseException ignore) { }
+        }
+        return dateStr;
+    }
+
     /*public static boolean validate(final String solrDateString, final DateFormat dateFormat) {
         try {
             dateFormat.formatter.parseDateTime(solrDateString);

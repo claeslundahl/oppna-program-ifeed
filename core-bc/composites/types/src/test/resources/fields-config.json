@@ -14,6 +14,17 @@
         "apelonKey": "",
         "children": [
           {
+            "id": "title",
+            "name": "Titel",
+            "help": "Titel",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
             "id": "core:ArchivalObject.core:Producer",
             "name": "Myndighet",
             "help": "Myndighet",
@@ -91,9 +102,9 @@
             "expanded": false
           },
           {
-            "id": "core:ArchivalObject.core:ObjectType",
-            "name": "Handlingstyp",
-            "help": "Handlingstyp",
+            "id": "vgr:VgrExtension.vgr:Source.id",
+            "name": "Dokumentid källa",
+            "help": "Dokumentets id som det finns lagrat i källsystemet.",
             "type": "d:text_facet",
             "apelonKey": "",
             "children": [],
@@ -104,7 +115,7 @@
           {
             "id": "vgr:VgrExtension.vgr:SourceSystem",
             "name": "Källsystem",
-            "help": "Källsystem",
+            "help": "Källsystem. Har bytt namn i indexet. Är oanvändbart, får flöden att inte träffa något. Upptäckte detta 8/11 2018.",
             "type": "d:text_facet",
             "apelonKey": "",
             "children": [],
@@ -128,13 +139,14 @@
             "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
             "name": "Upprättat av enhet",
             "help": "Upprättat av enhet",
-            "type": "d:text_facet",
+            "type": "d:ldap_org_value",
             "apelonKey": "",
             "children": [],
             "filter": true,
             "inHtmlView": true,
             "expanded": false
-          },{
+          },
+          {
             "id": "vgr:VgrExtension.vgr:CreatedBy",
             "name": "Upprättat av (person)",
             "help": "Upprättat av (person)",
@@ -144,27 +156,29 @@
             "filter": true,
             "inHtmlView": true,
             "expanded": false
-          },{
-            "id": "vgr:VgrExtension.vgr:RevisedAvailableFrom",
-            "name": "Tillgänglighetsdatum from",
-            "help": "Tillgänglighetsdatum from",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },{
-            "id": "vgr:VgrExtension.vgr:RevisedAvailableTo",
-            "name": "Tillgänglighetsdatum tom",
-            "help": "Tillgänglighetsdatum tom",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },{
+          },
+          /*{
+                      "id": "vgr:VgrExtension.vgr:RevisedAvailableFrom",
+                      "name": "Tillgänglighetsdatum from",
+                      "help": "Tillgänglighetsdatum from",
+                      "type": "d:date",
+                      "apelonKey": "",
+                      "children": [],
+                      "filter": true,
+                      "inHtmlView": true,
+                      "expanded": false
+                    },{
+                      "id":"vgr:VgrExtension.vgr:AvailableTo",
+                      "name": "Tillgänglighetsdatum tom",
+                      "help": "Tillgänglighetsdatum tom",
+                      "type": "d:date",
+                      "apelonKey": "",
+                      "children": [],
+                      "filter": true,
+                      "inHtmlView": true,
+                      "expanded": false
+                    },*/
+          {
             "id": "vgr:VgrExtension.vgr:SecurityClass",
             "name": "Åtkomsträtt",
             "help": "Åtkomsträtt",
@@ -1249,30 +1263,6 @@
     ],
     "filter": false,
     "inHtmlView": true,
-    "expanded": false
-  },
-  {
-    "id": "",
-    "name": "Hidden",
-    "help": "Sådant som inte ska synas i filter-listan",
-    "type": "d:text",
-    "apelonKey": "",
-    "children": [
-      {
-        "id": "title",
-        "name": "Titel",
-        "help": "Titel både för nya och gamla specen.",
-        "type": "d:text",
-        "apelonKey": "",
-        "children": [],
-        "filter": false,
-        "inHtmlView": true,
-        "inTooltip": true,
-        "expanded": false
-      }
-    ],
-    "filter": false,
-    "inHtmlView": false,
     "expanded": false
   }
 ]

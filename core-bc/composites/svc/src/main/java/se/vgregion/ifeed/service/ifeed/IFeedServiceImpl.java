@@ -322,12 +322,14 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                 }
             }
         }
+
         if (result.getDepartment() != null) {
-            for (VgrGroup group : result.getDepartment().getVgrGroups()) {
+            // TODO: Think about this!
+            /*for (VgrGroup group : result.getDepartment().getVgrGroups()) {
                 for (IFeed otherFeed : group.getMemberFeeds()) {
                     init(otherFeed);
                 }
-            }
+            }*/
         }
 
         result.getComposites().toString();
@@ -340,7 +342,9 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
         result.getFilters().toString();
         // result.toJson();
+        // long time = System.currentTimeMillis();
         Json.toJson(result);
+        // System.out.println("Time for json is " + (System.currentTimeMillis() - time));
         /*for (IFeed feed : result.getPartOf()) {
             Json.toJson(feed);
             feed.getPartOf().toString();

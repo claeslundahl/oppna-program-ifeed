@@ -1,6 +1,8 @@
 package se.vgregion.ifeed.service.solr;
 
 import org.apache.commons.lang.StringUtils;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -44,12 +46,13 @@ public class SolrFacetUtil {
 
     private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field) throws Exception {
 
-        System.out.println("solrBaseUrl: " + solrBaseUrl);
+        // System.out.println("solrBaseUrl: " + solrBaseUrl);
+        // System.out.println("Facet find with query " + feed.toQuery());
 
         if (true) {
             if (feed == null) throw new NullPointerException();
             System.out.println("The facet-question to ask: " + feed.toQuery());
-            SolrHttpClient.Result result = client.query(
+            Result result = client.query(
                     feed.toQuery(),
                     0,
                     10,

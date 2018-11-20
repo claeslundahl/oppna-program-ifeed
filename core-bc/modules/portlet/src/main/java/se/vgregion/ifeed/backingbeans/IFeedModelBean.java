@@ -2,16 +2,11 @@ package se.vgregion.ifeed.backingbeans;
 
 
 import net.sf.cglib.beans.BeanMap;
-import net.sf.cglib.beans.FixedKeySet;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
-import se.vgregion.ifeed.service.ifeed.Filter;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
-import se.vgregion.ifeed.types.Ownership;
-import se.vgregion.ifeed.types.VgrDepartment;
+import se.vgregion.ifeed.types.*;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -51,7 +46,10 @@ public class IFeedModelBean extends IFeed implements Serializable {
         newOwnershipNames = new MirrorOwnershipToTextList(getOwnerships());
         getDynamicTableDefs().clear();
         getDynamicTableDefs().addAll(iFeed.getDynamicTableDefs());
-        setGroup(iFeed.getGroup());
+        long time = System.currentTimeMillis();
+        VgrGroup group = iFeed.getGroup();
+        System.out.println("Getting group takes " + (System.currentTimeMillis() - time));
+        setGroup(group);
         setDepartment(iFeed.getDepartment());
         getComposites().clear();
         getComposites().addAll(iFeed.getComposites());
@@ -100,7 +98,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
     };
 
     /**
-     *  Returns a list of Ownerships from the set of Ownerships
+     * Returns a list of Ownerships from the set of Ownerships
      */
     public List<Ownership> getOwnershipList() {
        /*if(ownerships != null) {
@@ -113,9 +111,9 @@ public class IFeedModelBean extends IFeed implements Serializable {
 
     public String getOwnershipUserIds() {
         String ownershipUserId = "";
-        if(ownerships != null) {
+        if (ownerships != null) {
             for (Ownership ownership : ownerships) {
-                if(ownershipUserId == ""){
+                if (ownershipUserId == "") {
                     ownershipUserId = ownership.getUserId();
                 } else {
                     ownershipUserId = ownershipUserId + ", " + ownership.getUserId();

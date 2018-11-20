@@ -1,8 +1,9 @@
 package se.vgregion.ifeed.service.ifeed;
 
-import se.vgregion.ifeed.service.solr.SolrHttpClient;
 
-public class DocumentPopupConf extends SolrHttpClient.Field {
+import se.vgregion.ifeed.service.solr.client.Field;
+
+public class DocumentPopupConf extends Field {
 
     private String label;
 
@@ -13,7 +14,5 @@ public class DocumentPopupConf extends SolrHttpClient.Field {
     public void setLabel(String label) {
         this.label = label;
     }
-
-
-
+    
 }

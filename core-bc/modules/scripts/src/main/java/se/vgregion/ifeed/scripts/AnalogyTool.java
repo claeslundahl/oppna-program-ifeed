@@ -3,6 +3,10 @@ package se.vgregion.ifeed.scripts;
 import se.vgregion.arbetsplatskoder.db.migration.sql.ConnectionExt;
 import se.vgregion.arbetsplatskoder.db.migration.sql.meta.Column;
 import se.vgregion.arbetsplatskoder.db.migration.sql.meta.Table;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
+import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -18,6 +22,8 @@ public class AnalogyTool {
     static String ownClassificationTag = "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification";
 
     static Set<String> allTagsToConsider = new HashSet<>();
+    private static NavigableMap<Long, IFeed> allFeeds;
+    private static SolrHttpClient client;
 
     static {
         allTagsToConsider.addAll(fromOwnClassificationTags);
@@ -27,7 +33,9 @@ public class AnalogyTool {
     }
 
 
-    static ConnectionExt main = CopyDatabaseUtil.getMainConnectionExt();
+    static ConnectionExt main = CreateAnalogNewTags.getStageConnectionExt();
+
+    // static ConnectionExt main = CopyDatabaseUtil.getMainConnectionExt();
 
     public static void main(String[] args) throws ClassNotFoundException {
 
@@ -40,18 +48,32 @@ public class AnalogyTool {
         main.update("delete from vgr_ifeed_ownership where ifeed_id < 0");
         main.update("delete from vgr_ifeed where id < 0");
 
-        List<Map<String, Object>> feeds = main.query("select * from vgr_ifeed", 0, 1_000_000);
+        loadAllFeeds();
+
+        List<Map<String, Object>> feeds = main.query(
+                "select i.* from vgr_ifeed i -- where i.id not in " +
+                        "(select ifeed_id from vgr_ifeed_filter where filterkey = 'dc.source.origin' and filterquery = 'Barium')",
+                0, 1_000_000
+        );
+
+
         for (Map<String, Object> feed : feeds) {
-            // System.out.println(feed);
             List<Map<String, Object>> filters = main.query(
                     "select * from vgr_ifeed_filter where ifeed_id = ?",
                     0,
                     1_000_000,
                     feed.get("id")
             );
+
+
             if (filters.isEmpty()) {
                 continue;
             }
+
+            if (comesFromBarium((Long) feed.get("id"))) {
+                continue;
+            }
+
             MultiMap<String, Map<String, Object>> keyedValues = new MultiMap<>();
             for (Map<String, Object> filter : filters) {
                 keyedValues.get(filter.get("filterkey")).add(filter);
@@ -62,8 +84,11 @@ public class AnalogyTool {
             int result = 0;
             result += insertOne(feed, keyedValues, fromOwnClassificationTags, ownClassificationTag);
             result += insertOne((feed), keyedValues, new HashSet<>(Arrays.asList("dc.publisher.forunit.id")), "vgr:VgrExtension.vgr:PublishedForUnit.id");
+            //result += insertOne((feed), keyedValues, new HashSet<>(Arrays.asList("dc.publisher.forunit.id")), "vgr:VgrExtension.vgr:PublishedForUnit");
             result += insertOne((feed), keyedValues, new HashSet<>(Arrays.asList("dc.subject.authorkeywords")), "vgr:VgrExtension.vgr:Tag");
             result += insertOne(feed, keyedValues, new HashSet<>(Arrays.asList("dc.creator.forunit.id")), "vgr:VgrExtension.vgr:CreatedByUnit.id");
+
+            result += insertOne(feed, keyedValues, new HashSet<>(Arrays.asList("dc.creator.recordscreator.id")), "core:ArchivalObject.core:Producer");
 
             if (result == 0) continue;
             Map<String, Object> sofia = vgr_ifeed_filter(
@@ -90,6 +115,50 @@ public class AnalogyTool {
 
     static long filterSeq = -1;
 
+    static void loadAllFeeds() {
+        allFeeds = getAllFeeds();
+    }
+
+    static NavigableMap<Long, IFeed> getAllFeeds() {
+        NavigableMap<Long, IFeed> mapped = new TreeMap<>();
+
+        List<Map<String, Object>> items = main.query(
+                "select * from vgr_ifeed",
+                0,
+                1_000_000
+        );
+        List<IFeed> result = new ArrayList<>();
+        for (Map<String, Object> item : items) {
+            IFeed feed = new IFeed();
+            feed.setId((Long) item.get("id"));
+            List<Map<String, Object>> filters = main.query(
+                    "select * from vgr_ifeed_filter where ifeed_id = ?",
+                    0,
+                    1_000_000,
+                    feed.getId()
+            );
+            for (Map<String, Object> filter : filters) {
+                IFeedFilter f = new IFeedFilter();
+                f.setFilterKey((String) filter.get("filterkey"));
+                f.setFilterQuery((String) filter.get("filterquery"));
+                feed.getFilters().add(f);
+
+
+            }
+            result.add(feed);
+            mapped.put(feed.getId(), feed);
+        }
+
+        for (IFeed feed : result) {
+            List<Map<String, Object>> vgr_ifeed_vgr_ifeed = main.query("select * from vgr_ifeed_vgr_ifeed where partof_id = ?", 0, 1_000_000, feed.getId());
+            for (Map<String, Object> ifeedToIfeed : vgr_ifeed_vgr_ifeed) {
+                IFeed otherFeed = mapped.get(ifeedToIfeed.get("composites_id"));
+                feed.getComposites().add(otherFeed);
+            }
+        }
+
+        return mapped;
+    }
 
     static int insertOne(Map<String, Object> feed, MultiMap<String, Map<String, Object>> keyedValues, Set<String> fromTag, String toTag) {
         if (keyedValues.isEmpty()) return 0;
@@ -232,6 +301,41 @@ public class AnalogyTool {
 
         core_ArchivalObject_core_Producer
          */
+    }
+
+    static SolrHttpClient getSolrHttpClient() {
+        if (client == null) {
+            client = SolrHttpClient.newInstanceFromConfig();
+        }
+        return client;
+    }
+
+    static boolean comesFromBarium(long id) {
+        IFeed feed = allFeeds.get(id);
+        if (feed == null) {
+            System.out.println("id " + id + " hittar inget feed.");
+            System.out.println("Feed id:s är " + allFeeds.values());
+            throw new RuntimeException();
+        }
+        Result r = getSolrHttpClient().query(feed.toQuery(), 0, 1_000_000, null);
+        // final String key = "dc.source.origin";
+        final String key = "SourceSystem";
+
+        if (r.getResponse() == null) {
+            System.out.println(r);
+            return false;
+        }
+
+        for (Map<String, Object> item : r.getResponse().getDocs()) {
+            if (item.containsKey(key)) {
+                if ("Barium".equals(item.get(key))) {
+                    System.out.println("Hittade ett barium-flöde.");
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }

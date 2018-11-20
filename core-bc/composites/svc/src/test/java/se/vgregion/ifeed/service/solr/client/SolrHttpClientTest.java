@@ -1,48 +1,130 @@
-package se.vgregion.ifeed.service.solr;
+package se.vgregion.ifeed.service.solr.client;
 
 import org.apache.commons.lang.StringUtils;
-import se.vgregion.arbetsplatskoder.db.migration.sql.ConnectionExt;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
-import se.vgregion.ifeed.scripts.CopyDatabaseUtil;
 import se.vgregion.ifeed.service.ifeed.DocumentPopupConf;
+import se.vgregion.ifeed.service.solr.Csvs;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SolrHttpClientTest {
 
-    public static void main(String[] args) throws IOException {
-        cacheAllValuesFromAlfrescoBarium();
-        // findAllValues();
-        // runLatestFeedQuery();
-        // addFoundColumnToAttributeFile();
-        // compareListWithAllFields();
-        // addFoundColumnToAttributeFile();
-        // generateCode();
-        // fetchFields();
-        // testAllIndexFields();
-        // checkSolrKeysInConfigPrescenseInIndex();
-        // findById();
+    static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+
+    public static void main(String[] args) throws IOException, URISyntaxException {
+
+        // System.out.println(enc());
+
+        // if(true)return;
+
+        // System.out.println(fetchDocument("workspace://SpacesStore/216ba47f-2f19-4339-8567-b712e9838673"));
+
+        String id = "workspace://SpacesStore/216ba47f-2f19-4339-8567-b712e9838673";
+
+        id = URLParamEncoder.encode(id);
+        // id = URLEncoder.encode(id, "UTF-8");
+        //System.out.println(URLEncoder.encode("/"));
+
+
+        //id = id.replace(":", "%3A").replace("/", "%2F");
+
+        // id = URLEncoder.encode(id, "UTF-8");
+
+        String url = String.format("http://localhost:8081/iFeed-web/documents/%s/metadata", id);
+
+        //url = encode(url);
+
+        System.out.println(url);
+
+        String result = client.read(url);
+
+        System.out.println(result);
+    }
+
+    static String enc() throws MalformedURLException, URISyntaxException {
+        String urlStr = "http://localhost:8081/iFeed-web/documents/workspace://SpacesStore/216ba47f-2f19-4339-8567-b712e9838673/metadata";
+        URL url = new URL(urlStr);
+        URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+        url = uri.toURL();
+
+        return url.toExternalForm();
+        // return url.toString();
+    }
+
+
+    public static class URLParamEncoder {
+
+        public static String encode(String input) {
+            StringBuilder resultStr = new StringBuilder();
+            for (char ch : input.toCharArray()) {
+                if (isUnsafe(ch)) {
+                    resultStr.append('%');
+                    resultStr.append(toHex(ch / 16));
+                    resultStr.append(toHex(ch % 16));
+                } else {
+                    resultStr.append(ch);
+                }
+            }
+            return resultStr.toString();
+        }
+
+        private static char toHex(int ch) {
+            return (char) (ch < 10 ? '0' + ch : 'A' + ch - 10);
+        }
+
+        private static boolean isUnsafe(char ch) {
+            if (ch > 128 || ch < 0)
+                return true;
+            return " %$&+,/:;=?@<>#%".indexOf(ch) >= 0;
+        }
+
+    }
+
+    public static String encode(String urlStr) {
+        try {
+            // String urlStr = "http://www.example.com/CEREC® Materials & Accessories/IPS Empress® CAD.pdf"
+            URL url = new URL(urlStr);
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            return uri.toASCIIString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static void fetchAllWithSourceSystem() {
+        IFeedFilter filter = new IFeedFilter("SourceSystem", "*");
+        System.out.println("Antal " + client.query(filter.toQuery(), null, null, null).getResponse().getNumFound());
+    }
+
+    static Map<String, Object> fetchDocument(String byThatId) {
+        IFeedFilter filter = new IFeedFilter(byThatId, "id");
+        Result results = client.query(filter.toQuery(), null, null, "title asc");
+        if (results.getResponse() == null || results.getResponse().getNumFound() == 0) {
+            return null;
+        }
+        return results.getResponse().getDocs().get(0);
     }
 
     static void findById() {
-        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
         System.out.println(client.getBaseUrl());
         // "id":"14a94647-9364-491f-ba1c-8dc76963b0b7"
         IFeedFilter filter = new IFeedFilter();
         filter.setFilterKey("id");
         filter.setFilterQuery("14a94647-9364-491f-ba1c-8dc76963b0b7");
         System.out.println(filter.toQuery());
-        SolrHttpClient.Result result = client.query(filter.toQuery(), 0, 100_000, "title asc");
+        Result result = client.query(filter.toQuery(), 0, 100_000, "title asc");
         for (Map<String, Object> doc : result.getResponse().getDocs()) {
             for (String key : doc.keySet()) {
                 System.out.println(key + " = " + doc.get(key));
@@ -199,8 +281,8 @@ public class SolrHttpClientTest {
         System.out.println(CommonUtils.toBeanText(Arrays.asList("name", "label"), confs));
         System.out.println(names);
 
-        List<SolrHttpClient.Field> fields = client.fetchFields();
-        for (SolrHttpClient.Field field : fields) {
+        List<Field> fields = client.fetchFields();
+        for (Field field : fields) {
             if (field.getName().equals("id")) {
                 System.out.println();
                 System.out.println(field);
@@ -319,7 +401,7 @@ public class SolrHttpClientTest {
                     fieldName
             );
             feed.addFilter(filter);
-            SolrHttpClient.Result result = client.query(feed.toQuery(), 0, 10_000, "title asc");
+            Result result = client.query(feed.toQuery(), 0, 10_000, "title asc");
             System.out.println(fieldName + " " + result.getResponse().getDocs().size());
         }
 
@@ -340,16 +422,14 @@ public class SolrHttpClientTest {
 
         // System.out.println(client.post("http://i3-dev.vgregion.se:9090/solr/ifeed/select", "&start=0&rows=10&sort=core_ArchivalObject_core_ObjectType%20asc&wt=json&q=*%3A*"));
 
-        SolrHttpClient.Result result = client.query(feed.toQuery(), 0, 1_000_000, "dc.title%20asc");
+        Result result = client.query(feed.toQuery(), 0, 1_000_000, "dc.title%20asc");
 
         for (Map<String, Object> doc : result.getResponse().getDocs()) {
             System.out.println(doc);
         }
     }
 
-    private static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
-
-    private static void checkSolrKeysInConfigPrescenseInIndex() throws IOException {
+    /*private static void checkSolrKeysInConfigPrescenseInIndex() throws IOException {
 
         ConnectionExt database = CopyDatabaseUtil.getMainConnectionExt();
         FieldInf root = Json.toObject(
@@ -362,12 +442,12 @@ public class SolrHttpClientTest {
         );
         checkSolrKey(root);
         System.out.println(client.post("http://i3-dev.vgregion.se:9090/solr/ifeed/select", "&start=0&rows=10&sort=core_ArchivalObject_core_ObjectType%20asc&wt=json&q=*%3A*"));
-    }
+    }*/
 
     private static void checkSolrKey(FieldInf forThat) throws IOException {
         if (forThat.getId() != null && !forThat.getId().trim().isEmpty()) {
-            SolrHttpClient.Result result = Json.toObject(
-                    SolrHttpClient.Result.class,
+            Result result = Json.toObject(
+                    Result.class,
                     client.post("http://i3-dev.vgregion.se:9090/solr/ifeed/select",
                             "&start=0&rows=10&sort=" + forThat.getId() + "%20asc&wt=json&q=*%3A*"
                     )
@@ -418,20 +498,129 @@ public class SolrHttpClientTest {
         sb.append("</table>");
         sb.append("</body>");
         sb.append("</html>");
+
         Files.write(Paths.get(System.getProperty("user.home"), "x-table.html"), sb.toString().getBytes());
     }
 
     static void cacheAllValuesFromAlfrescoBarium() throws IOException {
         Path toTheFile = Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "alfresco-barium-values.json");
         SolrHttpClient production = new SolrHttpClient("http://solr.vgregion.se:80/solr/ifeed/");
-        Map<String, Set<Object>> values = production.findAllValues();
-        Files.write(toTheFile, Json.toJson(values).getBytes());
+        final Map<String, Set<Object>> values = production.findAllValues();
+        Files.write(toTheFile, Json.toJson(new HashMap<>(values)).getBytes());
+        for (String s : values.keySet()) {
+            System.out.println(s + " = " + values.get(s));
+        }
     }
 
-    static Map<String, Set<Object>> getCachedAlfrescoBariumValues() throws IOException {
+    static Map<String, List<Object>> getCachedAlfrescoBariumValues() throws IOException {
         Path toTheFile = Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "alfresco-barium-values.json");
         byte[] content = Files.readAllBytes(toTheFile);
         return Json.toObject(TreeMap.class, new String(content));
+    }
+
+    static NavigableSet<String> getAllFieldsUsedInTags() throws IOException {
+        NavigableSet<String> result = new TreeSet<>();
+        for (String tag : getAllFeedTags()) {
+            result.addAll(getFieldNames(tag));
+        }
+        return result;
+    }
+
+    static NavigableMap<String, Integer> field2count = new TreeMap<String, Integer>() {
+        @Override
+        public Integer get(Object key) {
+            if (!containsKey(key)) {
+                put((String) key, 0);
+            }
+            return super.get(key);
+        }
+    };
+
+    static Collection<String> getAllFeedTags() throws IOException {
+        Collection<String> urls = getPagesWithFeeds();
+        System.out.println("Found " + urls.size());
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        List<String> result = new ArrayList<>();
+        for (String url : urls) {
+            try {
+                String all = client.read(url);
+                String[] content = all.split("[<>]");
+                for (String s : content) {
+                    s = s.replaceAll("\\s{2,}", " ").trim().replaceAll("[\n]{2,}", " ");
+                    if (s.startsWith("div class=\"ifeedDocList\"")) {
+                        result.add(s);
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Failed " + url);
+            }
+        }
+        return result;
+    }
+
+    static NavigableSet<String> getFieldNames(String fromThatTag) {
+        NavigableSet<String> result = new TreeSet<>();
+        fromThatTag = fromThatTag.replace("div class=\"ifeedDocList\" columnes=\"", "");
+        fromThatTag = fromThatTag.substring(0, fromThatTag.indexOf('"'));
+        String[] parts = fromThatTag.split(Pattern.quote(","));
+        for (String part : parts) {
+            String[] subPart = part.split(Pattern.quote("|"));
+            result.add(subPart[0]);
+            field2count.put(subPart[0], 1 + field2count.get(subPart[0]));
+        }
+        return result;
+    }
+
+    static NavigableSet<String> getPagesWithFeeds() throws IOException {
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        String all = client.read("https://ifeed.vgregion.se/iFeed-web/metadata-calls.jsp");
+        NavigableSet<String> urls = new TreeSet<>();
+        String[] stuff = all.split(Pattern.quote("\""));
+        for (String s : stuff) {
+            s = s.trim();
+            // System.out.println(s);
+            if (s.startsWith("http")) {
+                urls.add(s);
+            }
+        }
+        return urls;
+    }
+
+    public static List<String> patternSample(String inThat, String pattern) {
+
+        //String stringToSearch = "<p>Yada yada yada <code>StringBuffer</code> yada yada ...</p>";
+        String stringToSearch = inThat;
+
+        // the pattern we want to search for
+        // Pattern p = Pattern.compile("<code>(\\S+)</code>");
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(stringToSearch);
+
+        List<String> result = new ArrayList<>();
+        // if we find a match, get the group
+        if (m.find()) {
+
+            // get the matching group
+            String codeGroup = m.group(1);
+
+            // print the group
+            System.out.format("'%s'\n", codeGroup);
+            result.add(codeGroup);
+        }
+
+        return result;
+    }
+
+    // private static final Pattern TAG_REGEX = Pattern.compile("<tag>(.+?)</tag>");
+
+    private static List<String> getTagValuesgetTagValues(final String str, final String tagName) {
+        final List<String> tagValues = new ArrayList<>();
+        final Pattern TAG_REGEX = Pattern.compile("<" + tagName + "(.+?)</" + tagName + ">");
+        final Matcher matcher = TAG_REGEX.matcher(str);
+        while (matcher.find()) {
+            tagValues.add(matcher.group(1));
+        }
+        return tagValues;
     }
 
 }

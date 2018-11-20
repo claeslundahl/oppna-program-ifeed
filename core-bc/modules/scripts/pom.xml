@@ -62,6 +62,11 @@
       <artifactId>postgresql</artifactId>
       <version>42.1.4</version>
     </dependency>
+    <dependency>
+      <groupId>se.vgregion.iFeed</groupId>
+      <artifactId>iFeed-core-bc-composite-svc</artifactId>
+      <version>1.13-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
 </project>

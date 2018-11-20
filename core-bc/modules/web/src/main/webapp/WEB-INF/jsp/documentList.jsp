@@ -32,7 +32,7 @@
     </c:forEach>
 </ul>
 <div>
-    ${result}
+
 </div>
 </body>
 </html>

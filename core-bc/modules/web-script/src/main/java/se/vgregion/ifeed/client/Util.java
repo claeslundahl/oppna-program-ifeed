@@ -79,6 +79,7 @@ public class Util {
      * @return true if the logging could be performed (if there where a console.log).
      */
     native public static boolean log(Object message) /*-{
+        return false;
       if (window['console']) {
         console.log(message);
         return true;

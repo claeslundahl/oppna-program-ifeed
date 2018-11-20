@@ -38,7 +38,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     //@ElementCollection(fetch = FetchType.EAGER)
     //@CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "feed")
-    protected Set<IFeedFilter> filters;
+    protected Set<IFeedFilter> filters = new HashSet<>();
 
     private String name;
 
@@ -77,9 +77,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     private Boolean linkNativeDocument;
 
     public Set<IFeedFilter> getFilters() {
-        if (filters == null) {
+/*        if (filters == null) {
             return Collections.emptySet();
-        }
+        }*/
         return filters;
     }
 

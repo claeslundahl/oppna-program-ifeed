@@ -33,31 +33,49 @@ public class AnalogyTool {
     }
 
 
-    static ConnectionExt main = CreateAnalogNewTags.getStageConnectionExt();
+    // static ConnectionExt main = CreateAnalogNewTags.getStageConnectionExt();
 
-    // static ConnectionExt main = CopyDatabaseUtil.getMainConnectionExt();
 
-    public static void main(String[] args) throws ClassNotFoundException {
+    static ConnectionExt main = CopyDatabaseUtil.getRemoteProdConnectionExt();
+
+    public static void main(String[] args) {
+        long now = System.currentTimeMillis();
+        main();
+        System.out.println("It took: " + (System.currentTimeMillis() - now));
+    }
+
+    public static void main() {
 
         System.out.println(main.getUrl());
 
         // if (true) return;
 
+        System.out.println("Removes all old generated feeds.");
         main.update("delete from vgr_ifeed_vgr_ifeed where composites_id < 0 or partof_id < 0");
         main.update("delete from vgr_ifeed_filter where id < 0");
         main.update("delete from vgr_ifeed_ownership where ifeed_id < 0");
-        main.update("delete from vgr_ifeed where id < 0");
+        main.update("delete from vgr_ifeed where id < 0 and id != -4297439");
+        main.commit();
+        if (true) return;
 
+        System.out.println("Loads all feeds left. Once.");
         loadAllFeeds();
 
+        System.out.println("Loads all feeds left. Second time.");
         List<Map<String, Object>> feeds = main.query(
                 "select i.* from vgr_ifeed i -- where i.id not in " +
                         "(select ifeed_id from vgr_ifeed_filter where filterkey = 'dc.source.origin' and filterquery = 'Barium')",
                 0, 1_000_000
         );
 
-
+        System.out.println("There where " + feeds.size() + " feeds.");
+        System.out.print(" Iterating: ");
+        int c = 0;
         for (Map<String, Object> feed : feeds) {
+            c++;
+            if (c % 100 == 0) {
+                System.out.print(" " + c);
+            }
             List<Map<String, Object>> filters = main.query(
                     "select * from vgr_ifeed_filter where ifeed_id = ?",
                     0,
@@ -102,6 +120,8 @@ public class AnalogyTool {
             );
             main.insert("vgr_ifeed_filter", sofia);
         }
+
+        System.out.println();
         System.out.println(filterSeq);
 
         main.update(

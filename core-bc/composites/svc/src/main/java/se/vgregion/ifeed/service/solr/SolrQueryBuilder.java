@@ -83,7 +83,7 @@ public class SolrQueryBuilder {
         }
     }
 
-    private static boolean isSomeKindOfDate(IFeedFilter iFeedFilter) {
+    public static boolean isSomeKindOfDate(IFeedFilter iFeedFilter) {
 
         if (iFeedFilter.getFieldInf() == null || iFeedFilter.getFieldInf().getType() == null) {
             return false;
@@ -98,6 +98,7 @@ public class SolrQueryBuilder {
     }
 
     private static String getAndFormatFilterQuery(IFeedFilter iFeedFilter) {
+        System.out.println("getAndFormatFilterQuery");
         String ff = iFeedFilter.getFilterQuery();
 
         if (isSomeKindOfDate(iFeedFilter)) {

@@ -74,19 +74,21 @@ public class CopyDatabaseUtil {
         return properties;
     }
 
-    static ConnectionExt target = getTestConnectionExt();
+    static ConnectionExt target = getBackupConnectionExt();
     static ConnectionExt prod = getRemoteProdConnectionExt();
     static Schema prodSchema = prod.getSchemas("public").get(0);
 
     public static void main(String[] args) {
 
-        System.out.println(target.getUrl());
+        System.out.println("Target: " + target.getUrl());
+
+        System.out.println("Source: " + prod.getUrl());
 
         // if (true) return;
 
         System.out.println("Tables for ifeed:");
         for (Table table : prod.getSchemas("public").get(0).getTables()) {
-            if(table.getTableName().contains("vgr_ifeed")) {
+            if (table.getTableName().contains("vgr_ifeed")) {
                 System.out.println(table.getTableName());
                 System.out.println(table.getSql());
                 System.out.println();

@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -197,12 +198,12 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     public String toQuery() {
         if (children.isEmpty()) {
             if (operator == null || operator.equals("matching") || operator.isEmpty()) {
-                return escapeFieldName(filterKey) + ":" + escapeValue(filterQuery);
+                return escapeFieldName(filterKey) + ":" + escapeValue(filterKey, filterQuery);
             } else {
                 if (operator.equals("greater")) {
-                    return escapeFieldName(filterKey) + ":[" + escapeValue(filterQuery) + " TO *]";
+                    return escapeFieldName(filterKey) + ":[" + escapeValue(filterKey, filterQuery) + " TO *]";
                 } else if (operator.equals("lesser")) {
-                    return escapeFieldName(filterKey) + ":[* TO " + escapeValue(filterQuery) + "]";
+                    return escapeFieldName(filterKey) + ":[* TO " + escapeValue(filterKey, filterQuery) + "]";
                 }
             }
         } else {
@@ -233,11 +234,40 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
         return dateStr;
     }
 
-    public static String escapeValue(String forSolr) {
+    static boolean isSomeKindOfDate(String withKey) {
+        return withKey.contains("date");
+    }
+
+   static   boolean isDigit(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+    public static String escapeValue(String withKey, String forSolr) {
+        if (isSomeKindOfDate(withKey)) {
+            if (forSolr.startsWith("+") || forSolr.startsWith("-") && forSolr.length() > 1 && isDigit(forSolr.substring(1))) {
+                Date now = new Date();
+                long daysOff = Integer.parseInt(forSolr.substring(1));
+                if (forSolr.startsWith("-")) {
+                    daysOff = -daysOff;
+                }
+                daysOff = daysOff * 86400000;
+                Date otherDay = new Date(now.getTime() + daysOff);
+                forSolr = sdf.format(otherDay);
+            }
+        }
+
         forSolr = toUtcDateIfPossible(forSolr);
         String escaped = forSolr.replaceAll(valueRegex, "\\\\$1");
         if (escaped.contains(" ")) {
-            return String.format("\"%s\"", escaped);
+            escaped = escaped.replace(" ", "\\ ");
+            return escaped;
         } else {
             return escaped;
         }
@@ -246,12 +276,6 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
 
     static String escapeFieldName(String forSolr) {
         String escaped = forSolr.replaceAll(keyRegex, "\\\\$1");
-        // return myEscapedString;
-        /*if (escaped.contains(" ")) {
-            return String.format("\"%s\"", escaped);
-        } else {
-            return escaped;
-        }*/
         return escaped;
     }
 

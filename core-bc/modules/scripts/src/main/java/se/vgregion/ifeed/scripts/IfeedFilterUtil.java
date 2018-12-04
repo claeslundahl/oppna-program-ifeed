@@ -9,10 +9,13 @@ import java.util.Map;
 public class IfeedFilterUtil {
 
     public static void main(String[] args) throws SQLException {
-        ConnectionExt target = CreateAnalogNewTags.getStageConnectionExt();
+        // ConnectionExt target = CreateAnalogNewTags.getStageConnectionExt();
+        ConnectionExt target = CopyDatabaseUtil.getRemoteProdConnectionExt();
 
         System.out.println(target.getUrl());
+
         // if (true) return;
+
         boolean missingPrim = (target.getSchemas("public").get(0).getTable("vgr_ifeed_filter").getColumn("id") == null);
         if (missingPrim)
             target.update("alter table vgr_ifeed_filter add column id bigint");
@@ -23,7 +26,10 @@ public class IfeedFilterUtil {
         for (Map<String, Object> item : items) {
             Object ctid = item.get("ctid");
             target.update("update vgr_ifeed_filter set id = ? where ctid = ?", cursor++, ctid);
-            if (cursor % 100 == 0) target.commit();
+            if (cursor % 1000 == 0){
+                System.out.println("Antal färdiga " + cursor);
+                target.commit();
+            }
         }
 
         if (missingPrim)

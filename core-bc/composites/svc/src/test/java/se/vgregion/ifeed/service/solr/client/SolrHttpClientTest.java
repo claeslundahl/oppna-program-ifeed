@@ -11,7 +11,10 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,33 +27,26 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
+        /*IFeed feed = new IFeed();
+        IFeedFilter filter = new IFeedFilter();
+        filter.setFilterKey("dc.type.document.structure");
+        filter.setFilterQuery("Riktlinje koncern*");
+        feed.addFilter(filter);
+        System.out.println(client.getBaseUrl());
+        System.out.println("feed.toQuery(): " + feed.toQuery());
+        Result result = client.query(feed.toQuery(), 0, 100, "title desc");
+        System.out.println("Träffar: " + result.getResponse().getDocs().size() + " st.");*/
+        /*for (Map<String, Object> item : result.getResponse().getDocs()) {
+            System.out.println(item);
+        }*/
 
-        // System.out.println(enc());
+        //runLatestFeedQuery();
 
-        // if(true)return;
+        for (Field field : client.fetchFields()) {
+            System.out.println(field.getName() + " " + field.getType());
+        }
 
-        // System.out.println(fetchDocument("workspace://SpacesStore/216ba47f-2f19-4339-8567-b712e9838673"));
-
-        String id = "workspace://SpacesStore/216ba47f-2f19-4339-8567-b712e9838673";
-
-        id = URLParamEncoder.encode(id);
-        // id = URLEncoder.encode(id, "UTF-8");
-        //System.out.println(URLEncoder.encode("/"));
-
-
-        //id = id.replace(":", "%3A").replace("/", "%2F");
-
-        // id = URLEncoder.encode(id, "UTF-8");
-
-        String url = String.format("http://localhost:8081/iFeed-web/documents/%s/metadata", id);
-
-        //url = encode(url);
-
-        System.out.println(url);
-
-        String result = client.read(url);
-
-        System.out.println(result);
+        // fetchFields();
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {
@@ -414,7 +410,10 @@ public class SolrHttpClientTest {
         System.out.println("solr.service: " + properties.getProperty("solr.service"));
 
         String json = new String(Files.readAllBytes(Paths.get(System.getProperty("user.home"), "feed.json")));
-        IFeed feed = Json.toObject(IFeed.class, json);
+
+        List<IFeed> items = Json.toObjects(IFeed.class, json);
+
+        IFeed feed = items.get(0);
 
         System.out.println(feed.toQuery());
 
@@ -424,8 +423,10 @@ public class SolrHttpClientTest {
 
         Result result = client.query(feed.toQuery(), 0, 1_000_000, "dc.title%20asc");
 
+        int i = 0;
         for (Map<String, Object> doc : result.getResponse().getDocs()) {
-            System.out.println(doc);
+            i++;
+            System.out.println(i + " = " + doc.get("dc.title"));
         }
     }
 

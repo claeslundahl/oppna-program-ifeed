@@ -16,6 +16,7 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class SolrHttpClient {
 
@@ -83,20 +84,40 @@ public class SolrHttpClient {
         if (rows != null) {
             fq = fq + "&rows=" + rows;
         }
+        boolean haveSort = false;
         if (sort != null && !sort.trim().isEmpty()) {
+            haveSort = true;
             fq = fq + "&sort=" + sort;
         }
         fq = fq + "&wt=json&q=*%3A*";
 
+        System.out.println(fq);
+
         String json = post(baseUrl + "select", fq);
+        // System.out.println(json);
         Result result = new GsonBuilder().create().fromJson(json, Result.class);
+        if (haveSort) {
+            final String[] parts = sort.split(Pattern.quote(" "));
+            if (parts.length == 2) {
+                final String sortKey = parts[0];
+                final String dir = parts[1];
+
+                Collections.sort(result.getResponse().getDocs(), (o1, o2) -> {
+                    String s1 = (o1.get(sortKey) + "").toLowerCase(), s2 = (o2.get(sortKey) + "").toLowerCase();
+                    return s1.compareTo(s2);
+                });
+                if ("desc".equalsIgnoreCase(dir)) {
+                    Collections.reverse(result.getResponse().getDocs());
+                }
+            }
+        }
         return result;
     }
 
     public String post(String toThatUrl, String thatData) throws IOException {
 
-        /*System.out.println("Posting to: " + toThatUrl);
-        System.out.println("That data: " + thatData);*/
+        System.out.println("Posting to: " + toThatUrl);
+        System.out.println("That data: " + thatData);
 
         URL oracle = new URL(toThatUrl);
         HttpURLConnection con = (HttpURLConnection) oracle.openConnection();
@@ -243,14 +264,13 @@ public class SolrHttpClient {
     }
 
 
-
     public String getBaseUrl() {
         return baseUrl;
     }
 
 
     public Map<String, Set<Object>> findAllValues() {
-       final  Map<String, Set<Object>> result = new TreeMap<String, Set<Object>>() {
+        final Map<String, Set<Object>> result = new TreeMap<String, Set<Object>>() {
             @Override
             public Set<Object> get(Object key) {
                 if (!containsKey(key)) {

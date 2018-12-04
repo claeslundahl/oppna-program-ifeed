@@ -1,206 +1,6 @@
 [
   {
     "id": "",
-    "name": "SOFIA",
-    "help": "",
-    "type": "",
-    "apelonKey": "",
-    "children": [
-      {
-        "id": "",
-        "name": "Populära filter",
-        "help": "",
-        "type": "",
-        "apelonKey": "",
-        "children": [
-          {
-            "id": "title",
-            "name": "Titel",
-            "help": "Titel",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "core:ArchivalObject.core:Producer",
-            "name": "Myndighet",
-            "help": "Myndighet",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "core:ArchivalObject.core:Classification.core:Classification.name",
-            "name": "Klassificeringsstrukturen (process)",
-            "help": "Klassificeringsstrukturen (process)",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "core:ArchivalObject.core:ObjectType",
-            "name": "Handlingstyp",
-            "help": "Handlingstyp",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
-            "name": "Upprättat för enhet",
-            "help": "Upprättat för enhet",
-            "type": "d:ldap_org_value",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
-            "name": "Regional ämnesindelning",
-            "help": "Regional ämnesindelning",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
-            "name": "Egen ämnesindelning",
-            "help": "Egen ämnesindelning",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "vgr:VgrExtension.vgr:Tag",
-            "name": "Företagsnyckelord",
-            "help": "Företagsnyckelord",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "vgr:VgrExtension.vgr:Source.id",
-            "name": "Dokumentid källa",
-            "help": "Dokumentets id som det finns lagrat i källsystemet.",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "vgr:VgrExtension.vgr:SourceSystem",
-            "name": "Källsystem",
-            "help": "Källsystem. Har bytt namn i indexet. Är oanvändbart, får flöden att inte träffa något. Upptäckte detta 8/11 2018.",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          }
-        ],
-        "filter": false,
-        "inHtmlView": true,
-        "expanded": false
-      },
-      {
-        "id": "",
-        "name": "Ytterligare filter",
-        "help": "",
-        "type": "",
-        "apelonKey": "",
-        "children": [
-          {
-            "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
-            "name": "Upprättat av enhet",
-            "help": "Upprättat av enhet",
-            "type": "d:ldap_org_value",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
-            "id": "vgr:VgrExtension.vgr:CreatedBy",
-            "name": "Upprättat av (person)",
-            "help": "Upprättat av (person)",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          /*{
-                      "id": "vgr:VgrExtension.vgr:RevisedAvailableFrom",
-                      "name": "Tillgänglighetsdatum from",
-                      "help": "Tillgänglighetsdatum from",
-                      "type": "d:date",
-                      "apelonKey": "",
-                      "children": [],
-                      "filter": true,
-                      "inHtmlView": true,
-                      "expanded": false
-                    },{
-                      "id":"vgr:VgrExtension.vgr:AvailableTo",
-                      "name": "Tillgänglighetsdatum tom",
-                      "help": "Tillgänglighetsdatum tom",
-                      "type": "d:date",
-                      "apelonKey": "",
-                      "children": [],
-                      "filter": true,
-                      "inHtmlView": true,
-                      "expanded": false
-                    },*/
-          {
-            "id": "vgr:VgrExtension.vgr:SecurityClass",
-            "name": "Åtkomsträtt",
-            "help": "Åtkomsträtt",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          }
-        ],
-        "filter": true,
-        "inHtmlView": true,
-        "expanded": false
-      }
-    ],
-    "filter": false,
-    "inHtmlView": true,
-    "expanded": false
-  },
-  {
-    "id": "",
     "name": "Alfresco, Barium",
     "help": "",
     "type": "",
@@ -1257,6 +1057,206 @@
           }
         ],
         "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      }
+    ],
+    "filter": false,
+    "inHtmlView": true,
+    "expanded": false
+  },
+  {
+    "id": "",
+    "name": "SOFIA",
+    "help": "",
+    "type": "",
+    "apelonKey": "",
+    "children": [
+      {
+        "id": "",
+        "name": "Populära filter",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "title",
+            "name": "Titel",
+            "help": "Titel",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:Producer",
+            "name": "Myndighet",
+            "help": "Myndighet",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:Classification.core:Classification.name",
+            "name": "Klassificeringsstrukturen (process)",
+            "help": "Klassificeringsstrukturen (process)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:ObjectType",
+            "name": "Handlingstyp",
+            "help": "Handlingstyp",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+            "name": "Upprättat för enhet",
+            "help": "Upprättat för enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
+            "name": "Regional ämnesindelning",
+            "help": "Regional ämnesindelning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+            "name": "Egen ämnesindelning",
+            "help": "Egen ämnesindelning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:Tag",
+            "name": "Företagsnyckelord",
+            "help": "Företagsnyckelord",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:Source.id",
+            "name": "Dokumentid källa",
+            "help": "Dokumentets id som det finns lagrat i källsystemet.",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:SourceSystem",
+            "name": "Källsystem",
+            "help": "Källsystem. Har bytt namn i indexet. Är oanvändbart, får flöden att inte träffa något. Upptäckte detta 8/11 2018.",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Ytterligare filter",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
+            "name": "Upprättat av enhet",
+            "help": "Upprättat av enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:CreatedBy",
+            "name": "Upprättat av (person)",
+            "help": "Upprättat av (person)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          /*{
+                      "id": "vgr:VgrExtension.vgr:RevisedAvailableFrom",
+                      "name": "Tillgänglighetsdatum from",
+                      "help": "Tillgänglighetsdatum from",
+                      "type": "d:date",
+                      "apelonKey": "",
+                      "children": [],
+                      "filter": true,
+                      "inHtmlView": true,
+                      "expanded": false
+                    },{
+                      "id":"vgr:VgrExtension.vgr:AvailableTo",
+                      "name": "Tillgänglighetsdatum tom",
+                      "help": "Tillgänglighetsdatum tom",
+                      "type": "d:date",
+                      "apelonKey": "",
+                      "children": [],
+                      "filter": true,
+                      "inHtmlView": true,
+                      "expanded": false
+                    },*/
+          {
+            "id": "vgr:VgrExtension.vgr:SecurityClass",
+            "name": "Åtkomsträtt",
+            "help": "Åtkomsträtt",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": true,
         "inHtmlView": true,
         "expanded": false
       }

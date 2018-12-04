@@ -280,8 +280,24 @@ public class IFeedSolrQuery extends SolrQuery {
             sortField = "title";
         }
         Result someOtherResult = client.query(feed.toQuery(), 0, DEFAULT_SOLR_RESULT_SIZE, sortField + "%20" + sortDirection);
+        // if (sortField.equals("dc.title") || sortField.equals("title")) {
+        SortingMap sortingMap = new SortingMap();
+        for (Map<String, Object> item : someOtherResult.getResponse().getDocs()) {
+            sortingMap.get(
+                    item.get(sortField))
+                    .add(item);
+        }
+        List<Map<String, Object>> result = sortingMap.toFlatList();
+
+        if ("desc".equalsIgnoreCase(sortDirection.name())) {
+            Collections.reverse(result);
+        }
+
+        return result;
+        // }
+
         // System.out.println("Diff on results " + (someOtherResult.getResponse().getDocs().size() + " == " + result.size()));
-        return someOtherResult.getResponse().getDocs();
+        //  return someOtherResult.getResponse().getDocs();
         // return result;
     }
 
@@ -312,6 +328,35 @@ public class IFeedSolrQuery extends SolrQuery {
             }
             return result;
         }
+    }
+
+    private static class SortingMap extends TreeMap<String, List<Map<String, Object>>> {
+
+        @Override
+        public List<Map<String, Object>> get(Object key) {
+            if (key == null) {
+                key = "";
+            } else if (!(key instanceof String)) {
+                key = key.toString();
+            }
+            String name = (String) key;
+            name = name.trim().toLowerCase();
+            if (!containsKey(key)) {
+                put(name, new ArrayList<>());
+            }
+            return super.get(name);
+        }
+
+        List<Map<String, Object>> toFlatList() {
+            List<Map<String, Object>> result = new ArrayList<>();
+
+            for (String key : keySet()) {
+                result.addAll(get(key));
+            }
+
+            return result;
+        }
+
     }
 
 }

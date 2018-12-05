@@ -198,12 +198,12 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     public String toQuery() {
         if (children.isEmpty()) {
             if (operator == null || operator.equals("matching") || operator.isEmpty()) {
-                return escapeFieldName(filterKey) + ":" + escapeValue(filterKey, filterQuery);
+                return escapeFieldName(filterKey) + ":" + escapeValue(filterKey, filterQuery, operator);
             } else {
                 if (operator.equals("greater")) {
-                    return escapeFieldName(filterKey) + ":[" + escapeValue(filterKey, filterQuery) + " TO *]";
+                    return escapeFieldName(filterKey) + ":[" + escapeValue(filterKey, filterQuery, operator) + " TO *]";
                 } else if (operator.equals("lesser")) {
-                    return escapeFieldName(filterKey) + ":[* TO " + escapeValue(filterKey, filterQuery) + "]";
+                    return escapeFieldName(filterKey) + ":[* TO " + escapeValue(filterKey, filterQuery, operator) + "]";
                 }
             }
         } else {
@@ -249,7 +249,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static String escapeValue(String withKey, String forSolr) {
+    public static String escapeValue(String withKey, String forSolr, String andPurpose) {
         if (isSomeKindOfDate(withKey)) {
             if (forSolr.startsWith("+") || forSolr.startsWith("-") && forSolr.length() > 1 && isDigit(forSolr.substring(1))) {
                 Date now = new Date();
@@ -260,10 +260,15 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
                 daysOff = daysOff * 86400000;
                 Date otherDay = new Date(now.getTime() + daysOff);
                 forSolr = sdf.format(otherDay);
+            } else {
+                if ((andPurpose == null || andPurpose.equals("matching")) && forSolr.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    forSolr = forSolr + "*";
+                } else {
+                    forSolr = toUtcDateIfPossible(forSolr);
+                }
             }
         }
 
-        forSolr = toUtcDateIfPossible(forSolr);
         String escaped = forSolr.replaceAll(valueRegex, "\\\\$1");
         if (escaped.contains(" ")) {
             escaped = escaped.replace(" ", "\\ ");

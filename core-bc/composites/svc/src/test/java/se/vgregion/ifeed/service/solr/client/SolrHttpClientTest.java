@@ -42,9 +42,15 @@ public class SolrHttpClientTest {
 
         //runLatestFeedQuery();
 
-        for (Field field : client.fetchFields()) {
+        /*for (Field field : client.fetchFields()) {
             System.out.println(field.getName() + " " + field.getType());
-        }
+        }*/
+
+        runLatestFeedQuery();
+
+        // "dc.date.issued": "2017-03-13T12:46:21Z"
+        String result = client.toText("dc.date.issued: 2017-03-13*", 0, 100, "title asc");
+        System.out.println(result);
 
         // fetchFields();
     }

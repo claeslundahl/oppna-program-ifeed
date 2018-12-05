@@ -71,9 +71,37 @@ public class SolrHttpClient {
         return doc.get(key) == null || doc.get(key).toString().trim().isEmpty();
     }
 
+    public String toText(String fq, Integer start, Integer rows, String sort) {
+        try {
+            if (fq == null || fq.trim().isEmpty()) fq = "";
+            else fq = URLEncoder.encode(fq, "UTF-8");
+            if (!fq.isEmpty()) {
+                fq = "fq=" + fq;
+            }
+            if (start != null) {
+                fq = fq + "&start=" + start;
+            }
+            if (rows != null) {
+                fq = fq + "&rows=" + rows;
+            }
+            if (sort != null && !sort.trim().isEmpty()) {
+                fq = fq + "&sort=" + sort;
+            }
+            fq = fq + "&wt=json&q=*%3A*";
+
+            System.out.println(fq);
+
+            String json = post(baseUrl + "select", fq);
+
+            return json;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Result queryImp(String fq, Integer start, Integer rows, String sort) throws IOException {
 
-        if (fq == null || fq.trim().isEmpty()) fq = "";
+        /*if (fq == null || fq.trim().isEmpty()) fq = "";
         else fq = URLEncoder.encode(fq, "UTF-8");
         if (!fq.isEmpty()) {
             fq = "fq=" + fq;
@@ -91,12 +119,16 @@ public class SolrHttpClient {
         }
         fq = fq + "&wt=json&q=*%3A*";
 
-        System.out.println(fq);
+        System.out.println(fq);*/
 
-        String json = post(baseUrl + "select", fq);
+        // String json = post(baseUrl + "select", fq);
+
+        String json = toText(fq, start, rows, sort);
+
         // System.out.println(json);
+
         Result result = new GsonBuilder().create().fromJson(json, Result.class);
-        if (haveSort) {
+        if (sort != null && !sort.trim().isEmpty()) {
             final String[] parts = sort.split(Pattern.quote(" "));
             if (parts.length == 2) {
                 final String sortKey = parts[0];

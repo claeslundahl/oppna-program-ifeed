@@ -158,6 +158,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
 
         IFeed ifeed = result.get(0);
+        for (IFeed feed : ifeed.getComposites()) {
+
+        }
+        Json.toJson(ifeed);
+        entityManager.detach(ifeed);
 
         if (!ifeed.getComposites().isEmpty()) {
             List<IFeed> comps = new ArrayList<>();
@@ -169,8 +174,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             ifeed.getComposites().clear();
             ifeed.getComposites().addAll(comps);
         }
-        Json.toJson(ifeed);
-        entityManager.detach(ifeed);
+
+        // entityManager.detach(ifeed);
         return ifeed;
     }
 

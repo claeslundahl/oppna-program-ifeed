@@ -23,6 +23,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,7 +71,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     }
 
     /* (non-Javadoc)
-     * 
+     *
      * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getIFeed(java.lang.Long) */
     @Override
     @GET
@@ -100,7 +102,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
         // Populate the feed with search results
         populateFeed(f,
-            solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection), null));
+                solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection), null));
 
         solrQuery.clear();
 
@@ -132,7 +134,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         content.append("<ul>");
         for (IFeedFilter iFeedFilter : retrievedFeed.getFilters()) {
             content.append("<li>").append(iFeedFilter.getFilter().getFilterField()).append(":")
-                .append(iFeedFilter.getFilterQuery()).append("</li>");
+                    .append(iFeedFilter.getFilterQuery()).append("</li>");
         }
         content.append("</ul>");
 
@@ -158,8 +160,12 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
             String dcDateIssued = (String) map.get("dc.date.issued");
             e.setUpdated(DateFormatter.parse(dcDateIssued));
         } else if (map.containsKey("processingtime")) {
-            Date d = (Date) map.get("processingtime");
-            e.setUpdated(d);
+            if (map.get("processingtime") instanceof String) {
+                e.setUpdated(toUtcDateIfPossible((String) map.get("processingtime")));
+            } else {
+                Date d = (Date) map.get("processingtime");
+                e.setUpdated(d);
+            }
         } else {
             e.setUpdated(new Date(0L));
         }
@@ -198,6 +204,20 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return e;
     }
 
+    @Deprecated // Move this to a general purpose lib.
+    public static String toUtcDateIfPossible(String dateStr) {
+        SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        // Add other parsing formats to try as you like:
+        String[] dateFormats = {"yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z"};
+        for (String dateFormat : dateFormats) {
+            try {
+                return out.format(new SimpleDateFormat(dateFormat).parse(dateStr));
+            } catch (ParseException ignore) {
+            }
+        }
+        return dateStr;
+    }
+
     void addElement(final Entry e, final String prefix, final String fieldName, final Object fieldValue) {
 
         // TODO Should handle the collection properly
@@ -205,7 +225,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
         if (namespaces.containsKey(prefix)) {
             Element element = e.addExtension(new QName(namespaces.get(prefix),
-                fieldName.substring(prefix.length() + 1), prefix));
+                    fieldName.substring(prefix.length() + 1), prefix));
 
             if (fieldValue instanceof Date) {
                 element.setText(DateFormatter.format((Date) fieldValue, DateFormat.W3CDTF));

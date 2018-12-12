@@ -95,7 +95,7 @@ body {
     width: 100%;
 }
 
-.ifeed-metadata-table thead td {
+.ifeed-metadata-table .head {
     background-color: #ebebeb;
     font-size: 1.2em;
     font-weight: bold;
@@ -103,7 +103,7 @@ body {
     padding: 5px 0px 5px 6px;
 }
 
-.ifeed-metadata-table tbody td {
+.ifeed-metadata-table td {
     border-bottom: 1px solid lightgray;
     padding-left: 6px;
     padding-top: 1px;

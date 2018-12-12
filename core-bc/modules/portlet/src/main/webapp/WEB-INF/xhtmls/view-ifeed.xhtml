@@ -3,7 +3,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-        >
+>
 
     <div class="container-fluid">
 
@@ -45,16 +45,17 @@
                            id="cancelEditIfeedLink"
                            ajax="false" async="true" actionListener="#{app.cancelEdit()}">
             </p:commandLink>
-          <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
-                         rendered="#{app.isInEditMode()}"
-                         id="updateFeedLink"
-                         ajax="false" async="true" actionListener="#{app.update()}">
-          </p:commandLink>
-          <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Kopiera" update=":ifeed_view"
-                         rendered="#{not app.isInEditMode()}"
-                         id="createCopyOfCommand"
-                         ajax="false" async="true" actionListener="#{app.copyAndPersistFeed(request, iFeedModelBean.id)}">
-          </p:commandLink>
+            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
+                           rendered="#{app.isInEditMode()}"
+                           id="updateFeedLink"
+                           ajax="false" async="true" actionListener="#{app.update()}">
+            </p:commandLink>
+            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Kopiera" update=":ifeed_view"
+                           rendered="#{not app.isInEditMode()}"
+                           id="createCopyOfCommand"
+                           ajax="false" async="true"
+                           actionListener="#{app.copyAndPersistFeed(request, iFeedModelBean.id)}">
+            </p:commandLink>
         </div>
 
 
@@ -117,13 +118,13 @@
                                         title="Skriv in vgr-id och klicka på 'Lägg till'' för att lägg till en användare som administratör på feedet."
                                         multiple="false">
 
-                                <p:column>
-                                    <h:outputText value="#{user.firstName} #{user.lastName}" />
-                                </p:column>
+                            <p:column>
+                                <h:outputText value="#{user.firstName} #{user.lastName}"/>
+                            </p:column>
 
-                                <p:column>
-                                    <h:outputText value="#{user.userName}" />
-                                </p:column>
+                            <p:column>
+                                <h:outputText value="#{user.userName}"/>
+                            </p:column>
 
                         </p:autoComplete>
 
@@ -175,25 +176,26 @@
                     <br/>
                     <a href="#{app.uncache(app.getWebFeedLink())}" target="_blank">Html</a><br/>
 
-                  <a id="excel-feed-link" class="link-as-post-form-dont-match"
-                     onclick="alert('Du måste spara eller gå ur, avbryta, ändringsläget innan du tar ut excel-fil.'); return false;"
-                     href="javascript:void(0);"
-                     target="_blank"
-                     style="#{not app.inEditMode ? 'display:none;':''}"
-                     type="text/csv;charset=UTF-8">Excel</a>
+                    <a id="excel-feed-link" class="link-as-post-form-dont-match"
+                       onclick="alert('Du måste spara eller gå ur, avbryta, ändringsläget innan du tar ut excel-fil.'); return false;"
+                       href="javascript:void(0);"
+                       target="_blank"
+                       style="#{not app.inEditMode ? 'display:none;':''}"
+                       type="text/csv;charset=UTF-8">Excel</a>
 
-                  <a id="excel-feed-link2" class="link-as-post-form-dont-match"
-                     href="#{app.uncache(app.getExcelFeedLink())}"
-                     target="_blank"
-                     style="#{app.inEditMode ? 'display:none;':''}"
-                     type="text/csv;charset=UTF-8">Excel</a>
+                    <a id="excel-feed-link2" class="link-as-post-form-dont-match"
+                       href="#{app.uncache(app.getExcelFeedLink())}"
+                       target="_blank"
+                       style="#{app.inEditMode ? 'display:none;':''}"
+                       type="text/csv;charset=UTF-8">Excel</a>
 
                     <br/>
 
                     <a href="#{app.uncache(app.getRssFeedLink())}" target="_blank">Rss</a><br/>
                     <a href="#{app.uncache(app.getAtomFeedLink())}" target="_blank">Atom</a><br/>
 
-                    <a id="json-feed-link" href="#{app.uncacheJson(app.getJsonFeedLink())}" target="_blank">Json</a><br/>
+                    <a id="json-feed-link" href="#{app.uncacheJson(app.getJsonFeedLink())}"
+                       target="_blank">Json</a><br/>
                     <div style="display:none;">#{app.uncacheJson(app.join(app.getJsonFeedLink(), '&#38;f=dc.title&#38;f=dc.date.issued&#38;f=dc.title&#38;callback=__gwt_jsonp__.P0.onSuccess'))}</div>
                     <h:panelGroup>
                         <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
@@ -250,10 +252,12 @@
         </h3>
         <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="getFiltersAsListItem" varStatus="status"
                    id="getFiltersAsListRepeat">
-    <span class="ltr-flowing-item ifeed-border">
+    <span class="ltr-flowing-item ifeed-border" style="#{getFiltersAsListItem.isContainer()?'display:none;':''}">
       <span class="name">#{app.getFieldsByNameIndex().get(getFiltersAsListItem.filterKey).name}</span>
+
       <span class="name-value-delimiter">
-        <h:outputText value="=" rendered="#{getFiltersAsListItem.operator eq 'matching' or empty getFiltersAsListItem.operator}"/>
+        <h:outputText value="="
+                      rendered="#{getFiltersAsListItem.operator eq 'matching' or empty getFiltersAsListItem.operator}"/>
         <h:outputText value="&lt;" rendered="#{getFiltersAsListItem.operator eq 'lesser'}"/>
         <h:outputText value="&gt;" rendered="#{getFiltersAsListItem.operator eq 'greater'}"/>
       </span>
@@ -278,6 +282,10 @@
         </p:commandLink>
       </span>
     </span>
+            <span class="ltr-flowing-item ifeed-border"
+                  style="#{!getFiltersAsListItem.isContainer()?'display:none;':'white-space: inherit;'}">
+                #{getFiltersAsListItem.toText()}
+            </span>
         </ui:repeat>
     </div>
 
@@ -308,21 +316,26 @@
     </div>
 
     <script type="text/javascript">
-    //<![CDATA[
+        //<![CDATA[
         function toggle() {
-			var dta = 'display-toggle'; // name of the attribute... for brievety.
-           for (var i = 0; i < arguments.length; i++) {
-               var id = arguments[i];
-               $('#' + id).toggle();
+            var dta = 'display-toggle'; // name of the attribute... for brievety.
+            for (var i = 0; i < arguments.length; i++) {
+                var id = arguments[i];
+                $('#' + id).toggle();
             }
         }
 
         function refreshResults() {
-            setTimeout(function () {try { document.getElementById('rerun-ifeed-loading').click(); }catch(e){}}, 500);
+            setTimeout(function () {
+                try {
+                    document.getElementById('rerun-ifeed-loading').click();
+                } catch (e) {
+                }
+            }, 500);
         }
 
-        $(document).ready(function() {
-            $("a.excel-feed-link").click(function(e) {
+        $(document).ready(function () {
+            $("a.excel-feed-link").click(function (e) {
                 e.stopPropagation();
                 e.preventDefault();
                 var href = this.href;
@@ -330,11 +343,11 @@
                 var url = parts[0];
                 var params = parts[1].split('&');
                 var pp, inputs = '';
-                for(var i = 0, n = params.length; i < n; i++) {
+                for (var i = 0, n = params.length; i < n; i++) {
                     pp = params[i].split('=');
                     inputs += '<input type="hidden" name="' + pp[0] + '" value="' + pp[1] + '" />';
                 }
-                $("body").append('<form action="'+url+'" method="post" id="poster" target="_blank">'+inputs+'</form>');
+                $("body").append('<form action="' + url + '" method="post" id="poster" target="_blank">' + inputs + '</form>');
                 $("#poster").submit();
             });
         });
@@ -347,7 +360,7 @@
         var node = document.createElement("div");
         document.getElementsByTagName('body')[0].appendChild(node);
         node.innerHTML = "#{app.getExcelFeedLinkForm()}";
-    //]]>
+        //]]>
 
     </script>
 

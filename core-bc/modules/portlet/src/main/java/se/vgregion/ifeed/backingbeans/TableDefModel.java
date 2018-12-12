@@ -4,6 +4,7 @@ import org.apache.commons.beanutils.BeanMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import se.vgregion.ifeed.service.solr.client.Field;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.shared.DynamicTableSortingDef;
@@ -101,7 +102,7 @@ public class TableDefModel extends DynamicTableDef {
 
   @Override
   public String getFeedId() {
-    if (app.getIFeedModelBean() != null) {
+    if (app != null && app.getIFeedModelBean() != null) {
       return app.getIFeedModelBean().getId() + "";
     }
     return super.getFeedId();
@@ -118,11 +119,39 @@ public class TableDefModel extends DynamicTableDef {
     // dc.title
     ColumnDef column = new ColumnDef();
     column.setAlignment("left");
-    FieldInf fieldTemplate = app.getFilters().get(0).getChildren().get(0);
+    // FieldInf fieldTemplate = app.getFilters().get(0).getChildren().get(0);
+    FieldInf fieldTemplate = getFirstBestFieldInf();
     column.setName(fieldTemplate.getId());
     column.setLabel(fieldTemplate.getName());
     column.setWidth("70");
     getColumnDefs().add(column);
+  }
+
+  private FieldInf getFirstBestFieldInf() {
+    for (FieldInf fieldInf : app.getFilters()) {
+      FieldInf r = getFirstBestFieldInf(fieldInf);
+      if (r != null) {
+        return r;
+      }
+    }
+    return null;
+  }
+
+  private FieldInf getFirstBestFieldInf(FieldInf fi) {
+    if (isOkToUseInWebScript(fi)) {
+      return fi;
+    }
+    for (FieldInf child : fi.getChildren()) {
+      FieldInf r = getFirstBestFieldInf(child);
+      if (r != null) {
+        return r;
+      }
+    }
+    return null;
+  }
+
+  private static boolean isOkToUseInWebScript(FieldInf fi) {
+    return fi.isInHtmlView() && fi.getId() != null && !fi.getId().trim().equals("");
   }
 
   public void createExtraSortColumn() {

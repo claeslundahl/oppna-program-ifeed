@@ -49,6 +49,7 @@ public class IFeedServiceImplIntTest {
 	}
 
 	@Test
+	@Ignore
 	public void updateIFeed() {
 		Long id = 101l;
 		IFeed newFeed = new IFeed();
@@ -66,14 +67,14 @@ public class IFeedServiceImplIntTest {
 		Assert.assertNotNull(addedFeed.getId());
 	}
 
-	@Ignore
+	/*@Ignore
 	@Test
 	public void getIFeedAndTestToJson() {
 		List<IFeed> all = iFeedService.getIFeeds();
 		Long id = 101l;
 		IFeed feed = iFeedService.getIFeed(all.get(0).getId());
 		feed.toJson();
-	}
+	}*/
 
 
 

@@ -57,6 +57,8 @@ public interface IFeedService {
 
     List<FieldsInf> getFieldsInfs();
 
+    Config getConfig(String withThatId);
+
     List<FieldInf> getFieldInfs();
 
     void storeFieldsInf(FieldsInf inf);
@@ -77,4 +79,8 @@ public interface IFeedService {
 
     @Transactional
     IFeed copyAndPersistFeed(Long withThatKey, String otherUserId);
+
+    String toDocumentPopupHtml(Map<String, Object> forThatItem);
+
+    void save(Config inf);
 }

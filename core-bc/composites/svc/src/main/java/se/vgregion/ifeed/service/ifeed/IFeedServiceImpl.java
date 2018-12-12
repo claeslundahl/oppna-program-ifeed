@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.vgregion.common.utils.CommonUtils;
+import se.vgregion.common.utils.Json;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
 import se.vgregion.ifeed.shared.ColumnDef;
@@ -18,6 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -131,11 +135,12 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     @Transactional
     public IFeed getFeedForSolrQuery(final Long id) {
-        return getFeedForSolrQueryImpl(id, new HashSet<>());
+        IFeed result = getFeedForSolrQueryImpl(id, new HashSet<>());
+        return result;
     }
 
     @Transactional
-    private IFeed getFeedForSolrQueryImpl(final Long id, Set<Long> traversal) {
+    protected IFeed getFeedForSolrQueryImpl(final Long id, Set<Long> traversal) {
         traversal.add(id);
         // long now = System.currentTimeMillis();
         ArrayList<IFeed> result = new ArrayList<IFeed>(
@@ -153,7 +158,6 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
 
         IFeed ifeed = result.get(0);
-        entityManager.detach(ifeed);
 
         if (!ifeed.getComposites().isEmpty()) {
             List<IFeed> comps = new ArrayList<>();
@@ -165,7 +169,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             ifeed.getComposites().clear();
             ifeed.getComposites().addAll(comps);
         }
-
+        Json.toJson(ifeed);
+        entityManager.detach(ifeed);
         return ifeed;
     }
 
@@ -198,6 +203,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }*/
         initializedFeeds.set(null);
         now = System.currentTimeMillis() - now;
+
+        try {
+            Files.write(Paths.get(System.getProperty("user.home"), "feed.json"), Json.toJson(rv).getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return rv;
     }
 
@@ -245,6 +257,9 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         // IFeed result = iFeedRepo.find(id);
 
         IFeed result = objectRepo.findByPrimaryKey(IFeed.class, id);
+        if (result == null) {
+            throw new RuntimeException();
+        }
         initializedFeeds.set(null);
         for (DynamicTableDef dtd : result.getDynamicTableDefs()) {
             dtd.getExtraSorting();
@@ -269,7 +284,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     private static ThreadLocal<Set<IFeed>> initializedFeeds = new ThreadLocal<>();
 
     @Transactional
-    private void init(IFeed result) {
+    protected void init(IFeed result) {
         try {
             initImp(result);
         } catch (Exception e) {
@@ -307,12 +322,14 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                 }
             }
         }
+
         if (result.getDepartment() != null) {
-            for (VgrGroup group : result.getDepartment().getVgrGroups()) {
+            // TODO: Think about this!
+            /*for (VgrGroup group : result.getDepartment().getVgrGroups()) {
                 for (IFeed otherFeed : group.getMemberFeeds()) {
                     init(otherFeed);
                 }
-            }
+            }*/
         }
 
         result.getComposites().toString();
@@ -324,7 +341,14 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             init(feed);
         }
         result.getFilters().toString();
-        result.toJson();
+        // result.toJson();
+        // long time = System.currentTimeMillis();
+        Json.toJson(result);
+        // System.out.println("Time for json is " + (System.currentTimeMillis() - time));
+        /*for (IFeed feed : result.getPartOf()) {
+            Json.toJson(feed);
+            feed.getPartOf().toString();
+        }*/
     }
 
     @Override
@@ -332,7 +356,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public final IFeed addIFeed(final IFeed iFeed) {
         IFeed r = iFeedRepo.store(iFeed);
         if (r != null) {
-            r.toJson();
+            Json.toJson(r);
+            //r.toJson();
         }
         return r;
     }
@@ -400,6 +425,10 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             if (!iFeed.getDynamicTableDefs().contains(dynamicTableDef)) {
                 objectRepo.delete(dynamicTableDef);
             }
+        }
+
+        for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
+            iFeedFilter.setFeed(iFeed);
         }
 
         IFeed result = iFeedRepo.merge(iFeed);
@@ -528,7 +557,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     public List<FieldsInf> getFieldsInfs() {
-        return new ArrayList<FieldsInf>(fieldsInfRepo.findByQuery("select fi from FieldsInf fi order by fi.version asc, fi.id asc"));
+        ArrayList<FieldsInf> result = new ArrayList<FieldsInf>(fieldsInfRepo.findByQuery("select fi from FieldsInf fi order by fi.id asc"));
+        return result;
+    }
+
+    @Override
+    public Config getConfig(String withThatId) {
+        return objectRepo.findByPrimaryKey(Config.class, withThatId);
     }
 
     @Transactional
@@ -682,6 +717,22 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         result.setCreatorName(otherUserId);
         objectRepo.persist(result);
         return result;
+    }
+
+    @Override
+    public String toDocumentPopupHtml(Map<String, Object> forThatItem) {
+        Config config = objectRepo.findByPrimaryKey(Config.class, "popup");
+        List<DocumentPopupConf> confs = CommonUtils.fromCsv(DocumentPopupConf.class, config.getSetting());
+        StringBuilder sb = new StringBuilder();
+        for (DocumentPopupConf conf : confs) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public void save(Config inf) {
+        objectRepo.merge(inf);
     }
 
     static IFeed copy(IFeed that) {

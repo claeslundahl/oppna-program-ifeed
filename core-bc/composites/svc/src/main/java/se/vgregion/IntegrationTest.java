@@ -93,6 +93,8 @@ public class IntegrationTest {
     }
 
     public static String getFieldsConfig() {
+        if (true) throw new RuntimeException("Do not use getFieldsConfig!");
+
         return "id|name|help|type|filter|apelonKey|inHtmlView\n" +
                 "|Dokumentbeskrivning|||||yes\n" +
                 "DC.title|Titel (autokomplettering)|Namn på dokument, handling eller annan typ av resurs. (Fritext)|d:text_facet|yes||yes\n" +

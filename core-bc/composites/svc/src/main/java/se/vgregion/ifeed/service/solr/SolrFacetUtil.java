@@ -1,14 +1,16 @@
 package se.vgregion.ifeed.service.solr;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.solr.client.solrj.SolrServer;
-import se.vgregion.ifeed.types.FieldInf;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,8 @@ import java.util.regex.Pattern;
  * Created by clalu4 on 2014-06-27.
  */
 public class SolrFacetUtil {
+
+    static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     /**
      * Calls the solr server to get facet result of a certain IFeed and field.
@@ -30,6 +34,11 @@ public class SolrFacetUtil {
         try {
             return fetchFacetsImpl(solrBaseUrl, feed, field);
         } catch (Exception e) {
+            try {
+                Files.write(Paths.get(System.getProperty("user.home"), "feed.json"), se.vgregion.common.utils.Json.toJson(feed).getBytes());
+            } catch (Exception iff) {
+                iff.printStackTrace();
+            }
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -37,19 +46,20 @@ public class SolrFacetUtil {
 
     private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field) throws Exception {
 
-        /*
-        SolrServer solrServer = SolrServerFactory.create();
-        IFeedSolrQuery iFeedSolrQuery = new IFeedSolrQuery(solrServer, null);
-        List<Map<String, Object>> r = iFeedSolrQuery.getIFeedResults(feed, field, IFeedSolrQuery.SortDirection.asc);
+        // System.out.println("solrBaseUrl: " + solrBaseUrl);
+        // System.out.println("Facet find with query " + feed.toQuery());
 
-        if (true == true) {
-            SortedSet<String> values = new TreeSet<>();
-            for (Map<String, Object> map : r) {
-                values.add((String) map.get(field));
-            }
-            return new ArrayList<>(values);
+        if (true) {
+            if (feed == null) throw new NullPointerException();
+            System.out.println("The facet-question to ask: " + feed.toQuery());
+            Result result = client.query(
+                    feed.toQuery(),
+                    0,
+                    10,
+                    field + "%20asc"
+            );
+            return new ArrayList<>(SolrHttpClient.toFacetSet(result, field));
         }
-        */
 
         String fu = facetUrl(solrBaseUrl, feed, field);
         URL url = new URL(fu);
@@ -74,8 +84,6 @@ public class SolrFacetUtil {
         }
 
         Object tree = Json.parse(result);
-
-
 
 
         Map facetCounts = (Map) ((Map) tree).get("facet_counts");

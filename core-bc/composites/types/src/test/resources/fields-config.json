@@ -1,0 +1,1268 @@
+[
+  {
+    "id": "",
+    "name": "Alfresco, Barium",
+    "help": "",
+    "type": "",
+    "apelonKey": "",
+    "children": [
+      {
+        "id": "",
+        "name": "Dokumentbeskrivning",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "dc.title",
+            "name": "Titel (autokomplettering)",
+            "help": "Namn på dokument, handling eller annan typ av resurs. (Fritext)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.title.filename",
+            "name": "Filnamn, utgivet/publicerat",
+            "help": "Namn på utgiven/publicerad fil. Filen är en identisk pdf/a-variant av orginalfilen som laddas upp i dokumentlagret. Gäller konverterbara filformat, t ex Office-dokument (Systemstyrt)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.title.filename.native",
+            "name": "Filnamn, original",
+            "help": "Namn på fil i orginal. Laddas upp och hanteras i källsystemet och kan publiceras till dokumentlagretfilen, där det kopplas till sin identiska utgivna pdf/a-variant om det är ett filformat som konverteras, t ex Office-dokument. (Systemstyrt)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.title.alternative",
+            "name": "Alternativ titel",
+            "help": "Alternativ till den formella titeln. Kan tex vara en förkortning eller översättning av titeln. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.description",
+            "name": "Beskrivning",
+            "help": "En kort redogörelse för dokumentet, handlingen eller resursens innehåll. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.document",
+            "name": "Gruppering av handlingstyper",
+            "help": "Grupp av handlingstyper, används för att enklare hitta handlingstyp",
+            "type": "d:text_fix",
+            "apelonKey": "Dokumenttyp VGR",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.document.structure",
+            "name": "Dokumentstruktur VGR",
+            "help": "Gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument.",
+            "type": "d:text_facet",
+            "apelonKey": "Dokumentstruktur VGR",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.document.structure.id",
+            "name": "Dokumentstruktur VGR ID",
+            "help": "ID för gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument.",
+            "type": "d:text_facet",
+            "apelonKey": "Dokumentstruktur VGR ID",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.record",
+            "name": "Handlingstyp (autokomplettering)",
+            "help": "Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas.",
+            "type": "d:text_facet",
+            "apelonKey": "Handlingstyp",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.record.id",
+            "name": "Handlingstyp ID",
+            "help": "Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas.",
+            "type": "d:text_facet",
+            "apelonKey": "Handlingstyp",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "expanded": false
+          },
+          {
+            "id": "dc.coverage.hsacode",
+            "name": "Verksamhetskod enligt HSA",
+            "help": "Kod och klartext för den/de verksamheter dokumentet, handlingen eller resursens innehåll beskriver (HSA-Nationell katalogtjänst)",
+            "type": "d:text_fix",
+            "apelonKey": "Verksamhetskod",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.coverage.hsacode.id",
+            "name": "Verksamhetskod enligt HSA ID",
+            "help": "Kod och klartext för den/de verksamheter dokumentet, handlingen eller resursens innehåll beskriver (HSA-Nationell katalogtjänst)",
+            "type": "d:text_facet",
+            "apelonKey": "Verksamhetskod",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "expanded": false
+          },
+          {
+            "id": "dcterms.audience",
+            "name": "Målgrupp HoS (autokomplettering)",
+            "help": "Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.audience",
+            "name": "Målgrupp HoS (autokomplettering)",
+            "help": "Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dcterms.audience.id",
+            "name": "Målgrupp HoS",
+            "help": "Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "expanded": false
+          },
+          {
+            "id": "dc.identifier.version",
+            "name": "Version",
+            "help": "Den version dokumentet, handlingen eller resursen har. (Systemstyrt). Mindre ändringar får vanligen version 0.1, 0.2 osv och större ändringar 1.0, 2.0 osv",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.savedby",
+            "name": "Sparat av",
+            "help": "Inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt).",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.savedby.id",
+            "name": "Sparat av ID",
+            "help": "Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager",
+            "type": "d:ldap_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.saved",
+            "name": "Sparat datum",
+            "help": "Tidpunkt då dokumentet, handlingen eller resursen sparades i systemet. (Systemstyrt)",
+            "type": "d:datetime",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgregion.status.document",
+            "name": "Dokumentstatus",
+            "help": "Statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad",
+            "type": "d:text_fix",
+            "apelonKey": "Dokumentstatus",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgregion.status.document.id",
+            "name": "Dokumentstatus",
+            "help": "Id för statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad",
+            "type": "d:text_fix",
+            "apelonKey": "Dokumentstatus",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "expanded": false
+          },
+          {
+            "id": "vgr.status.document",
+            "name": "Dokumentstatus",
+            "help": "Statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad",
+            "type": "d:text_fix",
+            "apelonKey": "Dokumentstatus",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr.status.document.id",
+            "name": "Dokumentstatus",
+            "help": "Id för statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad",
+            "type": "d:text_fix",
+            "apelonKey": "Dokumentstatus",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.source.documentid",
+            "name": "Dokumentid källa",
+            "help": "För systemet unikt id för dokumentet. (Systemstyrt)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.source",
+            "name": "Länk till dokumentets källa",
+            "help": "Länk till dokumentet, handlingen eller resursen i källsystemet. (Systemstyrt)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Skapat av och för",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "dc.creator",
+            "name": "Skapat av",
+            "help": "Den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.id",
+            "name": "Skapat av ID",
+            "help": "Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager",
+            "type": "d:ldap_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.freetext",
+            "name": "Skapat av (Fritext)",
+            "help": "Den eller de personer som skapat eller uppdaterat innehållet och inte finns upplagda i katalogen.",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.forunit",
+            "name": "Skapat av enhet (autokomplettering)",
+            "help": "Den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.forunit.id",
+            "name": "Skapat av enhet ID (VGR:s organisationsträd)",
+            "help": "Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.project-assignment",
+            "name": "Skapat av Projekt/Uppdrag/Grupp",
+            "help": "Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är skapad av",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Ansvariga",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "dc.creator.document",
+            "name": "Innehållsansvarig/Dokumentansvarig",
+            "help": "Den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.document.id",
+            "name": "Innehållsansvarig/Dokumentansvarig ID",
+            "help": "Id för den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.  Sätts i Alfresco Lager",
+            "type": "d:ldap_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.function",
+            "name": "Funktionsansvar",
+            "help": "Den funktion eller roll som ansvarar för innehållet i dokumentet. Funktionen eller rollen skrivs in som fritext t.ex: Lex Maria-ansvarig, Tjänsteman i beredskap eller Reception.",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.recordscreator",
+            "name": "Arkivbildare (autokomplettering)",
+            "help": "Ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.recordscreator.id",
+            "name": "Arkivbildare ID (VGR:s organisationsträd)",
+            "help": "ID för ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Giltighet och tillgänglighet",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "dc.date.validfrom",
+            "name": "Giltighetsdatum from",
+            "help": "Startdatum för giltigheten för innehållet i dokumentet, handlingen eller resursen. Skilj från ”Tillgänglighetsdatum”",
+            "type": "d:date",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.validto",
+            "name": "Giltighetsdatum tom",
+            "help": "Slutdatum för giltigheten för innehållet i dokumentet, handlingen eller resursens. Skilj från ”Tillgänglighetsdatum”",
+            "type": "d:date",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.availablefrom",
+            "name": "Tillgänglighetsdatum from",
+            "help": "Startdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”",
+            "type": "d:date",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.availableto",
+            "name": "Tillgänglighetsdatum tom",
+            "help": "Slutdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”.",
+            "type": "d:date",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.copyrighted",
+            "name": "Copyrightdatum",
+            "help": "Tidpunkt för förvärvad copyright/upphovsrätt",
+            "type": "d:datetime",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Granskat/Godkänt",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "dc.contributor.acceptedby",
+            "name": "Godkänt av",
+            "help": "Den eller de personer som godkänner innehållet där namn och organisationstillhörighet hämtas från katalogen",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.acceptedby.id",
+            "name": "Godkänt av ID",
+            "help": "Id för den eller de personer som godkänner innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager",
+            "type": "d:ldap_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.acceptedby.freetext",
+            "name": "Godkänt av (Fritext)",
+            "help": "Den eller de personer som godkänner innehållet och inte finns upplagda i katalogen",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.accepted",
+            "name": "Godkänt datum",
+            "help": "Tidpunkt för godkännande av dokumentets, handlingens eller resursens innehåll. (Systemstyrt)",
+            "type": "d:date",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.acceptedby.role",
+            "name": "Godkänt av Egenskap/Roll",
+            "help": "I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.acceptedby.unit.freetext",
+            "name": "Enhet (Fritext)",
+            "help": "En enhet anges för varje person. OBS! Inte dokumentet, handlingen eller resursens enhet.",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.controlledby",
+            "name": "Granskat av",
+            "help": "Den eller de personer som granskar innehållet där namn och organisationstillhörighet hämtas från katalogen",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.controlledby.id",
+            "name": "Granskat av ID",
+            "help": "Id för den eller de personer som granskar innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager",
+            "type": "d:ldap_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.controlledby.freetext",
+            "name": "Granskat av (Fritext)",
+            "help": "Den eller de personer som granskar innehållet och inte finns upplagda i katalogen",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.controlled",
+            "name": "Granskningsdatum",
+            "help": "Tidpunkt för granskning av dokumentets, handlingens eller resursens innehåll (Systemstyrt)",
+            "type": "d:date",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.controlledby.role",
+            "name": "Granskat av Egenskap/Roll",
+            "help": "I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.controlledby.unit.freetext",
+            "name": "Enhet (Fritext)",
+            "help": "En enhet anges för varje person. OBS! Inte dokumentet, handlingen eller resursens enhet.",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Publicerat",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "dc.publisher.forunit",
+            "name": "Publicerat för enhet (autokomplettering)",
+            "help": "Den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.publisher.forunit.flat",
+            "name": "Publicerat för enhet (för sortering)",
+            "help": "Den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.publisher.forunit.id",
+            "name": "Publicerat för enhet ID (VGR:s organisationsträd)",
+            "help": "ID för den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.publisher.project-assignment",
+            "name": "Publicerat för Projekt/Uppdrag/Grupp",
+            "help": "Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är publicerad för. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.rights.accessrights",
+            "name": "Publik åtkomsträtt",
+            "help": "Hur den publicerade informationen blir tillgänglig: Internet och/eller Intranät",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.publisher",
+            "name": "Publicerat av",
+            "help": "Inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.publisher.id",
+            "name": "Publicerat av ID",
+            "help": "Id för inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.issued",
+            "name": "Publiceringsdatum",
+            "help": "Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen.",
+            "type": "d:date",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.identifier.documentid",
+            "name": "Dokumentid till publicerat dokument",
+            "help": "För systemet unikt id till det publicerade dokumentet. (Systemstyrt)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "expanded": false
+          },
+          {
+            "id": "dc.identifier",
+            "name": "Länk till publicerat/utgivet dokument",
+            "help": "Länk till det publicerade dokumentet, handlingen eller resursen, pdf/a-utgåva. Se filnamn (Systemstyrt)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.identifier.native",
+            "name": "Länk till utgivet orginaldokument",
+            "help": "Länk till det publicerade dokumentet, handlingen eller resursen, original-format. Se filnamn. (Systemstyrt)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Sammanhang",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "dc.type.process.name",
+            "name": "Processnamn",
+            "help": "Sammanhållen hantering som avgränsas och namnges av verksamheten. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.file.process",
+            "name": "Ärendetyp",
+            "help": "Beskrivning av en serie/följd av åtgärder. (Fritext). Ex supportärende, bidragsansökan",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.file",
+            "name": "Ärende",
+            "help": "Enskild åtgärd. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.identifier.diarie.id",
+            "name": "Diarienummer",
+            "help": "Diarienummer, skrivs in när man vet vilket nummer dokumentet, handlingen eller resursen fått",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.document.serie",
+            "name": "Dokumentserie",
+            "help": "Beskrivning av en serie/följd av dokument. För att kunna använda dokumentserie vid utsökning måste exakt samma värde sättas på alla dokument, handlingar eller resurser som ingår i dokumentserien. (Fritext). Ex: återkommande protokoll för viss nämnd",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.document.id",
+            "name": "Referensnummer i dokumentserie",
+            "help": "Ett värde som anger det enskilda dokumentet i dokumentserien. Kan uttryckas som nummer, datum osv. (Fritext)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Nyckelord",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "dc.subject.keywords",
+            "name": "Nyckelord (autokomplettering)",
+            "help": "Det eller de enstaka ord som kan beskriva innehållet. Hämtas från kodverk.",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.subject.authorkeywords",
+            "name": "Författarens nyckelord",
+            "help": "Det eller de enstaka ord som kan beskriva innehållet. Sätts av den som skapar eller uppdaterar dokumentet, handlingen eller resursen. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Övrigt",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "language",
+            "name": "Språk",
+            "help": "Det/de språk som innehållet är skrivet på",
+            "type": "d:text_fix",
+            "apelonKey": "Språk",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.language",
+            "name": "Språk",
+            "help": "Det/de språk som innehållet är skrivet på",
+            "type": "d:text_fix",
+            "apelonKey": "Språk",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "expanded": false
+          },
+          {
+            "id": "dc.relation.isversionof",
+            "name": "Alternativ variant av",
+            "help": "Länk (URI) till en version, upplaga eller anpassning av det dokument, handling eller resurs man refererar till. Ex populärversionen länkar till sitt huvuddokument",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.relation.replaces",
+            "name": "Ersätter",
+            "help": "Länk (URI) till det dokument, handling eller resurs som ersatts",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.format.extent",
+            "name": "Omfattning",
+            "help": "Storlek på eller varaktighet för resursen. Ex för media 90 minuter, för dokumentet 100 sidor. (Fritext).",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.identifier.location",
+            "name": "Fysisk placering",
+            "help": "Vart man fysiskt kan hitta dokumentet, handlingen eller resursen. (Fritext)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.templatename",
+            "name": "Mallnamn",
+            "help": "Namn och version på den mall som använts för dokumentet, handlingen eller resursen",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.format.extent.mimetype",
+            "name": "Mimetyp, utgivet/publicerat",
+            "help": "Typ av dokument, handling eller resurs för utgiven/publicerad fil. (Systemstyrt). Ex Microsoft Word, PNG image",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.format.extent.mimetype.native",
+            "name": "Mimetyp, original",
+            "help": "Typ av dokument, handling eller resurs för original fil. (Systemstyrt). Ex Microsoft Word, PNG image",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.format.extension",
+            "name": "Filändelse, utgivet/publicerat",
+            "help": "Format på utgiven/publicerad fil, kan användas för att bestämma vilken mjukvara som är nödvändig för att kunna visa eller använda resursen. (Systemstyrt). Ex doc, png",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.format.extension.native",
+            "name": "Filändelse, original",
+            "help": "Format på original fil kan användas för att bestämma vilken mjukvara som är nödvändig för att kunna visa eller använda resursen. (Systemstyrt). Ex doc, png",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.identifier.checksum",
+            "name": "Kontrollsumma dokument, utgivet/publicerat",
+            "help": "Kontrollsumma på utgivet/publicerat dokumentet, handlingen eller resursen. Varje version av dokumentet får ett unikt värde. (Systemstyrt)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.identifier.checksum.native",
+            "name": "Kontrollsumma dokument, original",
+            "help": "Kontrollsumma på orgnial dokumentet, handlingen eller resursen. Varje version av dokumentet får ett unikt värde. (Systemstyrt)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.source.origin",
+            "name": "Källsystem",
+            "help": "Källsystem till dokumentet, handlingen eller resursen. (Systemstyrt)",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      }
+    ],
+    "filter": false,
+    "inHtmlView": true,
+    "expanded": false
+  },
+  {
+    "id": "",
+    "name": "SOFIA",
+    "help": "",
+    "type": "",
+    "apelonKey": "",
+    "children": [
+      {
+        "id": "",
+        "name": "Populära filter",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "title",
+            "name": "Titel",
+            "help": "Titel",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:Producer",
+            "name": "Myndighet",
+            "help": "Myndighet",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:Classification.core:Classification.name",
+            "name": "Klassificeringsstrukturen (process)",
+            "help": "Klassificeringsstrukturen (process)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:ObjectType",
+            "name": "Handlingstyp",
+            "help": "Handlingstyp",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+            "name": "Upprättat för enhet",
+            "help": "Upprättat för enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
+            "name": "Regional ämnesindelning",
+            "help": "Regional ämnesindelning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+            "name": "Egen ämnesindelning",
+            "help": "Egen ämnesindelning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:Tag",
+            "name": "Företagsnyckelord",
+            "help": "Företagsnyckelord",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:Source.id",
+            "name": "Dokumentid källa",
+            "help": "Dokumentets id som det finns lagrat i källsystemet.",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:SourceSystem",
+            "name": "Källsystem",
+            "help": "Källsystem. Har bytt namn i indexet. Är oanvändbart, får flöden att inte träffa något. Upptäckte detta 8/11 2018.",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": false,
+        "inHtmlView": true,
+        "expanded": false
+      },
+      {
+        "id": "",
+        "name": "Ytterligare filter",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "children": [
+          {
+            "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
+            "name": "Upprättat av enhet",
+            "help": "Upprättat av enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:CreatedBy",
+            "name": "Upprättat av (person)",
+            "help": "Upprättat av (person)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          /*{
+                      "id": "vgr:VgrExtension.vgr:RevisedAvailableFrom",
+                      "name": "Tillgänglighetsdatum from",
+                      "help": "Tillgänglighetsdatum from",
+                      "type": "d:date",
+                      "apelonKey": "",
+                      "children": [],
+                      "filter": true,
+                      "inHtmlView": true,
+                      "expanded": false
+                    },{
+                      "id":"vgr:VgrExtension.vgr:AvailableTo",
+                      "name": "Tillgänglighetsdatum tom",
+                      "help": "Tillgänglighetsdatum tom",
+                      "type": "d:date",
+                      "apelonKey": "",
+                      "children": [],
+                      "filter": true,
+                      "inHtmlView": true,
+                      "expanded": false
+                    },*/
+          {
+            "id": "vgr:VgrExtension.vgr:SecurityClass",
+            "name": "Åtkomsträtt",
+            "help": "Åtkomsträtt",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          }
+        ],
+        "filter": true,
+        "inHtmlView": true,
+        "expanded": false
+      }
+    ],
+    "filter": false,
+    "inHtmlView": true,
+    "expanded": false
+  }
+]

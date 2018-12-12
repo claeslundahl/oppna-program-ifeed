@@ -20,224 +20,224 @@ import java.util.*;
  */
 public class Starter {
 
-  static Set<String> alignments = new HashSet<String>();
+    static Set<String> alignments = new HashSet<String>();
 
-  static {
-    Style.TextAlign[] var = Style.TextAlign.values();
-    for (Style.TextAlign align : var) {
-      alignments.add(align.toString().toLowerCase());
-      alignments.add(align.toString().toUpperCase());
-    }
-  }
-
-  private static Images images = GWT.create(Images.class);
-
-  private static final native void publicizeInit()/*-{
-    $wnd.se = {};
-    $wnd.se.vgregion = {};
-    $wnd.se.vgregion.ifeed = {};
-    $wnd.se.vgregion.ifeed.client = {};
-    $wnd.se.vgregion.ifeed.client.Starter = {};
-    $wnd.se.vgregion.ifeed.client.Starter.init = function() {
-      @se.vgregion.ifeed.client.Starter::init()();
-    }
-  }-*/;
-
-  //@JsMethod
-  public static void init() {
-    //NodeList<Element> elements = querySelectorAll(".ifeedDocList");
-    JsArray<Element> elements = findElements("div", "className", "ifeedDocList");
-    List<IfeedTag> tags = new ArrayList<>();
-    for (int i = 0, j = elements.length(); i < j; i++) {
-      Element element = elements.get(i);
-      IfeedTag feed = new IfeedTag(element);
-      feed.index = i;
-      tags.add(feed);
-      fetchAndRender(feed);
-    }
-    publicizeInit();
-  }
-
-  public static String getFeedHome() {
-    String pathParameter = Window.Location.getParameter("ifeed-data2");
-    if (pathParameter != null && !pathParameter.isEmpty()) {
-      return pathParameter;
-    }
-    JsArray<Element> ifeeData2 = findElements("div", "id", "ifeed-data2");
-    String url; // = querySelectorAll("#ifeed-data2").getItem(0).getInnerText().trim();
-    if (ifeeData2 != null && ifeeData2.length() > 0) {
-      url = ifeeData2.get(0).getInnerText().trim();
-    } else {
-      url = "https://ifeed.vgregion.se";
-    }
-    return url;
-  }
-
-  private static void sort(IfeedTag fetchedDataInsideThat) {
-    List<Entry> those = fetchedDataInsideThat.fetchedData;
-    String byThatKey = fetchedDataInsideThat.defaultsortcolumn;
-    String ascOrDesc = fetchedDataInsideThat.defaultsortorder;
-    sort(those, byThatKey, ascOrDesc);
-  }
-
-  private static String noNpe(String s) {
-    return s + "";
-  }
-
-  private static void sort(final List<Entry> those, final String byThatKey, final String ascOrDesc) {
-    final Comparator<? super Entry> sorter = new Comparator<Entry>() {
-      @Override
-      public int compare(Entry o1, Entry o2) {
-        String v1 = o1.get(byThatKey);
-        String v2 = o2.get(byThatKey);
-        if (v1 == null) v1 = "";
-        if (v2 == null) v2 = "";
-        //return v1.toLowerCase().compareTo(v2.toLowerCase());
-        return noNpe(v1).toLowerCase().compareTo(noNpe(v2).toLowerCase());
-        //return noNpe(v1).compareTo(noNpe(v2));
-      }
-    };
-
-    if ("asc".equals(ascOrDesc)) {
-      Collections.sort(those, sorter);
-      //those.sort(sorter);
-    } else {
-      Collections.sort(those, new Comparator<Entry>() {
-        @Override
-        public int compare(Entry o1, Entry o2) {
-          return -sorter.compare(o1, o2);
+    static {
+        Style.TextAlign[] var = Style.TextAlign.values();
+        for (Style.TextAlign align : var) {
+            alignments.add(align.toString().toLowerCase());
+            alignments.add(align.toString().toUpperCase());
         }
-      });
-      // those.sort((o1, o2) -> -sorter.compare(o1, o2));
     }
-  }
 
-  public static void fetchAndRender(final IfeedTag putResultsHere) {
-    try {
-      String url = getFeedHome();
-      List<String> fieldNames = new ArrayList<>();
-      for (IfeedTag.Column column : putResultsHere.columns) {
-        fieldNames.add(column.fieldId);
-      }
-      fieldNames.add(putResultsHere.defaultsortcolumn);
-      url += (!url.endsWith("/") ? "/" : "")
-          + "iFeed-web/meta.json?instance=" + putResultsHere.feedid
-          + "&f=" + Util.join(fieldNames, "&f=");
+    private static Images images = GWT.create(Images.class);
 
-
-      final HTMLPanel place = HTMLPanel.wrap(putResultsHere.element);
-      place.clear();
-      Image wait = new Image(images.ajaxLoader());
-      place.add(wait);
-
-      if (!putResultsHere.element.hasAttribute("doing-ajax-call")) {
-        putResultsHere.element.setAttribute("data-url", url);
-        if (putResultsHere.usepost != null && "yes".equals(putResultsHere.usepost)) {
-          url += "&usePost";
+    private static final native void publicizeInit()/*-{
+        $wnd.se = {};
+        $wnd.se.vgregion = {};
+        $wnd.se.vgregion.ifeed = {};
+        $wnd.se.vgregion.ifeed.client = {};
+        $wnd.se.vgregion.ifeed.client.Starter = {};
+        $wnd.se.vgregion.ifeed.client.Starter.init = function () {
+            @se.vgregion.ifeed.client.Starter::init()();
         }
-        Invocer.fetchFeedByJsonpCall(url, new Invocer.Callback<List<Entry>>() {
-          @Override
-          public void event(List<Entry> entries) {
-            {
-              try {
-                if (putResultsHere.element.hasChildNodes()) {
-                  putResultsHere.element.setInnerHTML("");
-                }
-                putResultsHere.element.setAttribute("doing-ajax-call", "true");
+    }-*/;
 
-                List<Entry> order = new ArrayList<Entry>(putResultsHere.extraSortColumns);
-                Collections.reverse(order);
-                for (Entry extraSortColumn : order) {
-                  sort(entries, extraSortColumn.get("name"), extraSortColumn.get("direction"));
-                }
+    //@JsMethod
+    public static void init() {
+        //NodeList<Element> elements = querySelectorAll(".ifeedDocList");
+        JsArray<Element> elements = findElements("div", "className", "ifeedDocList");
+        List<IfeedTag> tags = new ArrayList<>();
+        for (int i = 0, j = elements.length(); i < j; i++) {
+            Element element = elements.get(i);
+            IfeedTag feed = new IfeedTag(element);
+            feed.index = i;
+            tags.add(feed);
+            fetchAndRender(feed);
+        }
+        publicizeInit();
+    }
 
-                sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
+    public static String getFeedHome() {
+        String pathParameter = Window.Location.getParameter("ifeed-data2");
+        if (pathParameter != null && !pathParameter.isEmpty()) {
+            return pathParameter;
+        }
+        JsArray<Element> ifeeData2 = findElements("div", "id", "ifeed-data2");
+        String url; // = querySelectorAll("#ifeed-data2").getItem(0).getInnerText().trim();
+        if (ifeeData2 != null && ifeeData2.length() > 0) {
+            url = ifeeData2.get(0).getInnerText().trim();
+        } else {
+            url = "https://ifeed.vgregion.se";
+        }
+        return url;
+    }
 
-                if (putResultsHere.limit != null && putResultsHere.limit.matches("^(-?)\\d+$")) {
-                  int limit = Integer.parseInt(putResultsHere.limit);
-                  if (limit > 0) {
-                    entries = entries.subList(0, Math.min(entries.size(), limit));
-                  }
-                }
+    private static void sort(IfeedTag fetchedDataInsideThat) {
+        List<Entry> those = fetchedDataInsideThat.fetchedData;
+        String byThatKey = fetchedDataInsideThat.defaultsortcolumn;
+        String ascOrDesc = fetchedDataInsideThat.defaultsortorder;
+        sort(those, byThatKey, ascOrDesc);
+    }
 
-                putResultsHere.fetchedData = entries;
+    private static String noNpe(String s) {
+        return s + "";
+    }
 
-                place.add(createTable(putResultsHere));
-                findAnySizePlaceholdersAndFillThem(putResultsHere);
-                putResultsHere.element.removeAttribute("doing-ajax-call");
-              } catch (Exception e) {
-                Util.log(e);
-              }
+    private static void sort(final List<Entry> those, final String byThatKey, final String ascOrDesc) {
+        final Comparator<? super Entry> sorter = new Comparator<Entry>() {
+            @Override
+            public int compare(Entry o1, Entry o2) {
+                String v1 = o1.get(byThatKey);
+                String v2 = o2.get(byThatKey);
+                if (v1 == null) v1 = "";
+                if (v2 == null) v2 = "";
+                //return v1.toLowerCase().compareTo(v2.toLowerCase());
+                return noNpe(v1).toLowerCase().compareTo(noNpe(v2).toLowerCase());
+                //return noNpe(v1).compareTo(noNpe(v2));
             }
-          }
-        });
-      } else {
-        Util.log("Not doing an ajax call for " + putResultsHere.feedid);
-      }
-    } catch (Exception e) {
-      Util.log(e);
-    }
-  }
+        };
 
-  public static FlexTable createTable(final IfeedTag putResultsHere) {
-    FlexTable ft = new FlexTable();
-    ft.addStyleName("doc-list");
-    int c = 1, r = 0;
-    if ("yes".equals(putResultsHere.showtableheader)) {
-      addHeading(ft, putResultsHere);
-      r++;
+        if ("asc".equals(ascOrDesc)) {
+            Collections.sort(those, sorter);
+            //those.sort(sorter);
+        } else {
+            Collections.sort(those, new Comparator<Entry>() {
+                @Override
+                public int compare(Entry o1, Entry o2) {
+                    return -sorter.compare(o1, o2);
+                }
+            });
+            // those.sort((o1, o2) -> -sorter.compare(o1, o2));
+        }
     }
-    for (Entry entry : putResultsHere.fetchedData) {
-      c = 0;
-      for (IfeedTag.Column column : putResultsHere.columns) {
-        each(entry, r, ft, putResultsHere);
-        c++;
-      }
-      r++;
+
+    public static void fetchAndRender(final IfeedTag putResultsHere) {
+        try {
+            String url = getFeedHome();
+            List<String> fieldNames = new ArrayList<>();
+            for (IfeedTag.Column column : putResultsHere.columns) {
+                fieldNames.add(column.fieldId);
+            }
+            fieldNames.add(putResultsHere.defaultsortcolumn);
+            url += (!url.endsWith("/") ? "/" : "")
+                    + "iFeed-web/meta.json?instance=" + putResultsHere.feedid
+                    + "&f=" + Util.join(fieldNames, "&f=");
+
+
+            final HTMLPanel place = HTMLPanel.wrap(putResultsHere.element);
+            place.clear();
+            Image wait = new Image(images.ajaxLoader());
+            place.add(wait);
+
+            if (!putResultsHere.element.hasAttribute("doing-ajax-call")) {
+                putResultsHere.element.setAttribute("data-url", url);
+                if (putResultsHere.usepost != null && "yes".equals(putResultsHere.usepost)) {
+                    url += "&usePost";
+                }
+                Invocer.fetchFeedByJsonpCall(url, new Invocer.Callback<List<Entry>>() {
+                    @Override
+                    public void event(List<Entry> entries) {
+                        {
+                            try {
+                                if (putResultsHere.element.hasChildNodes()) {
+                                    putResultsHere.element.setInnerHTML("");
+                                }
+                                putResultsHere.element.setAttribute("doing-ajax-call", "true");
+
+                                List<Entry> order = new ArrayList<Entry>(putResultsHere.extraSortColumns);
+                                Collections.reverse(order);
+                                for (Entry extraSortColumn : order) {
+                                    sort(entries, extraSortColumn.get("name"), extraSortColumn.get("direction"));
+                                }
+
+                                sort(entries, putResultsHere.defaultsortcolumn, putResultsHere.defaultsortorder);
+
+                                if (putResultsHere.limit != null && putResultsHere.limit.matches("^(-?)\\d+$")) {
+                                    int limit = Integer.parseInt(putResultsHere.limit);
+                                    if (limit > 0) {
+                                        entries = entries.subList(0, Math.min(entries.size(), limit));
+                                    }
+                                }
+
+                                putResultsHere.fetchedData = entries;
+
+                                place.add(createTable(putResultsHere));
+                                findAnySizePlaceholdersAndFillThem(putResultsHere);
+                                putResultsHere.element.removeAttribute("doing-ajax-call");
+                            } catch (Exception e) {
+                                Util.log(e);
+                            }
+                        }
+                    }
+                });
+            } else {
+                Util.log("Not doing an ajax call for " + putResultsHere.feedid);
+            }
+        } catch (Exception e) {
+            Util.log(e);
+        }
     }
-    return ft;
-  }
 
-  public static void findAnySizePlaceholdersAndFillThem(IfeedTag tag) {
-    // NodeList<Element> placeHolders = querySelectorAll(".ifeed-count-" + tag.index);
-    JsArray<Element> placeHolders = findElements("span", "className", "ifeed-count-" + tag.index);
-    if (placeHolders != null) {
-      for (int i = 0, j = placeHolders.length(); i < j; i++) {
-        Element place = placeHolders.get(i);
-        place.setInnerHTML(tag.fetchedData.size() + "");
-      }
+    public static FlexTable createTable(final IfeedTag putResultsHere) {
+        FlexTable ft = new FlexTable();
+        ft.addStyleName("doc-list");
+        int c = 1, r = 0;
+        if ("yes".equals(putResultsHere.showtableheader)) {
+            addHeading(ft, putResultsHere);
+            r++;
+        }
+        for (Entry entry : putResultsHere.fetchedData) {
+            c = 0;
+            for (IfeedTag.Column column : putResultsHere.columns) {
+                each(entry, r, ft, putResultsHere);
+                c++;
+            }
+            r++;
+        }
+        return ft;
     }
-  }
 
-  public static void addHeading(final FlexTable impl, final IfeedTag tableDef) {
-    try {
-      impl.setText(0, 0, " ");
-      int c = 1;
-      final HTMLPanel place = HTMLPanel.wrap(tableDef.element);
-      for (final IfeedTag.Column cd : tableDef.columns) {
-        final Anchor tb = new Anchor(cd.title);
-        tb.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
-        tb.getElement().getStyle().setTextDecoration(Style.TextDecoration.UNDERLINE);
+    public static void findAnySizePlaceholdersAndFillThem(IfeedTag tag) {
+        // NodeList<Element> placeHolders = querySelectorAll(".ifeed-count-" + tag.index);
+        JsArray<Element> placeHolders = findElements("span", "className", "ifeed-count-" + tag.index);
+        if (placeHolders != null) {
+            for (int i = 0, j = placeHolders.length(); i < j; i++) {
+                Element place = placeHolders.get(i);
+                place.setInnerHTML(tag.fetchedData.size() + "");
+            }
+        }
+    }
 
-        tb.addClickHandler(new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-            com.google.gwt.user.client.Timer timer = new Timer() {
-              @Override
-              public void run() {
-                tableDef.defaultsortorder = "asc".
-                    equals(tableDef.defaultsortorder) && tableDef.defaultsortcolumn.equals(cd.fieldId)
-                    ? "desc" : "asc";
-                tableDef.defaultsortcolumn = cd.fieldId;
-                place.clear();
-                place.getElement().setInnerHTML("");
-                sort(tableDef);
-                place.add(createTable(tableDef));
-              }
-            };
-            timer.schedule(100);
-          }
-        });
+    public static void addHeading(final FlexTable impl, final IfeedTag tableDef) {
+        try {
+            impl.setText(0, 0, " ");
+            int c = 1;
+            final HTMLPanel place = HTMLPanel.wrap(tableDef.element);
+            for (final IfeedTag.Column cd : tableDef.columns) {
+                final Anchor tb = new Anchor(cd.title);
+                tb.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
+                tb.getElement().getStyle().setTextDecoration(Style.TextDecoration.UNDERLINE);
+
+                tb.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        com.google.gwt.user.client.Timer timer = new Timer() {
+                            @Override
+                            public void run() {
+                                tableDef.defaultsortorder = "asc".
+                                        equals(tableDef.defaultsortorder) && tableDef.defaultsortcolumn.equals(cd.fieldId)
+                                        ? "desc" : "asc";
+                                tableDef.defaultsortcolumn = cd.fieldId;
+                                place.clear();
+                                place.getElement().setInnerHTML("");
+                                sort(tableDef);
+                                place.add(createTable(tableDef));
+                            }
+                        };
+                        timer.schedule(100);
+                    }
+                });
 
         /*
         tb.addClickHandler(clickEvent -> {
@@ -258,104 +258,117 @@ public class Starter {
         });
         */
 
-        FlowPanel hp = new FlowPanel();
-        hp.add(tb);
-        if (tableDef.defaultsortcolumn.equals(cd.fieldId)) {
-          hp.add(new Image(tableDef.defaultsortorder.equals("asc") ? images.sortasc() : images.sortdesc()));
+                FlowPanel hp = new FlowPanel();
+                hp.add(tb);
+                if (tableDef.defaultsortcolumn.equals(cd.fieldId)) {
+                    hp.add(new Image(tableDef.defaultsortorder.equals("asc") ? images.sortasc() : images.sortdesc()));
+                }
+                impl.setWidget(0, c, hp);
+                //impl.getFlexCellFormatter().addStyleNameHere(0, c, "ifeed-head-td");
+                addStyleNameHere("ifeed-head-td", impl.getFlexCellFormatter(), 0, c, 10);
+                c++;
+            }
+        } catch (Exception e) {
+            Window.alert("addHeading error");
         }
-        impl.setWidget(0, c, hp);
-        impl.getFlexCellFormatter().addStyleName(0, c, "ifeed-head-td");
-        c++;
-      }
-    } catch (Exception e) {
-      Window.alert("addHeading error");
     }
-  }
 
-  public static void each(Entry item, final int row, FlexTable impl, IfeedTag ifeed) {
-    List<IfeedTag.Column> columns = ifeed.columns;
-    int c = 0;
-    impl.setWidget(row, c, makeInfoCell(item));
-    impl.getFlexCellFormatter().addStyleName(row, c++, "ifeed-info-td");
-    IfeedTag.Column first = columns.get(0);
-
-    Anchor anchor = new Anchor(
-        Util.formatValueForDisplay(item, first.fieldId),
-        item.get("yes".equals(ifeed.linkoriginaldoc) ? "dc.identifier.native" : "url")
-    );
-
-    anchor.setTarget("_blank");
-    impl.setWidget(row, c, anchor);
-    impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-link-td");
-    impl.getFlexCellFormatter().addStyleName(row, c, nameToCssClass(first.fieldId));
-    c++;
-
-    for (int i = 1; i < columns.size(); i++) {
-      IfeedTag.Column cd = columns.get(i);
-      String text = Util.formatValueForDisplay(item, cd.fieldId);
-      impl.setText(row, c, text);
-      impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-td");
-      impl.getFlexCellFormatter().addStyleName(row, c, nameToCssClass(cd.fieldId));
-      c++;
+    static void addStyleNameHere(String withName, FlexTable.FlexCellFormatter intoThat, int atRow, int andCellIndex, Object refNr) {
+        try {
+            intoThat.addStyleName(atRow, andCellIndex, withName);
+        } catch (Exception e) {
+            Window.alert("Error at addStyleNameHere with refNr " + refNr);
+        }
     }
-    addTextAlignmentToColumn(impl, row, columns);
-  }
 
+    public static void each(Entry item, final int row, FlexTable impl, IfeedTag ifeed) {
+        List<IfeedTag.Column> columns = ifeed.columns;
+        int c = 0;
+        impl.setWidget(row, c, makeInfoCell(item));
+        impl.getFlexCellFormatter().addStyleName(row, c++, "ifeed-info-td");
+        IfeedTag.Column first = columns.get(0);
 
-  private static void addTextAlignmentToColumn(FlexTable ft, int row, List<IfeedTag.Column> columns) {
-    int c = 1;
-    for (IfeedTag.Column cd : columns) {
-      if (isBlanc(cd.alignment)) {
-        continue;
-      }
-      String alignment = cd.alignment.toUpperCase();
-      if (!isBlanc(alignment) && alignments.contains(alignment)) {
-        ft.getFlexCellFormatter().getElement(row, c).getStyle().setTextAlign(
-            Style.TextAlign.valueOf(alignment)
+        Anchor anchor = new Anchor(
+                Util.formatValueForDisplay(item, first.fieldId),
+                item.get("yes".equals(ifeed.linkoriginaldoc) ? "dc.identifier.native" : "url")
         );
-      }
-      c++;
+
+        anchor.setTarget("_blank");
+        impl.setWidget(row, c, anchor);
+        // impl.getFlexCellFormatter().addStyleNameHere(row, c, "ifeed-link-td");
+        addStyleNameHere("ifeed-link-td", impl.getFlexCellFormatter(), row, c, 321);
+        // impl.getFlexCellFormatter().addStyleNameHere(row, c, nameToCssClass(first.fieldId));
+        addStyleNameHere(nameToCssClass(first.fieldId), impl.getFlexCellFormatter(), row, c, 123);
+        c++;
+
+        for (int i = 1; i < columns.size(); i++) {
+            IfeedTag.Column cd = columns.get(i);
+            String text = Util.formatValueForDisplay(item, cd.fieldId);
+            impl.setText(row, c, text);
+            impl.getFlexCellFormatter().addStyleName(row, c, "ifeed-td");
+            // impl.getFlexCellFormatter().addStyleNameHere(row, c, nameToCssClass(cd.fieldId));
+            String cssStyleName = nameToCssClass(cd.fieldId);
+            addStyleNameHere(cssStyleName, impl.getFlexCellFormatter(), row, c, 10000 + i + " " + cssStyleName + " " + cd.fieldId);
+            c++;
+        }
+        addTextAlignmentToColumn(impl, row, columns);
     }
-  }
 
-  private static String nameToCssClass(String name) {
-    if (isBlanc(name)) {
-      return "";
+
+    private static void addTextAlignmentToColumn(FlexTable ft, int row, List<IfeedTag.Column> columns) {
+        int c = 1;
+        for (IfeedTag.Column cd : columns) {
+            if (isBlanc(cd.alignment)) {
+                continue;
+            }
+            String alignment = cd.alignment.toUpperCase();
+            if (!isBlanc(alignment) && alignments.contains(alignment)) {
+                ft.getFlexCellFormatter().getElement(row, c).getStyle().setTextAlign(
+                        Style.TextAlign.valueOf(alignment)
+                );
+            }
+            c++;
+        }
     }
-    return "ifeed-field-" + name.replace('.', '-');
-  }
 
-  private static boolean isBlanc(String s) {
-    if (s == null) {
-      return true;
+    private static String nameToCssClass(String name) {
+        if (isBlanc(name)) {
+            return "ifeed-field-blank";
+        }
+        return "ifeed-field-" + name.replace('.', '-');
     }
-    return s.trim().equals("");
-  }
 
-  private static final Widget makeInfoCell(final Entry entry) {
-    final HorizontalPanel hp = new HorizontalPanel();
-    Image icon = new Image(images.information());
-    icon.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        Window.open(urlToMetaData(entry), "_blank", "");
-      }
-    });
-    // icon.addClickHandler(clickEvent -> Window.open(urlToMetaData(entry), "_blank", ""));
-    hp.add(icon);
+    private static boolean isBlanc(String s) {
+        if (s == null) {
+            return true;
+        }
+        return s.trim().equals("");
+    }
 
-    icon.addDomHandler(
-        new MouseOverHandler() {
-          @Override
-          public void onMouseOver(MouseOverEvent event) {
-            final EntryPopupPanel info = new EntryPopupPanel(entry);
-            info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
-            info.show();
-            entry.put("EntryPopupPanel", info);
-          }
-        },
-        MouseOverEvent.getType()
-    );
+    private static final Widget makeInfoCell(final Entry entry) {
+        final HorizontalPanel hp = new HorizontalPanel();
+        Image icon = new Image(images.information());
+        icon.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.open(urlToMetaData(entry), "_blank", "");
+            }
+        });
+        // icon.addClickHandler(clickEvent -> Window.open(urlToMetaData(entry), "_blank", ""));
+        hp.add(icon);
+
+        icon.addDomHandler(
+                new MouseOverHandler() {
+                    @Override
+                    public void onMouseOver(MouseOverEvent event) {
+                        final EntryPopupPanel info = new EntryPopupPanel(entry);
+                        info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
+                        info.show();
+                        entry.put("EntryPopupPanel", info);
+                    }
+                },
+                MouseOverEvent.getType()
+        );
 
     /*
     icon.addDomHandler(mouseOverEvent -> {
@@ -366,17 +379,17 @@ public class Starter {
     }, MouseOverEvent.getType());
     */
 
-    icon.addDomHandler(
-        new MouseOutHandler() {
-          @Override
-          public void onMouseOut(MouseOutEvent event) {
-            EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
-            if (epp != null)
-              epp.hide();
-          }
-        },
-        MouseOutEvent.getType()
-    );
+        icon.addDomHandler(
+                new MouseOutHandler() {
+                    @Override
+                    public void onMouseOut(MouseOutEvent event) {
+                        EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
+                        if (epp != null)
+                            epp.hide();
+                    }
+                },
+                MouseOutEvent.getType()
+        );
 
     /*
     icon.addDomHandler(mouseOutEvent -> {
@@ -386,98 +399,105 @@ public class Starter {
     }, MouseOutEvent.getType());
     */
 
-    String validToKey = "dc.date.validto";
-    String textDate = entry.get(validToKey);
-    if (!isBlanc(textDate) && Util.isTimeStampPassed(textDate)) {
-      Image x = new Image(images.exclamation());
-      x.setTitle("Dokumentet har gått ut: " + Util.formatValueForDisplay(entry, "dc.date.validto"));
-      hp.add(x);
+        String validToKey = "dc.date.validto";
+        String textDate = entry.get(validToKey);
+        if (!isBlanc(textDate) && Util.isTimeStampPassed(textDate)) {
+            Image x = new Image(images.exclamation());
+            x.setTitle("Dokumentet har gått ut: " + Util.formatValueForDisplay(entry, "dc.date.validto"));
+            hp.add(x);
+        }
+
+        String validFromKey = "dc.date.validfrom";
+        textDate = entry.get(validFromKey);
+        if (!isBlanc(textDate) && !Util.isTimeStampPassed(textDate)) {
+            Image x = new Image(images.exclamation());
+            x.setTitle("Dokumentet börjar gälla: " + Util.formatValueForDisplay(entry, validFromKey));
+            hp.add(x);
+        }
+
+        return hp;
     }
 
-    String validFromKey = "dc.date.validfrom";
-    textDate = entry.get(validFromKey);
-    if (!isBlanc(textDate) && !Util.isTimeStampPassed(textDate)) {
-      Image x = new Image(images.exclamation());
-      x.setTitle("Dokumentet börjar gälla: " + Util.formatValueForDisplay(entry, validFromKey));
-      hp.add(x);
+    private static String urlToMetaData(Entry entry) {
+        // String result = getFeedHome() + "/iFeed-web/documents/" + entry.get("dc.identifier.documentid") + "/metadata";
+        String result = getFeedHome() + "/iFeed-web/documents/" + entry.get("id") + "/metadata";
+        result = result.replace("meta.json/iFeed-web/", "");
+        result = result.replace("workspace://SpacesStore/", "");
+        return result;
     }
 
-    return hp;
-  }
+    static DateTimeFormat sdf = new DateTimeFormat("yyyy-MM-dd", new DefaultDateTimeFormatInfo()) {
+    };
 
-  private static String urlToMetaData(Entry entry) {
-    String result = getFeedHome() + "/iFeed-web/documents/" + entry.get("dc.identifier.documentid") + "/metadata";
-    result = result.replace("meta.json/iFeed-web/", "");
-    result = result.replace("workspace://SpacesStore/", "");
-    return result;
-  }
+    private static Set<String> timeStampFieldNames = new HashSet<String>(
+            Arrays.asList("dc.date.issued", "dc.date.validfrom", "dc.date.validto")
+    );
 
-  static DateTimeFormat sdf = new DateTimeFormat("yyyy-MM-dd", new DefaultDateTimeFormatInfo()) {
-  };
+    static String currentTextDate;
 
-  private static Set<String> timeStampFieldNames = new HashSet<String>(
-      Arrays.asList("dc.date.issued", "dc.date.validfrom", "dc.date.validto")
-  );
-
-  static String currentTextDate;
-
-  static {
-    currentTextDate = sdf.format(new Date());
-  }
-
-  /**
-   * Finds out if the time of a time-stamp is passed or not. It compares that against that of the current time (or
-   * rather the time when the script first initialized).
-   *
-   * @param timeStampAsText the time-stamp to be tested as text.
-   * @return true if the time of the parameter is less than that of the current time. False is also returned if the
-   * content is nothing.
-   */
-  public static boolean isTimeStampPassed(String timeStampAsText) {
-    if (timeStampAsText == null || "".equals(timeStampAsText.trim())) {
-      return false;
-    }
-    timeStampAsText = timeStampAsText.substring(0, Math.max(Math.min(timeStampAsText.length(), 10), 0));
-    return timeStampAsText.compareTo(currentTextDate) <= 0;
-  }
-
-  // w00t! Generics work just fine with overlay types
-  public static class JsArray<E extends JavaScriptObject> extends JavaScriptObject {
-    protected JsArray() {
+    static {
+        currentTextDate = sdf.format(new Date());
     }
 
-    public final native int length() /*-{ return this.length; }-*/;
+    /**
+     * Finds out if the time of a time-stamp is passed or not. It compares that against that of the current time (or
+     * rather the time when the script first initialized).
+     *
+     * @param timeStampAsText the time-stamp to be tested as text.
+     * @return true if the time of the parameter is less than that of the current time. False is also returned if the
+     * content is nothing.
+     */
+    public static boolean isTimeStampPassed(String timeStampAsText) {
+        if (timeStampAsText == null || "".equals(timeStampAsText.trim())) {
+            return false;
+        }
+        timeStampAsText = timeStampAsText.substring(0, Math.max(Math.min(timeStampAsText.length(), 10), 0));
+        return timeStampAsText.compareTo(currentTextDate) <= 0;
+    }
 
-    public final native E get(int i) /*-{ return this[i];     }-*/;
-  }
+    // w00t! Generics work just fine with overlay types
+    public static class JsArray<E extends JavaScriptObject> extends JavaScriptObject {
+        protected JsArray() {
+        }
 
-  public static final native JsArray<Element> findElements(String tag, String key, String value) /*-{
+        public final native int length() /*-{
+            return this.length;
+        }-*/;
 
-        if(!Array.prototype.indexOf) {
-            Array.prototype.indexOf = function(obj, start) {
-                 for (var i = (start || 0), j = this.length; i < j; i++) {
-                     if (this[i] === obj) { return i; }
-                 }
-                 return -1;
+        public final native E get(int i) /*-{
+            return this[i];
+        }-*/;
+    }
+
+    public static final native JsArray<Element> findElements(String tag, String key, String value) /*-{
+
+        if (!Array.prototype.indexOf) {
+            Array.prototype.indexOf = function (obj, start) {
+                for (var i = (start || 0), j = this.length; i < j; i++) {
+                    if (this[i] === obj) {
+                        return i;
+                    }
+                }
+                return -1;
             }
         }
 
         try {
-          var all = $doc.getElementsByTagName(tag);
-          var r = [];
-          for (var i = 0; i < all.length; i++) {
-            var element = all[i];
-            if(element[key] != null && element[key] == value || element[key].split(" ").indexOf(value) > -1) {
-              r[r.length] = element;
+            var all = $doc.getElementsByTagName(tag);
+            var r = [];
+            for (var i = 0; i < all.length; i++) {
+                var element = all[i];
+                if (element[key] != null && element[key] == value || element[key].split(" ").indexOf(value) > -1) {
+                    r[r.length] = element;
+                }
             }
-          }
-          return r;
-        }catch(e){
-          $wnd.alert("Problem i findElements " + e.message);
+            return r;
+        } catch (e) {
+            $wnd.alert("Problem i findElements " + e.message);
         }
     }-*/;
 
-  // var all = document.getElementsByTagName("*");
+    // var all = document.getElementsByTagName("*");
 
 
 }

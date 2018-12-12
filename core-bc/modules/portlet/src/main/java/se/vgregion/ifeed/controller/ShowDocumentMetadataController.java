@@ -1,16 +1,5 @@
 package se.vgregion.ifeed.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.*;
-
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -21,16 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
-
-import se.vgregion.ifeed.el.Json;
+import se.vgregion.common.utils.Json;
+import se.vgregion.ifeed.el.IdentityUtil;
 import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
@@ -40,9 +25,18 @@ import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.*;
+
 @Controller
 @RequestMapping("VIEW")
-@SessionAttributes({ "ifeed"})
+@SessionAttributes({"ifeed"})
 public class ShowDocumentMetadataController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowDocumentMetadataController.class);
@@ -82,7 +76,7 @@ public class ShowDocumentMetadataController {
 
     @ResourceMapping
     public void showTopDocumentMetadata(@RequestParam(required = true) final String documentId,
-            ResourceResponse response) {
+                                        ResourceResponse response) {
         Map<String, String> metadataPair = getMetdataValues(documentId);
         sendJsonResponse(response, metadataPair);
     }
@@ -155,9 +149,9 @@ public class ShowDocumentMetadataController {
                                         ResourceResponse response) {
         try {
             hsaId = (EditIFeedController.replace(hsaId, EditIFeedController.charDecodeing));
-            String json = Json.vgrHsaIdToJson(hsaId, maxHits);
+            String json = IdentityUtil.vgrHsaIdToJson(hsaId, maxHits);
             if ("[]".equals(json)) {
-                json = Json.dnToJson(hsaId, maxHits);
+                json = IdentityUtil.dnToJson(hsaId, maxHits);
             }
             final OutputStream out = response.getPortletOutputStream();
             response.setContentType("application/json");
@@ -224,7 +218,6 @@ public class ShowDocumentMetadataController {
     }
 
 
-
     @ResourceMapping(value = "updateJsonpEmbedCode")
     public void updateJsonpEmbedCode(ResourceRequest request, ResourceResponse response) throws IOException {
         Map<String, String[]> map = request.getParameterMap();
@@ -243,9 +236,9 @@ public class ShowDocumentMetadataController {
         String sortColumn = map.get("sortColumn")[0];
         String sortOrder = map.get("sortOrder")[0];
         String hideEpiRightColumn = map.get("hideEpiRightColumn")[0];
-        String fontSize =map.get("fontSize")[0];
-        String showTableHeader =map.get("showTableHeader")[0];
-        String linkOriginalDoc =map.get("linkOriginalDoc")[0];
+        String fontSize = map.get("fontSize")[0];
+        String showTableHeader = map.get("showTableHeader")[0];
+        String linkOriginalDoc = map.get("linkOriginalDoc")[0];
 
         String result = toTableMarkup(ifeedId, limitList, sortColumn, sortOrder, hideEpiRightColumn, fontSize, showTableHeader, linkOriginalDoc, fields, aliases, orientations, widths);
         final OutputStream out = response.getPortletOutputStream();

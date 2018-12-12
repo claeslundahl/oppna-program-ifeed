@@ -4,10 +4,12 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 import com.google.gwt.core.shared.GwtIncompatible;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 import se.vgregion.ifeed.shared.DynamicTableDef;
+import se.vgregion.ifeed.types.util.Junctor;
 
 import javax.persistence.*;
 import java.io.*;
@@ -33,9 +35,10 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @Version
     private Long version;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
-    protected Set<IFeedFilter> filters;
+    //@ElementCollection(fetch = FetchType.EAGER)
+    //@CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "feed")
+    protected Set<IFeedFilter> filters = new HashSet<>();
 
     private String name;
 
@@ -43,35 +46,40 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     private Date timestamp = null;
 
     private String description;
+
     private String userId;
 
     @Transient
     private String creatorName;
 
     @ManyToOne
+    @Expose(serialize = false, deserialize = true)
     private VgrDepartment department;
 
     @ManyToOne
+    @Expose(serialize = false, deserialize = true)
     private VgrGroup group;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
-    protected Set<Ownership> ownerships = new HashSet<Ownership>();
+    protected Set<Ownership> ownerships = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    protected List<IFeed> composites = new SetishArrayList<IFeed>();
+    protected List<IFeed> composites = new SetishArrayList<>();
 
+    @Expose(serialize = false, deserialize = true)
     @ManyToMany(mappedBy = "composites", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    protected List<IFeed> partOf = new SetishArrayList<IFeed>();
+    protected List<IFeed> partOf = new SetishArrayList<>();
 
     private String sortField;
+
     private String sortDirection;
 
     private Boolean linkNativeDocument;
 
     public Set<IFeedFilter> getFilters() {
-        if (filters == null) {
+/*        if (filters == null) {
             return Collections.emptySet();
-        }
+        }*/
         return filters;
     }
 
@@ -254,12 +262,14 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     @GwtIncompatible
-    public String toJson() {
+    private String toJson() {
         try {
             return toJsonImpl();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            //  throw new RuntimeException(e);
+            return e.getMessage();
         }
+
     }
 
     @GwtIncompatible
@@ -320,7 +330,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }).create();
 
         if (!composites.isEmpty()) {
-            //* To handle circular dependencies *//
+            // To handle circular dependencies
             IFeed container = new IFeed();
             container.getComposites().addAll(copy(getAllNestedFeedsFlattly()));
             long seq = 0;
@@ -469,14 +479,67 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
                     ", group=" + group +
                     ", ownerships=" + ownerships +
                     ", composites=" + composites +
-                    ", partOf=" + partOf +
+                    // ", partOf=" + partOf +
                     ", sortField='" + sortField + '\'' +
                     ", sortDirection='" + sortDirection + '\'' +
                     ", linkNativeDocument=" + linkNativeDocument +
                     '}';
-        }finally {
+        } finally {
             toStringRuns = false;
         }
+    }
+
+    public String toQuery() {
+        Junctor or = new Junctor(" OR ");
+        Set<IFeed> flat = getAllNestedFeedsFlattly();
+        for (IFeed feed : flat) {
+            or.add(feed.toQueryImp());
+        }
+        return or.toQuery();
+    }
+
+    private String toQueryImp() {
+        if (filters == null || filters.isEmpty()) {
+            return "";
+        }
+
+        if (filters.size() == 1) {
+            return filters.iterator().next().toQuery();
+        }
+
+        Junctor and = new Junctor(" AND ");
+        Map<String, List<IFeedFilter>> keyToFilters = new HashMap<String, List<IFeedFilter>>() {
+            @Override
+            public List<IFeedFilter> get(Object key) {
+                if (!containsKey(key)) {
+                    put(String.valueOf(key), new ArrayList<IFeedFilter>());
+                }
+                return super.get(key);
+            }
+        };
+
+        for (IFeedFilter filter : filters) {
+            if (filter.isContainer()) {
+                and.add(filter.toQuery());
+            } else {
+                keyToFilters.get(filter.getFilterKey()).add(filter);
+            }
+        }
+
+        for (String key : keyToFilters.keySet()) {
+            List<IFeedFilter> values = keyToFilters.get(key);
+            if (values.size() > 1 && !values.get(0).isContainer()) {
+                Junctor or = new Junctor(" OR ");
+                for (IFeedFilter value : values) {
+                    or.add(value.toQuery());
+                }
+                and.add(or.toQuery());
+            } else {
+                and.add(values.get(0).toQuery());
+            }
+        }
+
+        return and.toQuery();
     }
 
 }

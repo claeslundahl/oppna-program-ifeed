@@ -16,10 +16,13 @@ import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
+import se.vgregion.ifeed.service.solr.OldIndexData;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -32,8 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static se.vgregion.common.utils.CommonUtils.getEnum;
-
 /**
  * Controller to view feeds.
  */
@@ -41,537 +42,960 @@ import static se.vgregion.common.utils.CommonUtils.getEnum;
 @Controller
 public class IFeedViewerController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(IFeedViewerController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IFeedViewerController.class);
 
-  private IFeedService iFeedService;
-  private SolrServer solrServer;
-  private AlfrescoDocumentService alfrescoMetadataService;
+    private IFeedService iFeedService;
+    private SolrServer solrServer;
+    private AlfrescoDocumentService alfrescoMetadataService;
 
-  /**
-   * Creates an instance.
-   *
-   * @param iFeedService    is used to get data from the data layer.
-   * @param documentService is used to get data from alfresco.
-   * @param solrServer      to access the solr server.
-   */
-  @Autowired
-  public IFeedViewerController(IFeedService iFeedService, AlfrescoDocumentService documentService,
-                               SolrServer solrServer) {
-    this.solrServer = solrServer;
-    this.iFeedService = iFeedService;
-    this.alfrescoMetadataService = documentService;
-  }
-
-  /**
-   * Rendering controller method for viewing a feed in the 'plain' html view.
-   *
-   * @param listId        the id of the feed to be viewed. Must be present in the db.
-   * @param model         where to put the data that is to be presented to the user.
-   * @param sortField     what field to used for sorting.
-   * @param sortDirection what direction to use when sorting, sould be asc or desc.
-   * @return what jsp to be used for rendering.
-   */
-  @RequestMapping(value = "/documentlists/{listId}")
-  public String getIFeedHtml(@PathVariable Long listId, Model model,
-                             @RequestParam(value = "by", required = false) String sortField,
-                             @RequestParam(value = "dir", required = false) String sortDirection) {
-    return getIFeedById(listId, model, sortField, sortDirection, null, null, null, null);
-  }
-
-  public static final Map<String, Integer> callsToJsonpMetadata = new TreeMap<String, Integer>();
-
-  /**
-   * Controller method to view a list of url:s (or some other id:s) from where the json-data have been fetched
-   * previously.
-   *
-   * @param model where to put the data to be displayed.
-   * @return what jsp to use as view.
-   */
-  @RequestMapping(value = "/metadata-calls")
-  public String viewCallsToJsonpMetadata(Model model) {
-    model.addAttribute("keys", callsToJsonpMetadata.keySet());
-    model.addAttribute("values", callsToJsonpMetadata);
-    return "metadata-calls";
-  }
-
-  private static boolean isNumeric(String str) {
-    for (char c : str.toCharArray()) {
-      if (!Character.isDigit(c)) {
-        return false;
-      }
+    /**
+     * Creates an instance.
+     *
+     * @param iFeedService    is used to get data from the data layer.
+     * @param documentService is used to get data from alfresco.
+     * @param solrServer      to access the solr server.
+     */
+    @Autowired
+    public IFeedViewerController(IFeedService iFeedService, AlfrescoDocumentService documentService,
+                                 SolrServer solrServer) {
+        this.solrServer = solrServer;
+        this.iFeedService = iFeedService;
+        this.alfrescoMetadataService = documentService;
     }
-    return true;
-  }
 
-  private String[] toStringArray(MultiValueMap<String, String> map, String key) {
-    if (map == null)
-      return null;
-    List<String> list = map.get(key);
-    if (list == null || list.isEmpty())
-      return null;
-    return list.toArray(new String[list.size()]);
-  }
+    /**
+     * Rendering controller method for viewing a feed in the 'plain' html view.
+     *
+     * @param listId        the id of the feed to be viewed. Must be present in the db.
+     * @param model         where to put the data that is to be presented to the user.
+     * @param sortField     what field to used for sorting.
+     * @param sortDirection what direction to use when sorting, sould be asc or desc.
+     * @return what jsp to be used for rendering.
+     */
+    @RequestMapping(value = "/documentlists/{listId}")
+    public String getIFeedHtml(@PathVariable Long listId, Model model,
+                               @RequestParam(value = "by", required = false) String sortField,
+                               @RequestParam(value = "dir", required = false) String sortDirection) {
+        return getIFeedById(listId, model, sortField, sortDirection, null, null, null, null);
+    }
 
-  /**
-   * Controller method to be able to get feeds by calling the application with pure GET-http - using only parameters
-   * (not path-parameters) for the call.
-   *
-   * @param instance      the id or the serialized instance of an IFeed object.
-   * @param model         where to put the data that is to be presented to the user.
-   * @param sortField     the field to be used to sort the result.
-   * @param sortDirection what direction to use when sorting, sould be asc or desc.
-   * @param startBy       offset in the db (solr-server) result.
-   * @param endBy         the end of the span of results.
-   * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the function via the
-   *                      ajax script.
-   * @return the result of the opration.
-   */
-  @RequestMapping(value = "/meta", method = {RequestMethod.POST, RequestMethod.GET})
-  public String getIFeedByParams(@RequestParam(value = "instance") String instance, Model model,
-                                 @RequestParam(value = "by", required = false) String sortField,
-                                 @RequestParam(value = "dir", required = false) String sortDirection,
-                                 @RequestParam(value = "startBy", required = false) Integer startBy,
-                                 @RequestParam(value = "endBy", required = false) Integer endBy,
-                                 @RequestParam(value = "fromPage", required = false) String fromPage,
-                                 @RequestParam(value = "f", required = false) String[] f
-  ) {
-    //String[] f = toStringArray(allRequestParams, "f");
-    long timeBefore = System.currentTimeMillis();
-    String result = getIFeed(instance, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
-    // System.out.println("Time for call was " + (System.currentTimeMillis() - timeBefore) + "ms. Instance " + instance + " from page " + fromPage);
-    return result;
-  }
+    public static final Map<String, Integer> callsToJsonpMetadata = new TreeMap<String, Integer>();
 
-  /**
-   * Gets the ifeed from either a db or from a plain instance (sent as text).
-   *
-   * @param listIdOrSerializedInstance the id of the feed in the db or the feed itself as an instance. To bad that
-   *                                   spring portlet mvc does not function well enough to work for the latter
-   *                                   scenario. It is kept in case this is
-   *                                   fixed later.
-   * @param model                      to place the data for the view.
-   * @param sortField                  the field to be used to sort the result.
-   * @param sortDirection              what direction to use when sorting, sould be asc or desc.
-   * @param startBy                    what offset to have in the result from the db.
-   * @param endBy                      where to end the result (truncate it) from the db.
-   * @param fromPage                   should be the url (or some other id, perhaps) of the page that calls the
-   *                                   function via the
-   *                                   ajax script.
-   * @return
-   */
-  @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata")
-  public String getIFeed(@PathVariable String listIdOrSerializedInstance, Model model,
-                         @RequestParam(value = "by", required = false) String sortField,
-                         @RequestParam(value = "dir", required = false) String sortDirection,
-                         @RequestParam(value = "startBy", required = false) Integer startBy,
-                         @RequestParam(value = "endBy", required = false) Integer endBy,
-                         @RequestParam(value = "fromPage", required = false) String fromPage,
-                         @RequestParam(value = "f", required = false) String[] f/*,
+    /**
+     * Controller method to view a list of url:s (or some other id:s) from where the json-data have been fetched
+     * previously.
+     *
+     * @param model where to put the data to be displayed.
+     * @return what jsp to use as view.
+     */
+    @RequestMapping(value = "/metadata-calls")
+    public String viewCallsToJsonpMetadata(Model model) {
+        model.addAttribute("keys", callsToJsonpMetadata.keySet());
+        model.addAttribute("values", callsToJsonpMetadata);
+        return "metadata-calls";
+    }
+
+    private static boolean isNumeric(String str) {
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String[] toStringArray(MultiValueMap<String, String> map, String key) {
+        if (map == null)
+            return null;
+        List<String> list = map.get(key);
+        if (list == null || list.isEmpty())
+            return null;
+        return list.toArray(new String[list.size()]);
+    }
+
+    /**
+     * Controller method to be able to get feeds by calling the application with pure GET-http - using only parameters
+     * (not path-parameters) for the call.
+     *
+     * @param instance      the id or the serialized instance of an IFeed object.
+     * @param model         where to put the data that is to be presented to the user.
+     * @param sortField     the field to be used to sort the result.
+     * @param sortDirection what direction to use when sorting, sould be asc or desc.
+     * @param startBy       offset in the db (solr-server) result.
+     * @param endBy         the end of the span of results.
+     * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the function via the
+     *                      ajax script.
+     * @return the result of the opration.
+     */
+    @RequestMapping(value = "/meta", method = {RequestMethod.POST, RequestMethod.GET})
+    public String getIFeedByParams(@RequestParam(value = "instance") String instance, Model model,
+                                   @RequestParam(value = "by", required = false) String sortField,
+                                   @RequestParam(value = "dir", required = false) String sortDirection,
+                                   @RequestParam(value = "startBy", required = false) Integer startBy,
+                                   @RequestParam(value = "endBy", required = false) Integer endBy,
+                                   @RequestParam(value = "fromPage", required = false) String fromPage,
+                                   @RequestParam(value = "f", required = false) String[] f
+    ) {
+        //String[] f = toStringArray(allRequestParams, "f");
+        long timeBefore = System.currentTimeMillis();
+        String result = getIFeed(instance, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
+        // System.out.println("Time for call was " + (System.currentTimeMillis() - timeBefore) + "ms. Instance " + instance + " from page " + fromPage);
+        return result;
+    }
+
+    /**
+     * Gets the ifeed from either a db or from a plain instance (sent as text).
+     *
+     * @param listIdOrSerializedInstance the id of the feed in the db or the feed itself as an instance. To bad that
+     *                                   spring portlet mvc does not function well enough to work for the latter
+     *                                   scenario. It is kept in case this is
+     *                                   fixed later.
+     * @param model                      to place the data for the view.
+     * @param sortField                  the field to be used to sort the result.
+     * @param sortDirection              what direction to use when sorting, sould be asc or desc.
+     * @param startBy                    what offset to have in the result from the db.
+     * @param endBy                      where to end the result (truncate it) from the db.
+     * @param fromPage                   should be the url (or some other id, perhaps) of the page that calls the
+     *                                   function via the
+     *                                   ajax script.
+     * @return
+     */
+    @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata")
+    public String getIFeed(@PathVariable String listIdOrSerializedInstance, Model model,
+                           @RequestParam(value = "by", required = false) String sortField,
+                           @RequestParam(value = "dir", required = false) String sortDirection,
+                           @RequestParam(value = "startBy", required = false) Integer startBy,
+                           @RequestParam(value = "endBy", required = false) Integer endBy,
+                           @RequestParam(value = "fromPage", required = false) String fromPage,
+                           @RequestParam(value = "f", required = false) String[] f/*,
                          @RequestParam(value = "f") MultiValueMap<String, String> allRequestParams*/) {
-    //String[] f = toStringArray(allRequestParams, "f");
-    if (isNumeric(listIdOrSerializedInstance)) {
-      Long id = Long.parseLong(listIdOrSerializedInstance);
-      return getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
-    } else {
-      IFeed ifeed = IFeed.fromJson(listIdOrSerializedInstance);
-      return getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, null/*, f*/);
-    }
-  }
-
-  /**
-   * Gets the ifeed from either a db or from a plain instance (sent as text).
-   *
-   * @param instance      the id of the feed in the db or the feed itself as an instance. To bad that
-   *                      spring portlet mvc does not function well enough to work for the latter
-   *                      scenario. It is kept in case this is
-   *                      fixed later.
-   * @param model         to place the data for the view.
-   * @param sortField     the field to be used to sort the result.
-   * @param sortDirection what direction to use when sorting, sould be asc or desc.
-   * @param startBy       what offset to have in the result from the db.
-   * @param endBy         where to end the result (truncate it) from the db.
-   * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the
-   *                      function via the
-   *                      ajax script.
-   * @param response      handle to write the result somewhere.
-   * @return
-   */
-  @RequestMapping(value = "/metaascsv", produces = {"text/csv"}, method = {RequestMethod.POST, RequestMethod.GET})
-  public String getIFeedAsCsv(@RequestParam(value = "instance") String instance, Model model,
-                              @RequestParam(value = "by", required = false) String sortField,
-                              @RequestParam(value = "dir", required = false) String sortDirection,
-                              @RequestParam(value = "startBy", required = false) Integer startBy,
-                              @RequestParam(value = "endBy", required = false) Integer endBy,
-                              @RequestParam(value = "fromPage", required = false) String fromPage,
-                              @RequestParam(value = "f", required = false) String[] f,
-                              //@RequestParam(value = "f") MultiValueMap<String, String> allRequestParams,
-                              HttpServletResponse response) {
-    //String[] f = toStringArray(allRequestParams, "f");
-    //public void exportCsv(@PathVariable String listIdOrSerializedInstance, HttpServletRequest request, HttpServletResponse  response) {
-    String url;
-    List<Map<String, Object>> resultAccumulator = new ArrayList<Map<String, Object>>();
-    List<Map<String, Object>> oneIterationResult = new ArrayList<Map<String, Object>>();
-
-    if (endBy != null) {
-      throw new RuntimeException("Did´nt think this would happen!");
-    }
-
-    if (startBy == null) {
-      startBy = 0;
-    }
-    endBy = startBy + 500;
-    do {
-      oneIterationResult.clear();
-      if (isNumeric(instance)) {
-        Long id = Long.parseLong(instance);
-        url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
-      } else {
-        try {
-          instance = URLDecoder.decode(instance, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-          e.printStackTrace();
+        //String[] f = toStringArray(allRequestParams, "f");
+        if (isNumeric(listIdOrSerializedInstance)) {
+            Long id = Long.parseLong(listIdOrSerializedInstance);
+            return getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
+        } else {
+            IFeed ifeed = IFeed.fromJson(listIdOrSerializedInstance);
+            return getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, null/*, f*/);
         }
-        IFeed ifeed = IFeed.fromJson(instance);
-        url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, f*/);
-      }
-      List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
-      oneIterationResult.addAll(result);
-      resultAccumulator.addAll(result);
-      startBy += 500;
-      endBy = startBy + 500;
-    } while (!oneIterationResult.isEmpty());
+    }
 
-    BufferedOutputStream bos = null;
-    OutputStream portletOutputStream = null;
-    try {
-      portletOutputStream = response.getOutputStream();
-      response.setCharacterEncoding("UTF-8");
-      bos = new BufferedOutputStream(portletOutputStream);
+    /**
+     * Gets the ifeed from either a db or from a plain instance (sent as text).
+     *
+     * @param instance      the id of the feed in the db or the feed itself as an instance. To bad that
+     *                      spring portlet mvc does not function well enough to work for the latter
+     *                      scenario. It is kept in case this is
+     *                      fixed later.
+     * @param model         to place the data for the view.
+     * @param sortField     the field to be used to sort the result.
+     * @param sortDirection what direction to use when sorting, sould be asc or desc.
+     * @param startBy       what offset to have in the result from the db.
+     * @param endBy         where to end the result (truncate it) from the db.
+     * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the
+     *                      function via the
+     *                      ajax script.
+     * @param response      handle to write the result somewhere.
+     * @return
+     */
+    @RequestMapping(value = "/metaascsv", produces = {"text/csv"}, method = {RequestMethod.POST, RequestMethod.GET})
+    public String getIFeedAsCsv(@RequestParam(value = "instance") String instance, Model model,
+                                @RequestParam(value = "by", required = false) String sortField,
+                                @RequestParam(value = "dir", required = false) String sortDirection,
+                                @RequestParam(value = "startBy", required = false) Integer startBy,
+                                @RequestParam(value = "endBy", required = false) Integer endBy,
+                                @RequestParam(value = "fromPage", required = false) String fromPage,
+                                @RequestParam(value = "f", required = false) String[] f,
+                                //@RequestParam(value = "f") MultiValueMap<String, String> allRequestParams,
+                                HttpServletResponse response) {
+        //String[] f = toStringArray(allRequestParams, "f");
+        //public void exportCsv(@PathVariable String listIdOrSerializedInstance, HttpServletRequest request, HttpServletResponse  response) {
+        String url;
+        List<Map<String, Object>> resultAccumulator = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> oneIterationResult = new ArrayList<Map<String, Object>>();
 
-      //List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
-
-      List<FieldInf> fields = iFeedService.getFieldInfs();
-
-      bos.write(0xEF);
-      bos.write(0xBB);
-      bos.write(0xBF);
-
-      if (!resultAccumulator.isEmpty()) {
-        for (FieldInf fi : fields) {
-          if (fi.isInHtmlView()) {
-            for (FieldInf child : fi.getChildren()) {
-              if (child.isInHtmlView()) {
-                bos.write(prettifyFeedValue(child.getName()));
-                bos.write(";".getBytes());
-              }
-            }
-          }
+        if (endBy != null) {
+            throw new RuntimeException("Did´nt think this would happen!");
         }
-        bos.write("\n".getBytes());
-        for (Map<String, Object> item : resultAccumulator) {
-          for (FieldInf fi : fields) {
-            if (fi.isInHtmlView()) {
-              for (FieldInf child : fi.getChildren()) {
-                if (child.isInHtmlView()) {
-                  bos.write(prettifyFeedValue(item.get(child.getId()) + ""));
-                  bos.write(";".getBytes());
+
+        if (startBy == null) {
+            startBy = 0;
+        }
+        endBy = startBy + 500;
+        do {
+            oneIterationResult.clear();
+            if (isNumeric(instance)) {
+                Long id = Long.parseLong(instance);
+                url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
+            } else {
+                try {
+                    instance = URLDecoder.decode(instance, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-              }
+                IFeed ifeed = IFeed.fromJson(instance);
+                url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, f*/);
             }
-          }
-          bos.write("\n".getBytes());
+            List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
+            oneIterationResult.addAll(result);
+            resultAccumulator.addAll(result);
+            startBy += 500;
+            endBy = startBy + 500;
+        } while (!oneIterationResult.isEmpty());
+
+        BufferedOutputStream bos = null;
+        OutputStream portletOutputStream = null;
+        try {
+            portletOutputStream = response.getOutputStream();
+            response.setCharacterEncoding("UTF-8");
+            bos = new BufferedOutputStream(portletOutputStream);
+
+            //List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
+
+            List<FieldInf> fields = iFeedService.getFieldInfs();
+
+            bos.write(0xEF);
+            bos.write(0xBB);
+            bos.write(0xBF);
+
+            NavigableSet<String> keys = new TreeSet<>();
+            for (Map<String, Object> item : resultAccumulator) {
+                for (String s : item.keySet()) {
+                    if (item.get(s) != null && !"".equals(item.get(s).toString().trim())) {
+                        keys.add(s);
+                    }
+                }
+            }
+
+            if (!resultAccumulator.isEmpty()) {
+                for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
+                    if (keys.contains(labelledValue.key)) {
+                        bos.write(prettifyFeedValue(labelledValue.getLabel()));
+                        bos.write(";".getBytes());
+                    }
+                }
+                for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
+                    if (keys.contains(labelledValue.key)) {
+                        bos.write(prettifyFeedValue(labelledValue.getLabel()));
+                        bos.write(";".getBytes());
+                    }
+                }
+
+                for (Map<String, Object> item : resultAccumulator) {
+                    bos.write("\n".getBytes());
+                    for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
+                        if (keys.contains(labelledValue.key)) {
+                            bos.write(prettifyFeedValue(String.valueOf(item.get(labelledValue.getKey()))));
+                            bos.write(";".getBytes());
+                        }
+                    }
+                    for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
+                        if (keys.contains(labelledValue.key)) {
+                            bos.write(prettifyFeedValue(String.valueOf(item.get(labelledValue.getKey()))));
+                            bos.write(";".getBytes());
+                        }
+                    }
+                }
+            }
+
+/*
+            if (!resultAccumulator.isEmpty()) {
+                for (FieldInf fi : fields) {
+                    if (fi.isInHtmlView()) {
+                        for (FieldInf child : fi.getChildren()) {
+                            if (child.isInHtmlView()) {
+                                bos.write(prettifyFeedValue(child.getName()));
+                                bos.write(";".getBytes());
+                            }
+                        }
+                    }
+                }
+                bos.write("\n".getBytes());
+                for (Map<String, Object> item : resultAccumulator) {
+                    for (FieldInf fi : fields) {
+                        if (fi.isInHtmlView()) {
+                            for (FieldInf child : fi.getChildren()) {
+                                if (child.isInHtmlView()) {
+                                    bos.write(prettifyFeedValue(item.get(child.getId()) + ""));
+                                    bos.write(";".getBytes());
+                                }
+                            }
+                        }
+                    }
+                    bos.write("\n".getBytes());
+                }
+            }
+*/
+
+            bos.close();
+            portletOutputStream.close();
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
         }
-      }
 
-      bos.close();
-      portletOutputStream.close();
-    } catch (IOException e) {
-      LOGGER.error(e.getMessage(), e);
+        return url;
     }
 
-    return url;
-  }
-
-  private byte[] prettifyFeedValue(String value) {
-    if ("null".equals(value)) {
-      return "".getBytes();
+    private byte[] prettifyFeedValue(String value) {
+        if ("null".equals(value)) {
+            return "".getBytes();
+        }
+        value = value.replaceAll(Pattern.quote("["), "");
+        value = value.replaceAll(Pattern.quote("]"), "");
+        value = value.replaceAll(Pattern.quote("\""), "\"\"");
+        value = '"' + value + '"';
+        return value.getBytes();
     }
-    value = value.replaceAll(Pattern.quote("["), "");
-    value = value.replaceAll(Pattern.quote("]"), "");
-    value = value.replaceAll(Pattern.quote("\""), "\"\"");
-    value = '"' + value + '"';
-    return value.getBytes();
-  }
 
 
-  /**
-   * Gets an ifeed from the db for the purpose of displaying it to the user.
-   *
-   * @param listId        the id of the feed to be viewed. Must be present in the db.
-   * @param model         where to put the data that is to be presented to the user.
-   * @param sortField     the field to be used to sort the result.
-   * @param sortDirection what direction to use when sorting, sould be asc or desc.
-   * @param startBy       offset in the db (solr-server) result.
-   * @param endBy         the end of the span of results.
-   * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the function via the
-   *                      ajax script.
-   * @return what jsp to use when showing the data.
-   */
-  public String getIFeedById(@PathVariable Long listId, Model model,
-                             @RequestParam(value = "by", required = false) String sortField,
-                             @RequestParam(value = "dir", required = false) String sortDirection,
-                             @RequestParam(value = "startBy", required = false) Integer startBy,
-                             @RequestParam(value = "endBy", required = false) Integer endBy,
-                             @RequestParam(value = "fromPage", required = false) String fromPage,
-                             @RequestParam(value = "f") String[] f/*,
+    /**
+     * Gets an ifeed from the db for the purpose of displaying it to the user.
+     *
+     * @param listId        the id of the feed to be viewed. Must be present in the db.
+     * @param model         where to put the data that is to be presented to the user.
+     * @param sortField     the field to be used to sort the result.
+     * @param sortDirection what direction to use when sorting, sould be asc or desc.
+     * @param startBy       offset in the db (solr-server) result.
+     * @param endBy         the end of the span of results.
+     * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the function via the
+     *                      ajax script.
+     * @return what jsp to use when showing the data.
+     */
+    public String getIFeedById(@PathVariable Long listId, Model model,
+                               @RequestParam(value = "by", required = false) String sortField,
+                               @RequestParam(value = "dir", required = false) String sortDirection,
+                               @RequestParam(value = "startBy", required = false) Integer startBy,
+                               @RequestParam(value = "endBy", required = false) Integer endBy,
+                               @RequestParam(value = "fromPage", required = false) String fromPage,
+                               @RequestParam(value = "f") String[] f/*,
                              @RequestParam(value = "f") MultiValueMap<String, String> allRequestParams*/) {
-    //String[] f = toStringArray(allRequestParams, "f");
-    // IFeed retrievedFeed = iFeedService.getIFeed(listId);
-    IFeed retrievedFeed = iFeedService.getFeedForSolrQuery(listId);
-    if (retrievedFeed == null) {
-      LOGGER.error("Did not find feed with id " + listId + " on page " + fromPage);
-      throw new ResourceNotFoundException();
-    }
-    return getIFeedByInstance(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage, f);
-  }
-
-  /**
-   * Controller method to load and display an ifeed.
-   *
-   * @param retrievedFeed the ifeed to be displayed.
-   * @param model         data to be used in rendering the data.
-   * @param sortField     what field to use as sorting.
-   * @param sortDirection what direction to use when sorting. Should be asc or desc.
-   * @param startBy       offset in the db (solr-server) result.
-   * @param endBy         the end of the span of results.
-   * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the function via the
-   *                      ajax script.
-   * @return what jsp to use...
-   */
-  public String getIFeedByInstance(IFeed retrievedFeed, Model model,
-                                   String sortField,
-                                   String sortDirection,
-                                   Integer startBy,
-                                   Integer endBy,
-                                   String fromPage,
-                                   String[] fieldToSelect) {
-    Util.setLocalValue(retrievedFeed);
-
-    if (fromPage != null && !"".equals(fromPage.trim())) {
-      Integer i = callsToJsonpMetadata.get(fromPage);
-      if (i == null) {
-        callsToJsonpMetadata.put(fromPage, 1);
-      } else {
-        callsToJsonpMetadata.put(fromPage, i.intValue() + 1);
-      }
-    }
-
-    if (retrievedFeed == null) {
-      // Throw 404 if the feed doesn't exist
-      throw new ResourceNotFoundException();
-    }
-
-    IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
-    if (startBy != null && startBy >= 0) {
-      solrQuery.setStart(startBy);
-      if (endBy != null && endBy > startBy) {
-        solrQuery.setRows(endBy - startBy);
-      }
-    } else {
-      solrQuery.setRows(25000);
-    }
-
-    solrQuery.setShowDebugInfo(true);
-
-    List<Map<String, Object>> result = solrQuery.getIFeedResults(retrievedFeed, sortField,
-        getEnum(SortDirection.class, sortDirection), fieldToSelect);
-
-    model.addAttribute("result", result);
-    return "documentList";
-  }
-
-  /**
-   * Showing detial for an document.
-   *
-   * @param documentId thw id of the document (in alfresco).
-   * @param model      where to put the data that is to be presented to the user.
-   * @return what jsp to use as view.
-   */
-  @RequestMapping(value = "/documents/{documentId}")
-  public String detailsHtml(@PathVariable String documentId, Model model) {
-    return details(documentId, model);
-  }
-
-  /**
-   * Used to get document information with GET-html parameters (as oposed to with path parameters).
-   *
-   * @param documentId thw id of the document (in alfresco).
-   * @param model      data to be used in rendering the data.
-   * @param response   to write the information to.
-   * @return what jsp to use.
-   */
-  @RequestMapping(value = "/documents/metadata")
-  public String detailsByRequestParam(@RequestParam(value = "documentId", required = false) String documentId,
-                                      Model model, HttpServletResponse response) {
-    if (documentId == null) {
-      throw new BadRequestException("Document id must not be null.");
-    }
-    return details(documentId, model);
-  }
-
-  static final Pattern ISO8601 = Pattern.compile("^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$");
-
-  static boolean itsSomeDateValue(String v) {
-    return ISO8601.matcher(v).matches();
-  }
-
-  static SimpleDateFormat sdfForView = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
-
-  static SimpleDateFormat sdfForDataText = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.GERMAN);
-
-  @Deprecated
-  static Calendar toDateOld(String sValue) {
-    SimpleDateFormat inParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
-    //if (StringUtils.hasText(sValue)) {
-    try {
-      Calendar calendar = Calendar.getInstance();
-      Date date = inParser.parse(sValue);
-      calendar.setTime(date);
-      return calendar;
-      //outFormatter.setTimeZone(inParser.getTimeZone());
-      //idValueMap.put(childId, outFormatter.format(date));
-    } catch (ParseException e) {
-      // Wasn't a date
-      //idValueMap.put(childId, sValue);
-      throw new RuntimeException(e);
-    }
-    //}
-  }
-
-  static String toTextDate(String iso8601format) {
-    try {
-      return toTextDateImpl(iso8601format);
-    } catch (ParseException e) {
-      return iso8601format;
-    }
-  }
-
-  static String toTextDateImpl(String iso8601format) throws ParseException {
-    //String string = "2015-04-10T08:34:00.000Z";
-    //String defaultTimezone = TimeZone.getDefault().getID();
-    Date date = sdfForDataText.parse(iso8601format.replaceAll("Z$", "+0000"));
-    return sdfForView.format(date);
-  }
-
-  /**
-   * Using path variables to asscess a feed from a http client.
-   *
-   * @param documentId thw id of the document (in alfresco).
-   * @param model      data to be used in rendering the data.
-   * @return what jsp to use.
-   */
-  @RequestMapping(value = "/documents/{documentId}/metadata")
-  public String details(@PathVariable String documentId, Model model) {
-    if (documentId.startsWith("[")) {
-      if (documentId.endsWith("]")) {
-        documentId = documentId.substring(1, documentId.length() - 1);
-      } else {
-        throw new RuntimeException("Strange document id " + documentId);
-      }
-    }
-    // We are flexible here; "workspace://SpacesStore/" is added if it isn't provided and vice versa.
-    String fullId;
-    if (documentId.contains("workspace://SpacesStore/")) {
-      fullId = documentId;
-    } else {
-      fullId = "workspace://SpacesStore/" + documentId;
-    }
-    final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
-
-    //SimpleDateFormat inParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
-    SimpleDateFormat outFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("sv", "SE"));
-
-    Map<String, String> idValueMap = new HashMap<String, String>();
-    List<FieldsInf> infs = iFeedService.getFieldsInfs(); // todo cache?
-    List<FieldInf> fieldInfs = null;
-    if (infs.size() > 0) {
-      fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
-      for (FieldInf fieldInf : fieldInfs) {
-        for (FieldInf child : fieldInf.getChildren()) {
-          String childId = child.getId();
-          if (StringUtils.hasText(childId)) { // If it has an id it is not just a caption
-            // Does the document have any value for this field?
-            Object value = documentInfo.getMetadata().get(childId);
-            if (value instanceof String) {
-              String sValue = (String) value;
-              if (itsSomeDateValue(sValue)) {
-                sValue = toTextDate(sValue);
-              }
-              idValueMap.put(childId, sValue);
-            } else if (value instanceof Collection) {
-              String sValue = collectionToString((Collection) value);
-              if (StringUtils.hasText(sValue)) {
-                idValueMap.put(childId, sValue);
-              }
-            }
-          }
+        //String[] f = toStringArray(allRequestParams, "f");
+        // IFeed retrievedFeed = iFeedService.getIFeed(listId);
+        IFeed retrievedFeed = iFeedService.getFeedForSolrQuery(listId);
+        if (retrievedFeed == null) {
+            LOGGER.error("Did not find feed with id " + listId + " on page " + fromPage);
+            throw new ResourceNotFoundException();
         }
-      }
+        return getIFeedByInstance(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage, f);
     }
 
-    model.addAttribute("fieldInfs", fieldInfs);
-    model.addAttribute("idValueMap", idValueMap);
+    /**
+     * Controller method to load and display an ifeed.
+     *
+     * @param retrievedFeed the ifeed to be displayed.
+     * @param model         data to be used in rendering the data.
+     * @param sortField     what field to use as sorting.
+     * @param sortDirection what direction to use when sorting. Should be asc or desc.
+     * @param startBy       offset in the db (solr-server) result.
+     * @param endBy         the end of the span of results.
+     * @param fromPage      should be the url (or some other id, perhaps) of the page that calls the function via the
+     *                      ajax script.
+     * @return what jsp to use...
+     */
+    public String getIFeedByInstance(IFeed retrievedFeed, Model model,
+                                     String sortField,
+                                     String sortDirection,
+                                     Integer startBy,
+                                     Integer endBy,
+                                     String fromPage,
+                                     String[] fieldToSelect) {
+        // Util.setLocalValue(retrievedFeed);
 
-    return "documentDetails";
-  }
+        if (fromPage != null && !"".equals(fromPage.trim())) {
+            Integer i = callsToJsonpMetadata.get(fromPage);
+            if (i == null) {
+                callsToJsonpMetadata.put(fromPage, 1);
+            } else {
+                callsToJsonpMetadata.put(fromPage, i.intValue() + 1);
+            }
+        }
 
-  private String collectionToString(Collection values) {
-    if (values.size() == 0) {
-      return "";
+        if (retrievedFeed == null) {
+            // Throw 404 if the feed doesn't exist
+            throw new ResourceNotFoundException();
+        }
+
+        IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
+        if (startBy != null && startBy >= 0) {
+            solrQuery.setStart(startBy);
+            if (endBy != null && endBy > startBy) {
+                solrQuery.setRows(endBy - startBy);
+            }
+        } else {
+            solrQuery.setRows(25_000);
+        }
+
+        solrQuery.setShowDebugInfo(true);
+
+        System.out.println("sortField: " + sortField);
+        System.out.println("sortDirection: " + sortDirection);
+
+        if (sortField == null || sortField.isEmpty()) sortField = IFeedSolrQuery.DEFAULT_SORT_FIELD;
+        if (sortDirection == null || sortDirection.isEmpty())
+            sortDirection = IFeedSolrQuery.DEFAULT_SORT_DIRECTION.toString();
+
+
+        if (sortField == null || sortField.trim().isEmpty() || "null".equalsIgnoreCase(sortField) || "dc.title".equalsIgnoreCase(sortField)) {
+            // sortField = "dc.title";
+            sortField = "title";
+        }
+
+        Result otherResult = client.query(
+                retrievedFeed.toQuery(),
+                (startBy != null && startBy >= 0) ? startBy : 0,
+                (endBy != null ? endBy : 25_000),
+                sortField + "%20" + sortDirection
+        );
+
+        for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
+            copyValueFromSofiaToAlfrescoBariumFields(item);
+        }
+
+        model.addAttribute("result", otherResult.getResponse().getDocs());
+
+        System.out.println("Found " + otherResult.getResponse().getDocs().size());
+
+        return "documentList";
     }
 
-    StringBuilder sb = new StringBuilder();
-    Iterator iterator = values.iterator();
-    Object firstElement = iterator.next();
-    sb.append(firstElement.toString());
+    SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
-    while (iterator.hasNext()) {
-      sb.append(", " + iterator.next().toString());
+
+    /**
+     * There are other names for the fields in the SOFIA-specification. That could lead to strange behavior for the
+     * script-rendered lists on the pages - that is if those lists where using some of the old fields and got a null /
+     * blank in response. To mitigate that - copy values into the fields that might be empty.
+     * Here is a list of used fields from 20181009:
+     * <code>
+     * dc.contributor.acceptedby 1
+     * dc.creator.document 12
+     * dc.creator.freetext 1
+     * dc.creator.function 10
+     * dc.date.issued 157
+     * dc.date.saved 19
+     * dc.date.validfrom 67
+     * dc.date.validto 175
+     * dc.description 42
+     * dc.publisher.forunit 74
+     * dc.publisher.forunit.flat 2
+     * dc.relation.replaces 17
+     * dc.title 3793
+     * dc.title.filename 1
+     * dc.type.document.id 1
+     * dc.type.document.serie 5
+     * dc.type.document.structure 301
+     * title 4
+     * </code>
+     * The number after the field is the count, number of times the field exists in various lists.
+     *
+     * @param inThatItem
+     */
+    private void copyValueFromSofiaToAlfrescoBariumFields(Map<String, Object> inThatItem) {
+        putValueInsideWhenTargetIsNull("title", "dc.title", inThatItem);
+        putValueInsideWhenTargetIsNull("vgr:VgrExtension.vgr:CreatedBy", "dc.creator.freetext", inThatItem);
+
+        putValueInsideWhenTargetIsNull("core:ArchivalObject.core:CreatedDateTime", "dc.date.issued", inThatItem);
+        putValueInsideWhenTargetIsNull("core:ArchivalObject.core:CreatedDateTime", "dc.date.saved", inThatItem);
+        putValueInsideWhenTargetIsNull("core:ArchivalObject.core:Description", "dc.description", inThatItem);
+        putValueInsideWhenTargetIsNull("vgr:VgrExtension.vgr:PublishedForUnit", "dc.publisher.forunit", inThatItem);
+
+        putValueInsideWhenTargetIsNull("vgr:VgrExtension.vgr:PublishedForUnit", "dc.publisher.forunit.flat", inThatItem);
+
+        putValueInsideWhenTargetIsNullAndValueExistInOldIndex(
+                "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                "dc.type.document.serie",
+                inThatItem,
+                OldIndexData.getCachedAlfrescoBariumValues().get("dc.type.document.serie")
+        );
+
+        /*putValueInsideWhenTargetIsNullAndValueExistInOldIndex(
+                "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                "dc.type.document.structure",
+                inThatItem,
+                OldIndexData.getCachedAlfrescoBariumValues().get("dc.type.document.structure")
+        );*/
     }
 
-    return sb.toString();
-  }
+    private void putValueInsideWhenTargetIsNullAndValueExistInOldIndex(String sourceKey, String targetKey, Map<String, Object> inThatItem, List<Object> withThosePossibleValues) {
+        List targetValue = (List) inThatItem.get(targetKey);
+        if (targetValue == null) {
+            targetValue = new ArrayList();
+            inThatItem.put(targetKey, targetValue);
+        }
+        List sourceValue = (List) inThatItem.get(sourceKey);
 
-  /**
-   * To signal when an feed is not found.
-   */
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public class ResourceNotFoundException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
-  }
+        if (sourceValue == null) {
+            return;
+        }
 
-  /**
-   * To signal a http bad request.
-   */
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public class BadRequestException extends RuntimeException {
-    public BadRequestException(String msg) {
-      super(msg);
+        if (sourceValue.isEmpty() || targetValue.equals(sourceValue)) {
+            return;
+        }
+
+        for (Object possibleValue : withThosePossibleValues) {
+            if (sourceValue.contains(possibleValue) && !targetValue.contains(possibleValue)) {
+                targetValue.add(possibleValue);
+            }
+        }
     }
-  }
 
-  /**
-   * Handling exceptions occuring when http clients calls controller methods in this class.
-   *
-   * @param e the error to handle.
-   * @return where to steer the view.
-   */
-  @ExceptionHandler(IFeedServiceException.class)
-  public ModelAndView handleAlfrescoDocumentServiceException(Exception e) {
-    if (!(e instanceof IFeedServiceException)) {
-      LOGGER.error("IFeed Excption: {}", e);
-      e = new IFeedServiceException("error.unhandled", "Internal IFeed Error", e);
+
+    private void putValueInsideWhenTargetIsNull(String sourceKey, String targetKey, Map<String, Object> inThatItem) {
+        Object targetValue = inThatItem.get(targetKey);
+        if (targetValue == null || targetValue.toString().trim().isEmpty()) {
+            Object sourceValue = inThatItem.get(sourceKey);
+            if (sourceValue != null && !sourceValue.toString().trim().isEmpty()) {
+                inThatItem.put(targetKey, sourceValue);
+            }
+        }
     }
-    return new ModelAndView("ExceptionHandler", Collections.singletonMap("exception", e));
-  }
+
+
+    /**
+     * Showing detial for an document.
+     *
+     * @param documentId thw id of the document (in alfresco).
+     * @param model      where to put the data that is to be presented to the user.
+     * @return what jsp to use as view.
+     */
+    @RequestMapping(value = "/documents/{documentId}")
+    public String detailsHtml(@PathVariable String documentId, Model model) {
+        return details(documentId, model);
+    }
+
+    /**
+     * Used to get document information with GET-html parameters (as oposed to with path parameters).
+     *
+     * @param documentId thw id of the document (in alfresco).
+     * @param model      data to be used in rendering the data.
+     * @param response   to write the information to.
+     * @return what jsp to use.
+     */
+    @RequestMapping(value = "/documents/metadata")
+    public String detailsByRequestParam(@RequestParam(value = "documentId", required = false) String documentId,
+                                        Model model, HttpServletResponse response) {
+        if (documentId == null) {
+            throw new BadRequestException("Document id must not be null.");
+        }
+        return details(documentId, model);
+    }
+
+    static final Pattern ISO8601 = Pattern.compile("^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$");
+
+    static boolean itsSomeDateValue(String v) {
+        return ISO8601.matcher(v).matches();
+    }
+
+    static SimpleDateFormat sdfForView = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+
+    static SimpleDateFormat sdfForDataText = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.GERMAN);
+
+    @Deprecated
+    static Calendar toDateOld(String sValue) {
+        SimpleDateFormat inParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+        //if (StringUtils.hasText(sValue)) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            Date date = inParser.parse(sValue);
+            calendar.setTime(date);
+            return calendar;
+            //outFormatter.setTimeZone(inParser.getTimeZone());
+            //idValueMap.put(childId, outFormatter.format(date));
+        } catch (ParseException e) {
+            // Wasn't a date
+            //idValueMap.put(childId, sValue);
+            throw new RuntimeException(e);
+        }
+        //}
+    }
+
+    static String toTextDate(String iso8601format) {
+        try {
+            return toTextDateImpl(iso8601format);
+        } catch (ParseException e) {
+            return iso8601format;
+        }
+    }
+
+    static String toTextDateImpl(String iso8601format) throws ParseException {
+        //String string = "2015-04-10T08:34:00.000Z";
+        //String defaultTimezone = TimeZone.getDefault().getID();
+        Date date = sdfForDataText.parse(iso8601format.replaceAll("Z$", "+0000"));
+        return sdfForView.format(date);
+    }
+
+    //static List<String> sofiaSystems = new ArrayList<>(Arrays.asList("SOFIA", "SISOM"));
+
+    /**
+     * Using path variables to asscess a feed from a http client.
+     *
+     * @param documentId thw id of the document (in alfresco).
+     * @param model      data to be used in rendering the data.
+     * @return what jsp to use.
+     */
+    @RequestMapping(value = "/documents/{documentId}/metadata")
+    public String details(@PathVariable String documentId, Model model) {
+        if (documentId.startsWith("[")) {
+            if (documentId.endsWith("]")) {
+                documentId = documentId.substring(1, documentId.length() - 1);
+            } else {
+                throw new RuntimeException("Strange document id " + documentId);
+            }
+        }
+        // We are flexible here; "workspace://SpacesStore/" is added if it isn't provided and vice versa.
+        String fullId;
+        if (documentId.contains("workspace://SpacesStore/")) {
+            fullId = documentId;
+        } else {
+            fullId = "workspace://SpacesStore/" + documentId;
+        }
+        // final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
+        final SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        IFeedFilter filter = new IFeedFilter();
+        filter.setFilterQuery(documentId);
+        filter.setFilterKey("id");
+        Result findigs = client.query(filter.toQuery(), null, null, "title asc");
+        if (findigs.getResponse().getDocs().isEmpty()) {
+            filter.setFilterQuery("workspace://SpacesStore/" + documentId);
+            findigs = client.query(filter.toQuery(), null, null, "title asc");
+        }
+        if (!findigs.getResponse().getDocs().isEmpty()) {
+            System.out.println("Antal findings " + findigs.getResponse().getDocs().size());
+            System.out.println("Antal findings.size() " + findigs.getResponse().getDocs().get(0).size());
+            System.out.println("Nycklar i findings: " + new TreeSet<>(findigs.getResponse().getDocs().get(0).keySet()));
+            Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
+            String sourceSystem = (String) doc.get("vgr:VgrExtension.vgr:SourceSystem");
+            // String sourceSystem = (String) doc.get("SourceSystem");
+            /*List<LabelledValue> result = (sourceSystem != null && sofiaSystems.contains(sourceSystem)) ?
+                    newSofiaDisplayFieldsWithoutValue() : newAlfrescoBariumDisplayFieldsWithoutValue();*/
+
+            List<LabelledValue> result = new ArrayList<>();
+            result.addAll(newSofiaDisplayFieldsWithoutValue());
+            result.addAll(newAlfrescoBariumDisplayFieldsWithoutValue());
+
+            for (LabelledValue lv : new ArrayList<>(result)) {
+                Object v = doc.get(lv.getKey());
+                if (v != null && !v.toString().trim().isEmpty()) {
+                    if (v instanceof List) {
+                        List list = (List) v;
+                        v = org.apache.commons.lang.StringUtils.join(list, ", ");
+                    }
+                    if (v instanceof String && v.toString().startsWith("http")) {
+                        v = String.format("<a href=\"%s\">%s</a>", v, v);
+                    }
+                    lv.setValue(v);
+                } else {
+                    result.remove(lv);
+                }
+            }
+            model.addAttribute("item", doc);
+            model.addAttribute("fields", result);
+        } else {
+            throw new RuntimeException("Kunde inte hitta dokument med id '" + documentId + "'");
+        }
+        return "documentDetails";
+    }
+
+    private List<LabelledValue> newAlfrescoBariumDisplayFieldsWithoutValue() {
+        List<LabelledValue> result = new ArrayList<>();
+        result.add(new LabelledValue("", "Dokumentbeskrivning"));
+        result.add(new LabelledValue("dc.title", "Titel (autokomplettering)"));
+        result.add(new LabelledValue("dc.title.filename", "Filnamn, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.title.filename.native", "Filnamn, original"));
+        result.add(new LabelledValue("dc.title.alternative", "Alternativ titel"));
+        result.add(new LabelledValue("dc.description", "Beskrivning"));
+        result.add(new LabelledValue("dc.type.document", "Gruppering av handlingstyper"));
+        result.add(new LabelledValue("dc.type.document.structure", "Dokumentstruktur VGR"));
+        result.add(new LabelledValue("dc.type.document.structure.id", "Dokumentstruktur VGR ID"));
+        result.add(new LabelledValue("dc.type.record", "Handlingstyp (autokomplettering)"));
+        result.add(new LabelledValue("dc.coverage.hsacode", "Verksamhetskod enligt HSA"));
+        result.add(new LabelledValue("dcterms.audience", "Målgrupp HoS (autokomplettering)"));
+        result.add(new LabelledValue("dc.audience", "Målgrupp HoS (autokomplettering)"));
+        result.add(new LabelledValue("dc.identifier.version", "Version"));
+        result.add(new LabelledValue("dc.contributor.savedby", "Sparat av"));
+        result.add(new LabelledValue("dc.contributor.savedby.id", "Sparat av ID"));
+        result.add(new LabelledValue("dc.date.saved", "Sparat datum"));
+        result.add(new LabelledValue("vgregion.status.document", "Dokumentstatus"));
+        result.add(new LabelledValue("vgr.status.document", "Dokumentstatus"));
+        result.add(new LabelledValue("vgr.status.document.id", "Dokumentstatus"));
+        result.add(new LabelledValue("dc.source.documentid", "Dokumentid källa"));
+        result.add(new LabelledValue("dc.source", "Länk till dokumentets källa"));
+        result.add(new LabelledValue("", "Skapat av och för"));
+        result.add(new LabelledValue("dc.creator", "Skapat av"));
+        result.add(new LabelledValue("dc.creator.id", "Skapat av ID"));
+        result.add(new LabelledValue("dc.creator.freetext", "Skapat av (Fritext)"));
+        result.add(new LabelledValue("dc.creator.forunit", "Skapat av enhet (autokomplettering)"));
+        result.add(new LabelledValue("dc.creator.forunit.id", "Skapat av enhet ID (VGR:s organisationsträd)"));
+        result.add(new LabelledValue("dc.creator.project-assignment", "Skapat av Projekt/Uppdrag/Grupp"));
+        result.add(new LabelledValue("", "Ansvariga"));
+        result.add(new LabelledValue("dc.creator.document", "Innehållsansvarig/Dokumentansvarig"));
+        result.add(new LabelledValue("dc.creator.document.id", "Innehållsansvarig/Dokumentansvarig ID"));
+        result.add(new LabelledValue("dc.creator.function", "Funktionsansvar"));
+        result.add(new LabelledValue("dc.creator.recordscreator", "Arkivbildare (autokomplettering)"));
+        result.add(new LabelledValue("dc.creator.recordscreator.id", "Arkivbildare ID (VGR:s organisationsträd)"));
+        result.add(new LabelledValue("", "Giltighet och tillgänglighet"));
+        result.add(new LabelledValue("dc.date.validfrom", "Giltighetsdatum from"));
+        result.add(new LabelledValue("dc.date.validto", "Giltighetsdatum tom"));
+        result.add(new LabelledValue("dc.date.availablefrom", "Tillgänglighetsdatum from"));
+        result.add(new LabelledValue("dc.date.availableto", "Tillgänglighetsdatum tom"));
+        result.add(new LabelledValue("dc.date.copyrighted", "Copyrightdatum"));
+        result.add(new LabelledValue("", "Granskat/Godkänt"));
+        result.add(new LabelledValue("dc.contributor.acceptedby", "Godkänt av"));
+        result.add(new LabelledValue("dc.contributor.acceptedby.id", "Godkänt av ID"));
+        result.add(new LabelledValue("dc.contributor.acceptedby.freetext", "Godkänt av (Fritext)"));
+        result.add(new LabelledValue("dc.date.accepted", "Godkänt datum"));
+        result.add(new LabelledValue("dc.contributor.acceptedby.role", "Godkänt av Egenskap/Roll"));
+        result.add(new LabelledValue("dc.contributor.acceptedby.unit.freetext", "Enhet (Fritext)"));
+        result.add(new LabelledValue("dc.contributor.controlledby", "Granskat av"));
+        result.add(new LabelledValue("dc.contributor.controlledby.id", "Granskat av ID"));
+        result.add(new LabelledValue("dc.contributor.controlledby.freetext", "Granskat av (Fritext)"));
+        result.add(new LabelledValue("dc.date.controlled", "Granskningsdatum"));
+        result.add(new LabelledValue("dc.contributor.controlledby.role", "Granskat av Egenskap/Roll"));
+        result.add(new LabelledValue("dc.contributor.controlledby.unit.freetext", "Enhet (Fritext)"));
+        result.add(new LabelledValue("", "Publicerat"));
+        result.add(new LabelledValue("dc.publisher.forunit", "Publicerat för enhet (autokomplettering)"));
+        result.add(new LabelledValue("dc.publisher.forunit.flat", "Publicerat för enhet (för sortering)"));
+        result.add(new LabelledValue("dc.publisher.forunit.id", "Publicerat för enhet ID (VGR:s organisationsträd)"));
+        result.add(new LabelledValue("dc.publisher.project-assignment", "Publicerat för Projekt/Uppdrag/Grupp"));
+        result.add(new LabelledValue("dc.rights.accessrights", "Publik åtkomsträtt"));
+        result.add(new LabelledValue("dc.publisher", "Publicerat av"));
+        result.add(new LabelledValue("dc.publisher.id", "Publicerat av ID"));
+        result.add(new LabelledValue("dc.date.issued", "Publiceringsdatum"));
+        result.add(new LabelledValue("dc.identifier", "Länk till publicerat/utgivet dokument"));
+        result.add(new LabelledValue("dc.identifier.native", "Länk till utgivet originaldokument"));
+        result.add(new LabelledValue("", "Sammanhang"));
+        result.add(new LabelledValue("dc.type.process.name", "Processnamn"));
+        result.add(new LabelledValue("dc.type.file.process", "Ärendetyp"));
+        result.add(new LabelledValue("dc.type.file", "Ärende"));
+        result.add(new LabelledValue("dc.identifier.diarie.id", "Diarienummer"));
+        result.add(new LabelledValue("dc.type.document.serie", "Dokumentserie"));
+        result.add(new LabelledValue("dc.type.document.id", "Referensnummer i dokumentserie"));
+        result.add(new LabelledValue("", "Nyckelord"));
+        result.add(new LabelledValue("dc.subject.keywords", "Nyckelord (autokomplettering)"));
+        result.add(new LabelledValue("dc.subject.authorkeywords", "Författarens nyckelord"));
+        result.add(new LabelledValue("", "Övrigt"));
+        result.add(new LabelledValue("language", "Språk"));
+        result.add(new LabelledValue("dc.relation.isversionof", "Alternativ variant av"));
+        result.add(new LabelledValue("dc.relation.replaces", "Ersätter"));
+        result.add(new LabelledValue("dc.format.extent", "Omfattning"));
+        result.add(new LabelledValue("dc.identifier.location", "Fysisk placering"));
+        result.add(new LabelledValue("dc.type.templatename", "Mallnamn"));
+        result.add(new LabelledValue("dc.format.extent.mimetype", "Mimetyp, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.format.extent.mimetype.native", "Mimetyp, original"));
+        result.add(new LabelledValue("dc.format.extension", "Filändelse, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.format.extension.native", "Filändelse, original"));
+        result.add(new LabelledValue("dc.identifier.checksum", "Kontrollsumma dokument, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.identifier.checksum.native", "Kontrollsumma dokument, original"));
+        result.add(new LabelledValue("dc.source.origin", "Källsystem"));
+        return result;
+
+    }
+
+    private List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
+        List<LabelledValue> result = new ArrayList<>();
+        result.add(new LabelledValue("core:ArchivalObject.idType", "N/A"));
+        result.add(new LabelledValue("core:ArchivalObject.id", "N/A"));
+        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Upprättad datum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
+        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
+        result.add(new LabelledValue("revisiondate", "Gallringsdatum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Description", "Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet"));
+        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType", "Handlingstyp"));
+        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType.id", ""));
+        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType.filePlan", "Dokumenthanteringsplan"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.id", "Id på klassificering"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.classCode", "Punktnotation på klassificering"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.level", "Nivå på klassificering"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.name", "Namn på klassificering"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Unit", "Rubrik"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Unit.refcode", "Signum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Unit.level", "Nivå i arkivförteckningen"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Producer", "Myndighet/Arkivbildare"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Producer.idType", ""));
+        result.add(new LabelledValue("core:ArchivalObject.core:Producer.id", "Myndighetens HSA-ID"));
+        result.add(new LabelledValue("vgr:VgrExtension.itemId", "Arkivobjekt-ID"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:SourceSystem", "Källsystem"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:SourceSystem.id", "Källsystem-ID"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.id", "Käll-ID"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.version", "Version i källsystem"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.versionId", "N/A"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Title", "Rubrik i Sharepoint, Titel i Mellanarkivet"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:AvailableFrom", "Tillgänglig från"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig till"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:RevisedAvailableFrom", "Reviderat tillgänglig från"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:RevisedAvailableTo", "Reviderat tillgänglig till"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:RestrictionCode", "Skyddskod"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:LegalParagraph", "Lagparagraf"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedByUnit", "Upprättad av enhet"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedByUnit.id", ""));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:PublishedForUnit", "Upprättad för enhet"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:PublishedForUnit.id", ""));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy", "Upprättad av"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy.id", "Upprättad av (vgrid)"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy.org", "Upprättad av (org)"));
+        result.add(new LabelledValue("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet"));
+        result.add(new LabelledValue("vgrsy:DomainExtension.itemId", ""));
+        result.add(new LabelledValue("vgrsy:DomainExtension.domain", "Domännamn"));
+        result.add(new LabelledValue("vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning"));
+        result.add(new LabelledValue("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning"));
+        result.add(new LabelledValue("vgrsy:DomainExtension.domain", ""));
+        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
+        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
+        result.add(new LabelledValue("revisiondate", "Gallringsdatum"));
+        result.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
+        result.add(new LabelledValue("core:ArchivalObject.core:Description", ""));
+        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
+
+        result.add(new LabelledValue("productionDownloadLatestVersionUrl", "Webblänk produktionsformat"));
+        result.add(new LabelledValue("originalDownloadLatestVersionUrl", "Webblänk urspurungsformat"));
+        result.add(new LabelledValue("archivalDownloadLatestVersionUrl", "Webblänk arkivformat"));
+        return result;
+    }
+
+
+    public static class LabelledValue {
+
+        private String key;
+        private String label;
+        private Object value;
+
+        public LabelledValue(String key, String label) {
+            this.key = key;
+            this.label = label;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public void setValue(Object value) {
+            this.value = value;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+    }
+
+
+    // @RequestMapping(value = "/documents/{documentId}/metadata")
+    public String detailsOld(@PathVariable String documentId, Model model) {
+        if (documentId.startsWith("[")) {
+            if (documentId.endsWith("]")) {
+                documentId = documentId.substring(1, documentId.length() - 1);
+            } else {
+                throw new RuntimeException("Strange document id " + documentId);
+            }
+        }
+        // We are flexible here; "workspace://SpacesStore/" is added if it isn't provided and vice versa.
+        String fullId;
+        if (documentId.contains("workspace://SpacesStore/")) {
+            fullId = documentId;
+        } else {
+            fullId = "workspace://SpacesStore/" + documentId;
+        }
+        final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(fullId);
+        final SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        IFeedFilter filter = new IFeedFilter();
+        filter.setFilterQuery(documentId);
+        filter.setFilterKey("id");
+        Map<String, Object> doc = client.query(filter.toQuery(), 0, 1, "").getResponse().getDocs().get(0);
+
+        Map<String, String> idValueMap = new HashMap<String, String>();
+        List<FieldsInf> infs = iFeedService.getFieldsInfs(); // todo cache?
+        List<FieldInf> fieldInfs = null;
+        if (infs.size() > 0) {
+            fieldInfs = infs.get(infs.size() - 1).getFieldInfs();
+            for (FieldInf fieldInf : fieldInfs) {
+                for (FieldInf child : fieldInf.getChildren()) {
+                    String childId = child.getId();
+                    if (StringUtils.hasText(childId)) { // If it has an id it is not just a caption
+                        // Does the document have any value for this field?
+                        Object value = documentInfo.getMetadata().get(childId);
+                        if (value instanceof String) {
+                            String sValue = (String) value;
+                            if (itsSomeDateValue(sValue)) {
+                                sValue = toTextDate(sValue);
+                            }
+                            idValueMap.put(childId, sValue);
+                        } else if (value instanceof Collection) {
+                            String sValue = collectionToString((Collection) value);
+                            if (StringUtils.hasText(sValue)) {
+                                idValueMap.put(childId, sValue);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        model.addAttribute("fieldInfs", fieldInfs);
+        model.addAttribute("idValueMap", idValueMap);
+
+        return "documentDetails";
+    }
+
+    private String collectionToString(Collection values) {
+        if (values.size() == 0) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        Iterator iterator = values.iterator();
+        Object firstElement = iterator.next();
+        sb.append(firstElement.toString());
+
+        while (iterator.hasNext()) {
+            sb.append(", " + iterator.next().toString());
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * To signal when an feed is not found.
+     */
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public class ResourceNotFoundException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+    }
+
+    /**
+     * To signal a http bad request.
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public class BadRequestException extends RuntimeException {
+        public BadRequestException(String msg) {
+            super(msg);
+        }
+    }
+
+    /**
+     * Handling exceptions occuring when http clients calls controller methods in this class.
+     *
+     * @param e the error to handle.
+     * @return where to steer the view.
+     */
+    @ExceptionHandler(IFeedServiceException.class)
+    public ModelAndView handleAlfrescoDocumentServiceException(Exception e) {
+        if (!(e instanceof IFeedServiceException)) {
+            LOGGER.error("IFeed Excption: {}", e);
+            e = new IFeedServiceException("error.unhandled", "Internal IFeed Error", e);
+        }
+        return new ModelAndView("ExceptionHandler", Collections.singletonMap("exception", e));
+    }
 }

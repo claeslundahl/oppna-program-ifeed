@@ -198,6 +198,18 @@
       <artifactId>httpclient</artifactId>
       <version>4.5</version>
     </dependency>
+   <!-- <dependency>
+      <groupId>se.vgregion.arbetsplatskoder</groupId>
+      <artifactId>arbetsplatskoder-bc-composite-db-migration-svc</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>-->
+    <!--<dependency>
+      <groupId>se.vgregion.iFeed</groupId>
+      <artifactId>iFeed-core-bc-module-scripts</artifactId>
+      <version>1.13-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>-->
     <!--    <dependency>
           <groupId>commons-codec</groupId>
           <artifactId>commons-codec</artifactId>

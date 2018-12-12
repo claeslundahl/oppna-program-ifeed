@@ -1,0 +1,95 @@
+<root>
+  <field name="action" type="string" indexed="false" stored="true" multiValued="false" required="true"/>
+  <field name="SourceSystem" type="string" indexed="false" stored="true" multiValued="false" required="true"/>
+  <field name="apiPlaintextDownloadUrl" type="string" indexed="false" stored="true" multiValued="false"
+         required="false"/>
+  <field name="originalDownloadUrl" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="archivalDownloadUrl" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="productionDownloadUrl" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="metadataDownloadUrl" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="plaintextDownloadUrl" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="originalDownloadLatestVersionUrl" type="string" indexed="false" stored="true" multiValued="false"
+         required="false"/>
+  <field name="archivalDownloadLatestVersionUrl" type="string" indexed="false" stored="true" multiValued="false"
+         required="false"/>
+  <field name="productionDownloadLatestVersionUrl" type="string" indexed="false" stored="true" multiValued="false"
+         required="false"/>
+  <field name="metadataDownloadLatestVersionUrl" type="string" indexed="false" stored="true" multiValued="false"
+         required="false"/>
+  <field name="plaintextDownloadLatestVersionUrl" type="string" indexed="false" stored="true" multiValued="false"
+         required="false"/>
+  <field name="originalMimetype" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="archivalMimetype" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="productionMimetype" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="metadataMimetype" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="plaintextMimetype" type="string" indexed="false" stored="true" multiValued="false" required="false"/>
+  <field name="securityGroup" type="string" indexed="true" stored="true" multiValued="true" required="false"/>
+
+  <field name="core:ArchivalObject.idType" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.id" type="string" indexed="true" stored="true" multiValued="false"/>
+
+  <field name="core:ArchivalObject.core:CreatedDateTime" type="tdate" indexed="true" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:PreservationPlanning" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:PreservationPlanning.action" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:PreservationPlanning.RDA" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:PreservationPlanning.date" type="tdate" indexed="true" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:AccessRight" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:Description" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:ObjectType" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:ObjectType.id" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:ObjectType.classCode" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:Classification.id" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:Classification.classCode" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:Classification.level" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:Classification.name" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:Classification" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:Unit" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:Unit.refcode" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:Unit.level" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:Producer" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="core:ArchivalObject.core:Producer.idType" type="string" indexed="false" stored="true"
+         multiValued="false"/>
+  <field name="core:ArchivalObject.core:Producer.id" type="string" indexed="true" stored="true" multiValued="false"/>
+
+  <field name="vgr:VgrExtension.itemId" type="string" indexed="true" stored="true" multiValued="false"/>
+
+  <field name="vgr:VgrExtension.vgr:SourceSystem" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:SourceSystem.id" type="string" indexed="true" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:Source.id" type="string" indexed="true" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:Source.version" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:Source.versionId" type="string" indexed="true" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:Title" type="string" indexed="true" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:AvailableFrom" type="tdate" indexed="true" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:AvailableTo" type="tdate" indexed="true" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:RevisedAvailableFrom" type="tdate" indexed="true" stored="true"
+         multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:RevisedAvailableTo" type="tdate" indexed="true" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:SecurityClass" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:RestrictionCode" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:LegalParagraph" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:CreatedByUnit" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:CreatedByUnit.id" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:PublishedForUnit" type="string" indexed="false" stored="true" multiValued="true"/>
+  <field name="vgr:VgrExtension.vgr:PublishedForUnit.id" type="string" indexed="false" stored="true"
+         multiValued="true"/>
+  <field name="vgr:VgrExtension.vgr:CreatedBy" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:CreatedBy.id" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:CreatedBy.org" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgr:VgrExtension.vgr:Tag" type="string" indexed="false" stored="true" multiValued="true"/>
+
+  <field name="vgrsy:DomainExtension.itemId" type="string" indexed="true" stored="true" multiValued="false"/>
+  <field name="vgrsy:DomainExtension.domain" type="string" indexed="false" stored="true" multiValued="false"/>
+  <field name="vgrsy:SubjectClassification" type="string" indexed="false" stored="true" multiValued="true"/>
+  <field name="vgrsy:SubjectLocalClassification" type="string" indexed="false" stored="true" multiValued="true"/>
+
+</root>

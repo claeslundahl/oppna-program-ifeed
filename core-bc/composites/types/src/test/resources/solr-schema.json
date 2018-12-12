@@ -1,0 +1,1380 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 24
+  },
+  "schema": {
+    "name": "VGR",
+    "version": 1.6,
+    "uniqueKey": "id",
+    "solrQueryParser": {
+      "defaultOperator": "AND"
+    },
+    "fieldTypes": [
+      {
+        "name": "boolean",
+        "class": "solr.BoolField",
+        "omitNorms": true,
+        "sortMissingLast": true
+      },
+      {
+        "name": "date",
+        "class": "solr.TrieDateField",
+        "omitNorms": true,
+        "indexed": false,
+        "stored": false,
+        "positionIncrementGap": "0",
+        "precisionStep": "0"
+      },
+      {
+        "name": "ignored",
+        "class": "solr.StrField",
+        "indexed": false,
+        "stored": false,
+        "multiValued": true
+      },
+      {
+        "name": "language",
+        "class": "solr.TextField",
+        "positionIncrementGap": "100",
+        "analyzer": {
+          "tokenizer": {
+            "class": "solr.WhitespaceTokenizerFactory"
+          },
+          "filters": [
+            {
+              "class": "solr.LowerCaseFilterFactory"
+            },
+            {
+              "class": "solr.SynonymFilterFactory",
+              "expand": "false",
+              "ignoreCase": "true",
+              "synonyms": "language-replacer.txt"
+            }
+          ]
+        }
+      },
+      {
+        "name": "long",
+        "class": "solr.TrieLongField",
+        "omitNorms": true,
+        "positionIncrementGap": "0",
+        "precisionStep": "0"
+      },
+      {
+        "name": "random",
+        "class": "solr.RandomSortField",
+        "indexed": true
+      },
+      {
+        "name": "string",
+        "class": "solr.StrField",
+        "omitNorms": true,
+        "sortMissingLast": true
+      },
+      {
+        "name": "tdate",
+        "class": "solr.TrieDateField",
+        "omitNorms": true,
+        "indexed": true,
+        "stored": false,
+        "positionIncrementGap": "0",
+        "precisionStep": "6"
+      },
+      {
+        "name": "text",
+        "class": "solr.TextField",
+        "positionIncrementGap": "100",
+        "indexAnalyzer": {
+          "charFilters": [
+            {
+              "class": "solr.MappingCharFilterFactory",
+              "mapping": "mapping-ISOLatin1Accent-swedish.txt"
+            }
+          ],
+          "tokenizer": {
+            "class": "solr.WhitespaceTokenizerFactory"
+          },
+          "filters": [
+            {
+              "class": "solr.StopFilterFactory",
+              "words": "stopwords.txt",
+              "ignoreCase": "true"
+            },
+            {
+              "class": "solr.WordDelimiterFilterFactory",
+              "catenateNumbers": "1",
+              "generateNumberParts": "1",
+              "splitOnCaseChange": "1",
+              "generateWordParts": "1",
+              "catenateAll": "0",
+              "catenateWords": "1"
+            },
+            {
+              "class": "solr.LowerCaseFilterFactory"
+            },
+            {
+              "class": "solr.SnowballPorterFilterFactory",
+              "language": "Swedish",
+              "protected": "protwords.txt"
+            },
+            {
+              "class": "solr.RemoveDuplicatesTokenFilterFactory"
+            }
+          ]
+        },
+        "queryAnalyzer": {
+          "charFilters": [
+            {
+              "class": "solr.MappingCharFilterFactory",
+              "mapping": "mapping-ISOLatin1Accent-swedish.txt"
+            }
+          ],
+          "tokenizer": {
+            "class": "solr.WhitespaceTokenizerFactory"
+          },
+          "filters": [
+            {
+              "class": "solr.SynonymFilterFactory",
+              "expand": "true",
+              "ignoreCase": "true",
+              "synonyms": "synonyms.txt"
+            },
+            {
+              "class": "solr.StopFilterFactory",
+              "words": "stopwords.txt",
+              "ignoreCase": "true"
+            },
+            {
+              "class": "solr.WordDelimiterFilterFactory",
+              "catenateNumbers": "0",
+              "generateNumberParts": "1",
+              "splitOnCaseChange": "1",
+              "generateWordParts": "1",
+              "catenateAll": "0",
+              "catenateWords": "0"
+            },
+            {
+              "class": "solr.LowerCaseFilterFactory"
+            },
+            {
+              "class": "solr.SnowballPorterFilterFactory",
+              "language": "Swedish",
+              "protected": "protwords.txt"
+            },
+            {
+              "class": "solr.RemoveDuplicatesTokenFilterFactory"
+            }
+          ]
+        }
+      },
+      {
+        "name": "text_basic_token",
+        "class": "solr.TextField",
+        "positionIncrementGap": "100",
+        "analyzer": {
+          "charFilters": [
+            {
+              "class": "solr.MappingCharFilterFactory",
+              "mapping": "mapping-ISOLatin1Accent-swedish.txt"
+            }
+          ],
+          "tokenizer": {
+            "class": "solr.WhitespaceTokenizerFactory"
+          },
+          "filters": [
+            {
+              "class": "solr.WordDelimiterFilterFactory",
+              "catenateNumbers": "1",
+              "generateNumberParts": "1",
+              "splitOnCaseChange": "1",
+              "generateWordParts": "1",
+              "catenateAll": "0",
+              "catenateWords": "1"
+            },
+            {
+              "class": "solr.LowerCaseFilterFactory"
+            }
+          ]
+        }
+      }
+    ],
+    "fields": [
+      {
+        "name": "SourceSystem",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": true,
+        "stored": true
+      },
+      {
+        "name": "_version_",
+        "type": "long",
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "action",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": true,
+        "stored": true
+      },
+      {
+        "name": "apiPlaintextDownloadUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "archivalDownloadLatestVersionUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "archivalDownloadUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "archivalMimetype",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "archived",
+        "type": "boolean",
+        "default": "false",
+        "omitNorms": true,
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false
+      },
+      {
+        "name": "author",
+        "type": "text_basic_token",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "collection",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": false
+      },
+      {
+        "name": "core:ArchivalObject.core:AccessRight",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Classification.core:Classification.classCode",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Classification.core:Classification.id",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Classification.core:Classification.level",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Classification.core:Classification.name",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:CreatedDateTime",
+        "type": "tdate",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Description",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:ObjectType",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:ObjectType.filePlan",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:ObjectType.id",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:PreservationPlanning",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:PreservationPlanning.RDA",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:PreservationPlanning.action",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:PreservationPlanning.date",
+        "type": "tdate",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Producer",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Producer.id",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Producer.idType",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Unit",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Unit.level",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.core:Unit.refcode",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.id",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "core:ArchivalObject.idType",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "creationdate",
+        "type": "tdate",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.contributor.savedby",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.contributor.savedby.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.coverage.hsacode.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.creator.forunit.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.creator.function",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.creator.project-assignment",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.creator.recordscreator",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.creator.recordscreator.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.date.availablefrom",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.date.availableto",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.date.copyrighted",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.date.issued",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.date.saved",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.date.validfrom",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.date.validto",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.description",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.format.extension",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.format.extension.native",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.format.extent.mimetype",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.format.extent.mimetype.native",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.identifier",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.identifier.checksum",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.identifier.checksum.native",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.identifier.diarie.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.identifier.documentid",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.identifier.native",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.identifier.version",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.publisher",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.publisher.forunit.flat",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.publisher.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.relation.isversionof",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.source",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.source.documentid",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.source.origin",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.title",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.title.filename",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.title.filename.native",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.type.document",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.type.document.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.type.document.structure",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.type.document.structure.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.type.record",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.type.record.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "format",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": true,
+        "stored": true
+      },
+      {
+        "name": "infotype",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "language",
+        "type": "language",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "metadataDownloadLatestVersionUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "metadataDownloadUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "metadataMimetype",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "originalDownloadLatestVersionUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "originalDownloadUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "originalMimetype",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "plaintextDownloadLatestVersionUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "plaintextDownloadUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "plaintextMimetype",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "processingtime",
+        "type": "tdate",
+        "default": "NOW",
+        "omitNorms": true,
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false
+      },
+      {
+        "name": "productionDownloadLatestVersionUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "productionDownloadUrl",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "productionMimetype",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "public",
+        "type": "boolean",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": true,
+        "stored": true
+      },
+      {
+        "name": "published",
+        "type": "boolean",
+        "default": "false",
+        "omitNorms": true,
+        "indexed": true,
+        "stored": true,
+        "multiValued": false,
+        "required": false
+      },
+      {
+        "name": "revisiondate",
+        "type": "tdate",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "securityGroup",
+        "type": "string",
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "source",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "title",
+        "type": "text_basic_token",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": true,
+        "stored": true
+      },
+      {
+        "name": "url",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": true,
+        "stored": true
+      },
+      {
+        "name": "version",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": true,
+        "stored": true
+      },
+      {
+        "name": "vgr.status.document",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "vgr.status.document.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.itemId",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:AvailableFrom",
+        "type": "tdate",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:AvailableTo",
+        "type": "tdate",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:CreatedBy",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:CreatedBy.id",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:CreatedBy.org",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:CreatedByUnit",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:CreatedByUnit.id",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:LegalParagraph",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:PublishedForUnit",
+        "type": "string",
+        "multiValued": true,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+        "type": "string",
+        "multiValued": true,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:RestrictionCode",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:RevisedAvailableFrom",
+        "type": "tdate",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:RevisedAvailableTo",
+        "type": "tdate",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:SecurityClass",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:Source.id",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:Source.version",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:Source.versionId",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:SourceSystem",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:SourceSystem.id",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:Tag",
+        "type": "string",
+        "multiValued": true,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgr:VgrExtension.vgr:Title",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgregion.status.document",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "vgregion.status.document.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "vgrid",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": false
+      },
+      {
+        "name": "vgrsy:DomainExtension.domain",
+        "type": "string",
+        "multiValued": false,
+        "indexed": false,
+        "stored": true
+      },
+      {
+        "name": "vgrsy:DomainExtension.itemId",
+        "type": "string",
+        "multiValued": false,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
+        "type": "string",
+        "multiValued": true,
+        "indexed": true,
+        "stored": true
+      },
+      {
+        "name": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+        "type": "string",
+        "multiValued": true,
+        "indexed": true,
+        "stored": true
+      }
+    ],
+    "dynamicFields": [
+      {
+        "name": "vgregion.date*",
+        "type": "tdate",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "freetext*",
+        "type": "text",
+        "omitNorms": false,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "vgregion*",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc.date*",
+        "type": "tdate",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "random*",
+        "type": "random"
+      },
+      {
+        "name": "*.id",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "*_dt",
+        "type": "tdate",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "dc*",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "hc*",
+        "type": "string",
+        "omitNorms": true,
+        "multiValued": true,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "*_t",
+        "type": "text",
+        "omitNorms": false,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "*_b",
+        "type": "boolean",
+        "omitNorms": true,
+        "multiValued": false,
+        "indexed": true,
+        "required": false,
+        "stored": true
+      },
+      {
+        "name": "*",
+        "type": "ignored",
+        "multiValued": true
+      }
+    ],
+    "copyFields": []
+  }
+}

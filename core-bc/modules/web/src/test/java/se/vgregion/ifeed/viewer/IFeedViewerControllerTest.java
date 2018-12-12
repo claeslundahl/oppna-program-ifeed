@@ -19,6 +19,7 @@ import java.text.ParseException;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+@Ignore
 public class IFeedViewerControllerTest {
 
     private IFeedViewerController controller;

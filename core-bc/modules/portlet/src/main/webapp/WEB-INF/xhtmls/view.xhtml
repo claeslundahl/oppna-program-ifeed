@@ -60,8 +60,10 @@
       color: black;
     }
 
-    .doc-list td {
+    .doc-list td, .doc-list th {
       min-width: 18px;
+      text-align: left;
+      vertical-align: top;
     }
 
     .ifeed-filter-help {
@@ -316,6 +318,10 @@
             <ui:include src="field-config.xhtml"/>
           </p:panel>
 
+          <p:panel rendered="#{navigationModelBean.uiNavigation eq 'POPUP_CONFIG'}">
+            <ui:include src="popup-config.xhtml"/>
+          </p:panel>
+
           <p:panel rendered="#{navigationModelBean.uiNavigation eq 'EDIT_IFEED'}">
             <ui:include src="edit-ifeed.xhtml"/>
           </p:panel>
@@ -323,6 +329,8 @@
           <p:panel rendered="#{navigationModelBean.uiNavigation eq 'VIEW_IFEED'}">
             <ui:include src="view-ifeed.xhtml"/>
           </p:panel>
+
+          <ui:include src="lite.xhtml"/>
 
         </p:panel>
 

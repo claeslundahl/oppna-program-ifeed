@@ -1,0 +1,118 @@
+Sökväg	Tagg	Attribut	Beskrivning	Format	Benämning i SharePoint	Mappning SharePoint	"Mappning Mellanarkiv
+(Benämning på attributet)"	Källa	Kommentar
+Arkivobjekt
+DIDL.Item.Descriptor.Statement	core:ArchivalObject	idType	Typ av id	UUID,URI,HSA-ID,REFCODE,VAT,OTHER		N/A	N/A		UUID
+	core:ArchivalObject	id	Id för arkivobjekt	Text		N/A	N/A		Nytt genererat GUID
+
+DIDL.Item.Descriptor.Statement.core:ArchivalObject	core:CreatedDateTime		Datum och tidpunkt för skapande av arkivobjekt		Upprättad datum	VGR_PubliceratDatum	Upprättad datum
+	core:PreservationPlanning 		Kopieras från kolumnen "Bevaras" från DHP	Text			Bevarande/Gallring		Kopieras från kolumnen "Bevaras" från DHP
+		action	Styr typ av åtgärd på objektet.	RETENTION, DISPOSAL, APPRAISAL			Bevarande och gallringsåtgärd		"Bevaras = ""RETENTION""
+Annars
+Automatisk gallring, Ja = ""DISPOSAL""
+Automatisk gallring, Nej = ""APPRAISAL"""
+		RDA	Motsvarar handlingstypens beslut kring gallring (diarienr)	Text			Bevarande och gallringsbeslut		Ska hämtas från DHP
+		date	Motsvarar gallringsdatum			VGR_PubliceratDatum + Gallringsfrist (beräknat)	Gallringsdatum		Beräknat utifrån upprättat datum. Om inget datum kan beräknas, ta bort attributet.
+	core:AccessRight		Behörighet i slutarkiv	Public,Restricted,Confidential,Copyright	Åtkomsträtt	VGR_Atkomstratt	Åtkomsträtt i slutarkiv		"Mappa åtkomsträtt till värden enligt exempel till tillåtet format, dvs Public, Restricted, Confidentail eller Copyright.
+Om Åtkomsträtt=4 --> Confidential
+Om Åtkomsträtt=1,2,3 --> Public"
+	core:Description		Valfri beskrivning av arkivobjekt. Kortfattad beskrivning av dokumentet.	Text	Dokumentbeskrivning	VGR_DokBeskrivning	Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet		"Hämtas från dokumentprofilen
+OBS heter ""Beskrivning"" idag i MA, bör ändras? Kommentar Susanne o Marcus: Bör ändras till Beskrivning"
+	core:ObjectType		Handlingstyp		klass	Handlingstypens namn i DHP	Handlingstyp		Inväntar uppdatering från Regionarkivet
+	core:ObjectType	id	Id för handlingstyp			Handlingstypens id, synkad från Apelon
+	core:ObjectType	filePlan	Dokumenthanteringsplan				Dokumenthanteringsplan		"Hämtas som en myndighetsparameter, dvs. samma för alla handlingstyper i en myndighet?
+RS.DHP.2018.1"
+	core:Classification	id	Klassificeringsstruktur från DHP				Id på klassificering		Använder ID/löpnummer för motsvarande nod från Apelon.
+	core:Classification	classCode	Processnummer	Text			Punktnotation på klassificering		Hämtas från Apelon, vi förväntar att classcode kan hämtas per nod från Apelon.
+	core:Classification	level		VO, PG, P			Nivå på klassificering		Hämtas från Apelon från motsvarande fält per nod.
+	core:Classification	name	Namn på klassificering				Namn på klassificering		Hämtas från Apelon från motsvarande fält per nod
+	core:Classification								Nästlad i med core:Classification
+	core:Unit			Text		N/A	Rubrik		Tom tag <core:Unit/>
+	core:Unit	refcode		Text		ArkivID-fält i SiteInfo-objektet	Signum		Sätts till blankt
+	core:Unit	level		fonds, series, subfonds etc.		N/A	Nivå i arkivförteckningen		Sätts till blankt
+	core:Producer		Arkivbildare, beskrivande namn. Motsvarar myndigheten!	Text	"Rubrik
+(på myndighetsobjektet)"	Rubrik	Myndighet/Arkivbildare		Hämtas från rubrikfält i myndighetsobjektet i Samarbetsytecentret
+	core:Producer	idType	Typ av id	UUID,URI,HSA-ID,REFCODE,VAT,OTHER		N/A			HSA-ID
+	core:Producer	id	Arkivbildare, id	Text	"HSA Id
+(per myndighet)"	VGR_MyndighetHsaId	Myndighetens HSA-ID		Hämtas från fält i myndighetsobjektet i Samarbetsytecentret
+
+DIDL.Item.Descriptor.Statement	vgr:VgrExtension	itemId	ItemId som denna extension avser, dvs. samma som för core:Item@id	Text			Arkivobjekt-ID		Samma som core:Item
+
+DIDL.Item.Descriptor.Statement.vgr:VgrExtension	vgr:SourceSystem		Namn på källsystem	Text			Källsystem		Konfigurerbart "SISOM"
+	vgr:SourceSystem	id	Källsystemid för arkivobjekt	Text			Källsystem-ID		Konfigurerbart "SISOM"
+	vgr:Source	id	Id för handlingen oavsett version i källsystem	Text	DokSourceId	VGR_DokSourceId	Käll-ID
+	vgr:Source	version	Versionsnummer för arkivobjekt i källsystem	Text	Version	Version	Version i källsystem
+	vgr:Source	versionId	Id för versionen i källsystem	Text	DokItemId	VGR_DokItemId	N/A
+	vgr:Title		Titel för handling	Text	Rubrik	Title	Rubrik i Sharepoint, Titel i Mellanarkivet		OBS Heter f.n. "Titel" i MA - Kommentar Susanne o Marcus går inte att ändra i MA så här får det heta Rubrik i SP och Titel i MA
+	vgr:AvailableFrom		Tillgänglig från	DateTime	Tillgänglig från	VGR_TillgangligFran	Tillgänglig från		Ändra till samma benämning som i SP? Kommentar Susanne o Marcus  har ändrat
+	vgr:AvailableTo		Tillgänglig till	DateTime	Tillgänglig till	VGR_TillgangligTill	Tillgänglig till		Ändra till samma benämning som i SP? Kommentar Susanne o Marcus  har ändrat
+	vgr:RevisedAvailableFrom		Reviderat tillgänglig från	DateTime			Reviderat tillgänglig från		Sätts av mellanarkivet vid när datum för tillgänglighet beräknas om, t.ex. när en ny version publiseras
+	vgr:RevisedAvailableTo		Reviderat tillgänglig till	DateTime			Reviderat tillgänglig till		Sätts av mellanarkivet vid när datum för tillgänglighet beräknas om, t.ex. när en ny version publiseras
+	vgr:SecurityClass		Informationsbehörighet	1,2,3,4	Åtkomsträtt	VGR_Atkomstratt	Åtkomsträtt
+	vgr:RestrictionCode		Skyddskod för handlingen där det är ifyllt	Text	Skyddskod	VGR_Sekretess	Skyddskod		Defaultvärdet "Allmän handling - Offentlig" ska sättas på handlingar från samarbetsytor i nivå 1 och 2
+	vgr:LegalParagraph		Lagparagraf för handlingar som är märkta med Sekretess	Text	Lagparagraf	VGR_Lagparagraf	Lagparagraf		Anges bara för handlingar som är märkta med Sekretess
+	vgr:CreatedByUnit		Enhet som upprättat handlingen		Upprättad av enhet	VGR_UpprattadAvEnhet	Upprättad av enhet
+	vgr:CreatedByUnit	id	HSA-id för tillhörande enhet			VGR_UpprattadAvEnhet
+	vgr:PublishedForUnit		Enhet(er) som handlingen är upprättad för			VGR_UpprattadForEnhet	Upprättad för enhet		Har döpts om till "Upprättad för enhet".
+	vgr:PublishedForUnit	id	HSA-id för tillhörande enhet			VGR_UpprattadForEnhet
+	vgr:CreatedBy		Den person som upprättat handlingen	Fullname	Upprättad av	VGR_UpprattadAv	Upprättad av
+	vgr:CreatedBy	id	VGR-ID	vgrid			Upprättad av (vgrid)
+	vgr:CreatedBy	org	Avser organisationsstruktur för användarens primära anställning	Text			Upprättad av (org)		Löses med synk från AD till SP-profil. Fält i AD heter "vgrStrukturPerson"
+	vgr:Tag		Avser fri taggning av handlingen. Författarens egna nyckelord.	Text	Företagsnyckelord	TaxKeyword	Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet		Nyckelord önskvärt när det går att ändra i Sharepoint
+
+DIDL.Item.Descriptor.Statement	vgrsy:DomainExtension	itemId	ItemId som denna extension avser, dvs. samma som för core:Item@id	Text
+	vgrsy:DomainExtension	domain	Namn/id på domänen	Text			Domännamn		Avser beskrivande namn på domänen. Hårdkodas till "Samarbetsyta"
+DIDL.Item.Descriptor.Statement.vgrsy:DomainExtension	vgrsy:SubjectClassification		Avser ämnesindelning för handlingen	Text	Regional ämnesindelning	VGR_AmnesIndelning	Regional ämnesindelning
+	vgrsy:SubjectLocalClassification		Avser ämnesindelning för handlingen (fritext) - ersätter nuvarande dokumentserie	Text	Egen ämnesindelning	VGR_EgenAmnesindelning	Egen ämnesindelning		Splittas till multivalue baserat på kommatecken.
+
+DIDL.Item.Descriptor.Statement	vgravancerad:SYAvanceradExtension	itemId	ItemId som denna extension avser, dvs. samma som för core:Item@id	Text
+	vgrsy:DomainExtension	domain	Namn/id på domänen	Text					Avser beskrivande namn på domänen. Hårdkodas till "Samarbetsyta"
+
+DIDL.Item.Descriptor.Statement.vgravancerad:SYAvanceradExtension	vgravancerad:ValidFrom		Giltig from.	DateTime		VGR_PubliceratDatum
+	vgr:ValidTo		Giltig tom.	DateTime					Flytta till relevant domän (t.ex. styrdokument)
+	vgr:ItemGroup		Namn på tjänsten	Text		VGR_Tjanst			Sätts till tomt
+	vgr:ItemGroup	type	Tjänst
+	vgr:ItemGroup2		Valfri ytterligare klassificering, ev VGR Dokumentstruktur	Text					Flyttas till core
+	vgr:ItemGroup3		Valfri ytterligare klassificering, ev VGR Ämnesindelning	Text					Utred hur dessa skall användas
+	vgr:ItemGroup4		Valfri ytterligare klassificering	Text					Utred hur dessa skall användas
+	vgr:Amnesindelning								Utred hur dessa skall användas
+	vgr:DiaryNo		Diarienummer	Text
+			Giltigsnivå (t.ex sjukhusövergripande)
+			Dokumentstruktur VGR (utred om DHP ev kan användas istället)
+			Godkänt av
+			Granskat av
+			Innehållsansvarig
+	…
+Representation
+DIDL.Item.Item.Descriptor.Statement	core:Representation	idType	Typ av id	UUID,URI,HSA-ID,REFCODE,VAT,OTHER		N/A			UUID
+	core:Representation	id	Id för representation	Text	DokItemId	VGR_DokItemID	Representation-ID		Unikt id för varje version
+		use	Användningsområde för representation	NATIVE,ORIGINAL,PLAINTEXT,METADATA,SURROGATE		N/A	Representation		NATIVE=Ursprungsformat, ORIGINAL=Arkivformat, PLAINTEXT=Extraherad text, METADATA=Metadata, SURROGATE=Produktions/Publiceringsformat
+
+DIDL.Item.Item.Descriptor.Statement.core:Representation	core:CreatedDateTime		Datum och tidpunkt för skapande av arkivobjekt		Upprättad datum	VGR_PubliceratDatum	Skapad datum		UTC-tid ska anges
+	core:PreservationPlanning 		Kopieras från kolumnen "Bevaras" från DHP	Text			Bevarande/Gallring		Kopieras från kolumnen "Bevaras" från DHP
+		action	Styr typ av åtgärd på objektet.	PRESERVATION, DISPOSAL, APPRAISAL			Bevarande och gallringsåtgärd		"Bevaras = ""PRESERVATION""
+Annars
+Automatisk gallring, Ja = ""DISPOSAL""
+Automatisk gallring, Nej = ""APPRAISAL"""
+		RDA	Motsvarar handlingstypens beslut kring gallring (diarienr)	Text			Bevarande och gallringsbeslut		Ska hämtas från DHP
+		date	Motsvarar gallringsdatum				Gallringsdatum		Beräknat utifrån upprättat datum
+	core:AccessRight		Behörighet i slutarkiv	Public,Restricted,Confidential,Copyright			Åtkomsträtt i slutarkiv		Mappa åtkomsträtt till värden enligt exempel till tillåtet format, dvs Public, Restricted, Confidentail eller Copyright
+	core:Description		Valfri beskrivning av representationen	Text		N/A			Sätts till blankt
+	core:Relationship	type	Används för att referera mellan representationer. T.ex. när en pdf/a har generats så har detta element en referens till native-representationen.	hasSource		N/A			Skall inte med från SP
+		refIdType	Typ av id	UUID		N/A			Skall inte med från SP
+		refId	Id för refererat objekt	UUID		N/A	Referens inom arkivobjekt		Skall inte med från SP
+File
+DIDL.Item.Item.Component.Descriptor.Statement	core:File	idType	Typ av id	UUID,URI,HSA-ID,REFCODE,VAT,OTHER					UUID
+	core:File	id	Id för fil	Text			Fil-ID		Generera nytt GUID
+
+DIDL.Item.Item.Component.Descriptor.Statement.core:File	core:CreatedDateTime		Skapad tid och datum för fil	DateTime	Upprättad datum	VGR_PubliceratDatum	Skapad datum		Motsvarar datum + tid då handlingen upprättas (när arkivjobbet körs)
+	core:FileFormat		Beskrivning av filformat	Text					Tom tag <core:FileFormat(>
+	core:FileFormat	formatId		Text					Fylls ej i av SP. Genereras av RA eller MA.
+	core:FileFormat	formatRegistry		Text					Fylls ej i av SP. Genereras av RA eller MA.
+	core:FileFormat	formatVersion		Text					Fylls ej i av SP. Genereras av RA eller MA.
+	core:Size		Filens storlek	Long		"FileSize"	Filstorlek		Filstorlek i bytes
+	core:OriginalFileName		Ursprungligt filnamn	Text	Namn	Name	Ursprungsfilnamn		Hämtas från dokumentprofilen, std Name-fält
+	core:Checksum	type	Typ av checksumma	MD5,SHA1,SHA256,SHA384,SHA512		N/A	Typ av checksumma		Fältet utelämnas
+	core:Checksum		Checksumma	Text		N/A	Checksumma
+
+DIDL.Item.Item.Component	Resource	ref	Relativ (från index.xml) URI till filobjekt	Text		N/A			document_001.filändelse. Relativt index.xml
+	Resource	mimeType	Mimetyp för filobjekt	Text			Mimetyp		Mime-type för filändelsen

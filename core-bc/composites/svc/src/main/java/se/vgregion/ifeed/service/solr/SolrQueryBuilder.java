@@ -7,8 +7,6 @@ import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.FilterType.Filter;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -85,7 +83,11 @@ public class SolrQueryBuilder {
         }
     }
 
-    private static boolean isSomeKindOfDate(IFeedFilter iFeedFilter) {
+    public static boolean isSomeKindOfDate(IFeedFilter iFeedFilter) {
+
+        if (iFeedFilter.getFieldInf() == null || iFeedFilter.getFieldInf().getType() == null) {
+            return false;
+        }
         return iFeedFilter.getFieldInf() != null && (iFeedFilter.getFieldInf().getType().equals("d:date")
                 || iFeedFilter.getFieldInf().getType().equals("d:datetime"));
     }
@@ -96,6 +98,7 @@ public class SolrQueryBuilder {
     }
 
     private static String getAndFormatFilterQuery(IFeedFilter iFeedFilter) {
+        System.out.println("getAndFormatFilterQuery");
         String ff = iFeedFilter.getFilterQuery();
 
         if (isSomeKindOfDate(iFeedFilter)) {

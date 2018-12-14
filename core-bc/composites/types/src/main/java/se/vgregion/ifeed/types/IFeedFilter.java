@@ -249,6 +249,18 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+    static Date toDate(String yyyyMMdd) {
+        try {
+            return sdf.parse(yyyyMMdd);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static String toYyyyMmDd(Date date) {
+        return sdf.format(date);
+    }
+
     public static String escapeValue(String withKey, String forSolr, String andPurpose) {
         if (isSomeKindOfDate(withKey)) {
             if (forSolr.startsWith("+") || forSolr.startsWith("-") && forSolr.length() > 1 && isDigit(forSolr.substring(1))) {
@@ -261,8 +273,24 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
                 Date otherDay = new Date(now.getTime() + daysOff);
                 forSolr = sdf.format(otherDay);
             } else {
-                if ((andPurpose == null || andPurpose.equals("matching")) && forSolr.matches("\\d{4}-\\d{2}-\\d{2}")) {
-                    forSolr = forSolr + "*";
+                if (forSolr.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    if (andPurpose == null || andPurpose.equals("matching")) {
+                        forSolr = forSolr + "*";
+                    } else {
+                        if (andPurpose.equals("greater")) {
+                            // Minus one day
+                            Date date = toDate(forSolr);
+                            date.setTime(date.getTime() - (1000 * 60 * 60 * 24));
+                            forSolr = toYyyyMmDd(date);
+                        } else if (andPurpose.equals("lesser")) {
+                            // Plus one day
+                            Date date = toDate(forSolr);
+                            date.setTime(date.getTime() + (1000 * 60 * 60 * 24));
+                            forSolr = toYyyyMmDd(date);
+                        } else {
+                            forSolr = toUtcDateIfPossible(forSolr);
+                        }
+                    }
                 } else {
                     forSolr = toUtcDateIfPossible(forSolr);
                 }

@@ -77,11 +77,11 @@ public class AnalogyTool {
                 System.out.print(" " + c);
             }
             Long id = (Long) feed.get("id");
-            if (Arrays.asList(3325530l, 3325482l, 115882l).contains(id)) {
+            /*if (Arrays.asList(3325530l, 3325482l, 115882l).contains(id)) {
                 System.out.println("\nHittade " + id);
             } else {
                 continue;
-            }
+            }*/
             List<Map<String, Object>> filters = main.query(
                     "select distinct ifeed_id from vgr_ifeed_filter where ifeed_id = ? and ifeed_id > 0",
                     0,
@@ -91,11 +91,12 @@ public class AnalogyTool {
 
 
             if (filters.isEmpty()) {
+                System.out.println("Tom!");
                 continue;
             }
 
             if (comesFromBarium((Long) feed.get("id"))) {
-                // continue;
+                continue;
             }
 
             MultiMap<String, Map<String, Object>> keyedValues = new MultiMap<>();
@@ -159,7 +160,11 @@ public class AnalogyTool {
                 1_000_000
         );
         List<IFeed> result = new ArrayList<>();
+        int c = 0;
+        System.out.println("Hittade " + items.size());
         for (Map<String, Object> item : items) {
+            c++;
+            System.out.println("Item " + c);
             IFeed feed = new IFeed();
             feed.setId((Long) item.get("id"));
             List<Map<String, Object>> filters = main.query(
@@ -173,8 +178,6 @@ public class AnalogyTool {
                 f.setFilterKey((String) filter.get("filterkey"));
                 f.setFilterQuery((String) filter.get("filterquery"));
                 feed.getFilters().add(f);
-
-
             }
             result.add(feed);
             mapped.put(feed.getId(), feed);
@@ -197,6 +200,7 @@ public class AnalogyTool {
         feed = new HashMap<>(feed);
         long id = ((long) feed.get("id")) * -1;
         feed.put("id", id);
+        feed.put("userid", "lifra1");
         Map<String, Object> and;
         if (main.query("select * from vgr_ifeed where id = ?", 0, 1, id).isEmpty()) {
             main.insert("vgr_ifeed", feed);
@@ -261,7 +265,7 @@ public class AnalogyTool {
                     result++;
                 }
             }
-            // main.commit();
+            main.commit();
         }
 
         return result;

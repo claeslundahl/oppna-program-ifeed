@@ -1,12 +1,10 @@
 package se.vgregion.ifeed.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.*;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -118,8 +116,8 @@ public class Invocer {
     return entries;
   }
 
-    /*public static void fetchMeta(Callback callback) {
-        String url = "http://vgas1499.vgregion.se:9090/solr/ifeed/schema";
+    public static void fetchHtml(final String url, final Callback<String> callback) {
+        // String url = "http://vgas1499.vgregion.se:9090/solr/ifeed/schema";
         RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, url);
 
         rb.setCallback(new RequestCallback() {
@@ -127,6 +125,7 @@ public class Invocer {
             public void onResponseReceived(Request request, Response response) {
                 GWT.log(request.toString());
                 GWT.log(response.toString());
+                callback.event(response.getText());
             }
 
             @Override
@@ -141,7 +140,7 @@ public class Invocer {
         } catch (RequestException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
 
   public interface Callback<T> {

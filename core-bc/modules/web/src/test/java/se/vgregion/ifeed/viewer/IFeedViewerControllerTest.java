@@ -14,6 +14,7 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 
 import static org.mockito.Matchers.any;
@@ -63,8 +64,9 @@ public class IFeedViewerControllerTest {
     public void details() {
         String documentId = "1";
         Model model = mock(Model.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
-        String result = controller.details(documentId, model);
+        String result = controller.details(documentId, model, response);
         Assert.assertEquals("documentDetails", result);
 
 

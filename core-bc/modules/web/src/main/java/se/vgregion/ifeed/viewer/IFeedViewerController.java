@@ -558,8 +558,8 @@ public class IFeedViewerController {
      * @return what jsp to use as view.
      */
     @RequestMapping(value = "/documents/{documentId}")
-    public String detailsHtml(@PathVariable String documentId, Model model) {
-        return details(documentId, model);
+    public String detailsHtml(@PathVariable String documentId, Model model, HttpServletResponse response) {
+        return details(documentId, model, response);
     }
 
     /**
@@ -576,7 +576,7 @@ public class IFeedViewerController {
         if (documentId == null) {
             throw new BadRequestException("Document id must not be null.");
         }
-        return details(documentId, model);
+        return details(documentId, model, response);
     }
 
     static final Pattern ISO8601 = Pattern.compile("^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$");
@@ -633,7 +633,7 @@ public class IFeedViewerController {
      * @return what jsp to use.
      */
     @RequestMapping(value = "/documents/{documentId}/metadata")
-    public String details(@PathVariable String documentId, Model model) {
+    public String details(@PathVariable String documentId, Model model, HttpServletResponse response) {
         if (documentId.startsWith("[")) {
             if (documentId.endsWith("]")) {
                 documentId = documentId.substring(1, documentId.length() - 1);
@@ -658,6 +658,29 @@ public class IFeedViewerController {
             filter.setFilterQuery("workspace://SpacesStore/" + documentId);
             findigs = client.query(filter.toQuery(), null, null, "title asc");
         }
+
+        if (true) {
+            Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
+            FieldInf root = new FieldInf(iFeedService.getFieldInfs());
+            root.combine(doc);
+            root.removeChildrenHavingNoValue();
+
+            FieldInf result = root.getChildren().get(0);
+
+            for (FieldInf child : root.getChildren()) {
+                if (result.childCount() < child.childCount()) {
+                    result = child;
+                }
+            }
+
+            result.setValue((String) doc.get("title"));
+
+            model.addAttribute("doc", result);
+
+            response.setHeader("Access-Control-Allow-Origin", "*");
+
+            return "documentDetails";
+        }
         if (!findigs.getResponse().getDocs().isEmpty()) {
             System.out.println("Antal findings " + findigs.getResponse().getDocs().size());
             System.out.println("Antal findings.size() " + findigs.getResponse().getDocs().get(0).size());
@@ -669,8 +692,8 @@ public class IFeedViewerController {
                     newSofiaDisplayFieldsWithoutValue() : newAlfrescoBariumDisplayFieldsWithoutValue();*/
 
             List<LabelledValue> result = new ArrayList<>();
-            result.addAll(newSofiaDisplayFieldsWithoutValue());
-            result.addAll(newAlfrescoBariumDisplayFieldsWithoutValue());
+            //result.addAll(newSofiaDisplayFieldsWithoutValue());
+            //result.addAll(newAlfrescoBariumDisplayFieldsWithoutValue());
 
             for (LabelledValue lv : new ArrayList<>(result)) {
                 Object v = doc.get(lv.getKey());
@@ -787,7 +810,6 @@ public class IFeedViewerController {
         result.add(new LabelledValue("dc.identifier.checksum.native", "Kontrollsumma dokument, original"));
         result.add(new LabelledValue("dc.source.origin", "Källsystem"));
         return result;
-
     }
 
     private List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {

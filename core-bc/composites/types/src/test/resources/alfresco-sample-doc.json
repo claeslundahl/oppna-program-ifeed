@@ -1,0 +1,62 @@
+{
+  "id": "workspace://SpacesStore/f4bf8c0a-3640-4fd5-987d-6b5bf659f53c",
+  "SourceSystem": "Alfresco",
+  "action": "create",
+  "format": [
+    "p-facet.format.pdf"
+  ],
+  "language": "Svenska",
+  "url": "https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/548dbaa8-5495-4c6b-9ec5-39d1dbe9b31e?a=false&guest=true",
+  "url_t": "https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/548dbaa8-5495-4c6b-9ec5-39d1dbe9b31e?a=false&guest=true",
+  "public": false,
+  "published": true,
+  "revisiondate": 1450185856000,
+  "title": "0 Bröstanatomi Medela",
+  "version": "0.2",
+  "dc.publisher": "Annika Tågerstedt (annta1) VGR/Org/Närhälsan/MHV Gyn UM",
+  "dc.publisher.id": "annta1",
+  "dc.title": "0 Bröstanatomi Medela",
+  "dc.language": [
+    "swe"
+  ],
+  "dc.source.documentid": "workspace://SpacesStore/548dbaa8-5495-4c6b-9ec5-39d1dbe9b31e",
+  "dc.publisher.forunit.flat": "Västra Götalandsregionen",
+  "dc.publisher.forunit.id": [
+    "SE2321000131-E000000000001"
+  ],
+  "dc.type.record": "Undervisningsmaterial, OH bilder, material som harsammanställts i en rapport eller dylikt",
+  "dc.format.extension": "pdf",
+  "dc.type.record.id": "316583419",
+  "dc.identifier.documentid": "workspace://SpacesStore/f4bf8c0a-3640-4fd5-987d-6b5bf659f53c",
+  "dc.rights.accessrights": [
+    "Intranät"
+  ],
+  "dc.identifier.version": "0.2",
+  "dc.source": "https://alfresco.vgregion.se/share/page/site/nya-hemsidan/document-details?nodeRef=workspace://SpacesStore/548dbaa8-5495-4c6b-9ec5-39d1dbe9b31e",
+  "dc.contributor.savedby": "Annika Tågerstedt (annta1) VGR/Org/Närhälsan/MHV Gyn UM",
+  "dc.format.extension.native": "pdf",
+  "dc.publisher.forunit": [
+    "Västra Götalandsregionen"
+  ],
+  "dc.format.extent.mimetype": "application/pdf",
+  "dc.identifier": "https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/548dbaa8-5495-4c6b-9ec5-39d1dbe9b31e?a=false&guest=true",
+  "dc.contributor.savedby.id": "annta1",
+  "dc.source.origin": "Alfresco",
+  "dc.identifier.native": "https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/548dbaa8-5495-4c6b-9ec5-39d1dbe9b31e?a=false&guest=true&native=true",
+  "dc.type.document": "Information",
+  "dc.date.issued": "2015-12-15T13:24:16Z",
+  "dc.format.extent.mimetype.native": "application/pdf",
+  "dc.title.filename": "0 Bröstanatomi Medela.pdf",
+  "dc.title.filename.native": "0 Bröstanatomi Medela.pdf",
+  "dcterms.created": [
+    "2015-12-15T12:51:52Z"
+  ],
+  "dc.date.availablefrom": "2015-12-15T13:24:16Z",
+  "infotype": [
+    "Dokument"
+  ],
+  "source": "Dokumentlager",
+  "_version_": 1617993825294221300,
+  "archived": false,
+  "processingtime": 1543039155308
+}

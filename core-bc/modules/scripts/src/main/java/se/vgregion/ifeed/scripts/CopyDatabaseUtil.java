@@ -25,6 +25,11 @@ public class CopyDatabaseUtil {
         return toConnectionExt(prop);
     }
 
+    public static ConnectionExt getRemoteDxpTestConnectionExt() {
+        Properties prop = getDxpTestJdbcProperties();
+        return toConnectionExt(prop);
+    }
+
     public static ConnectionExt getBackupConnectionExt() {
         Properties prop = getBackupJdbcProperties();
         return toConnectionExt(prop);
@@ -61,6 +66,11 @@ public class CopyDatabaseUtil {
 
     private static Properties getProdJdbcProperties() {
         Path path = (Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config-prod.properties"));
+        return getProperties(path);
+    }
+
+    private static Properties getDxpTestJdbcProperties() {
+        Path path = (Paths.get(System.getProperty("user.home"), ".hotell", "dxp.remote.test.jdbc.properties"));
         return getProperties(path);
     }
 

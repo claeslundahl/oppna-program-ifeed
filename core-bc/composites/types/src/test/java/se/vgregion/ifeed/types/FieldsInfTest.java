@@ -13,22 +13,37 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FieldsInfTest {
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
     @Test
-    //@Ignore
     public void getFieldInfs() throws IOException {
         FieldsInf fi = new FieldsInf();
         fi.setText(loadFieldsConfigText());
         List<FieldInf> result = fi.getFieldInfs();
         System.out.println(result + " \n\n" + result.size());
         Assert.assertTrue(!result.isEmpty());
+    }
+
+    @Test
+    public void combine() throws IOException {
+        Map<String, Object> feedContent = new HashMap<>();
+        FieldsInf fi = new FieldsInf();
+        fi.setText(loadFieldsConfigText());
+        List<FieldInf> result = fi.getFieldInfs();
+        HashMap<String, Object> doc = new GsonBuilder().create().fromJson(loadAlfrescoSampleDoc(), HashMap.class);
+        System.out.println(doc);
+
+        for (FieldInf fieldInf : result) {
+            fieldInf.combine(doc);
+        }
+        FieldInf root = new FieldInf(result);
+        root.removeChildrenHavingNoValue();
+
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(root));
     }
 
     @Test
@@ -59,7 +74,15 @@ public class FieldsInfTest {
     }
 
     private String loadFieldsConfigText() throws IOException {
-        URL url = FieldsInfTest.class.getResource("/fields-config.json");
+        return loadResource("/fields-config.json");
+    }
+
+    private String loadAlfrescoSampleDoc() throws IOException {
+        return loadResource("/alfresco-sample-doc.json");
+    }
+
+    private String loadResource(String name) throws IOException {
+        URL url = FieldsInfTest.class.getResource(name);
         FileReader fr = new FileReader(url.getFile());
         FieldsInf fi = new FieldsInf();
 
@@ -67,7 +90,6 @@ public class FieldsInfTest {
         for (int c = 0; c != -1; c = fr.read()) {
             sb.append((char) c);
         }
-
         return sb.toString().trim();
     }
 

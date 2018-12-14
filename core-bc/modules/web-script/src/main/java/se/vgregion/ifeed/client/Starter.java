@@ -112,6 +112,15 @@ public class Starter {
         }
     }
 
+    public static String toMetadataUrl(String id) {
+        id = id.replace("workspace://SpacesStore/", "");
+        String url = getFeedHome();
+        // https://ifeed.vgregion.se/iFeed-web/documents/b5e59d21-f1d6-40a6-8451-f98bc7efb29c/metadata
+        url += (!url.endsWith("/") ? "/" : "")
+                + "iFeed-web/documents/" + id + "/metadata";
+        return url;
+    }
+
     public static void fetchAndRender(final IfeedTag putResultsHere) {
         try {
             String url = getFeedHome();
@@ -354,30 +363,27 @@ public class Starter {
                 Window.open(urlToMetaData(entry), "_blank", "");
             }
         });
-        // icon.addClickHandler(clickEvent -> Window.open(urlToMetaData(entry), "_blank", ""));
         hp.add(icon);
 
+        Util.log("Before adding dom handler.");
         icon.addDomHandler(
                 new MouseOverHandler() {
                     @Override
                     public void onMouseOver(MouseOverEvent event) {
-                        final EntryPopupPanel info = new EntryPopupPanel(entry);
-                        info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
-                        info.show();
-                        entry.put("EntryPopupPanel", info);
+                        try {
+                            final EntryPopupPanel info = new EntryPopupPanel(entry);
+                            info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
+                            info.show();
+                            info.setSize("100px","100px");
+                            entry.put("EntryPopupPanel", info);
+                            Util.log("onMouseOver");
+                        } catch (Exception e) {
+                            Window.alert(e + "");
+                        }
                     }
                 },
                 MouseOverEvent.getType()
         );
-
-    /*
-    icon.addDomHandler(mouseOverEvent -> {
-      final EntryPopupPanel info = new EntryPopupPanel(entry);
-      info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
-      info.show();
-      entry.put("EntryPopupPanel", info);
-    }, MouseOverEvent.getType());
-    */
 
         icon.addDomHandler(
                 new MouseOutHandler() {
@@ -390,14 +396,6 @@ public class Starter {
                 },
                 MouseOutEvent.getType()
         );
-
-    /*
-    icon.addDomHandler(mouseOutEvent -> {
-      EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
-      if (epp != null)
-        epp.hide();
-    }, MouseOutEvent.getType());
-    */
 
         String validToKey = "dc.date.validto";
         String textDate = entry.get(validToKey);

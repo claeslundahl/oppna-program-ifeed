@@ -49,8 +49,8 @@ public class SolrHttpClientTest {
         runLatestFeedQuery();
 
         // "dc.date.issued": "2017-03-13T12:46:21Z"
-        String result = client.toText("dc.date.issued: 2017-03-13*", 0, 100, "title asc");
-        System.out.println(result);
+        /*String result = client.toText("dc.date.issued: 2017-03-13*", 0, 100, "title asc");
+        System.out.println(result);*/
 
         // fetchFields();
     }

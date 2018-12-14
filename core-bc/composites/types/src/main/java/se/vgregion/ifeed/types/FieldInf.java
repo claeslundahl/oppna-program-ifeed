@@ -4,12 +4,19 @@ import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class FieldInf implements Serializable {
+
+    public FieldInf() {
+        super();
+    }
+
+    public FieldInf(List<FieldInf> children) {
+        this();
+        this.children.addAll(children);
+    }
 
     private int level;
 
@@ -239,4 +246,78 @@ public class FieldInf implements Serializable {
     public void setLevel(int level) {
         this.level = level;
     }
+
+    public void combine(Map<String, Object> doc) {
+        if (doc.containsKey(id)) {
+            Object v = doc.get(id);
+            setValue(toString(v));
+        }
+        for (FieldInf child : children) {
+            child.combine(doc);
+        }
+    }
+
+    public String getDeepValue(String withId) {
+        if (withId.equals(id)) {
+            return value;
+        }
+
+        for (FieldInf child : children) {
+            String result = child.getDeepValue(withId);
+            if (result != null) {
+                return result;
+            }
+        }
+
+        return null;
+    }
+
+    public void removeChildrenHavingNoValue() {
+        for (FieldInf child : new ArrayList<>(children)) {
+            if (!child.isHavingSomeValue()) {
+                children.remove(child);
+            }
+        }
+        for (FieldInf child : new ArrayList<>(children)) {
+            child.removeChildrenHavingNoValue();
+        }
+    }
+
+    public int childCount() {
+        int result = children.size();
+
+        for (FieldInf child : children) {
+            result += child.childCount();
+        }
+
+        return result;
+    }
+
+    public boolean isHavingSomeValue() {
+        if (value != null) {
+            return true;
+        }
+
+        for (FieldInf child : children) {
+            if (child.isHavingSomeValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private String toString(Object value) {
+        if (value != null) {
+            if (value instanceof String) {
+                return (String) value;
+            } else if (value instanceof Number) {
+                return value + "";
+            } else if (value instanceof List) {
+                return (value + "").replace("[", "").replace("]", "");
+            }
+        }
+        return null;
+    }
+
 }

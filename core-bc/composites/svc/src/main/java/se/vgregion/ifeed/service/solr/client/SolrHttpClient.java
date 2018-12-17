@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class SolrHttpClient {
 
     private final ScriptEngine engine;
-    private final ScriptEngineManager sem;
+//    private final ScriptEngineManager sem;
     private final ScriptObjectMirror JSON; // = (ScriptObjectMirror) engine.eval("JSON");
 
     private final String baseUrl;
@@ -30,36 +30,14 @@ public class SolrHttpClient {
     public SolrHttpClient(String baseUrl) {
         super();
 
-        // This procedure is to mitigate issue where the current classloader otherwise would be the OSGI classloader,
-        // resulting in sem.getEngineByName("javascript") returning null.
-
-        Thread thread = Thread.currentThread();
-
-        // Get the thread's class loader. You'll reinstate it after using
-        // the data source you look up using JNDI
-
-        ClassLoader origLoader = thread.getContextClassLoader();
-
-        // Set Liferay's class loader on the thread
-
-        thread.setContextClassLoader(PortalClassLoaderUtil.getClassLoader());
+        this.engine = ScriptEngineFactory.getInstance().createJavascriptScriptEngine();
 
         try {
-
-            sem = new ScriptEngineManager();
-            engine = sem.getEngineByName("javascript");
-            try {
-                JSON = (ScriptObjectMirror) engine.eval("JSON");
-            } catch (ScriptException e) {
-                throw new RuntimeException(e);
-            }
-
-
-        } finally {
-            // Switch back to the original context class loader
-
-            thread.setContextClassLoader(origLoader);
+            JSON = (ScriptObjectMirror) engine.eval("JSON");
+        } catch (ScriptException e) {
+            throw new RuntimeException(e);
         }
+
         this.baseUrl = baseUrl;
 
     }

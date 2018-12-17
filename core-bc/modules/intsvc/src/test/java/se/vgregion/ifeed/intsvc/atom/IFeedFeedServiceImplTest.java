@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
@@ -38,6 +40,7 @@ import org.junit.Test;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.service.solr.client.ScriptEngineFactory;
 import se.vgregion.ifeed.types.IFeed;
 
 public class IFeedFeedServiceImplTest {
@@ -49,6 +52,14 @@ public class IFeedFeedServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
+        ScriptEngineFactory.setScriptEngineFactory(new ScriptEngineFactory() {
+            @Override
+            public ScriptEngine createJavascriptScriptEngine() {
+                ScriptEngineManager sem = new ScriptEngineManager();
+                return sem.getEngineByName("javascript");
+            }
+        });
+
         iFeedService = mock(IFeedService.class);
         context = mock(UriInfo.class);
         solrQuery = mock(IFeedSolrQuery.class);

@@ -109,6 +109,7 @@
     <description>iFeedJsf</description>
     <portlet-name>iFeedJsf</portlet-name>
     <display-name>iFeedJsf Manager</display-name>
+    <!--<portlet-class>com.liferay.faces.bridge.ext.GenericLiferayFacesPortlet</portlet-class>-->
     <portlet-class>javax.portlet.faces.GenericFacesPortlet</portlet-class>
 
     <init-param>

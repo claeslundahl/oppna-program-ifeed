@@ -11,7 +11,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee "
          version="2.4">
 
-  <filter>
+  <!--<filter>
     <filter-name>encodingFilter</filter-name>
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
     <init-param>
@@ -22,7 +22,7 @@
       <param-name>forceEncoding</param-name>
       <param-value>true</param-value>
     </init-param>
-  </filter>
+  </filter>-->
 
   <filter>
     <filter-name>originHeaderFilter</filter-name>
@@ -46,12 +46,12 @@
   </servlet-mapping>
   -->
 
-  <servlet>
+  <!--&lt;!&ndash;<servlet>
     <servlet-name>view</servlet-name>
     <servlet-class>org.springframework.web.servlet.ViewRendererServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
 
-    <init-param>
+    &lt;!&ndash;<init-param>
       <param-name>keystoreLocation</param-name>
       <param-value>~/.hotell/ifeed/keystore</param-value>
     </init-param>
@@ -74,14 +74,14 @@
     <init-param>
       <param-name>javax.net.ssl.keyStore</param-name>
       <param-value>~/.hotell/ifeed/keystore</param-value>
-    </init-param>
+    </init-param>&ndash;&gt;
 
-  </servlet>
+  </servlet>&ndash;&gt;
 
   <servlet-mapping>
     <servlet-name>view</servlet-name>
     <url-pattern>/WEB-INF/servlet/view</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>-->
 
   <!--<resource-ref>
     <description>LiferayPool Datasource</description>
@@ -127,6 +127,11 @@
     <param-value>false</param-value>
   </context-param>
 
+  <context-param>
+    <param-name>facelets.SKIP_COMMENTS</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
   <!--
     Since the solr-library prepares to use ssl default (even thou this applications does not use that)
     it demands the presence of a default key store and trust store password. Not ideal.
@@ -166,9 +171,9 @@
     <param-value>none</param-value>
   </context-param>
 
-  <context-param>
+  <!--<context-param>
     <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
     <param-value>/WEB-INF/tld/xhtml-tags.taglib.xml</param-value>
-  </context-param>
+§  </context-param>-->
 
 </web-app>

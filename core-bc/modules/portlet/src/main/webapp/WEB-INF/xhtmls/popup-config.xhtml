@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:h="http://java.sun.com/jsf/html" xmlns:aui="http://liferay.com/faces/aui"
+        xmlns:h="http://java.sun.com/jsf/html"
         xmlns:p="http://primefaces.org/ui"
         locale="SV" encoding="UTF-8" contentType="text/html">
 
@@ -14,7 +14,7 @@
                              value="#{iFeedBackingBean.popupConfString}"> </p:inputTextarea>
 
         </div>
-        <aui:button-row>
+        <div class="alloy-button-row clearfix">
             <p:commandButton styleClass="rp-link-button rp-link-button-alt" value="Spara"
                              ajax="false" async="false" actionListener="#{iFeedBackingBean.saveFieldInfString()}"/>
 
@@ -23,7 +23,7 @@
                              actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
 
             </p:commandButton>
-        </aui:button-row>
+        </div>
     </h:form>
 
 </f:view>

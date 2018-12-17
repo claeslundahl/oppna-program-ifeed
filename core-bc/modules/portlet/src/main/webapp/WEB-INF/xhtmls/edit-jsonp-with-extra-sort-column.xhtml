@@ -3,7 +3,6 @@
               xmlns:f="http://java.sun.com/jsf/core"
               xmlns:h="http://java.sun.com/jsf/html"
               xmlns:ui="http://java.sun.com/jsf/facelets"
-              xmlns:aui="http://liferay.com/faces/aui"
               xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 >
 
@@ -248,7 +247,7 @@
 
         <h:panelGroup layout="block" styleClass="row-fluid">
           <div class="span6 first">
-            <aui:button-row>
+            <div class="alloy-button-row clearfix">
               <h:commandLink value="#{app.inEditMode ? 'Avbryt' : 'Tillbaka'}"
                              styleClass="rp-link-button secondary"
                              actionListener="#{navigationModelBean.setUiNavigation('VIEW_IFEED')}"
@@ -266,7 +265,7 @@
                              onclick="#{empty tableDef.name ? 'alert(\'Namn måste vara ifyllt innan du godkänner inmatningen.\'); return false;' : ''}"
                              ajax="true">
               </h:commandLink>
-            </aui:button-row>
+            </div>
           </div>
           <div class="span6 last">
             <div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>

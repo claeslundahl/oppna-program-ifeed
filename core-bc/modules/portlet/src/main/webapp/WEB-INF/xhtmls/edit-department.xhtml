@@ -3,8 +3,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:aui="http://liferay.com/faces/aui"
-                xmlns:portlet="http://java.sun.com/portlet_2_0">
+                >
 
     <p:panel rendered="#{app.department != null}">
         <h:panelGrid style="border-spacing: 15px; border-collapse: separate;" columns="1" cellspacing="15"
@@ -53,7 +52,7 @@
                 </table>
             </p:panel>
 
-            <aui:button-row>
+            <div class="alloy-button-row clearfix">
                 <p:commandLink value="Lägg till grupp" update=":ifeed_view"
                                styleClass="rp-link-button secondary"
                                ajax="false" async="true"
@@ -67,8 +66,7 @@
                                value="Spara"
                                styleClass="rp-link-button rp-link-button-alt"
                                actionListener="#{app.saveDepartment()}"/>
-            </aui:button-row>
-
+            </div>
         </h:panelGrid>
 
     </p:panel>

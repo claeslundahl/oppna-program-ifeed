@@ -3,7 +3,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:aui="http://liferay.com/faces/aui"
 >
 
   <div class="ifeed-step">
@@ -87,7 +86,7 @@
 
           </div>
 
-          <aui:button-row>
+          <div class="alloy-button-row clearfix">
             <p:commandLink styleClass="rp-link-button secondary"
                            value="Avbryt"
                            ajax="false"
@@ -105,7 +104,7 @@
                            update=":ifeed_view"
                            actionListener="#{app.addNewFilter(app.newFilter)}">
             </p:commandLink>
-          </aui:button-row>
+          </div>
 
           <p:panel rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}">
             <div>

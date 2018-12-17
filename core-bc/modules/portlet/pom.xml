@@ -41,7 +41,7 @@
 
   <properties>
     <gwtVersion>2.8.1</gwtVersion>
-    <liferay.version>2.46.0</liferay.version>
+    <liferay.version>2.50.0</liferay.version>
   </properties>
 
   <build>
@@ -288,7 +288,7 @@
       <groupId>com.liferay.portal</groupId>
       <artifactId>com.liferay.portal.kernel</artifactId>
       <scope>provided</scope>
-      <version>2.46.0</version>
+      <version>2.50.0</version>
     </dependency>
 
     <!--
@@ -333,7 +333,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>${slf4j.version}</version>
-      <scope>provided</scope>
     </dependency>
 
 
@@ -354,19 +353,12 @@
       <version>2.2.8</version>
     </dependency>
 
-    <dependency>
+    <!--<dependency>
       <groupId>javax.faces</groupId>
       <artifactId>javax.faces-api</artifactId>
       <version>2.2</version>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.faces</artifactId>
-      <version>2.2.14</version>
-      <scope>runtime</scope>
-    </dependency>
+    </dependency>-->
 
     <!-- https://mvnrepository.com/artifact/com.liferay.faces/liferay-faces-util -->
     <dependency>
@@ -413,15 +405,6 @@
       <artifactId>com.liferay.faces.portal</artifactId>
       <version>3.0.1</version>
     </dependency>
-
-
-    <dependency>
-      <groupId>com.sun.el</groupId>
-      <artifactId>el-ri</artifactId>
-      <version>1.0</version>
-      <scope>runtime</scope>
-    </dependency>
-
 
     <dependency>
       <groupId>org.primefaces</groupId>

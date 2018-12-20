@@ -15,7 +15,7 @@ public class Util {
     };
 
     private static Set<String> timeStampFieldNames = new HashSet<String>(
-            Arrays.asList("dc.date.issued", "dc.date.validfrom", "dc.date.validto")
+            Arrays.asList("dc.date.issued", "dc.date.validfrom", "dc.date.validto", "vgr:VgrExtension.vgr:AvailableFrom", "vgr:VgrExtension.vgr:AvailableTo")
     );
 
     static String currentTextDate;
@@ -32,14 +32,25 @@ public class Util {
      */
     public static String timeStampTodate(String asText) {
         if (asText != null && !"".equals(asText.trim()) && !"undefined".equals(asText)) {
-            if (asText.contains("T")) {
-                return asText.substring(0, asText.indexOf("T"));
+            if (isUtcDate(asText)) {
+                // "2018-11-07T10:55:00Z"
+                asText = asText.substring(0, 16);
+                asText = asText.replace("T", " ");
+                return asText;
+                // return asText.substring(0, asText.indexOf("T"));
             } else {
                 return asText;
             }
         } else {
             return "";
         }
+    }
+
+    public static boolean isUtcDate(Object value) {
+        if (value == null) {
+            return false;
+        }
+        return value.toString().matches("^\\d{4}-[0-1][0-3]-[0-3]\\d{1}T[0-2]\\d{1}:[0-5]\\d{1}:[0-5]\\d{1}Z$");
     }
 
     /**
@@ -50,7 +61,7 @@ public class Util {
      * @return value of the entry formatted to be viewed by a person accustomed reading swedish.
      */
     public static String formatValueForDisplay(Entry entry, String key) {
-        if (timeStampFieldNames.contains(key)) {
+        if (timeStampFieldNames.contains(key) || key.contains("date")) {
             return timeStampTodate(entry.get(key));
         }
         return entry.get(key);
@@ -79,13 +90,12 @@ public class Util {
      * @return true if the logging could be performed (if there where a console.log).
      */
     native public static boolean log(Object message) /*-{
-        return false;
-      if (window['console']) {
-        console.log(message);
-        return true;
-      } else {
-        return false;
-      }
+        if (window['console']) {
+            console.log(message);
+            return true;
+        } else {
+            return false;
+        }
     }-*/;
 
 
@@ -114,7 +124,7 @@ public class Util {
     }
 
     public static native int localeCompare(String a, String b)  /*-{
-      return a.toLowerCase().localeCompare(b.toLowerCase());
+        return a.toLowerCase().localeCompare(b.toLowerCase());
     }-*/;
 
 }

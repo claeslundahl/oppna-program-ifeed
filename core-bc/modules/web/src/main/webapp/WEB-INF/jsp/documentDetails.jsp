@@ -12,17 +12,12 @@
     <style type="text/css">
 
         /* Reset */
-        body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
+        #table-container body, #table-container div, #table-container dl, #table-container dt, #table-container dd, #table-container ul, #table-container ol, #table-container li, #table-container h1, #table-container h2, #table-container h3, #table-container h4, #table-container h5, #table-container h6, #table-container pre, #table-container form, #table-container fieldset, #table-container input, #table-container textarea, #table-container p, #table-container blockquote, #table-container th, #table-container td {
             margin: 0;
             padding: 0;
         }
 
-        body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
-            margin: 0;
-            padding: 0;
-        }
-
-        a {
+        #table-container a {
             color: #005baa;
             margin: 0;
             padding: 0;
@@ -31,31 +26,31 @@
             vertical-align: top;
         }
 
-        a img {
+        #table-container a img {
             border: none;
             margin-right: 0.5em;
         }
 
         /* Clearfix style clearing */
-        .clearfix:after{clear:both;content:'.';display:block;visibility:hidden;height:0}
+        /*.clearfix:after{clear:both;content:'.';display:block;visibility:hidden;height:0}
         .clearfix{display:inline-block}
         * html .clearfix{height:1%}
-        .clearfix{display:block}
+        .clearfix{display:block}*/
 
-        ul.doc-list {
+        #table-container ul.doc-list {
             list-style-type: none;
         }
 
-        ul.doc-list li {
+        #table-container ul.doc-list li {
             margin: 3px 0;
         }
 
-        ul.doc-list a.meta,
-        ul.doc-list a.document {
+        #table-container ul.doc-list a.meta,
+        #table-container ul.doc-list a.document {
             display: block;
         }
 
-        ul.doc-list a.meta {
+        #table-container ul.doc-list a.meta {
             background: transparent url(information.png) 0 0 no-repeat;
             float: left;
             font-size: 0;
@@ -64,73 +59,63 @@
             width: 16px;
         }
 
-        ul.doc-list a.document {
+        #table-container ul.doc-list a.document {
             line-height: 16px;
             margin: 0 0 0 20px;
             text-decoration: underline;
         }
 
-        ul.doc-list a.document:hover {
+        #table-container ul.doc-list a.document:hover {
             text-decoration: none;
         }
 
-        /* Inherited from section#portlet_iFeed_WAR_iFeedportlet.portlet main.css: 1 */
-        .portlet {
-            text-align: left;
-        }
-
-        /* Inherited from div#aui_3_2_0_11035.portlet-layout main.css: 1*/
-        .portlet-layout {
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-
-        /* Inherited from body#aui_3_2_0_1324.controls-hidden.signed-in.private-page main.css: 1 */
-        body {
+        #table-container {
             color: #333;
             font-family: Arial, Verdana, Helvetica, sans-serif;
             font-size: 12px;
             margin: 0.5em;
         }
 
-        #table-container {
+        #table-container #table-container {
             padding: 0 10px;
         }
 
-        #table-container h1 {
+        #table-container #table-container h1 {
             font-size: 16px;
         }
 
-        .ifeed-metadata-table {
+        #table-container .ifeed-metadata-table {
             border-collapse: collapse;
             margin: 20px 0px;
             width: 100%;
         }
 
-        .ifeed-metadata-table thead td {
+        #table-container .ifeed-metadata-table thead td {
             background-color: #ebebeb;
             font-size: 1.2em;
             font-weight: bold;
             padding-left: 6px;
             padding: 5px 0px 5px 6px;
+            vertical-align: top;
         }
 
-        .ifeed-metadata-table tbody td {
+        #table-container .ifeed-metadata-table tbody td {
             border-bottom: 1px solid lightgray;
             padding-left: 6px;
             padding-top: 1px;
+            vertical-align: top;
         }
 
-        .ifeed-metadata-table td.no-styling {
+        #table-container .ifeed-metadata-table td.no-styling {
             border-bottom: none;
         }
 
-        .ifeed-metadata-table td.key {
+        #table-container .ifeed-metadata-table td.key {
             font-weight: bold;
             width: 25%;
         }
 
-        #json-feed-link {
+        #table-container #json-feed-link {
             position: relative;
             bottom: 2px;
         }
@@ -138,7 +123,7 @@
 </head>
 <body>
 
-<div id="table-container">
+<div class="document-metadata" id="table-container">
     <h1>${doc.value}</h1>
 
     <c:forEach items="${doc.children}" var="paragraph">

@@ -558,8 +558,13 @@ public class IFeedViewerController {
      * @return what jsp to use as view.
      */
     @RequestMapping(value = "/documents/{documentId}")
-    public String detailsHtml(@PathVariable String documentId, Model model, HttpServletResponse response) {
+    public String detailsHtml(@PathVariable String documentId, Model model, HttpServletResponse response,
+                              @RequestParam(value = "type", required = false) String type) {
         return details(documentId, model, response);
+    }
+
+    public String details(String documentId, Model model, HttpServletResponse response) {
+        return details(documentId, model, response, null);
     }
 
     /**
@@ -633,7 +638,9 @@ public class IFeedViewerController {
      * @return what jsp to use.
      */
     @RequestMapping(value = "/documents/{documentId}/metadata")
-    public String details(@PathVariable String documentId, Model model, HttpServletResponse response) {
+    public String details(@PathVariable String documentId, Model model,
+                          HttpServletResponse response,
+                          @RequestParam(value = "type", required = false) String type) {
         if (documentId.startsWith("[")) {
             if (documentId.endsWith("]")) {
                 documentId = documentId.substring(1, documentId.length() - 1);
@@ -659,62 +666,39 @@ public class IFeedViewerController {
             findigs = client.query(filter.toQuery(), null, null, "title asc");
         }
 
-        if (true) {
-            Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
-            FieldInf root = new FieldInf(iFeedService.getFieldInfs());
-            root.combine(doc);
-            root.removeChildrenHavingNoValue();
 
-            FieldInf result = root.getChildren().get(0);
+        Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
+        FieldInf root = new FieldInf(iFeedService.getFieldInfs());
 
-            for (FieldInf child : root.getChildren()) {
-                if (result.childCount() < child.childCount()) {
-                    result = child;
-                }
-            }
-
-            result.setValue((String) doc.get("title"));
-
-            model.addAttribute("doc", result);
-
-            response.setHeader("Access-Control-Allow-Origin", "*");
-
-            return "documentDetails";
-        }
-        if (!findigs.getResponse().getDocs().isEmpty()) {
-            System.out.println("Antal findings " + findigs.getResponse().getDocs().size());
-            System.out.println("Antal findings.size() " + findigs.getResponse().getDocs().get(0).size());
-            System.out.println("Nycklar i findings: " + new TreeSet<>(findigs.getResponse().getDocs().get(0).keySet()));
-            Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
-            String sourceSystem = (String) doc.get("vgr:VgrExtension.vgr:SourceSystem");
-            // String sourceSystem = (String) doc.get("SourceSystem");
-            /*List<LabelledValue> result = (sourceSystem != null && sofiaSystems.contains(sourceSystem)) ?
-                    newSofiaDisplayFieldsWithoutValue() : newAlfrescoBariumDisplayFieldsWithoutValue();*/
-
-            List<LabelledValue> result = new ArrayList<>();
-            //result.addAll(newSofiaDisplayFieldsWithoutValue());
-            //result.addAll(newAlfrescoBariumDisplayFieldsWithoutValue());
-
-            for (LabelledValue lv : new ArrayList<>(result)) {
-                Object v = doc.get(lv.getKey());
-                if (v != null && !v.toString().trim().isEmpty()) {
-                    if (v instanceof List) {
-                        List list = (List) v;
-                        v = org.apache.commons.lang.StringUtils.join(list, ", ");
-                    }
-                    if (v instanceof String && v.toString().startsWith("http")) {
-                        v = String.format("<a href=\"%s\">%s</a>", v, v);
-                    }
-                    lv.setValue(v);
-                } else {
-                    result.remove(lv);
-                }
-            }
-            model.addAttribute("item", doc);
-            model.addAttribute("fields", result);
+        root.combine(doc);
+        if ("tooltip".equals(type)) {
+            root.removeChildrenHavingNoTooltipValue();
         } else {
-            throw new RuntimeException("Kunde inte hitta dokument med id '" + documentId + "'");
+            root.removeChildrenHavingNoHtmlValue();
         }
+        root.removeChildrenHavingNoValue();
+
+        root.visit(new FieldInf.Visitor() {
+            @Override
+            public void each(FieldInf item) {
+                if (item.getName() != null) {
+                    item.setName(item.getName().replace("(autokomplettering)", ""));
+                }
+            }
+        });
+
+        FieldInf result = root.getChildren().get(0);
+
+        for (FieldInf child : root.getChildren()) {
+            if (result.childCount() < child.childCount()) {
+                result = child;
+            }
+        }
+
+        result.setValue((String) doc.get("title"));
+        model.addAttribute("doc", result);
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
         return "documentDetails";
     }
 

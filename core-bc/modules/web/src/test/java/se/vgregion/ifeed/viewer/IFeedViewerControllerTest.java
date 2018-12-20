@@ -16,6 +16,7 @@ import se.vgregion.ifeed.types.IFeed;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
+import java.util.regex.Pattern;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -94,6 +95,15 @@ public class IFeedViewerControllerTest {
 
 
         System.out.println(IFeedViewerController.toTextDateImpl(string));
+    }
+
+    public static void main(String[] args) {
+        String stuff = "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td";
+        String[] parts = stuff.split(Pattern.quote(","));
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = "#table-container " + parts[i];
+        }
+        System.out.println(String.join(", ", parts));
     }
 
 }

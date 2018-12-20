@@ -1,10 +1,13 @@
 package se.vgregion.ifeed.client;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * A small popup display for entry details.
@@ -22,95 +25,70 @@ public class EntryPopupPanel extends PopupPanel {
      * @param entry the data to render.
      */
     public EntryPopupPanel(final Entry entry) {
-        super();
+        super(true);
         this.entry = entry;
+        final VerticalPanel vp = new VerticalPanel();
 
-        /*SimplePanel sp = new SimplePanel();
-        sp.getElement().getStyle().setBackgroundColor("#A9A9A9");
-        sp.getElement().getStyle().setPadding(1, Style.Unit.PX);*/
-
-        final LazyPanel lp = new LazyPanel() {
+        Invocer.fetchHtml(Starter.toMetadataUrl((String) entry.get("id")), new Invocer.Callback<String>() {
             @Override
-            protected Widget createWidget() {
-                final SimplePanel result = new SimplePanel();
-                Invocer.fetchHtml(Starter.toMetadataUrl((String) entry.get("id")), new Invocer.Callback<String>() {
-                    @Override
-                    public void event(String s) {
-                        result.clear();
-                        result.add(new HTMLPanel(
-                                "<style type=\"text/css\">\n" +
-                                        "            #table-container table.ifeed-metadata-table {\n" +
-                                        "                width: 400px;\n" +
-                                        "            }\n" +
-                                        "\n" +
-                                        "            #table-container table.ifeed-metadata-table td {\n" +
-                                        "\n" +
-                                        "                /* These are technically the same, but use both */\n" +
-                                        "                overflow-wrap: break-word;\n" +
-                                        "                word-wrap: break-word;\n" +
-                                        "\n" +
-                                        "                -ms-word-break: break-all;\n" +
-                                        "                /* This is the dangerous one in WebKit, as it breaks things wherever */\n" +
-                                        "                word-break: break-all;\n" +
-                                        "                /* Instead use this non-standard one: */\n" +
-                                        "                word-break: break-word;\n" +
-                                        "\n" +
-                                        "                /* Adds a hyphen where the word breaks, if supported (No Blink) */\n" +
-                                        "                -ms-hyphens: auto;\n" +
-                                        "                -moz-hyphens: auto;\n" +
-                                        "                -webkit-hyphens: auto;\n" +
-                                        "                hyphens: auto;\n" +
-                                        "\n" +
-                                        "            }\n" +
-                                        "</style>" +
-                                        s));
-                    }
-                });
-                result.setWidth("500px");
-                return result;
+            public void event(String s) {
+                Util.log(s);
+                vp.clear();
+                s = s.replace("(autokomplettering)", "");
+                vp.add(new HTMLPanel(
+                        "<style type=\"text/css\">\n" +
+                                ".popupContent {" +
+                                "    width: 450px; " +
+                                "    background-color: white;\n" +
+                                "}" +
+                                "            #table-container {\n" +
+                                "                width: 400px; " +
+                                "                background-color: white;\n" +
+                                "    border: gray thin solid;\n" +
+                                "    padding: 10px 10px;" +
+                                "            }\n" +
+                                "\n" +
+                                "            #table-container table.ifeed-metadata-table td {\n" +
+                                "                vertical-align: top; \n" +
+                                "                /* These are technically the same, but use both */\n" +
+                                "                overflow-wrap: break-word;\n" +
+                                "                word-wrap: break-word;\n" +
+                                "\n" +
+                                "                -ms-word-break: break-all;\n" +
+                                "                /* This is the dangerous one in WebKit, as it breaks things wherever */\n" +
+                                "                word-break: break-all;\n" +
+                                "                /* Instead use this non-standard one: */\n" +
+                                "                word-break: break-word;\n" +
+                                "\n" +
+                                "                /* Adds a hyphen where the word breaks, if supported (No Blink) */\n" +
+                                "                -ms-hyphens: auto;\n" +
+                                "                -moz-hyphens: auto;\n" +
+                                "                -webkit-hyphens: auto;\n" +
+                                "                hyphens: auto;\n" +
+                                "\n" +
+                                "            }\n" +
+                                "</style>" +
+                                s));
             }
-        };
-        add(lp);
+        });
 
-        /*sp.add(lp);*/
 
-        addDomHandler(
-                new MouseOutHandler() {
-                    @Override
-                    public void onMouseOut(MouseOutEvent event) {
-                        try {
-                            hide();
-                        } catch (Exception e) {
-                            Window.alert("" + e);
-                        }
-                    }
-                },
-                MouseOutEvent.getType()
-        );
+        add(vp);
 
-        /*
-        addDomHandler(event -> {
-            try {
-                hide();
-            } catch (Exception e) {
-                Window.alert("" + e);
+        addDomHandler(new MouseOutHandler() {
+
+            @Override
+            public void onMouseOut(MouseOutEvent mouseOutEvent) {
+                try {
+                    hide();
+                } catch (Exception e) {
+                    Window.alert("" + e);
+                }
             }
+
         }, MouseOutEvent.getType());
-        */
 
-      // add(sp);
+        // add(sp);
     }
-
-    /*private void addLabelAndDocumentMeta(String explainingText, String keyToGetWithFromDocument, int row) {
-        keyToGetWithFromDocument = keyToGetWithFromDocument.toLowerCase();
-        String propertyValue = Util.formatValueForDisplay(entry, keyToGetWithFromDocument) + "";
-        if (propertyValue != null && !propertyValue.trim().isEmpty() && !"undefined".equals(propertyValue)) {
-            plate.setText(row, 0, explainingText + ": ");
-            plate.getFlexCellFormatter().getElement(row, 0).getStyle().setWidth(30, Style.Unit.PC);
-            plate.getFlexCellFormatter().getElement(row, 0).getStyle().setVerticalAlign(Style.VerticalAlign.TOP);
-            plate.setText(row, 1, propertyValue);
-            plate.getFlexCellFormatter().getElement(row, 1).getStyle().setWidth(70, Style.Unit.PC);
-        }
-    }*/
 
 }

@@ -4,7 +4,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
 import com.google.gwt.user.client.Timer;
@@ -12,6 +15,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.*;
+
+import static se.vgregion.ifeed.client.Util.isUtcDate;
 
 //import jsinterop.annotations.JsMethod;
 
@@ -117,7 +122,7 @@ public class Starter {
         String url = getFeedHome();
         // https://ifeed.vgregion.se/iFeed-web/documents/b5e59d21-f1d6-40a6-8451-f98bc7efb29c/metadata
         url += (!url.endsWith("/") ? "/" : "")
-                + "iFeed-web/documents/" + id + "/metadata";
+                + "iFeed-web/documents/" + id + "/metadata?type=popup";
         return url;
     }
 
@@ -318,11 +323,13 @@ public class Starter {
             // impl.getFlexCellFormatter().addStyleNameHere(row, c, nameToCssClass(cd.fieldId));
             String cssStyleName = nameToCssClass(cd.fieldId);
             addStyleNameHere(cssStyleName, impl.getFlexCellFormatter(), row, c, 10000 + i + " " + cssStyleName + " " + cd.fieldId);
+            if (isUtcDate(item.get(cd.fieldId))) {
+                impl.getFlexCellFormatter().getElement(row, c).getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+            }
             c++;
         }
         addTextAlignmentToColumn(impl, row, columns);
     }
-
 
     private static void addTextAlignmentToColumn(FlexTable ft, int row, List<IfeedTag.Column> columns) {
         int c = 1;
@@ -354,6 +361,8 @@ public class Starter {
         return s.trim().equals("");
     }
 
+    private static EntryPopupPanel currentInfo;
+
     private static final Widget makeInfoCell(final Entry entry) {
         final HorizontalPanel hp = new HorizontalPanel();
         Image icon = new Image(images.information());
@@ -365,36 +374,32 @@ public class Starter {
         });
         hp.add(icon);
 
-        Util.log("Before adding dom handler.");
-        icon.addDomHandler(
-                new MouseOverHandler() {
-                    @Override
-                    public void onMouseOver(MouseOverEvent event) {
-                        try {
-                            final EntryPopupPanel info = new EntryPopupPanel(entry);
-                            info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
-                            info.show();
-                            info.setSize("100px","100px");
-                            entry.put("EntryPopupPanel", info);
-                            Util.log("onMouseOver");
-                        } catch (Exception e) {
-                            Window.alert(e + "");
-                        }
-                    }
-                },
-                MouseOverEvent.getType()
-        );
+        // Util.log("Before adding dom handler.");
 
-        icon.addDomHandler(
-                new MouseOutHandler() {
-                    @Override
-                    public void onMouseOut(MouseOutEvent event) {
-                        EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
-                        if (epp != null)
-                            epp.hide();
-                    }
-                },
-                MouseOutEvent.getType()
+        icon.addMouseOverHandler(new MouseOverHandler() {
+                                     @Override
+                                     public void onMouseOver(MouseOverEvent mouseOverEvent) {
+                                         if (currentInfo != null) {
+                                             currentInfo.hide();
+                                         }
+                                         final EntryPopupPanel info = currentInfo = new EntryPopupPanel(entry);
+                                         // info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
+                                         // info.setSize("200px", "200px");
+                                         // info.center();
+                                         info.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+                                             public void setPosition(int offsetWidth, int offsetHeight) {
+                                                 /*int left = (Window.getClientWidth() - offsetWidth) / 3;
+                                                 int top = (Window.getClientHeight() - offsetHeight) / 3;
+                                                 info.setPopupPosition(left, top);
+                                                 info.setPopupPosition(10, 10);*/
+                                                 info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
+                                             }
+                                         });
+                                         entry.put("EntryPopupPanel", info);
+                                         info.show();
+                                         // Util.log("onMouseOver");
+                                     }
+                                 }
         );
 
         String validToKey = "dc.date.validto";

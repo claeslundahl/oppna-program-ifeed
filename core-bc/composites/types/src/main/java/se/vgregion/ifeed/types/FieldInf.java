@@ -4,7 +4,10 @@ import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class FieldInf implements Serializable {
@@ -318,6 +321,37 @@ public class FieldInf implements Serializable {
             }
         }
         return null;
+    }
+
+    public void removeChildrenHavingNoHtmlValue() {
+        if (parent != null && children.isEmpty() && !inHtmlView) {
+            parent.getChildren().remove(this);
+            return;
+        }
+        for (FieldInf child : new ArrayList<FieldInf>(children)) {
+            child.removeChildrenHavingNoHtmlValue();
+        }
+    }
+
+    public void removeChildrenHavingNoTooltipValue() {
+        if (parent != null && children.isEmpty() && !this.inTooltip) {
+            parent.getChildren().remove(this);
+            return;
+        }
+        for (FieldInf child : new ArrayList<FieldInf>(children)) {
+            child.removeChildrenHavingNoHtmlValue();
+        }
+    }
+
+    public void visit(Visitor visitor) {
+        visitor.each(this);
+        for (FieldInf child : children) {
+            child.visit(visitor);
+        }
+    }
+
+    public interface Visitor {
+        void each(FieldInf item);
     }
 
 }

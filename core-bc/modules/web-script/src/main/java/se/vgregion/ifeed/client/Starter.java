@@ -117,12 +117,13 @@ public class Starter {
         }
     }
 
-    public static String toMetadataUrl(String id) {
+    public static String toMetadataUrl(String id, boolean popup) {
         id = id.replace("workspace://SpacesStore/", "");
         String url = getFeedHome();
         // https://ifeed.vgregion.se/iFeed-web/documents/b5e59d21-f1d6-40a6-8451-f98bc7efb29c/metadata
         url += (!url.endsWith("/") ? "/" : "")
-                + "iFeed-web/documents/" + id + "/metadata?type=popup";
+                + "iFeed-web/documents/" + id + "/metadata";
+        if (popup) url += "?type=popup";
         return url;
     }
 
@@ -136,7 +137,7 @@ public class Starter {
             fieldNames.add(putResultsHere.defaultsortcolumn);
             url += (!url.endsWith("/") ? "/" : "")
                     + "iFeed-web/meta.json?instance=" + putResultsHere.feedid
-                    + "&f=" + Util.join(fieldNames, "&f=");
+                    + "&f=" + Util.join(fieldNames, "&f=") + "&type=tooltip";
 
 
             final HTMLPanel place = HTMLPanel.wrap(putResultsHere.element);

@@ -78,6 +78,11 @@ public class IFeedViewerControllerTest {
     }
 
     @Test
+    public void foo() {
+        System.out.println("SE2321000131-E000000000001".matches("SE[0-9]{10}\\-E[0-9]{12}"));
+    }
+
+    @Test
     public void testSomeTimeParsing() throws ParseException {
         String string = "2015-04-10T08:34:00.000Z";
         /*String defaultTimezone = TimeZone.getDefault().getID();

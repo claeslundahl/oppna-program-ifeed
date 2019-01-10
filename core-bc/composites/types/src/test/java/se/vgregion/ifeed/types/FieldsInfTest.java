@@ -3,7 +3,6 @@ package se.vgregion.ifeed.types;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import junit.framework.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -26,6 +25,13 @@ public class FieldsInfTest {
         List<FieldInf> result = fi.getFieldInfs();
         System.out.println(result + " \n\n" + result.size());
         Assert.assertTrue(!result.isEmpty());
+    }
+
+    public static FieldInf getSampleFieldInf() {
+        FieldsInf fi = new FieldsInf();
+        fi.setText(loadFieldsConfigText());
+        List<FieldInf> result = fi.getFieldInfs();
+        return new FieldInf(result);
     }
 
     @Test
@@ -73,15 +79,27 @@ public class FieldsInfTest {
         System.out.println(json.length());
     }
 
-    private String loadFieldsConfigText() throws IOException {
-        return loadResource("/fields-config.json");
+    public static String loadSomeAlfrescoDoc() {
+        try {
+            return loadResource("/some-alfresco-doc.json");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String loadFieldsConfigText() {
+        try {
+            return loadResource("/fields-config.json");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String loadAlfrescoSampleDoc() throws IOException {
         return loadResource("/alfresco-sample-doc.json");
     }
 
-    private String loadResource(String name) throws IOException {
+    private static String loadResource(String name) throws IOException {
         URL url = FieldsInfTest.class.getResource(name);
         FileReader fr = new FileReader(url.getFile());
         FieldsInf fi = new FieldsInf();

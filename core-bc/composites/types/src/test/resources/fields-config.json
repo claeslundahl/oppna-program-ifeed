@@ -12,6 +12,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "dc.title",
@@ -299,6 +300,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "dc.creator",
@@ -377,6 +379,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "dc.creator.document",
@@ -444,6 +447,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "dc.date.validfrom",
@@ -511,6 +515,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "dc.contributor.acceptedby",
@@ -655,6 +660,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "dc.publisher.forunit",
@@ -788,6 +794,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "dc.type.process.name",
@@ -866,6 +873,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "dc.subject.keywords",
@@ -900,6 +908,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "language",
@@ -1078,9 +1087,10 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
-            "id": "title",
+            "id": "vgr:VgrExtension.vgr:Title",
             "name": "Titel",
             "help": "Titel",
             "type": "d:text_facet",
@@ -1188,6 +1198,30 @@
             "filter": true,
             "inHtmlView": true,
             "expanded": false
+          },
+          {
+            "id": "id",
+            "name": "Dokumentid",
+            "help": "Id",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "url",
+            "name": "Sökväg",
+            "help": "Sökväg till dokumentet",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
           }
         ],
         "filter": false,
@@ -1200,6 +1234,7 @@
         "help": "",
         "type": "",
         "apelonKey": "",
+        "inTooltip": false,
         "children": [
           {
             "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
@@ -1223,27 +1258,6 @@
             "inHtmlView": true,
             "expanded": false
           },
-          /*{
-                      "id": "vgr:VgrExtension.vgr:RevisedAvailableFrom",
-                      "name": "Tillgänglighetsdatum from",
-                      "help": "Tillgänglighetsdatum from",
-                      "type": "d:date",
-                      "apelonKey": "",
-                      "children": [],
-                      "filter": true,
-                      "inHtmlView": true,
-                      "expanded": false
-                    },{
-                      "id":"vgr:VgrExtension.vgr:AvailableTo",
-                      "name": "Tillgänglighetsdatum tom",
-                      "help": "Tillgänglighetsdatum tom",
-                      "type": "d:date",
-                      "apelonKey": "",
-                      "children": [],
-                      "filter": true,
-                      "inHtmlView": true,
-                      "expanded": false
-                    },*/
           {
             "id": "vgr:VgrExtension.vgr:SecurityClass",
             "name": "Åtkomsträtt",
@@ -1262,7 +1276,319 @@
       }
     ],
     "filter": false,
-    "inHtmlView": true,
+    "inHtmlView": false,
     "expanded": false
+  },
+  {
+    "id": "",
+    "name": "SOFIA för i-ikonen",
+    "help": "",
+    "type": "",
+    "filter": false,
+    "apelonKey": "",
+    "children": [
+      {
+        "id": "",
+        "name": "Dokumentegenskaper",
+        "help": "",
+        "type": "",
+        "apelonKey": "",
+        "filter": false,
+        "inTooltip": false,
+        "children": [
+          {
+            "id": "vgr:VgrExtension.vgr:Title",
+            "name": "Titel",
+            "help": "Titel",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:Producer",
+            "name": "Myndighet",
+            "help": "Myndighet",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:Classification.core:Classification.name",
+            "name": "Klassificeringsstrukturen (process)",
+            "help": "Klassificeringsstrukturen (process)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "core:ArchivalObject.core:ObjectType",
+            "name": "Handlingstyp",
+            "help": "Handlingstyp",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+            "name": "Upprättat för enhet",
+            "help": "Upprättat för enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
+            "name": "Regional ämnesindelning",
+            "help": "Regional ämnesindelning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+            "name": "Egen ämnesindelning",
+            "help": "Egen ämnesindelning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:Tag",
+            "name": "Företagsnyckelord",
+            "help": "Företagsnyckelord",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:Source.id",
+            "name": "Dokumentid källa",
+            "help": "Dokumentets id som det finns lagrat i källsystemet.",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:SourceSystem",
+            "name": "Källsystem",
+            "help": "Källsystem. Har bytt namn i indexet. Är oanvändbart, får flöden att inte träffa något. Upptäckte detta 8/11 2018.",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
+            "name": "Upprättat av enhet",
+            "help": "Upprättat av enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:CreatedBy",
+            "name": "Upprättat av (person)",
+            "help": "Upprättat av (person)",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:SecurityClass",
+            "name": "Åtkomsträtt",
+            "help": "Åtkomsträtt",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
+            "id": "url",
+            "name": "Sökväg",
+            "help": "Sökväg till dokumentet",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "originalDownloadLatestVersionUrl",
+            "name": "Sökväg orginal",
+            "help": "Sökväg till dokumentets ursprungskälla",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "inTooltip": true,
+            "expanded": false
+          }
+        ],
+        "filter": true,
+        "inHtmlView": true,
+        "expanded": false
+      }
+    ],
+    "filter": false,
+    "inHtmlView": true,
+    "inTooltip": false,
+    "expanded": false
+  },
+  {
+    "id": "",
+    "name": "Tooltips Root",
+    "filter": false,
+    "inTooltip": true,
+    "inHtmlView": false,
+    "expanded": false,
+    "children": [
+      {
+        "id": "",
+        "name": "Dokumentegenskaper",
+        "filter": false,
+        "inTooltip": true,
+        "inHtmlView": false,
+        "expanded": false,
+        "children": [
+          {
+            "id": "vgr:VgrExtension.vgr:Title",
+            "name": "Titel",
+            "help": "Titel",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.title",
+            "name": "Titel",
+            "help": "Titel",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          /* Three wariants of Myndighet. */
+          {
+            "id": "dc.creator.recordscreator",
+            "name": "Arkivbildare (autokomplettering)",
+            "help": "Ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.recordscreator.id",
+            "name": "Arkivbildare ID (VGR:s organisationsträd)",
+            "help": "ID för ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "expanded": false,
+            "inTooltip": true
+          },
+          {
+            "id": "core:ArchivalObject.core:Producer",
+            "name": "Myndighet",
+            "help": "Myndighet",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+            "name": "Upprättat för enhet",
+            "help": "Upprättat för enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "id",
+            "name": "Dokumentid",
+            "help": "Id",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "url",
+            "name": "Sökväg",
+            "help": "Sökväg till dokumentet",
+            "type": "d:text",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          }
+        ]
+      }
+    ]
   }
 ]

@@ -1,0 +1,62 @@
+{
+  "id": "workspace://SpacesStore/cdc2e8da-fe61-41c8-aac6-08d5020d4e36",
+  "SourceSystem": "Alfresco",
+  "action": "create",
+  "format": [
+    "p-facet.format.pdf"
+  ],
+  "language": "Svenska",
+  "url": "https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/5af78612-2648-41d1-9182-03e34be11d25?a\u003dfalse\u0026guest\u003dtrue",
+  "url_t": "https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/5af78612-2648-41d1-9182-03e34be11d25?a\u003dfalse\u0026guest\u003dtrue",
+  "public": true,
+  "published": true,
+  "revisiondate": "2017-02-08T13:37:15Z",
+  "title": "05 Personer i Västfolkets testdatabas",
+  "version": "0.1",
+  "dc.publisher": "Jörgen Fors (jorfo1) VGR/Org/Regionstyrelsen/Koncernkontoret/Avd Ärendesamordning o kansli/Administrativ service",
+  "dc.publisher.id": "jorfo1",
+  "dc.title": "05 Personer i Västfolkets testdatabas",
+  "dc.language": [
+    "swe"
+  ],
+  "dc.source.documentid": "workspace://SpacesStore/5af78612-2648-41d1-9182-03e34be11d25",
+  "dc.publisher.forunit.flat": "Västra Götalandsregionen",
+  "dc.publisher.forunit.id": [
+    "SE2321000131-E000000000001"
+  ],
+  "dc.type.record": "Ospecificerat",
+  "dc.format.extension": "pdf",
+  "dc.type.record.id": "51465413",
+  "dc.identifier.documentid": "workspace://SpacesStore/cdc2e8da-fe61-41c8-aac6-08d5020d4e36",
+  "dc.rights.accessrights": [
+    "Internet"
+  ],
+  "dc.identifier.version": "0.1",
+  "dc.source": "https://alfresco.vgregion.se/share/page/site/dokument-vgr/document-details?nodeRef\u003dworkspace://SpacesStore/5af78612-2648-41d1-9182-03e34be11d25",
+  "dc.contributor.savedby": "Jörgen Fors (jorfo1) VGR/Org/Regionstyrelsen/Koncernkontoret/Avd Ärendesamordning o kansli/Administrativ service",
+  "dc.format.extension.native": "doc",
+  "dc.publisher.forunit": [
+    "Västra Götalandsregionen"
+  ],
+  "dc.format.extent.mimetype": "application/pdf",
+  "dc.identifier": "https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/5af78612-2648-41d1-9182-03e34be11d25?a\u003dfalse\u0026guest\u003dtrue",
+  "dc.contributor.savedby.id": "jorfo1",
+  "dc.source.origin": "Alfresco",
+  "dc.identifier.native": "https://alfresco.vgregion.se/alfresco/service/vgr/storage/node/content/workspace/SpacesStore/5af78612-2648-41d1-9182-03e34be11d25?a\u003dfalse\u0026guest\u003dtrue\u0026native\u003dtrue",
+  "dc.type.document": "Information",
+  "dc.date.issued": "2017-02-08T13:37:15Z",
+  "dc.format.extent.mimetype.native": "application/msword",
+  "dc.title.filename": "05 Personer i Västfolkets testdatabas.pdf",
+  "dc.title.filename.native": "05 Personer i Västfolkets testdatabas.doc",
+  "dcterms.created": [
+    "2017-02-08T13:37:12Z"
+  ],
+  "dc.date.availablefrom": "2017-02-08T13:37:15Z",
+  "infotype": [
+    "Dokument"
+  ],
+  "source": "Dokumentlager",
+  "_version_": 1.61801164076823347E18,
+  "archived": false,
+  "processingtime": "2018-11-24T10:42:25.446Z"
+}

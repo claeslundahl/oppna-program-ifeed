@@ -122,7 +122,7 @@
 
                     <p:overlayPanel style="overflow-x: none; width: 450px;" dynamic="true" id="infoTip" for="info" rendered="#{value != null}" showEvent="mouseover" hideEvent="mouseout" >
 
-                        <img src="" onerror="var me = this; httpGet(&quot;#{app.webScriptJsonUrl}/iFeed-web/documents/#{value['id'].replace('workspace://SpacesStore/', '')}/metadata&quot;, function(html) { me.parentNode.innerHTML = html; })"/>
+                        <img src="" onerror="var me = this; httpGet(&quot;#{app.webScriptJsonUrl}/iFeed-web/documents/#{value['id'].replace('workspace://SpacesStore/', '')}/metadata&amp;type=tooltip&quot;, function(html) { me.parentNode.innerHTML = html; })"/>
 
                     </p:overlayPanel>
 

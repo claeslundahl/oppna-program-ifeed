@@ -23,6 +23,8 @@ import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ldap.LdapApi;
+import se.vgregion.ldap.LdapSupportService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -604,7 +606,7 @@ public class IFeedViewerController {
             calendar.setTime(date);
             return calendar;
             //outFormatter.setTimeZone(inParser.getTimeZone());
-            //idValueMap.put(childId, outFormatter.format(date));
+            //idValueMap.put(childId, outFormatter.ifHsaThenFormat(date));
         } catch (ParseException e) {
             // Wasn't a date
             //idValueMap.put(childId, sValue);
@@ -629,6 +631,33 @@ public class IFeedViewerController {
     }
 
     //static List<String> sofiaSystems = new ArrayList<>(Arrays.asList("SOFIA", "SISOM"));
+
+    private static LdapApi ldapApi = LdapApi.newInstanceFromConfig();
+
+    @Autowired
+    private LdapSupportService ldapSupportService;
+
+    private String ifHsaThenFormat(String that) {
+        if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
+            List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
+            if (items.size() == 1) {
+                that = String.format("%s (%s)", items.get(0).get("ou"), that);
+            }
+        }
+        return that;
+    }
+
+    private Object ifHsaThenFormat(Object that) {
+        if (that instanceof List) {
+            List<String> texts = new ArrayList<>();
+            for (Object o : ((List) that)) {
+                texts.add(ifHsaThenFormat(o.toString()));
+            }
+            return texts;
+        } else {
+            return ifHsaThenFormat(that.toString());
+        }
+    }
 
     /**
      * Using path variables to asscess a feed from a http client.
@@ -670,22 +699,21 @@ public class IFeedViewerController {
         Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
         FieldInf root = new FieldInf(iFeedService.getFieldInfs());
 
-        root.combine(doc);
-        if ("tooltip".equals(type)) {
-            root.removeChildrenHavingNoTooltipValue();
-        } else {
-            root.removeChildrenHavingNoHtmlValue();
+        for (String s : doc.keySet()) {
+            doc.put(s, ifHsaThenFormat(doc.get(s)));
         }
-        root.removeChildrenHavingNoValue();
 
-        root.visit(new FieldInf.Visitor() {
-            @Override
-            public void each(FieldInf item) {
-                if (item.getName() != null) {
-                    item.setName(item.getName().replace("(autokomplettering)", ""));
-                }
-            }
-        });
+        formatAnyHyperLinks(doc);
+
+        if ("tooltip".equals(type)) {
+            root.initForMiniView(doc);
+        } else {
+            root.initForMaxView(doc);
+        }
+
+        if (root.getChildren().isEmpty()) {
+            throw new RuntimeException();
+        }
 
         FieldInf result = root.getChildren().get(0);
 
@@ -700,6 +728,18 @@ public class IFeedViewerController {
         response.setHeader("Access-Control-Allow-Origin", "*");
 
         return "documentDetails";
+    }
+
+    private void formatAnyHyperLinks(Map<String, Object> doc) {
+        for (String key : doc.keySet()) {
+            Object value = doc.get(key);
+            if (value instanceof String) {
+                String text = (String) value;
+                if (text.startsWith("https://") || text.startsWith("http://")) {
+                    doc.put(key, String.format("<a href=\"%s\">%s</a>", text, text));
+                }
+            }
+        }
     }
 
     private List<LabelledValue> newAlfrescoBariumDisplayFieldsWithoutValue() {
@@ -786,10 +826,10 @@ public class IFeedViewerController {
         result.add(new LabelledValue("dc.format.extent", "Omfattning"));
         result.add(new LabelledValue("dc.identifier.location", "Fysisk placering"));
         result.add(new LabelledValue("dc.type.templatename", "Mallnamn"));
-        result.add(new LabelledValue("dc.format.extent.mimetype", "Mimetyp, utgivet/publicerat"));
-        result.add(new LabelledValue("dc.format.extent.mimetype.native", "Mimetyp, original"));
-        result.add(new LabelledValue("dc.format.extension", "Filändelse, utgivet/publicerat"));
-        result.add(new LabelledValue("dc.format.extension.native", "Filändelse, original"));
+        result.add(new LabelledValue("dc.ifHsaThenFormat.extent.mimetype", "Mimetyp, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.ifHsaThenFormat.extent.mimetype.native", "Mimetyp, original"));
+        result.add(new LabelledValue("dc.ifHsaThenFormat.extension", "Filändelse, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.ifHsaThenFormat.extension.native", "Filändelse, original"));
         result.add(new LabelledValue("dc.identifier.checksum", "Kontrollsumma dokument, utgivet/publicerat"));
         result.add(new LabelledValue("dc.identifier.checksum.native", "Kontrollsumma dokument, original"));
         result.add(new LabelledValue("dc.source.origin", "Källsystem"));

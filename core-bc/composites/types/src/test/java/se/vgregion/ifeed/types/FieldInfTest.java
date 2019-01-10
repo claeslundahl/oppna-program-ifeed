@@ -1,9 +1,16 @@
 package se.vgregion.ifeed.types;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+import static se.vgregion.ifeed.types.FieldsInfTest.getSampleFieldInf;
 
 public class FieldInfTest {
 
@@ -13,6 +20,32 @@ public class FieldInfTest {
         String csvRow = one.toCsvRow();
         FieldInf copy = FieldInf.fromCsvRow(csvRow);
         Assert.assertEquals(csvRow, copy.toCsvRow());
+    }
+
+    @Test
+    public void initForMiniView() {
+        FieldInf fi = getSampleFieldInf();
+        fi.init();
+
+        Type type = new TypeToken<Map<String, Object>>(){}.getType();
+        Map<String, Object> doc = new GsonBuilder().create().fromJson(FieldsInfTest.loadSomeAlfrescoDoc(), type);
+
+        fi.initForMiniView(doc);
+        fi.getChildren().get(0);
+    }
+
+    final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    @Test
+    public void initForMaxView() {
+        FieldInf fi = getSampleFieldInf();
+        fi.init();
+
+        Type type = new TypeToken<Map<String, Object>>(){}.getType();
+        Map<String, Object> doc = gson.fromJson(FieldsInfTest.loadSomeAlfrescoDoc(), type);
+
+        fi.initForMaxView(doc);
+        System.out.println(fi.getChildren().get(0));
     }
 
 }

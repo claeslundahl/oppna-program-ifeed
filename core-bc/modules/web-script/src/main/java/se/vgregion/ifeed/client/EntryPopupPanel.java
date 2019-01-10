@@ -29,7 +29,7 @@ public class EntryPopupPanel extends PopupPanel {
         this.entry = entry;
         final VerticalPanel vp = new VerticalPanel();
 
-        Invocer.fetchHtml(Starter.toMetadataUrl((String) entry.get("id")), new Invocer.Callback<String>() {
+        Invocer.fetchHtml(Starter.toMetadataUrl((String) entry.get("id"), true), new Invocer.Callback<String>() {
             @Override
             public void event(String s) {
                 Util.log(s);

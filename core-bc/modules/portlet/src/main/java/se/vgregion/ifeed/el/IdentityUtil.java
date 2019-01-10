@@ -3,7 +3,7 @@ package se.vgregion.ifeed.el;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import se.vgregion.ifeed.formbean.BaseVgrOrganization;
+import se.vgregion.ldap.BaseVgrOrganization;
 import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ldap.LdapSupportService;
 

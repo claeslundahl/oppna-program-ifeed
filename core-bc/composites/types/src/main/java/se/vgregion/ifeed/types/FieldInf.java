@@ -19,10 +19,10 @@ public class FieldInf implements Serializable {
     public FieldInf(List<FieldInf> children) {
         this();
         this.children.addAll(children);
+        init();
     }
 
     private int level;
-
 
     private String id, name, help, type, apelonKey = "", value;
 
@@ -334,12 +334,12 @@ public class FieldInf implements Serializable {
     }
 
     public void removeChildrenHavingNoTooltipValue() {
-        if (parent != null && children.isEmpty() && !this.inTooltip) {
+        if (parent != null && !this.inTooltip) {
             parent.getChildren().remove(this);
             return;
         }
         for (FieldInf child : new ArrayList<FieldInf>(children)) {
-            child.removeChildrenHavingNoHtmlValue();
+            child.removeChildrenHavingNoTooltipValue();
         }
     }
 
@@ -348,6 +348,36 @@ public class FieldInf implements Serializable {
         for (FieldInf child : children) {
             child.visit(visitor);
         }
+    }
+
+    public void initForMiniView(Map<String, Object> doc) {
+        removeChildrenHavingNoTooltipValue();
+        combine(doc);
+        removeChildrenHavingNoValue();
+        editTexts();
+    }
+
+    public void initForMaxView(Map<String, Object> doc) {
+        removeChildrenHavingNoHtmlValue();
+        for (FieldInf child : new ArrayList<>(children)) {
+            if (!child.isInHtmlView()) {
+                children.remove(child);
+            }
+        }
+        combine(doc);
+        removeChildrenHavingNoValue();
+        editTexts();
+    }
+
+    private void editTexts() {
+        visit(new FieldInf.Visitor() {
+            @Override
+            public void each(FieldInf item) {
+                if (item.getName() != null) {
+                    item.setName(item.getName().replace("(autokomplettering)", ""));
+                }
+            }
+        });
     }
 
     public interface Visitor {

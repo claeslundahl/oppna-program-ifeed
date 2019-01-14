@@ -40,6 +40,15 @@ public class DateFormatter {
         insideHere.put(withThatKey, issued);
     }
 
+    public static String formatTextDate(String that) {
+        if (that.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
+            String[] parts = that.split(Pattern.quote("T"));
+            String[] subDayParts = parts[1].split(Pattern.quote(":"));
+            return parts[0] + " " + subDayParts[0] + ":" + subDayParts[1];
+        }
+        return that;
+    }
+
     public void formatDates(Map<String, Object> within) {
         formatTextDate("dc.date.validfrom", within);
         formatTextDate("dc.date.issued", within);
@@ -58,6 +67,10 @@ public class DateFormatter {
     public static String format(final Date date, final DateFormat dateFormat) {
         DateTime dt = new DateTime(date.getTime(), DateTimeZone.UTC);
         return dt.toString(dateFormat.formatter);
+    }
+
+    public static String format(final Date date) {
+        return format(date, DateFormat.W3CDTF);
     }
 
     private final static SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");

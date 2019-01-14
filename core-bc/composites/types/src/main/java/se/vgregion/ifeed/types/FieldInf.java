@@ -374,7 +374,11 @@ public class FieldInf implements Serializable {
             @Override
             public void each(FieldInf item) {
                 if (item.getName() != null) {
-                    item.setName(item.getName().replace("(autokomplettering)", ""));
+                    item.setName(
+                            item.getName()
+                                    .replace("(autokomplettering)", "")
+                                    .replace("(VGR:s organisationsträd)", "")
+                    );
                 }
             }
         });

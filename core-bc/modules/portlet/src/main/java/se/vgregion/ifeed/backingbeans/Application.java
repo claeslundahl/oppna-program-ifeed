@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.InvocerUtil;
-import se.vgregion.common.utils.InstrumentationHome;
 import se.vgregion.common.utils.Json;
 import se.vgregion.common.utils.MemoryTool;
 import se.vgregion.ifeed.el.AccessGuard;
@@ -27,6 +26,7 @@ import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
+import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.client.Result;
@@ -52,7 +52,6 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
 import java.io.*;
-import java.lang.instrument.Instrumentation;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -288,6 +287,7 @@ public class Application {
         }
 
         this.filters = iFeedService.getFieldInfs();
+        cleanFieldsNotFilters(filters);
         selectedFieldInfRootName = filters.get(0).getName();
         this.filtersMap = new HashMap<>();
         for (FieldInf root : filters) {
@@ -299,6 +299,14 @@ public class Application {
 
         setFilters(filters);
 
+    }
+
+    private static void cleanFieldsNotFilters(List<FieldInf> filters) {
+        for (FieldInf fieldInf : new ArrayList<>(filters)) {
+            if (!fieldInf.isFilter()) {
+                filters.remove(fieldInf);
+            }
+        }
     }
 
     private void initFieldsInsideModel() {
@@ -784,7 +792,10 @@ public class Application {
     public List<SelectItem> getRootFieldInfs() {
         List<SelectItem> result = new ArrayList<>();
         for (FieldInf fi : getFilters()) {
-            result.add(new SelectItem(fi.getId(), fi.getName()));
+            if (fi.getParent() != null && fi.getParent().isFilter()) {
+                result.add(new SelectItem(fi.getId(), fi.getName()));
+            }
+
         }
         return result;
     }
@@ -793,7 +804,7 @@ public class Application {
         Set<String> blackList = getMultiValueKeys();
         List<SelectItemGroup> result = new ArrayList();
         if (filters == null) {
-            this.filters = iFeedService.getFieldInfs();
+            this.filters = new ArrayList<>(iFeedService.getFieldInfs());
         }
         for (FieldInf parent : getFilters()) {
 
@@ -1191,7 +1202,9 @@ public class Application {
     public void copyAndPersistFeed(PortletRequest request, Long withThatKey)
             throws SystemException, PortalException {
         User user = getUser(request);
-        viewIFeed(iFeedService.copyAndPersistFeed(withThatKey, user.getScreenName()).getId());
+        Long clone = iFeedService.copyAndPersistFeed(withThatKey, user.getScreenName()).getId();
+
+        viewIFeed(clone);
         setInEditMode(true);
     }
 
@@ -1211,25 +1224,29 @@ public class Application {
     }
 
     public void updateSearchResults(IFeed retrievedFeed) {
-        /*updateSearchResults(
-                retrievedFeed,
-                //"dc.title",
-                "title",
-                "asc",
-                0,
-                500,
-                new String[]{
-                        //"dc.title",
-                        "title",
-                        "dc.date.issued"
-                }
-        );*/
+        if (retrievedFeed.toQuery().trim().equals("")) {
+            this.searchResults = new ArrayList<>();
+            return;
+        }
+
         List<Map<String, Object>> result = null;
         SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
         Result fromSolr = client.query(retrievedFeed.toQuery(), 0, 501, "title asc");
         if (fromSolr != null && fromSolr.getResponse() != null && fromSolr.getResponse().getDocs() != null)
             result = client.query(retrievedFeed.toQuery(), 0, 501, "title asc").getResponse().getDocs();
         this.searchResults = result;
+    }
+
+    public static Object formatDate(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Date) {
+            return DateFormatter.format((Date) value);
+        } else if (value instanceof String) {
+            return DateFormatter.formatTextDate((String) value);
+        }
+        return value;
     }
 
     /*public void updateSearchResults(IFeed retrievedFeed,

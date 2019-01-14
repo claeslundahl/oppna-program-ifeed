@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.types.*;
+import se.vgregion.ldap.LdapApi;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -241,9 +242,21 @@ public class IFeedModelBean extends IFeed implements Serializable {
 
     private List<IFeedFilter> filtersAsList;
 
+    private LdapApi ldapApi = LdapApi.newInstanceFromConfig();
+
     public List<IFeedFilter> getFiltersAsList() {
         if (filtersAsList == null) {
             filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
+            for (IFeedFilter item : filtersAsList) {
+                String that = item.getFilterQuery();
+                if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
+                    List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
+                    if (items.size() == 1) {
+                        that = String.format("%s (%s)", items.get(0).get("ou"), that);
+                        item.setFilterQueryForDisplay(that);
+                    }
+                }
+            }
         }
         return filtersAsList;
     }

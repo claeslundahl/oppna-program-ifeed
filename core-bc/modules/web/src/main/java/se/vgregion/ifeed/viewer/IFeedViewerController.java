@@ -711,10 +711,6 @@ public class IFeedViewerController {
             root.initForMaxView(doc);
         }
 
-        if (root.getChildren().isEmpty()) {
-            throw new RuntimeException();
-        }
-
         FieldInf result = root.getChildren().get(0);
 
         for (FieldInf child : root.getChildren()) {

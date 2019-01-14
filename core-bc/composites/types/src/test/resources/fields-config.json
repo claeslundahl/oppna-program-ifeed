@@ -1070,7 +1070,7 @@
         "expanded": false
       }
     ],
-    "filter": false,
+    "filter": true,
     "inHtmlView": true,
     "expanded": false
   },
@@ -1213,7 +1213,7 @@
           },
           {
             "id": "url",
-            "name": "Sökväg",
+            "name": "Länk för webben",
             "help": "Sökväg till dokumentet",
             "type": "d:text",
             "apelonKey": "",
@@ -1275,7 +1275,7 @@
         "expanded": false
       }
     ],
-    "filter": false,
+    "filter": true,
     "inHtmlView": false,
     "expanded": false
   },
@@ -1406,8 +1406,19 @@
             "inHtmlView": true,
             "expanded": false
           },
-          {
+/*          {
             "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
+            "name": "Upprättat av enhets-id",
+            "help": "Upprättat av enhets-id",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },*/
+          {
+            "id": "vgr:VgrExtension.vgr:CreatedByUnit",
             "name": "Upprättat av enhet",
             "help": "Upprättat av enhet",
             "type": "d:ldap_org_value",
@@ -1441,7 +1452,7 @@
           },
           {
             "id": "url",
-            "name": "Sökväg",
+            "name": "Länk för webben",
             "help": "Sökväg till dokumentet",
             "type": "d:text",
             "apelonKey": "",
@@ -1453,7 +1464,7 @@
           },
           {
             "id": "originalDownloadLatestVersionUrl",
-            "name": "Sökväg orginal",
+            "name": "Länk för webben (orginalformat)",
             "help": "Sökväg till dokumentets ursprungskälla",
             "type": "d:text",
             "apelonKey": "",
@@ -1553,6 +1564,18 @@
           },
           {
             "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+            "name": "Upprättat för enhets-id",
+            "help": "Upprättat för enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "vgr:VgrExtension.vgr:PublishedForUnit",
             "name": "Upprättat för enhet",
             "help": "Upprättat för enhet",
             "type": "d:ldap_org_value",
@@ -1574,10 +1597,10 @@
             "inHtmlView": false,
             "inTooltip": true,
             "expanded": false
-          },
+          }/*,
           {
             "id": "url",
-            "name": "Sökväg",
+            "name": "Länk för webben",
             "help": "Sökväg till dokumentet",
             "type": "d:text",
             "apelonKey": "",
@@ -1586,7 +1609,7 @@
             "inHtmlView": false,
             "inTooltip": true,
             "expanded": false
-          }
+          }*/
         ]
       }
     ]

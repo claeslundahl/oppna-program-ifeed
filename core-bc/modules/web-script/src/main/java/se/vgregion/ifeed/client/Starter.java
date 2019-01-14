@@ -123,7 +123,7 @@ public class Starter {
         // https://ifeed.vgregion.se/iFeed-web/documents/b5e59d21-f1d6-40a6-8451-f98bc7efb29c/metadata
         url += (!url.endsWith("/") ? "/" : "")
                 + "iFeed-web/documents/" + id + "/metadata";
-        if (popup) url += "?type=popup";
+        if (popup) url += "?type=tooltip";
         return url;
     }
 

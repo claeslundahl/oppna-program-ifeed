@@ -119,12 +119,19 @@
             position: relative;
             bottom: 2px;
         }
+
+        <c:if test="${param['type'] eq 'tooltip'}">
+        .title-header {
+            display: none;
+        }
+        </c:if>
+
     </style>
 </head>
 <body>
 
 <div class="document-metadata" id="table-container">
-    <h1>${doc.value}</h1>
+    <h1 class="title-header">${doc.value}</h1>
 
     <c:forEach items="${doc.children}" var="paragraph">
         <div>

@@ -713,7 +713,6 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     @Transactional
     public IFeed copyAndPersistFeed(Long withThatKey, String otherUserId) {
-        // System.out.println("Kopierar för " + otherUserId);
         assert otherUserId != null && !otherUserId.isEmpty();
         IFeed result = findByPrimaryKey(IFeed.class, withThatKey);
         init(result);
@@ -721,6 +720,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         result.setUserId(otherUserId);
         result.setCreatorName(otherUserId);
         objectRepo.persist(result);
+        objectRepo.flush();
+        update(result);
         return result;
     }
 

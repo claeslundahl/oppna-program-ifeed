@@ -1198,30 +1198,6 @@
             "filter": true,
             "inHtmlView": true,
             "expanded": false
-          },
-          {
-            "id": "id",
-            "name": "Dokumentid",
-            "help": "Id",
-            "type": "d:text",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": false,
-            "inTooltip": true,
-            "expanded": false
-          },
-          {
-            "id": "url",
-            "name": "Länk för webben",
-            "help": "Sökväg till dokumentet",
-            "type": "d:text",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": false,
-            "inTooltip": true,
-            "expanded": false
           }
         ],
         "filter": false,
@@ -1320,7 +1296,7 @@
           },
           {
             "id": "core:ArchivalObject.core:Classification.core:Classification.name",
-            "name": "Klassificeringsstrukturen (process)",
+            "name": "Klassificerings&shy;strukturen (process)",
             "help": "Klassificeringsstrukturen (process)",
             "type": "d:text_facet",
             "apelonKey": "",
@@ -1353,7 +1329,7 @@
           },
           {
             "id": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
-            "name": "Regional ämnesindelning",
+            "name": "Regional ämnes&shy;indelning",
             "help": "Regional ämnesindelning",
             "type": "d:text_facet",
             "apelonKey": "",
@@ -1364,7 +1340,7 @@
           },
           {
             "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
-            "name": "Egen ämnesindelning",
+            "name": "Egen ämnes&shy;indelning",
             "help": "Egen ämnesindelning",
             "type": "d:text_facet",
             "apelonKey": "",
@@ -1373,9 +1349,9 @@
             "inHtmlView": true,
             "expanded": false
           },
-          {
+          /*{
             "id": "vgr:VgrExtension.vgr:Tag",
-            "name": "Företagsnyckelord",
+            "name": "Företags&shy;nyckelord",
             "help": "Företagsnyckelord",
             "type": "d:text_facet",
             "apelonKey": "",
@@ -1383,10 +1359,10 @@
             "filter": true,
             "inHtmlView": true,
             "expanded": false
-          },
+          },*/
           {
             "id": "vgr:VgrExtension.vgr:Source.id",
-            "name": "Dokumentid källa",
+            "name": "Dokument&shy;id källa",
             "help": "Dokumentets id som det finns lagrat i källsystemet.",
             "type": "d:text_facet",
             "apelonKey": "",
@@ -1525,6 +1501,116 @@
             "inTooltip": true,
             "expanded": false
           },
+
+          {
+            "id": "dc.publisher.forunit",
+            "name": "Publicerat för enhet",
+            "help": "Publicerat för enhet",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.description",
+            "name": "Beskrivning",
+            "help": "Beskrivning",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.document",
+            "name": "Innehålls&shy;ansvarig",
+            "help": "Innehållsansvarig",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.creator.function",
+            "name": "Innehålls&shy;ansvarig, roll",
+            "help": "Innehållsansvarig, roll",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.acceptedby",
+            "name": "Godkänt av",
+            "help": "Godkänt av",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.contributor.acceptedby.role",
+            "name": "Godkänt av, roll",
+            "help": "Godkänt av, roll",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.validfrom",
+            "name": "Giltig fr o m",
+            "help": "Giltig fr o m",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.date.validto",
+            "name": "Giltig t o m",
+            "help": "Giltig t o m",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+          {
+            "id": "dc.type.document.structure",
+            "name": "Dokument&shy;struktur VGR",
+            "help": "Dokumentstruktur VGR",
+            "type": "d:text_facet",
+            "apelonKey": "",
+            "children": [],
+            "filter": false,
+            "inHtmlView": false,
+            "inTooltip": true,
+            "expanded": false
+          },
+
           /* Three wariants of Myndighet. */
           {
             "id": "dc.creator.recordscreator",
@@ -1562,7 +1648,7 @@
             "inTooltip": true,
             "expanded": false
           },
-          {
+/*          {
             "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
             "name": "Upprättat för enhets-id",
             "help": "Upprättat för enhet",
@@ -1573,7 +1659,7 @@
             "inHtmlView": false,
             "inTooltip": true,
             "expanded": false
-          },
+          },*/
           {
             "id": "vgr:VgrExtension.vgr:PublishedForUnit",
             "name": "Upprättat för enhet",
@@ -1588,7 +1674,7 @@
           },
           {
             "id": "id",
-            "name": "Dokumentid",
+            "name": "Dokument&shy;id",
             "help": "Id",
             "type": "d:text",
             "apelonKey": "",

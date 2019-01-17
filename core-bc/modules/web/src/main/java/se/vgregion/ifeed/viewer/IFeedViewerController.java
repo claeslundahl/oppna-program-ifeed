@@ -452,9 +452,20 @@ public class IFeedViewerController {
             copyValueFromSofiaToAlfrescoBariumFields(item);
         }
 
-        model.addAttribute("result", otherResult.getResponse().getDocs());
+        if (retrievedFeed.getLinkNativeDocument()) {
+            for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
+                String originalDownloadLatestVersionUrl = (String) item.get("originalDownloadLatestVersionUrl");
+                if (originalDownloadLatestVersionUrl != null && !"".equals(originalDownloadLatestVersionUrl.trim())) {
+                    // Is a Sofia doc.
+                    item.put("url", originalDownloadLatestVersionUrl);
+                } else {
+                    // Assume it is from Barium or Alfresco.
+                    item.put("url", item.get("dc.identifier.native"));
+                }
+            }
+        }
 
-        System.out.println("Found " + otherResult.getResponse().getDocs().size());
+        model.addAttribute("result", otherResult.getResponse().getDocs());
 
         return "documentList";
     }

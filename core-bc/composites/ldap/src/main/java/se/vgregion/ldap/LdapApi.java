@@ -24,6 +24,8 @@ public class LdapApi {
 
     private String[] attributeFilter = {"*"};
 
+    private static LdapApi instance;
+
     public LdapApi() {
         super();
     }
@@ -170,14 +172,17 @@ public class LdapApi {
 
     public static LdapApi newInstanceFromConfig() {
         try {
+            if (instance != null) {
+                return instance;
+            }
             Properties prop = fetchProperties();
-            LdapApi api = new LdapApi(
+            instance = new LdapApi(
                     prop.getProperty("ldap.org.authentication.java.naming.provider.url"),
                     prop.getProperty("ldap.org.synchronization.java.naming.security.principal"),
                     prop.getProperty("ldap.org.synchronization.java.naming.security.credentials"),
                     prop.getProperty("ldap.org.synchronization.userSearchBase")
             );
-            return api;
+            return instance;
         } catch (Exception e) {
             return null;
         }

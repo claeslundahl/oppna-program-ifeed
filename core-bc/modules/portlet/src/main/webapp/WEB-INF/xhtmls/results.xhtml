@@ -8,13 +8,49 @@
 
     <h:panelGroup rendered="#{iFeedModelBean.hasAnyFilter()}">
 
-        <style type="text/css">
-            #table-container table.ifeed-metadata-table {
+        <!--
+                <style type="text/css">
+                    #table-container table.ifeed-metadata-table {
+                        width: 400px;
+                    }
+
+                    #table-container table.ifeed-metadata-table td {
+
+                        /* These are technically the same, but use both */
+                        overflow-wrap: break-word;
+                        word-wrap: break-word;
+
+                        -ms-word-break: break-all;
+                        /* This is the dangerous one in WebKit, as it breaks things wherever */
+                        word-break: break-all;
+                        /* Instead use this non-standard one: */
+                        word-break: break-word;
+
+                        /* Adds a hyphen where the word breaks, if supported (No Blink) */
+                        -ms-hyphens: auto;
+                        -moz-hyphens: auto;
+                        -webkit-hyphens: auto;
+                        hyphens: auto;
+
+                    }
+                </style>
+        -->
+
+        <!--<style type="text/css">
+            .popupContent {
+                width: 450px;
+                background-color: white;
+            }
+
+            #table-container {
                 width: 400px;
+                background-color: white;
+                border: gray thin solid;
+                padding: 10px 10px;
             }
 
             #table-container table.ifeed-metadata-table td {
-
+                vertical-align: top;
                 /* These are technically the same, but use both */
                 overflow-wrap: break-word;
                 word-wrap: break-word;
@@ -32,7 +68,7 @@
                 hyphens: auto;
 
             }
-        </style>
+        </style>-->
 
         <h:panelGroup rendered="#{app.inEditMode}" styleClass="ifeed-step" layout="block">
             <span>Din träfflista</span>
@@ -120,9 +156,11 @@
                              width="16" height="16" id="yui_patched_v3_11_0_1_1515744592927_549"/>
                     </h:outputLink>
 
-                    <p:overlayPanel style="overflow-x: none; width: 450px;" dynamic="true" id="infoTip" for="info" rendered="#{value != null}" showEvent="mouseover" hideEvent="mouseout" >
+                    <p:overlayPanel style="overflow-x: none; width: 450px;" dynamic="true" id="infoTip" for="info"
+                                    rendered="#{value != null}" showEvent="mouseover" hideEvent="mouseout">
 
-                        <img src="" onerror="var me = this; httpGet(&quot;#{app.webScriptJsonUrl}/iFeed-web/documents/#{value['id'].replace('workspace://SpacesStore/', '')}/metadata&#63;type=tooltip&quot;, function(html) { me.parentNode.innerHTML = html; })"/>
+                        <img src=""
+                             onerror="var me = this; httpGet(&quot;#{app.webScriptJsonUrl}/iFeed-web/documents/#{value['id'].replace('workspace://SpacesStore/', '')}/metadata&#63;type=tooltip&quot;, function(html) { me.parentNode.innerHTML = html; })"/>
 
                     </p:overlayPanel>
 

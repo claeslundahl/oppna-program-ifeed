@@ -54,7 +54,7 @@ public class Ie7Rewrite implements Filter {
     public void doFilter(final ServletRequest request, ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         PrintWriter out = response.getWriter();
         final CharResponseWrapper responseWrapper = new CharResponseWrapper(
-            (HttpServletResponse) response);
+                (HttpServletResponse) response);
 
         HttpServletRequest hr = (HttpServletRequest) request;
         String userAgent = hr.getHeader("User-Agent");
@@ -68,19 +68,35 @@ public class Ie7Rewrite implements Filter {
                 result = urlToContentCache.get(path);
             } else if (!jsConversionRunning) {
                 jsConversionRunning = true;
-                try {
-                    LOGGER.debug("Rewriting ie-script start!: " + path);
-                    chain.doFilter(request, responseWrapper);
-                    String r = new String(responseWrapper.toString());
-                    result = removeFinallyBlockFrom(r);
-                    urlToContentCache.put(path, result);
-                    LOGGER.debug("Rewriting ie-script end!: " + path);
-                    LOGGER.debug("Result skript is " + result);
-                } finally {
-                    jsConversionRunning = false;
-                }
+                final String r = new String(responseWrapper.toString());
+                Thread t1 = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            LOGGER.debug("Rewriting ie-script start!: " + path);
+                            final String result = removeFinallyBlockFrom(r);
+                            urlToContentCache.put(path, result);
+                            LOGGER.debug("Rewriting ie-script end!: " + path);
+                            LOGGER.debug("Result skript is " + result);
+                        } finally {
+                            jsConversionRunning = false;
+                        }
+                    }
+                });
+                t1.start();
+                throw new RuntimeException("Ie7-script not yet ready.");
+                // chain.doFilter(request, responseWrapper);
             } else {
-                result = "alert('Machine not yet ready with script.');";
+                throw new RuntimeException("Ie7-script not yet ready.");
+                //result = "alert('Machine not yet ready with script.');";
+                /*while (jsConversionRunning) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
+                    result = urlToContentCache.get(path);
+                }*/
             }
         } else {
             chain.doFilter(request, responseWrapper);

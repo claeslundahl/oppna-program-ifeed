@@ -296,6 +296,15 @@ public class Starter {
         }
     }
 
+    private static String getFirstNotEmpty(String... ofThese) {
+        for (String s : ofThese) {
+            if (s != null && !"".equals(s.trim())) {
+                return s;
+            }
+        }
+        return null;
+    }
+
     public static void each(Entry item, final int row, FlexTable impl, IfeedTag ifeed) {
         List<IfeedTag.Column> columns = ifeed.columns;
         int c = 0;
@@ -305,7 +314,10 @@ public class Starter {
 
         Anchor anchor = new Anchor(
                 Util.formatValueForDisplay(item, first.fieldId),
-                item.get("yes".equals(ifeed.linkoriginaldoc) ? "dc.identifier.native" : "url")
+                getFirstNotEmpty(
+                        item.get("yes".equals(ifeed.linkoriginaldoc) ? "dc.identifier.native" : "url"),
+                        item.get("yes".equals(ifeed.linkoriginaldoc) ? "originalDownloadLatestVersionUrl" : "url")
+                )
         );
 
         anchor.setTarget("_blank");

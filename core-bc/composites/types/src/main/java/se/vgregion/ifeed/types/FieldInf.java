@@ -4,10 +4,7 @@ import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class FieldInf implements Serializable {
@@ -258,6 +255,22 @@ public class FieldInf implements Serializable {
         for (FieldInf child : children) {
             child.combine(doc);
         }
+    }
+
+    private void getAllIds(Set<String> result) {
+        if (id != null) {
+            result.add(id);
+        }
+        for (FieldInf child : children) {
+            child.getAllIds(result);
+        }
+    }
+
+    public Set<String> getAllIds() {
+        Set<String> result = new TreeSet<>();
+        getAllIds(result);
+        result.remove("");
+        return result;
     }
 
     public String getDeepValue(String withId) {

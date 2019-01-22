@@ -68,35 +68,20 @@ public class Ie7Rewrite implements Filter {
                 result = urlToContentCache.get(path);
             } else if (!jsConversionRunning) {
                 jsConversionRunning = true;
-                final String r = new String(responseWrapper.toString());
-                Thread t1 = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            LOGGER.debug("Rewriting ie-script start!: " + path);
-                            final String result = removeFinallyBlockFrom(r);
-                            urlToContentCache.put(path, result);
-                            LOGGER.debug("Rewriting ie-script end!: " + path);
-                            LOGGER.debug("Result skript is " + result);
-                        } finally {
-                            jsConversionRunning = false;
-                        }
-                    }
-                });
-                t1.start();
-                throw new RuntimeException("Ie7-script not yet ready.");
-                // chain.doFilter(request, responseWrapper);
+                try {
+                    System.out.println("Rewriting ie-script start!: " + path);
+                    chain.doFilter(request, responseWrapper);
+                    String r = new String(responseWrapper.toString());
+                    result = removeFinallyBlockFrom(r);
+                    urlToContentCache.put(path, result);
+                    System.out.println("Rewriting ie-script end!: " + path);
+                    System.out.println("Result skript is " + result);
+                } finally {
+                    jsConversionRunning = false;
+                }
             } else {
-                throw new RuntimeException("Ie7-script not yet ready.");
-                //result = "alert('Machine not yet ready with script.');";
-                /*while (jsConversionRunning) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
-                    result = urlToContentCache.get(path);
-                }*/
+                result = "alert('Machine not yet ready with script.');";
+                throw new RuntimeException(result);
             }
         } else {
             chain.doFilter(request, responseWrapper);

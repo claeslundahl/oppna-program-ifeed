@@ -53,6 +53,16 @@ public class FieldsInfTest {
     }
 
     @Test
+    public void getAllIds() {
+        Map<String, Object> feedContent = new HashMap<>();
+        FieldsInf fi = new FieldsInf();
+        fi.setText(loadFieldsConfigText());
+        List<FieldInf> result = fi.getFieldInfs();
+        FieldInf root = new FieldInf(result);
+        System.out.println(root.getAllIds());
+    }
+
+    @Test
     public void putFieldInfInto() throws IOException {
         FieldsInf fi = new FieldsInf();
         fi.setText(loadFieldsConfigText());

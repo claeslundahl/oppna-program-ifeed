@@ -705,9 +705,18 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public void save(DynamicTableDef instance) {
         if (instance.getId() == null) {
             objectRepo.persist(instance);
+            for (ColumnDef columnDef : instance.getColumnDefs()) {
+                columnDef.setTableDef(instance);
+                objectRepo.persist(columnDef);
+            }
         } else {
             objectRepo.merge(instance);
+            for (ColumnDef columnDef : instance.getColumnDefs()) {
+                columnDef.setTableDef(instance);
+                objectRepo.merge(columnDef);
+            }
         }
+
     }
 
     @Override

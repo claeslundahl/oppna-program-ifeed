@@ -377,7 +377,10 @@ public class IFeedViewerController {
             LOGGER.error("Did not find feed with id " + listId + " on page " + fromPage);
             throw new ResourceNotFoundException();
         }
-        return getIFeedByInstance(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage, f);
+
+        String result = getIFeedByInstance(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage, f);
+
+        return result;
     }
 
     /**
@@ -448,8 +451,12 @@ public class IFeedViewerController {
                 sortField + "%20" + sortDirection
         );
 
+        FieldInf root = new FieldInf(iFeedService.getFieldInfs());
+        Set<String> includes = root.getAllIds();
+        // !!!!!!!!!!!!!!
         for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
             copyValueFromSofiaToAlfrescoBariumFields(item);
+            item.keySet().retainAll(includes);
         }
 
         if (retrievedFeed.getLinkNativeDocument()) {

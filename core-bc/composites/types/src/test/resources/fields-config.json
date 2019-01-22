@@ -1134,6 +1134,17 @@
             "expanded": false
           },
           {
+            "id": "vgr:VgrExtension.vgr:PublishedForUnit",
+            "name": "Upprättat för enhet namn",
+            "help": "Upprättat för enhet",
+            "type": "d:ldap_org_value",
+            "apelonKey": "",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false
+          },
+          {
             "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
             "name": "Upprättat för enhet",
             "help": "Upprättat för enhet",
@@ -1202,7 +1213,7 @@
         ],
         "filter": false,
         "inHtmlView": true,
-        "expanded": false
+        "expanded": true
       },
       {
         "id": "",
@@ -1610,32 +1621,6 @@
             "inTooltip": true,
             "expanded": false
           },
-
-          /* Three wariants of Myndighet. */
-          {
-            "id": "dc.creator.recordscreator",
-            "name": "Arkivbildare (autokomplettering)",
-            "help": "Ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet",
-            "type": "d:text_facet",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": false,
-            "inTooltip": true,
-            "expanded": false
-          },
-          {
-            "id": "dc.creator.recordscreator.id",
-            "name": "Arkivbildare ID (VGR:s organisationsträd)",
-            "help": "ID för ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet",
-            "type": "d:ldap_org_value",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": false,
-            "expanded": false,
-            "inTooltip": true
-          },
           {
             "id": "core:ArchivalObject.core:Producer",
             "name": "Myndighet",
@@ -1648,18 +1633,6 @@
             "inTooltip": true,
             "expanded": false
           },
-/*          {
-            "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
-            "name": "Upprättat för enhets-id",
-            "help": "Upprättat för enhet",
-            "type": "d:ldap_org_value",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": false,
-            "inTooltip": true,
-            "expanded": false
-          },*/
           {
             "id": "vgr:VgrExtension.vgr:PublishedForUnit",
             "name": "Upprättat för enhet",
@@ -1671,31 +1644,7 @@
             "inHtmlView": false,
             "inTooltip": true,
             "expanded": false
-          },
-          {
-            "id": "id",
-            "name": "Dokument&shy;id",
-            "help": "Id",
-            "type": "d:text",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": false,
-            "inTooltip": true,
-            "expanded": false
-          }/*,
-          {
-            "id": "url",
-            "name": "Länk för webben",
-            "help": "Sökväg till dokumentet",
-            "type": "d:text",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": false,
-            "inTooltip": true,
-            "expanded": false
-          }*/
+          }
         ]
       }
     ]

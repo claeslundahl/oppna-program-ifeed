@@ -8,8 +8,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Dokumentegenskaper</title>
-    <%--<link href="/iFeed-web/resources/style.css" rel="stylesheet" type="text/css">--%>
-    <style type="text/css">
+    <style type="text/css" name="documentDetailsStyle">
 
         /* Reset */
         #table-container body, #table-container div, #table-container dl, #table-container dt, #table-container dd, #table-container ul, #table-container ol, #table-container li, #table-container h1, #table-container h2, #table-container h3, #table-container h4, #table-container h5, #table-container h6, #table-container pre, #table-container form, #table-container fieldset, #table-container input, #table-container textarea, #table-container p, #table-container blockquote, #table-container th, #table-container td {
@@ -30,12 +29,6 @@
             border: none;
             margin-right: 0.5em;
         }
-
-        /* Clearfix style clearing */
-        /*.clearfix:after{clear:both;content:'.';display:block;visibility:hidden;height:0}
-        .clearfix{display:inline-block}
-        * html .clearfix{height:1%}
-        .clearfix{display:block}*/
 
         #table-container ul.doc-list {
             list-style-type: none;
@@ -131,11 +124,13 @@
 <body>
 
 <div class="document-metadata" id="table-container">
-    <h1 class="title-header">${doc.value}</h1>
+    <c:if test="${not (param['type'] eq 'tooltip')}">
+        <h1 class="title-header">${doc.value}</h1>
+    </c:if>
 
     <c:forEach items="${doc.children}" var="paragraph">
         <div>
-            <table class="ifeed-metadata-table">
+            <table class="ifeed-metadata-table" style="text-decoration: none;">
                 <thead>
                 <tr>
                     <td colspan="2">

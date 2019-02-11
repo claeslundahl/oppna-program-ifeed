@@ -83,6 +83,24 @@ public class DateFormatter {
         }
     }
 
+    public static boolean isSomeDate(Object object) {
+        if (object instanceof Date) {
+            return true;
+        }
+        SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        // Add other parsing formats to try as you like:
+        String[] dateFormats = {"yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z"};
+        for (String dateFormat : dateFormats) {
+            try {
+                out.format(new SimpleDateFormat(dateFormat).parse(object.toString()));
+                return true;
+            } catch (Exception ignore) {
+
+            }
+        }
+        return false;
+    }
+
     public static String toUtcDateIfPossible(String dateStr) {
         SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         // Add other parsing formats to try as you like:

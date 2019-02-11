@@ -358,7 +358,7 @@ public class FieldInf implements Serializable {
 
     public void visit(Visitor visitor) {
         visitor.each(this);
-        for (FieldInf child : children) {
+        for (FieldInf child : new ArrayList<>(children)) {
             child.visit(visitor);
         }
     }

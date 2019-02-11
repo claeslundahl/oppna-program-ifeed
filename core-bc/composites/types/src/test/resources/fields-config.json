@@ -1393,17 +1393,17 @@
             "inHtmlView": true,
             "expanded": false
           },
-/*          {
-            "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
-            "name": "Upprättat av enhets-id",
-            "help": "Upprättat av enhets-id",
-            "type": "d:ldap_org_value",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },*/
+          /*          {
+                      "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
+                      "name": "Upprättat av enhets-id",
+                      "help": "Upprättat av enhets-id",
+                      "type": "d:ldap_org_value",
+                      "apelonKey": "",
+                      "children": [],
+                      "filter": true,
+                      "inHtmlView": true,
+                      "expanded": false
+                    },*/
           {
             "id": "vgr:VgrExtension.vgr:CreatedByUnit",
             "name": "Upprättat av enhet",

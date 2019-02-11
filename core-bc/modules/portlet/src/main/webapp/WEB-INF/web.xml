@@ -25,9 +25,9 @@
   </filter>
 
   <filter>
-  <filter-name>originHeaderFilter</filter-name>
-  <filter-class>se.vgregion.ifeed.webcomp.filter.OriginHeaderFilter</filter-class>
-</filter>
+    <filter-name>originHeaderFilter</filter-name>
+    <filter-class>se.vgregion.ifeed.webcomp.filter.OriginHeaderFilter</filter-class>
+  </filter>
 
   <filter-mapping>
     <filter-name>originHeaderFilter</filter-name>

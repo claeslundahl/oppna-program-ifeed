@@ -27,44 +27,8 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        /*IFeed feed = new IFeed();
-        IFeedFilter filter = new IFeedFilter();
-        filter.setFilterKey("dc.type.document.structure");
-        filter.setFilterQuery("Riktlinje koncern*");
-        feed.addFilter(filter);
-        System.out.println(client.getBaseUrl());
-        System.out.println("feed.toQuery(): " + feed.toQuery());
-        Result result = client.query(feed.toQuery(), 0, 100, "title desc");
-        System.out.println("Träffar: " + result.getResponse().getDocs().size() + " st.");*/
-        /*for (Map<String, Object> item : result.getResponse().getDocs()) {
-            System.out.println(item);
-        }*/
-
-        //runLatestFeedQuery();
-
-        /*for (Field field : client.fetchFields()) {
-            System.out.println(field.getName() + " " + field.getType());
-        }*/
-
-        // runLatestFeedQuery();
-
-        // "dc.date.issued": "2017-03-13T12:46:21Z"
-        /*String result = client.toText("dc.date.issued: 2017-03-13*", 0, 100, "title asc");
-        System.out.println(result);*/
-
-        Map<String, Set<Object>> all = client.findAllValues();
-        for (String key : all.keySet()) {
-            boolean found = false;
-            Set<Object> values = all.get(key);
-            for (Object value : values) {
-                if (value.toString().matches("^\\d{4}-[0-1][0-3]-[0-3]\\d{1}T[0-2]\\d{1}:[0-5]\\d{1}:[0-5]\\d{1}Z$")) {
-                    System.out.println(key);
-                    break;
-                }
-            }
-        }
-
-        // fetchFields();
+        Map<String, Set<Object>> allValues = client.findAllValues();
+        System.out.println("SourceSystem: " + allValues.get("SourceSystem"));
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {

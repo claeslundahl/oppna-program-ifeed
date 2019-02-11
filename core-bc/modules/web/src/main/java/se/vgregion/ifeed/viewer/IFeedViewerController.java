@@ -15,6 +15,7 @@ import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.OldIndexData;
 import se.vgregion.ifeed.service.solr.client.Result;
@@ -36,6 +37,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static se.vgregion.ifeed.viewer.Column.toColumns;
 
 /**
  * Controller to view feeds.
@@ -451,13 +454,14 @@ public class IFeedViewerController {
                 sortField + "%20" + sortDirection
         );
 
-        FieldInf root = new FieldInf(iFeedService.getFieldInfs());
-        Set<String> includes = root.getAllIds();
         // !!!!!!!!!!!!!!
+        /*FieldInf root = new FieldInf(iFeedService.getFieldInfs());
+        Set<String> includes = root.getAllIds();
+
         for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
             copyValueFromSofiaToAlfrescoBariumFields(item);
             item.keySet().retainAll(includes);
-        }
+        }*/
 
         if (retrievedFeed.getLinkNativeDocument()) {
             for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
@@ -678,6 +682,143 @@ public class IFeedViewerController {
     }
 
     /**
+     * <div class="ifeedDocList"
+     * columnes="dc.title|Titel (autokomplettering)|left|70"
+     * fontsize="auto"
+     * defaultsortcolumn="dc.title"
+     * defaultsortorder="desc"
+     * showtableheader="yes"
+     * linkoriginaldoc="no"
+     * limit="0"
+     * hiderightcolumn="no"
+     * feedid="3331656"
+     * data-url="https://ifeed.vgregion.se/iFeed-web/meta.json?instance=36307&amp;f=dc.title&amp;f=dc.title">
+     * </div>
+     *
+     * @return
+     */
+
+    @RequestMapping(value = "/display")
+    public String display(@RequestParam String columnes,
+                          @RequestParam(defaultValue = "auto", required = false) String fontsize,
+                          @RequestParam(defaultValue = "title", required = false) String defaultsortcolumn,
+                          @RequestParam(defaultValue = "asc", required = false) String defaultsortorder,
+                          @RequestParam(defaultValue = "yes", required = false) String showtableheader,
+                          @RequestParam(defaultValue = "no", required = false) String linkoriginaldoc,
+                          @RequestParam(defaultValue = "0", required = false) Integer limit,
+                          @RequestParam(defaultValue = "no", required = false) String hiderightcolumn,
+                          @RequestParam String feedid,
+                          @RequestParam(value = "data-url", required = false) String dataUrl,
+                          Model model) {
+
+        if (fontsize != null && isNumeric(fontsize)) {
+            fontsize += "px";
+        }
+
+        List<Column> columns = toColumns(columnes);
+        model.addAttribute("columns", columns);
+        model.addAttribute("showTableHeader", "yes".equalsIgnoreCase(showtableheader));
+        model.addAttribute("linkOriginalDoc", "yes".equalsIgnoreCase(linkoriginaldoc));
+        model.addAttribute("hideRightColumn", "yes".equalsIgnoreCase(hiderightcolumn));
+        model.addAttribute("fontSize", fontsize);
+        model.addAttribute("defaultSortColumn", defaultsortcolumn);
+        model.addAttribute("defaultSortOrder", defaultsortorder);
+
+        IFeed filter = iFeedService.getFeedForSolrQuery(Long.valueOf(feedid));
+        Result findings = client.query(
+                filter.toQuery(),
+                (limit.intValue() > 0 ? 0 : null),
+                (limit.intValue() > 0 ? limit : null),
+                defaultsortcolumn + " " + defaultsortorder
+        );
+
+        model.addAttribute("items", findings.getResponse().getDocs());
+
+        for (Map<String, Object> item : findings.getResponse().getDocs()) {
+            item.put("dc.title", item.get("title"));
+            String validToKey = "dc.date.validto";
+            String textDate = (String) item.get(validToKey);
+            String warning = "";
+            if (!isBlanc(textDate) && isTimeStampPassed(textDate)) {
+                warning = ("Dokumentet har gått ut: " + format(textDate));
+            }
+
+            String validFromKey = "dc.date.validfrom";
+            textDate = (String) item.get(validFromKey);
+            if (!isBlanc(textDate) && !isTimeStampPassed(textDate)) {
+                warning += "\nDokumentet börjar gälla: " + format(textDate);
+            }
+
+            if (!isBlanc(warning)) {
+                item.put("warning", warning.trim());
+            }
+
+            for (Column column : columns) {
+                item.put(column.getKey(), format(item.get(column.getKey())));
+            }
+
+            String id = item.get("id").toString().replace("workspace://SpacesStore/", "");
+            item.put("id", id);
+
+            if ("yes".equals(linkoriginaldoc)) {
+                item.put("url",
+                        getFirstNotEmpty(
+                                item.get("yes".equals(linkoriginaldoc) ? "dc.identifier.native" : "url"),
+                                item.get("yes".equals(linkoriginaldoc) ? "originalDownloadLatestVersionUrl" : "url")
+                        )
+                );
+            }
+        }
+
+        return "display";
+    }
+
+    private static Object getFirstNotEmpty(Object... items) {
+        for (Object item : items) {
+            if (item != null && !item.toString().trim().equals("")) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private boolean isTimeStampPassed(String textDate) {
+        if (!DateFormatter.isSomeDate(textDate)) {
+            return false;
+        }
+        Date date = DateFormatter.parse(textDate);
+        Date now = new Date();
+        return date.getTime() > now.getTime();
+    }
+
+    private boolean isBlanc(String textDate) {
+        return textDate == null || "".equals(textDate.trim());
+    }
+
+    private static Object format(Object value) {
+        if (value instanceof Collection) {
+            return format((Collection) value);
+        }
+        if (DateFormatter.isSomeDate(value)) {
+            if (value instanceof String) {
+                return DateFormatter.formatTextDate((String) value);
+            }
+            return DateFormatter.format((Date) value);
+            // return DateFormatter.toUtcDateIfPossible(value.toString()).replace(" ", "&nbsp;");
+        }
+        return value;
+    }
+
+    static Object format(Collection value) {
+        Collection collection = (Collection) value;
+        List result = new ArrayList();
+        for (Object v : collection) {
+            result.add(format(v));
+        }
+        return result;
+    }
+
+    /**
      * Using path variables to asscess a feed from a http client.
      *
      * @param documentId thw id of the document (in alfresco).
@@ -713,8 +854,76 @@ public class IFeedViewerController {
             findigs = client.query(filter.toQuery(), null, null, "title asc");
         }
 
-
         Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
+        FieldInf root = new FieldInf(iFeedService.getFieldInfs());
+
+        for (String s : doc.keySet()) {
+            Object value = ifHsaThenFormat(doc.get(s));
+            value = DateFormatter.formatTextDate(String.valueOf(value));
+            doc.put(s, value);
+        }
+
+        formatAnyHyperLinks(doc);
+
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
+        // String sourceSystem = (String) doc.get("SourceSystem");
+        model.addAttribute("item", doc);
+
+        if ("tooltip".equals(type)) {
+            if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
+                return "tooltipSofia";
+            } else if (true) {
+                return "tooltipAlfrescoBarium";
+            }
+            root.initForMiniView(doc);
+        } else {
+            root.initForMaxView(doc);
+
+            if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
+                // SOFIA thing.
+                return "documentDetailsSofia";
+            } else {
+                // Alfresco/Barium
+                return "documentDetailsAlfrescoBarium";
+            }
+        }
+
+        if (root.getChildren().isEmpty()) {
+            FieldInf reserve = new FieldInf();
+            reserve.setName("Dokumentinfo (templösning då config saknas)");
+            FieldInf title = new FieldInf();
+            title.setInTooltip("tooltip".equals(type));
+            title.setId("title");
+            title.setName("Titel");
+            reserve.getChildren().add(title);
+            reserve.setInTooltip("tooltip".equals(type));
+            FieldInf first = new FieldInf(Arrays.asList(reserve));
+            first.setInTooltip("tooltip".equals(type));
+            root.getChildren().add(first);
+        }
+
+        FieldInf result = root.getChildren().get(0);
+
+        for (FieldInf child : root.getChildren()) {
+            if (result.childCount() < child.childCount()) {
+                result = child;
+            }
+        }
+
+        result.setValue((String) doc.get("title"));
+        model.addAttribute("doc", result);
+
+
+        if ("tooltip".equals(type)) {
+            return "documentDetailsTooltip";
+        } else {
+            return "documentDetails";
+        }
+        // return "documentDetails";
+    }
+
+    private FieldInf getApropriateFieldInf(String type, Map<String, Object> doc) {
         FieldInf root = new FieldInf(iFeedService.getFieldInfs());
 
         for (String s : doc.keySet()) {
@@ -729,19 +938,9 @@ public class IFeedViewerController {
             root.initForMaxView(doc);
         }
 
+
         FieldInf result = root.getChildren().get(0);
-
-        for (FieldInf child : root.getChildren()) {
-            if (result.childCount() < child.childCount()) {
-                result = child;
-            }
-        }
-
-        result.setValue((String) doc.get("title"));
-        model.addAttribute("doc", result);
-        response.setHeader("Access-Control-Allow-Origin", "*");
-
-        return "documentDetails";
+        return result;
     }
 
     private void formatAnyHyperLinks(Map<String, Object> doc) {
@@ -1042,6 +1241,7 @@ public class IFeedViewerController {
         public BadRequestException(String msg) {
             super(msg);
         }
+
     }
 
     /**

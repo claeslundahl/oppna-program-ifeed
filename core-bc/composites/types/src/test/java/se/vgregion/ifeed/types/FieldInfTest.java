@@ -34,7 +34,7 @@ public class FieldInfTest {
         fi.getChildren().get(0);
     }
 
-    final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    final static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Test
     public void initForMaxView() {
@@ -46,6 +46,35 @@ public class FieldInfTest {
 
         fi.initForMaxView(doc);
         System.out.println(fi.getChildren().get(0));
+    }
+
+
+    public static void main(String[] args) {
+        FieldInf fi = getSampleFieldInf();
+        fi.init();
+        Map<String, Object> doc = new HashMap<String, Object>(){
+            @Override
+            public Object get(Object key) {
+                return key;
+            }
+
+            @Override
+            public boolean containsKey(Object key) {
+                return true;
+            }
+        };
+        fi.initForMiniView(doc);
+        fi.visit(new FieldInf.Visitor() {
+            @Override
+            public void each(FieldInf item) {
+                if (item.getId() != null && !item.getId().trim().equals("") && !item.getId().startsWith("dc.")) {
+                    item.getParent().getChildren().remove(item);
+                }
+            }
+        });
+        FieldInf tooltip = fi.getChildren().get(0);
+        System.out.println(gson.toJson(tooltip));
+
     }
 
 }

@@ -13,13 +13,13 @@
             <thead><tr><td colspan="2">Dokumentegenskaper</td></tr></thead>
             <tbody>
 
-            <tr><td class="key">Titel</td><td class="value">${item['title']}</td></tr>
-            <tr><td class="key">Myndighet</td><td class="value">${item['core:ArchivalObject.core:Producer']}</td></tr>
+            <tr><td class="key" style="text-decoration: none;">Titel</td><td class="value" style="text-decoration: none;">${item['title']}</td></tr>
+            <tr><td class="key" style="text-decoration: none;">Myndighet</td><td class="value">${item['core:ArchivalObject.core:Producer']}</td></tr>
 <%--
             <tr><td class="key">Klassificeringsstruktur (process)</td><td class="value">${item['core:ArchivalObject.core:Classification.core:Classification.name']}</td></tr>
             <tr><td class="key">Handlingstyp</td><td class="value">${item['core:ArchivalObject.core:ObjectType']}</td></tr>
 --%>
-            <tr><td class="key">Upprättat för enhet</td><td class="value">${item['vgr:VgrExtension.vgr:PublishedForUnit']}</td></tr>
+            <tr><td class="key" style="text-decoration: none;">Upprättat för enhet</td><td class="value" style="text-decoration: none;">${item['vgr:VgrExtension.vgr:PublishedForUnit']}</td></tr>
             <%--<tr><td class="key">Regional ämnesindelning</td><td class="value">${item['vgrsy:DomainExtension.vgrsy:SubjectClassification']}</td></tr>
             <tr><td class="key">Egen ämnesindelning</td><td class="value">${item['vgrsy:DomainExtension.vgrsy:SubjectLocalClassification']}</td></tr>
             <tr><td class="key">DokumentId källa</td><td class="value">${item['vgr:VgrExtension.vgr:Source.id']}</td></tr>

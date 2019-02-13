@@ -1,7 +1,6 @@
-package se.vgregion.ifeed.viewer;
+package se.vgregion.ifeed.webcomp.filter;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,8 +65,11 @@ public final class LockdownFilter implements Filter {
 
     static Properties fetchProperties(Path path) throws IOException {
         Properties properties = new Properties();
-        InputStream src = Files.newInputStream(path);
-        properties.load(new InputStreamReader(src));
+        try (InputStream src = Files.newInputStream(path)) {
+
+            properties.load(new InputStreamReader(src));
+
+        }
         return properties;
     }
 

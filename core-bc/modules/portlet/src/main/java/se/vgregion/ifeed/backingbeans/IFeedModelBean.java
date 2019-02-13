@@ -249,6 +249,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
             filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
             for (IFeedFilter item : filtersAsList) {
                 String that = item.getFilterQuery();
+                if (that == null) continue;
                 if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
                     List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
                     if (items.size() == 1) {

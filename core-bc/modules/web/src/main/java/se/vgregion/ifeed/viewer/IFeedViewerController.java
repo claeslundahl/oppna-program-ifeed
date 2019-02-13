@@ -660,6 +660,10 @@ public class IFeedViewerController {
     private LdapSupportService ldapSupportService;
 
     private String ifHsaThenFormat(String that) {
+        if (that.equals("SE2321000131-E000000000001")) {
+            that = "Västra Götalandsregionen (SE2321000131-E000000000001)";
+            return that;
+        }
         if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
             List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
             if (items.size() == 1) {
@@ -860,6 +864,10 @@ public class IFeedViewerController {
         for (String s : doc.keySet()) {
             Object value = ifHsaThenFormat(doc.get(s));
             value = DateFormatter.formatTextDate(String.valueOf(value));
+            if (value != null)
+                if (value.toString().startsWith("[")) {
+                    value = value.toString().replace("[", "").replace("]", "");
+                }
             doc.put(s, value);
         }
 

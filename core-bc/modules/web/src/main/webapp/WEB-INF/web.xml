@@ -72,7 +72,7 @@
 
   <filter>
     <filter-name>lockdownFilter</filter-name>
-    <filter-class>se.vgregion.ifeed.viewer.LockdownFilter</filter-class>
+    <filter-class>se.vgregion.ifeed.webcomp.filter.LockdownFilter</filter-class>
   </filter>
 
   <filter-mapping>

@@ -4,7 +4,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DefaultDateTimeFormatInfo;
 import com.google.gwt.user.client.Timer;
@@ -12,6 +15,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.*;
+
+import static se.vgregion.ifeed.client.Util.isUtcDate;
 
 //import jsinterop.annotations.JsMethod;
 
@@ -112,6 +117,16 @@ public class Starter {
         }
     }
 
+    public static String toMetadataUrl(String id, boolean popup) {
+        id = id.replace("workspace://SpacesStore/", "");
+        String url = getFeedHome();
+        // https://ifeed.vgregion.se/iFeed-web/documents/b5e59d21-f1d6-40a6-8451-f98bc7efb29c/metadata
+        url += (!url.endsWith("/") ? "/" : "")
+                + "iFeed-web/documents/" + id + "/metadata";
+        if (popup) url += "?type=tooltip";
+        return url;
+    }
+
     public static void fetchAndRender(final IfeedTag putResultsHere) {
         try {
             String url = getFeedHome();
@@ -122,7 +137,7 @@ public class Starter {
             fieldNames.add(putResultsHere.defaultsortcolumn);
             url += (!url.endsWith("/") ? "/" : "")
                     + "iFeed-web/meta.json?instance=" + putResultsHere.feedid
-                    + "&f=" + Util.join(fieldNames, "&f=");
+                    + "&f=" + Util.join(fieldNames, "&f=") + "&type=tooltip";
 
 
             final HTMLPanel place = HTMLPanel.wrap(putResultsHere.element);
@@ -281,6 +296,15 @@ public class Starter {
         }
     }
 
+    private static String getFirstNotEmpty(String... ofThese) {
+        for (String s : ofThese) {
+            if (s != null && !"".equals(s.trim())) {
+                return s;
+            }
+        }
+        return null;
+    }
+
     public static void each(Entry item, final int row, FlexTable impl, IfeedTag ifeed) {
         List<IfeedTag.Column> columns = ifeed.columns;
         int c = 0;
@@ -290,7 +314,10 @@ public class Starter {
 
         Anchor anchor = new Anchor(
                 Util.formatValueForDisplay(item, first.fieldId),
-                item.get("yes".equals(ifeed.linkoriginaldoc) ? "dc.identifier.native" : "url")
+                getFirstNotEmpty(
+                        item.get("yes".equals(ifeed.linkoriginaldoc) ? "dc.identifier.native" : "url"),
+                        item.get("yes".equals(ifeed.linkoriginaldoc) ? "originalDownloadLatestVersionUrl" : "url")
+                )
         );
 
         anchor.setTarget("_blank");
@@ -309,11 +336,13 @@ public class Starter {
             // impl.getFlexCellFormatter().addStyleNameHere(row, c, nameToCssClass(cd.fieldId));
             String cssStyleName = nameToCssClass(cd.fieldId);
             addStyleNameHere(cssStyleName, impl.getFlexCellFormatter(), row, c, 10000 + i + " " + cssStyleName + " " + cd.fieldId);
+            if (isUtcDate(item.get(cd.fieldId))) {
+                impl.getFlexCellFormatter().getElement(row, c).getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
+            }
             c++;
         }
         addTextAlignmentToColumn(impl, row, columns);
     }
-
 
     private static void addTextAlignmentToColumn(FlexTable ft, int row, List<IfeedTag.Column> columns) {
         int c = 1;
@@ -345,6 +374,8 @@ public class Starter {
         return s.trim().equals("");
     }
 
+    private static EntryPopupPanel currentInfo;
+
     private static final Widget makeInfoCell(final Entry entry) {
         final HorizontalPanel hp = new HorizontalPanel();
         Image icon = new Image(images.information());
@@ -354,50 +385,35 @@ public class Starter {
                 Window.open(urlToMetaData(entry), "_blank", "");
             }
         });
-        // icon.addClickHandler(clickEvent -> Window.open(urlToMetaData(entry), "_blank", ""));
         hp.add(icon);
 
-        icon.addDomHandler(
-                new MouseOverHandler() {
-                    @Override
-                    public void onMouseOver(MouseOverEvent event) {
-                        final EntryPopupPanel info = new EntryPopupPanel(entry);
-                        info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
-                        info.show();
-                        entry.put("EntryPopupPanel", info);
-                    }
-                },
-                MouseOverEvent.getType()
+        // Util.log("Before adding dom handler.");
+
+        icon.addMouseOverHandler(new MouseOverHandler() {
+                                     @Override
+                                     public void onMouseOver(MouseOverEvent mouseOverEvent) {
+                                         if (currentInfo != null) {
+                                             currentInfo.hide();
+                                         }
+                                         final EntryPopupPanel info = currentInfo = new EntryPopupPanel(entry);
+                                         // info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
+                                         // info.setSize("200px", "200px");
+                                         // info.center();
+                                         info.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+                                             public void setPosition(int offsetWidth, int offsetHeight) {
+                                                 /*int left = (Window.getClientWidth() - offsetWidth) / 3;
+                                                 int top = (Window.getClientHeight() - offsetHeight) / 3;
+                                                 info.setPopupPosition(left, top);
+                                                 info.setPopupPosition(10, 10);*/
+                                                 info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
+                                             }
+                                         });
+                                         entry.put("EntryPopupPanel", info);
+                                         info.show();
+                                         // Util.log("onMouseOver");
+                                     }
+                                 }
         );
-
-    /*
-    icon.addDomHandler(mouseOverEvent -> {
-      final EntryPopupPanel info = new EntryPopupPanel(entry);
-      info.setPopupPosition(hp.getAbsoluteLeft() + 15, hp.getAbsoluteTop() + 15);
-      info.show();
-      entry.put("EntryPopupPanel", info);
-    }, MouseOverEvent.getType());
-    */
-
-        icon.addDomHandler(
-                new MouseOutHandler() {
-                    @Override
-                    public void onMouseOut(MouseOutEvent event) {
-                        EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
-                        if (epp != null)
-                            epp.hide();
-                    }
-                },
-                MouseOutEvent.getType()
-        );
-
-    /*
-    icon.addDomHandler(mouseOutEvent -> {
-      EntryPopupPanel epp = (EntryPopupPanel) entry.getAsObject("EntryPopupPanel");
-      if (epp != null)
-        epp.hide();
-    }, MouseOutEvent.getType());
-    */
 
         String validToKey = "dc.date.validto";
         String textDate = entry.get(validToKey);

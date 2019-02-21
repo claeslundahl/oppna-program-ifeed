@@ -15,6 +15,7 @@ import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.OldIndexData;
 import se.vgregion.ifeed.service.solr.client.Result;
@@ -23,6 +24,8 @@ import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ldap.LdapApi;
+import se.vgregion.ldap.LdapSupportService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -34,6 +37,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static se.vgregion.ifeed.viewer.Column.toColumns;
 
 /**
  * Controller to view feeds.
@@ -375,7 +380,10 @@ public class IFeedViewerController {
             LOGGER.error("Did not find feed with id " + listId + " on page " + fromPage);
             throw new ResourceNotFoundException();
         }
-        return getIFeedByInstance(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage, f);
+
+        String result = getIFeedByInstance(retrievedFeed, model, sortField, sortDirection, startBy, endBy, fromPage, f);
+
+        return result;
     }
 
     /**
@@ -446,13 +454,29 @@ public class IFeedViewerController {
                 sortField + "%20" + sortDirection
         );
 
+        // !!!!!!!!!!!!!!
+        /*FieldInf root = new FieldInf(iFeedService.getFieldInfs());
+        Set<String> includes = root.getAllIds();
+
         for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
             copyValueFromSofiaToAlfrescoBariumFields(item);
+            item.keySet().retainAll(includes);
+        }*/
+
+        if (retrievedFeed.getLinkNativeDocument()) {
+            for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
+                String originalDownloadLatestVersionUrl = (String) item.get("originalDownloadLatestVersionUrl");
+                if (originalDownloadLatestVersionUrl != null && !"".equals(originalDownloadLatestVersionUrl.trim())) {
+                    // Is a Sofia doc.
+                    item.put("url", originalDownloadLatestVersionUrl);
+                } else {
+                    // Assume it is from Barium or Alfresco.
+                    item.put("url", item.get("dc.identifier.native"));
+                }
+            }
         }
 
         model.addAttribute("result", otherResult.getResponse().getDocs());
-
-        System.out.println("Found " + otherResult.getResponse().getDocs().size());
 
         return "documentList";
     }
@@ -558,8 +582,13 @@ public class IFeedViewerController {
      * @return what jsp to use as view.
      */
     @RequestMapping(value = "/documents/{documentId}")
-    public String detailsHtml(@PathVariable String documentId, Model model) {
-        return details(documentId, model);
+    public String detailsHtml(@PathVariable String documentId, Model model, HttpServletResponse response,
+                              @RequestParam(value = "type", required = false) String type) {
+        return details(documentId, model, response);
+    }
+
+    public String details(String documentId, Model model, HttpServletResponse response) {
+        return details(documentId, model, response, null);
     }
 
     /**
@@ -576,7 +605,7 @@ public class IFeedViewerController {
         if (documentId == null) {
             throw new BadRequestException("Document id must not be null.");
         }
-        return details(documentId, model);
+        return details(documentId, model, response);
     }
 
     static final Pattern ISO8601 = Pattern.compile("^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$");
@@ -599,7 +628,7 @@ public class IFeedViewerController {
             calendar.setTime(date);
             return calendar;
             //outFormatter.setTimeZone(inParser.getTimeZone());
-            //idValueMap.put(childId, outFormatter.format(date));
+            //idValueMap.put(childId, outFormatter.ifHsaThenFormat(date));
         } catch (ParseException e) {
             // Wasn't a date
             //idValueMap.put(childId, sValue);
@@ -625,6 +654,174 @@ public class IFeedViewerController {
 
     //static List<String> sofiaSystems = new ArrayList<>(Arrays.asList("SOFIA", "SISOM"));
 
+    private static LdapApi ldapApi = LdapApi.newInstanceFromConfig();
+
+    @Autowired
+    private LdapSupportService ldapSupportService;
+
+    private String ifHsaThenFormat(String that) {
+        if (that.equals("SE2321000131-E000000000001")) {
+            that = "Västra Götalandsregionen (SE2321000131-E000000000001)";
+            return that;
+        }
+        if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
+            List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
+            if (items.size() == 1) {
+                that = String.format("%s (%s)", items.get(0).get("ou"), that);
+            }
+        }
+        return that;
+    }
+
+    private Object ifHsaThenFormat(Object that) {
+        if (that instanceof List) {
+            List<String> texts = new ArrayList<>();
+            for (Object o : ((List) that)) {
+                texts.add(ifHsaThenFormat(o.toString()));
+            }
+            return texts;
+        } else {
+            return ifHsaThenFormat(that.toString());
+        }
+    }
+
+    /**
+     * <div class="ifeedDocList"
+     * columnes="dc.title|Titel (autokomplettering)|left|70"
+     * fontsize="auto"
+     * defaultsortcolumn="dc.title"
+     * defaultsortorder="desc"
+     * showtableheader="yes"
+     * linkoriginaldoc="no"
+     * limit="0"
+     * hiderightcolumn="no"
+     * feedid="3331656"
+     * data-url="https://ifeed.vgregion.se/iFeed-web/meta.json?instance=36307&amp;f=dc.title&amp;f=dc.title">
+     * </div>
+     *
+     * @return
+     */
+
+    @RequestMapping(value = "/display")
+    public String display(@RequestParam String columnes,
+                          @RequestParam(defaultValue = "auto", required = false) String fontsize,
+                          @RequestParam(defaultValue = "title", required = false) String defaultsortcolumn,
+                          @RequestParam(defaultValue = "asc", required = false) String defaultsortorder,
+                          @RequestParam(defaultValue = "yes", required = false) String showtableheader,
+                          @RequestParam(defaultValue = "no", required = false) String linkoriginaldoc,
+                          @RequestParam(defaultValue = "0", required = false) Integer limit,
+                          @RequestParam(defaultValue = "no", required = false) String hiderightcolumn,
+                          @RequestParam String feedid,
+                          @RequestParam(value = "data-url", required = false) String dataUrl,
+                          Model model) {
+
+        if (fontsize != null && isNumeric(fontsize)) {
+            fontsize += "px";
+        }
+
+        List<Column> columns = toColumns(columnes);
+        model.addAttribute("columns", columns);
+        model.addAttribute("showTableHeader", "yes".equalsIgnoreCase(showtableheader));
+        model.addAttribute("linkOriginalDoc", "yes".equalsIgnoreCase(linkoriginaldoc));
+        model.addAttribute("hideRightColumn", "yes".equalsIgnoreCase(hiderightcolumn));
+        model.addAttribute("fontSize", fontsize);
+        model.addAttribute("defaultSortColumn", defaultsortcolumn);
+        model.addAttribute("defaultSortOrder", defaultsortorder);
+
+        IFeed filter = iFeedService.getFeedForSolrQuery(Long.valueOf(feedid));
+        Result findings = client.query(
+                filter.toQuery(),
+                (limit.intValue() > 0 ? 0 : null),
+                (limit.intValue() > 0 ? limit : null),
+                defaultsortcolumn + " " + defaultsortorder
+        );
+
+        model.addAttribute("items", findings.getResponse().getDocs());
+
+        for (Map<String, Object> item : findings.getResponse().getDocs()) {
+            item.put("dc.title", item.get("title"));
+            String validToKey = "dc.date.validto";
+            String textDate = (String) item.get(validToKey);
+            String warning = "";
+            if (!isBlanc(textDate) && isTimeStampPassed(textDate)) {
+                warning = ("Dokumentet har gått ut: " + format(textDate));
+            }
+
+            String validFromKey = "dc.date.validfrom";
+            textDate = (String) item.get(validFromKey);
+            if (!isBlanc(textDate) && !isTimeStampPassed(textDate)) {
+                warning += "\nDokumentet börjar gälla: " + format(textDate);
+            }
+
+            if (!isBlanc(warning)) {
+                item.put("warning", warning.trim());
+            }
+
+            for (Column column : columns) {
+                item.put(column.getKey(), format(item.get(column.getKey())));
+            }
+
+            String id = item.get("id").toString().replace("workspace://SpacesStore/", "");
+            item.put("id", id);
+
+            if ("yes".equals(linkoriginaldoc)) {
+                item.put("url",
+                        getFirstNotEmpty(
+                                item.get("yes".equals(linkoriginaldoc) ? "dc.identifier.native" : "url"),
+                                item.get("yes".equals(linkoriginaldoc) ? "originalDownloadLatestVersionUrl" : "url")
+                        )
+                );
+            }
+        }
+
+        return "display";
+    }
+
+    private static Object getFirstNotEmpty(Object... items) {
+        for (Object item : items) {
+            if (item != null && !item.toString().trim().equals("")) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private boolean isTimeStampPassed(String textDate) {
+        if (!DateFormatter.isSomeDate(textDate)) {
+            return false;
+        }
+        Date date = DateFormatter.parse(textDate);
+        Date now = new Date();
+        return date.getTime() > now.getTime();
+    }
+
+    private boolean isBlanc(String textDate) {
+        return textDate == null || "".equals(textDate.trim());
+    }
+
+    private static Object format(Object value) {
+        if (value instanceof Collection) {
+            return format((Collection) value);
+        }
+        if (DateFormatter.isSomeDate(value)) {
+            if (value instanceof String) {
+                return DateFormatter.formatTextDate((String) value);
+            }
+            return DateFormatter.format((Date) value);
+            // return DateFormatter.toUtcDateIfPossible(value.toString()).replace(" ", "&nbsp;");
+        }
+        return value;
+    }
+
+    static Object format(Collection value) {
+        Collection collection = (Collection) value;
+        List result = new ArrayList();
+        for (Object v : collection) {
+            result.add(format(v));
+        }
+        return result;
+    }
+
     /**
      * Using path variables to asscess a feed from a http client.
      *
@@ -633,7 +830,9 @@ public class IFeedViewerController {
      * @return what jsp to use.
      */
     @RequestMapping(value = "/documents/{documentId}/metadata")
-    public String details(@PathVariable String documentId, Model model) {
+    public String details(@PathVariable String documentId, Model model,
+                          HttpServletResponse response,
+                          @RequestParam(value = "type", required = false) String type) {
         if (documentId.startsWith("[")) {
             if (documentId.endsWith("]")) {
                 documentId = documentId.substring(1, documentId.length() - 1);
@@ -658,41 +857,110 @@ public class IFeedViewerController {
             filter.setFilterQuery("workspace://SpacesStore/" + documentId);
             findigs = client.query(filter.toQuery(), null, null, "title asc");
         }
-        if (!findigs.getResponse().getDocs().isEmpty()) {
-            System.out.println("Antal findings " + findigs.getResponse().getDocs().size());
-            System.out.println("Antal findings.size() " + findigs.getResponse().getDocs().get(0).size());
-            System.out.println("Nycklar i findings: " + new TreeSet<>(findigs.getResponse().getDocs().get(0).keySet()));
-            Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
-            String sourceSystem = (String) doc.get("vgr:VgrExtension.vgr:SourceSystem");
-            // String sourceSystem = (String) doc.get("SourceSystem");
-            /*List<LabelledValue> result = (sourceSystem != null && sofiaSystems.contains(sourceSystem)) ?
-                    newSofiaDisplayFieldsWithoutValue() : newAlfrescoBariumDisplayFieldsWithoutValue();*/
 
-            List<LabelledValue> result = new ArrayList<>();
-            result.addAll(newSofiaDisplayFieldsWithoutValue());
-            result.addAll(newAlfrescoBariumDisplayFieldsWithoutValue());
+        Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
+        FieldInf root = new FieldInf(iFeedService.getFieldInfs());
 
-            for (LabelledValue lv : new ArrayList<>(result)) {
-                Object v = doc.get(lv.getKey());
-                if (v != null && !v.toString().trim().isEmpty()) {
-                    if (v instanceof List) {
-                        List list = (List) v;
-                        v = org.apache.commons.lang.StringUtils.join(list, ", ");
-                    }
-                    if (v instanceof String && v.toString().startsWith("http")) {
-                        v = String.format("<a href=\"%s\">%s</a>", v, v);
-                    }
-                    lv.setValue(v);
-                } else {
-                    result.remove(lv);
+        for (String s : doc.keySet()) {
+            Object value = ifHsaThenFormat(doc.get(s));
+            value = DateFormatter.formatTextDate(String.valueOf(value));
+            if (value != null)
+                if (value.toString().startsWith("[")) {
+                    value = value.toString().replace("[", "").replace("]", "");
+                }
+            doc.put(s, value);
+        }
+
+        formatAnyHyperLinks(doc);
+
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
+        // String sourceSystem = (String) doc.get("SourceSystem");
+        model.addAttribute("item", doc);
+
+        if ("tooltip".equals(type)) {
+            if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
+                return "tooltipSofia";
+            } else if (true) {
+                return "tooltipAlfrescoBarium";
+            }
+            root.initForMiniView(doc);
+        } else {
+            root.initForMaxView(doc);
+
+            if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
+                // SOFIA thing.
+                return "documentDetailsSofia";
+            } else {
+                // Alfresco/Barium
+                return "documentDetailsAlfrescoBarium";
+            }
+        }
+
+        if (root.getChildren().isEmpty()) {
+            FieldInf reserve = new FieldInf();
+            reserve.setName("Dokumentinfo (templösning då config saknas)");
+            FieldInf title = new FieldInf();
+            title.setInTooltip("tooltip".equals(type));
+            title.setId("title");
+            title.setName("Titel");
+            reserve.getChildren().add(title);
+            reserve.setInTooltip("tooltip".equals(type));
+            FieldInf first = new FieldInf(Arrays.asList(reserve));
+            first.setInTooltip("tooltip".equals(type));
+            root.getChildren().add(first);
+        }
+
+        FieldInf result = root.getChildren().get(0);
+
+        for (FieldInf child : root.getChildren()) {
+            if (result.childCount() < child.childCount()) {
+                result = child;
+            }
+        }
+
+        result.setValue((String) doc.get("title"));
+        model.addAttribute("doc", result);
+
+
+        if ("tooltip".equals(type)) {
+            return "documentDetailsTooltip";
+        } else {
+            return "documentDetails";
+        }
+        // return "documentDetails";
+    }
+
+    private FieldInf getApropriateFieldInf(String type, Map<String, Object> doc) {
+        FieldInf root = new FieldInf(iFeedService.getFieldInfs());
+
+        for (String s : doc.keySet()) {
+            doc.put(s, ifHsaThenFormat(doc.get(s)));
+        }
+
+        formatAnyHyperLinks(doc);
+
+        if ("tooltip".equals(type)) {
+            root.initForMiniView(doc);
+        } else {
+            root.initForMaxView(doc);
+        }
+
+
+        FieldInf result = root.getChildren().get(0);
+        return result;
+    }
+
+    private void formatAnyHyperLinks(Map<String, Object> doc) {
+        for (String key : doc.keySet()) {
+            Object value = doc.get(key);
+            if (value instanceof String) {
+                String text = (String) value;
+                if (text.startsWith("https://") || text.startsWith("http://")) {
+                    doc.put(key, String.format("<a href=\"%s\">%s</a>", text, text));
                 }
             }
-            model.addAttribute("item", doc);
-            model.addAttribute("fields", result);
-        } else {
-            throw new RuntimeException("Kunde inte hitta dokument med id '" + documentId + "'");
         }
-        return "documentDetails";
     }
 
     private List<LabelledValue> newAlfrescoBariumDisplayFieldsWithoutValue() {
@@ -779,15 +1047,14 @@ public class IFeedViewerController {
         result.add(new LabelledValue("dc.format.extent", "Omfattning"));
         result.add(new LabelledValue("dc.identifier.location", "Fysisk placering"));
         result.add(new LabelledValue("dc.type.templatename", "Mallnamn"));
-        result.add(new LabelledValue("dc.format.extent.mimetype", "Mimetyp, utgivet/publicerat"));
-        result.add(new LabelledValue("dc.format.extent.mimetype.native", "Mimetyp, original"));
-        result.add(new LabelledValue("dc.format.extension", "Filändelse, utgivet/publicerat"));
-        result.add(new LabelledValue("dc.format.extension.native", "Filändelse, original"));
+        result.add(new LabelledValue("dc.ifHsaThenFormat.extent.mimetype", "Mimetyp, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.ifHsaThenFormat.extent.mimetype.native", "Mimetyp, original"));
+        result.add(new LabelledValue("dc.ifHsaThenFormat.extension", "Filändelse, utgivet/publicerat"));
+        result.add(new LabelledValue("dc.ifHsaThenFormat.extension.native", "Filändelse, original"));
         result.add(new LabelledValue("dc.identifier.checksum", "Kontrollsumma dokument, utgivet/publicerat"));
         result.add(new LabelledValue("dc.identifier.checksum.native", "Kontrollsumma dokument, original"));
         result.add(new LabelledValue("dc.source.origin", "Källsystem"));
         return result;
-
     }
 
     private List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
@@ -982,6 +1249,7 @@ public class IFeedViewerController {
         public BadRequestException(String msg) {
             super(msg);
         }
+
     }
 
     /**

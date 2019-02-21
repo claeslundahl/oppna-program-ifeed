@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.InvocerUtil;
-import se.vgregion.common.utils.InstrumentationHome;
 import se.vgregion.common.utils.Json;
 import se.vgregion.common.utils.MemoryTool;
 import se.vgregion.ifeed.el.AccessGuard;
@@ -27,6 +26,7 @@ import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
+import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.client.Result;
@@ -52,7 +52,6 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.portlet.PortletRequest;
 import java.io.*;
-import java.lang.instrument.Instrumentation;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -69,13 +68,15 @@ import java.util.regex.Pattern;
 public class Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
-
+    static List<String> sofiaSystems = new ArrayList<>(Arrays.asList("SOFIA", "SISOM"));
+    @Autowired
+    IFeedSolrQuery iFeedSolrQuery;
+    long count;
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     @Value("${ifeed.metadata.base.url}")
     private String metadataBaseUrl;
-
     @Value("${ifeed.web.script.json.url}")
     private String webScriptJsonUrl;
-
     @Autowired
     private IFeedService iFeedService;
     @Autowired
@@ -84,17 +85,12 @@ public class Application {
     private LdapPersonService ldapPersonService;
     @Value("#{iFeedModelBean}")
     private IFeedModelBean iFeedModelBean;
-
     @Value("#{vgrOrganizationsHome}")
     private VgrOrganizationsHome vgrOrganizationsHome;
-
     @Autowired
     private MetadataService metadataService;
-
     @Autowired
     private IFeedBackingBean iFeedBackingBean;
-    @Autowired
-    IFeedSolrQuery iFeedSolrQuery;
     //@Resource(name = "iFeedAtomFeed")
     @Autowired
     private UriTemplate iFeedAtomFeed;
@@ -109,47 +105,28 @@ public class Application {
     private UriTemplate iFeedJsonFeed;
     @Autowired
     private UriTemplate iFeedExcelFeed;
-
     private String solrServiceUrl;
-
     private String selectedFieldInfRootName;
-
     private VgrGroup group;
-
     private FieldInf newFilter;
-
     private VgrDepartment department;
-
     private String newOwnershipUserId;
-
     private String newCompositeName;
-
     private int pageSize = 25;
-
     private int currentPage = 0;
-
     private boolean inEditMode;
-
     private boolean limitOnResultCount;
-
     private WeakReference<Set<String>> multiValueKeys = new WeakReference<Set<String>>(null);
-
     @Value("#{filter}")
     private FilterModel filter;
-
     @Value("#{navigationModelBean}")
     private NavigationModelBean navigationModelBean;
-
     private FieldsInf fieldsInf;
 
-    private List<FieldInf> filters;
-
-    private List<VgrDepartment> selectableDepartments;
-
-    private VgrOrganization organizationToChoose;
-
     //@Value("#{tableDef}")    private TableDefModel tableDef;
-
+    private List<FieldInf> filters;
+    private List<VgrDepartment> selectableDepartments;
+    private VgrOrganization organizationToChoose;
     @Autowired
     private LdapSupportService ldapOrganizationService;
     private List<IFeed> page;
@@ -157,6 +134,17 @@ public class Application {
     private Map<String, FieldInf> fieldsByNameIndex;
     private List<Map<String, Object>> searchResults;
     private Map<String, FieldInf> filtersMap;
+    private IFeedFilter oldFilterVersion;
+    @Autowired
+    private SolrServer solrServer;
+
+    {
+        try {
+            // this.varnishClient = VarnishClient.newVarnishClient();
+        } catch (Exception e) {
+            // Do nothing. The client might not be needed.
+        }
+    }
 
     public Application() {
         super();
@@ -165,6 +153,171 @@ public class Application {
     public Application(IFeedService iFeedService) {
         super();
         this.iFeedService = iFeedService;
+    }
+
+    private static void cleanFieldsNotFilters(List<FieldInf> filters) {
+        for (FieldInf fieldInf : new ArrayList<>(filters)) {
+            if (!fieldInf.isFilter()) {
+                filters.remove(fieldInf);
+            }
+        }
+    }
+
+    public static String urlToPostForm(String url, String id) {
+        StringBuilder sb = new StringBuilder();
+
+        String[] urlAndParams = url.split("[?]", 2);
+        String[] params = urlAndParams[1].split("[&]");
+
+        sb.append("<form action='");
+        sb.append(urlAndParams[0]);
+        sb.append("' method=post target='_blank' style='display:none;' id='");
+        sb.append(id);
+        sb.append("'>");
+        for (String paramAndValue : params) {
+            String[] paramAndValueSplit = paramAndValue.split(Pattern.quote("="), 2);
+            sb.append("<input name='");
+            sb.append(paramAndValueSplit[0]);
+            sb.append("' value='");
+            sb.append(paramAndValueSplit[1]);
+            sb.append("' />");
+        }
+
+        sb.append("</form>");
+
+        return sb.toString();
+    }
+
+    public static Object formatDate(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Date) {
+            return DateFormatter.format((Date) value);
+        } else if (value instanceof String) {
+            return DateFormatter.formatTextDate((String) value);
+        }
+        return value;
+    }
+
+    public static List<Note> toTooltipRows(Map<String, Object> item) {
+        if (item == null) {
+            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
+        }
+        String sourceSystem = (String) item.get("vgr:VgrExtension.vgr:SourceSystem");
+
+        if (sourceSystem != null && sofiaSystems.contains(sourceSystem)) {
+            return toSofiaTooltipRows(item);
+        } else {
+            return toAlfrescoBariumTooltipRows(item);
+        }
+    }
+
+    public static List<Note> toSofiaTooltipRows(Map<String, Object> item) {
+        List<Note> result = new ArrayList<>();
+
+        toTooltipRow(item, "core:ArchivalObject.idType", "N/A", result);
+        toTooltipRow(item, "core:ArchivalObject.id", "N/A", result);
+        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Upprättad datum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd", result);
+        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut", result);
+        toTooltipRow(item, "revisiondate", "Gallringsdatum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Description", "Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet", result);
+        toTooltipRow(item, "core:ArchivalObject.core:ObjectType", "Handlingstyp", result);
+        toTooltipRow(item, "core:ArchivalObject.core:ObjectType.id", "", result);
+        toTooltipRow(item, "core:ArchivalObject.core:ObjectType.filePlan", "Dokumenthanteringsplan", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.id", "Id på klassificering", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.classCode", "Punktnotation på klassificering", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.level", "Nivå på klassificering", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.name", "Namn på klassificering", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Unit", "Rubrik", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Unit.refcode", "Signum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Unit.level", "Nivå i arkivförteckningen", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Producer", "Myndighet/Arkivbildare", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Producer.idType", "", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Producer.id", "Myndighetens HSA-ID", result);
+        toTooltipRow(item, "vgr:VgrExtension.itemId", "Arkivobjekt-ID", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:SourceSystem", "Källsystem", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:SourceSystem.id", "Källsystem-ID", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.id", "Käll-ID", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.version", "Version i källsystem", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.versionId", "N/A", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Title", "Rubrik i Sharepoint, Titel i Mellanarkivet", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:AvailableFrom", "Tillgänglig från", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig till", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:RevisedAvailableFrom", "Reviderat tillgänglig från", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:RevisedAvailableTo", "Reviderat tillgänglig till", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:RestrictionCode", "Skyddskod", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:LegalParagraph", "Lagparagraf", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedByUnit", "Upprättad av enhet", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedByUnit.id", "", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:PublishedForUnit", "Upprättad för enhet", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:PublishedForUnit.id", "", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy", "Upprättad av", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy.id", "Upprättad av (vgrid)", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy.org", "Upprättad av (org)", result);
+        toTooltipRow(item, "vgr:VgrExtension.vgr:Tag", "Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.itemId", "", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.domain", "Domännamn", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning", result);
+        toTooltipRow(item, "vgrsy:DomainExtension.domain", "", result);
+        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Skapad datum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd", result);
+        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut", result);
+        toTooltipRow(item, "revisiondate", "Gallringsdatum", result);
+        toTooltipRow(item, "core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv", result);
+        toTooltipRow(item, "core:ArchivalObject.core:Description", "", result);
+        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Skapad datum", result);
+
+        if (result.isEmpty()) {
+            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
+        }
+        return result;
+    }
+
+    public static List<Note> toAlfrescoBariumTooltipRows(Map<String, Object> item) {
+        List<Note> result = new ArrayList<>();
+
+        //toTooltipRow(item, "dc.title", "Titel", result);
+        toTooltipRow(item, "title", "Titel", result);
+        toTooltipRow(item, "dc.description", "Beskrivning", result);
+        toTooltipRow(item, "dc.creator.document", "Innehållsansvarig", result);
+        toTooltipRow(item, "dc.creator.function", "Innehållsansvarig, roll", result);
+        toTooltipRow(item, "dc.contributor.acceptedby", "Godkänt av", result);
+        toTooltipRow(item, "dc.date.validfrom", "Giltig fr o m", result);
+        toTooltipRow(item, "dc.date.validto", "Giltig t o m", result);
+        toTooltipRow(item, "dc.type.document.structure", "Dokumentstruktur VGR", result);
+
+        if (result.isEmpty()) {
+            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
+        }
+        return result;
+    }
+
+    private static void toTooltipRow(Map<String, Object> item, String key, String label, List<Note> notes) {
+        Note note = toTooltipRow(item, key, label);
+        if (note != null) {
+            notes.add(note);
+        }
+    }
+
+    public static Note toTooltipRow(Map<String, Object> item, String key, String label) {
+        Object value = item.get(key);
+        if ("undefined".equals(value) || value == null || value.toString().isEmpty()) {
+            return null;
+        }
+        return new Note(label, String.valueOf(value));
+    }
+
+    public static String encode(String raw) {
+        try {
+            return URLEncoder.encode(raw, "UTF-8").replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostConstruct
@@ -274,7 +427,6 @@ public class Application {
         memoryTool.measure(this);
     }
 
-
     private void viewIFeedImp(Long id) {
 
         final IFeed feed = iFeedService.getIFeed(id);
@@ -288,6 +440,7 @@ public class Application {
         }
 
         this.filters = iFeedService.getFieldInfs();
+        cleanFieldsNotFilters(filters);
         selectedFieldInfRootName = filters.get(0).getName();
         this.filtersMap = new HashMap<>();
         for (FieldInf root : filters) {
@@ -376,7 +529,6 @@ public class Application {
         List<Person> people = ldapPersonService.getPeople(incompleteUserName + "*", 10);
         return people;
     }
-
 
     public String fetchLdapPersonFullName(String vgrId) {
         try {
@@ -477,6 +629,10 @@ public class Application {
         fieldInf.setExpanded(false);
         fieldInf.setValue("");
         newFilter = null;
+        if (oldFilterVersion != null) {
+            iFeedModelBean.addFilter(oldFilterVersion);
+            oldFilterVersion = null;
+        }
         findResultsByCurrentFeedConditions();
     }
 
@@ -490,6 +646,7 @@ public class Application {
         newFilter.setFieldInf(fieldInf);
         fieldInf.setExpanded(false);
         iFeedModelBean.addFilter(newFilter);
+        oldFilterVersion = null;
         cancelNewFilter(fieldInf);
     }
 
@@ -507,6 +664,7 @@ public class Application {
     }
 
     public void setNewFilter(FieldInf newFilter) {
+        oldFilterVersion = null;
         this.newFilter = newFilter;
     }
 
@@ -750,31 +908,6 @@ public class Application {
         return urlToPostForm(getExcelFeedLink(), "excelForm").replace("\"", "\\\"");
     }
 
-    public static String urlToPostForm(String url, String id) {
-        StringBuilder sb = new StringBuilder();
-
-        String[] urlAndParams = url.split("[?]", 2);
-        String[] params = urlAndParams[1].split("[&]");
-
-        sb.append("<form action='");
-        sb.append(urlAndParams[0]);
-        sb.append("' method=post target='_blank' style='display:none;' id='");
-        sb.append(id);
-        sb.append("'>");
-        for (String paramAndValue : params) {
-            String[] paramAndValueSplit = paramAndValue.split(Pattern.quote("="), 2);
-            sb.append("<input name='");
-            sb.append(paramAndValueSplit[0]);
-            sb.append("' value='");
-            sb.append(paramAndValueSplit[1]);
-            sb.append("' />");
-        }
-
-        sb.append("</form>");
-
-        return sb.toString();
-    }
-
     public void onTypeChangeInColumnDef(TableDefModel tableDefModel, ColumnDef columnDef) {
         FieldInf fi = getFieldsByNameIndex().get(columnDef.getName());
         columnDef.setLabel(fi.getName());
@@ -784,7 +917,10 @@ public class Application {
     public List<SelectItem> getRootFieldInfs() {
         List<SelectItem> result = new ArrayList<>();
         for (FieldInf fi : getFilters()) {
-            result.add(new SelectItem(fi.getId(), fi.getName()));
+            if (fi.getParent() != null && fi.getParent().isFilter()) {
+                result.add(new SelectItem(fi.getId(), fi.getName()));
+            }
+
         }
         return result;
     }
@@ -793,7 +929,7 @@ public class Application {
         Set<String> blackList = getMultiValueKeys();
         List<SelectItemGroup> result = new ArrayList();
         if (filters == null) {
-            this.filters = iFeedService.getFieldInfs();
+            this.filters = new ArrayList<>(iFeedService.getFieldInfs());
         }
         for (FieldInf parent : getFilters()) {
 
@@ -870,11 +1006,20 @@ public class Application {
         updateFilterQuery();
     }
 
-
     public String fixDublicateIdProblem() {
         FacesContext.getCurrentInstance().getViewRoot().setTransient(true);
         return "";
     }
+
+/*
+    public String getWebScriptUrl() {
+        return webScriptUrl;
+    }
+
+    public void setWebScriptUrl(String webScriptUrl) {
+        this.webScriptUrl = webScriptUrl;
+    }
+*/
 
     public String traverse() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -896,12 +1041,9 @@ public class Application {
         return passed.toString();
     }
 
-    long count;
-
     public long nextCount() {
         return count++;
     }
-
 
     public UIComponent findComponent(final String id) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -930,7 +1072,6 @@ public class Application {
         return findComponentLongId(component.getParent()) + ":" + component.getId();
     }
 
-
     public IFeedModelBean getIFeedModelBean() {
         return iFeedModelBean;
     }
@@ -951,8 +1092,6 @@ public class Application {
         this.metadataBaseUrl = metadataBaseUrl;
     }
 
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
     public String toStringDate(Object date) {
         if (date instanceof Date) {
             return format.format(date);
@@ -965,16 +1104,6 @@ public class Application {
     public Map<String, FieldInf> getFieldsByNameIndex() {
         return fieldsByNameIndex;
     }
-
-/*
-    public String getWebScriptUrl() {
-        return webScriptUrl;
-    }
-
-    public void setWebScriptUrl(String webScriptUrl) {
-        this.webScriptUrl = webScriptUrl;
-    }
-*/
 
     public String getWebScriptJsonUrl() {
         return webScriptJsonUrl;
@@ -994,6 +1123,7 @@ public class Application {
             newFilter.setOperator(filter.getOperator());
             if (filter != null && (filter.getFieldInf() == null || !"d:ldap_org_value".equals(filter.getFieldInf().getType()))) {
                 iFeedModelBean.removeFilter(filter);
+                oldFilterVersion = filter;
             }
         } else {
             throw new RuntimeException();
@@ -1052,6 +1182,8 @@ public class Application {
         this.getIFeedModelBean().getDynamicTableDefs().remove(dynamicTableDef);
     }
 
+    // private VarnishClient varnishClient;
+
     public List<String> completeFeedName(String incompleteName) {
         Filter sample = new FilterModel();
         sample.setName(incompleteName);
@@ -1096,7 +1228,6 @@ public class Application {
         this.newCompositeName = newCompositeName;
     }
 
-
     private String getPartOfTextRepresentation(IFeed that) {
         return getTextRepresentation(that.getPartOf());
     }
@@ -1127,7 +1258,7 @@ public class Application {
         return sb.toString();
     }
 
-    public void cancelEdit() throws SystemException, PortalException {
+    public void cancelEdit() {
         if (iFeedModelBean.getId() != null) {
             viewIFeed(iFeedModelBean.getId());
             setInEditMode(false);
@@ -1139,97 +1270,6 @@ public class Application {
             multiValueKeys = new WeakReference<>(InvocerUtil.getKeysWithMultiValues(iFeedService.getFieldsInfs()));
         }
         return multiValueKeys.get();
-    }
-
-    // private VarnishClient varnishClient;
-
-    {
-        try {
-            // this.varnishClient = VarnishClient.newVarnishClient();
-        } catch (Exception e) {
-            // Do nothing. The client might not be needed.
-        }
-    }
-
-    public String uncache(String thatUrl) {
-/*        LOGGER.debug("How many times is this called?");
-        if (varnishClient == null) {
-            return thatUrl;
-        }
-        varnishClient.clear(thatUrl);*/
-        return thatUrl;
-    }
-
-    public String uncacheJson(String thatUrl) {
-
-        /*LOGGER.debug("How many times is this called?");
-        if (varnishClient == null) {
-            return thatUrl;
-        }
-        if (getIFeedModelBean().getFilters().isEmpty()) {
-            return thatUrl;
-        }
-        varnishClient.clearJson(thatUrl);*/
-        return thatUrl;
-    }
-
-    public String urlEncode(String s) throws UnsupportedEncodingException {
-        if (!isInEditMode()) {
-            return getIFeedModelBean().getId() + "";
-        }
-        return URLEncoder.encode(s, "UTF-8");
-    }
-
-    public String join(String... frag) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : frag) {
-            sb.append(s);
-        }
-        return sb.toString();
-    }
-
-    public void copyAndPersistFeed(PortletRequest request, Long withThatKey)
-            throws SystemException, PortalException {
-        User user = getUser(request);
-        viewIFeed(iFeedService.copyAndPersistFeed(withThatKey, user.getScreenName()).getId());
-        setInEditMode(true);
-    }
-
-
-    @Autowired
-    private SolrServer solrServer;
-
-    public void updateSearchResults() {
-        if (searchResults == null) {
-            searchResults = new ArrayList<>();
-        }
-        if (iFeedModelBean.getFilters().isEmpty()) {
-            searchResults.clear();
-        } else {
-            updateSearchResults(iFeedModelBean);
-        }
-    }
-
-    public void updateSearchResults(IFeed retrievedFeed) {
-        /*updateSearchResults(
-                retrievedFeed,
-                //"dc.title",
-                "title",
-                "asc",
-                0,
-                500,
-                new String[]{
-                        //"dc.title",
-                        "title",
-                        "dc.date.issued"
-                }
-        );*/
-        List<Map<String, Object>> result = null;
-        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
-        Result fromSolr = client.query(retrievedFeed.toQuery(), 0, 501, "title asc");
-        if (fromSolr != null && fromSolr.getResponse() != null && fromSolr.getResponse().getDocs() != null)
-            result = client.query(retrievedFeed.toQuery(), 0, 501, "title asc").getResponse().getDocs();
-        this.searchResults = result;
     }
 
     /*public void updateSearchResults(IFeed retrievedFeed,
@@ -1277,6 +1317,77 @@ public class Application {
         }
     }*/
 
+    public String uncache(String thatUrl) {
+/*        LOGGER.debug("How many times is this called?");
+        if (varnishClient == null) {
+            return thatUrl;
+        }
+        varnishClient.clear(thatUrl);*/
+        return thatUrl;
+    }
+
+    public String uncacheJson(String thatUrl) {
+
+        /*LOGGER.debug("How many times is this called?");
+        if (varnishClient == null) {
+            return thatUrl;
+        }
+        if (getIFeedModelBean().getFilters().isEmpty()) {
+            return thatUrl;
+        }
+        varnishClient.clearJson(thatUrl);*/
+        return thatUrl;
+    }
+
+    public String urlEncode(String s) throws UnsupportedEncodingException {
+        if (!isInEditMode()) {
+            return getIFeedModelBean().getId() + "";
+        }
+        return URLEncoder.encode(s, "UTF-8");
+    }
+
+    public String join(String... frag) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : frag) {
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    public void copyAndPersistFeed(PortletRequest request, Long withThatKey)
+            throws SystemException, PortalException {
+        User user = getUser(request);
+        Long clone = iFeedService.copyAndPersistFeed(withThatKey, user.getScreenName()).getId();
+
+        viewIFeed(clone);
+        setInEditMode(true);
+    }
+
+    public void updateSearchResults() {
+        if (searchResults == null) {
+            searchResults = new ArrayList<>();
+        }
+        if (iFeedModelBean.getFilters().isEmpty()) {
+            searchResults.clear();
+        } else {
+            updateSearchResults(iFeedModelBean);
+        }
+    }
+
+    public void updateSearchResults(IFeed retrievedFeed) {
+        if (retrievedFeed.toQuery().trim().equals("")) {
+            this.searchResults = new ArrayList<>();
+            return;
+        }
+
+        List<Map<String, Object>> result = null;
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        Result fromSolr = client.query(retrievedFeed.toQuery(), 0, 501, "title asc");
+        if (fromSolr != null && fromSolr.getResponse() != null && fromSolr.getResponse().getDocs() != null)
+            result = client.query(retrievedFeed.toQuery(), 0, 501, "title asc").getResponse().getDocs();
+        this.searchResults = result;
+    }
+
     private void formatDate(String withThatKey, Map<String, Object> insideHere) {
         String issued = (String) insideHere.get(withThatKey);
         if (issued != null && issued.contains("T")) {
@@ -1290,121 +1401,6 @@ public class Application {
         formatDate("dc.date.validfrom", within);
         formatDate("dc.date.issued", within);
         formatDate("dc.date.validto", within);
-    }
-
-    static List<String> sofiaSystems = new ArrayList<>(Arrays.asList("SOFIA", "SISOM"));
-
-    public static List<Note> toTooltipRows(Map<String, Object> item) {
-        if (item == null) {
-            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
-        }
-        String sourceSystem = (String) item.get("vgr:VgrExtension.vgr:SourceSystem");
-
-        if (sourceSystem != null && sofiaSystems.contains(sourceSystem)) {
-            return toSofiaTooltipRows(item);
-        } else {
-            return toAlfrescoBariumTooltipRows(item);
-        }
-    }
-
-    public static List<Note> toSofiaTooltipRows(Map<String, Object> item) {
-        List<Note> result = new ArrayList<>();
-
-        toTooltipRow(item, "core:ArchivalObject.idType", "N/A", result);
-        toTooltipRow(item, "core:ArchivalObject.id", "N/A", result);
-        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Upprättad datum", result);
-        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd", result);
-        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut", result);
-        toTooltipRow(item, "revisiondate", "Gallringsdatum", result);
-        toTooltipRow(item, "core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Description", "Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet", result);
-        toTooltipRow(item, "core:ArchivalObject.core:ObjectType", "Handlingstyp", result);
-        toTooltipRow(item, "core:ArchivalObject.core:ObjectType.id", "", result);
-        toTooltipRow(item, "core:ArchivalObject.core:ObjectType.filePlan", "Dokumenthanteringsplan", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.id", "Id på klassificering", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.classCode", "Punktnotation på klassificering", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.level", "Nivå på klassificering", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Classification.core:Classification.name", "Namn på klassificering", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Unit", "Rubrik", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Unit.refcode", "Signum", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Unit.level", "Nivå i arkivförteckningen", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Producer", "Myndighet/Arkivbildare", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Producer.idType", "", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Producer.id", "Myndighetens HSA-ID", result);
-        toTooltipRow(item, "vgr:VgrExtension.itemId", "Arkivobjekt-ID", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:SourceSystem", "Källsystem", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:SourceSystem.id", "Källsystem-ID", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.id", "Käll-ID", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.version", "Version i källsystem", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:Source.versionId", "N/A", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:Title", "Rubrik i Sharepoint, Titel i Mellanarkivet", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:AvailableFrom", "Tillgänglig från", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig till", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:RevisedAvailableFrom", "Reviderat tillgänglig från", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:RevisedAvailableTo", "Reviderat tillgänglig till", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:RestrictionCode", "Skyddskod", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:LegalParagraph", "Lagparagraf", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedByUnit", "Upprättad av enhet", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedByUnit.id", "", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:PublishedForUnit", "Upprättad för enhet", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:PublishedForUnit.id", "", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy", "Upprättad av", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy.id", "Upprättad av (vgrid)", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:CreatedBy.org", "Upprättad av (org)", result);
-        toTooltipRow(item, "vgr:VgrExtension.vgr:Tag", "Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet", result);
-        toTooltipRow(item, "vgrsy:DomainExtension.itemId", "", result);
-        toTooltipRow(item, "vgrsy:DomainExtension.domain", "Domännamn", result);
-        toTooltipRow(item, "vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning", result);
-        toTooltipRow(item, "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning", result);
-        toTooltipRow(item, "vgrsy:DomainExtension.domain", "", result);
-        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Skapad datum", result);
-        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd", result);
-        toTooltipRow(item, "core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut", result);
-        toTooltipRow(item, "revisiondate", "Gallringsdatum", result);
-        toTooltipRow(item, "core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv", result);
-        toTooltipRow(item, "core:ArchivalObject.core:Description", "", result);
-        toTooltipRow(item, "core:ArchivalObject.core:CreatedDateTime", "Skapad datum", result);
-
-        if (result.isEmpty()) {
-            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
-        }
-        return result;
-    }
-
-    public static List<Note> toAlfrescoBariumTooltipRows(Map<String, Object> item) {
-        List<Note> result = new ArrayList<>();
-
-        //toTooltipRow(item, "dc.title", "Titel", result);
-        toTooltipRow(item, "title", "Titel", result);
-        toTooltipRow(item, "dc.description", "Beskrivning", result);
-        toTooltipRow(item, "dc.creator.document", "Innehållsansvarig", result);
-        toTooltipRow(item, "dc.creator.function", "Innehållsansvarig, roll", result);
-        toTooltipRow(item, "dc.contributor.acceptedby", "Godkänt av", result);
-        toTooltipRow(item, "dc.date.validfrom", "Giltig fr o m", result);
-        toTooltipRow(item, "dc.date.validto", "Giltig t o m", result);
-        toTooltipRow(item, "dc.type.document.structure", "Dokumentstruktur VGR", result);
-
-        if (result.isEmpty()) {
-            return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
-        }
-        return result;
-    }
-
-
-    private static void toTooltipRow(Map<String, Object> item, String key, String label, List<Note> notes) {
-        Note note = toTooltipRow(item, key, label);
-        if (note != null) {
-            notes.add(note);
-        }
-    }
-
-    public static Note toTooltipRow(Map<String, Object> item, String key, String label) {
-        Object value = item.get(key);
-        if ("undefined".equals(value) || value == null || value.toString().isEmpty()) {
-            return null;
-        }
-        return new Note(label, String.valueOf(value));
     }
 
     public List<Map<String, Object>> getSearchResults() {
@@ -1429,14 +1425,6 @@ public class Application {
 
     public void setFiltersMap(Map<String, FieldInf> filtersMap) {
         this.filtersMap = filtersMap;
-    }
-
-    public static String encode(String raw) {
-        try {
-            return URLEncoder.encode(raw, "UTF-8").replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

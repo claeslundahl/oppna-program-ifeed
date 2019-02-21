@@ -55,6 +55,7 @@
             </plugin>
 -->
 
+<!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
@@ -64,21 +65,21 @@
                         <goals>
                             <goal>compile</goal>
                             <goal>run</goal>
-                            <!--goal>test</goal-->
-                            <!--goal>i18n</goal-->
-                            <!--goal>generateAsync</goal-->
+                            &lt;!&ndash;goal>test</goal&ndash;&gt;
+                            &lt;!&ndash;goal>i18n</goal&ndash;&gt;
+                            &lt;!&ndash;goal>generateAsync</goal&ndash;&gt;
                         </goals>
                     </execution>
                 </executions>
-                <!-- Plugin configuration. There are many available options, see
-                  gwt-maven-plugin documentation at codehaus.org -->
+                &lt;!&ndash; Plugin configuration. There are many available options, see
+                  gwt-maven-plugin documentation at codehaus.org &ndash;&gt;
                 <configuration>
                     <module>se.vgregion.ifeed.Module</module>
                     <runTarget>test.html</runTarget>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
                     <style>PRETTY</style>
                     <generateJsInteropExports>true</generateJsInteropExports>
-                    <!--<i18nMessagesBundle>se.metab.client.Messages</i18nMessagesBundle>-->
+                    &lt;!&ndash;<i18nMessagesBundle>se.metab.client.Messages</i18nMessagesBundle>&ndash;&gt;
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -101,6 +102,7 @@
                 </dependencies>
 
             </plugin>
+-->
 
             <!-- Copy static web files before executing gwt:run -->
             <plugin>
@@ -189,6 +191,12 @@
             <version>${gwtVersion}</version>
             <scope>provided</scope>
         </dependency>
+      <dependency>
+        <groupId>se.vgregion.iFeed</groupId>
+        <artifactId>iFeed-core-bc-composite-webcomp</artifactId>
+        <version>1.13-SNAPSHOT</version>
+        <scope>compile</scope>
+      </dependency>
     </dependencies>
 
 </project>

@@ -208,11 +208,12 @@
           <h:outputScript>
             function on() {
               if (console) console.log("se.vgregion.ifeed.client.Starter.init()");
-              try {
+              startIfeedRend();
+              /*try {
                 se.vgregion.ifeed.client.Starter.init();
               } catch(e){
 
-              }
+              }*/
             }
             setTimeout(on, 300);
           </h:outputScript>

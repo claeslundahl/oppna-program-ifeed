@@ -148,20 +148,6 @@ public class VgrOrganizationsHome implements Serializable {
         return allOrganizationsRoot;
     }
 
-
-    private String getPathToAllOrganizationsRootCacheFile() throws MalformedURLException {
-        /*ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-        String url = ec.getRealPath("/WEB-INF/iFeedJsf-portlet.xml");
-        String webXmlFileUrl = url;
-        String f = webXmlFileUrl.substring(0, webXmlFileUrl.length() - "iFeedJsf-portlet.xml".length());
-        //f = f.replace('/', File.separatorChar);
-        f = f + "allOrganizationsRoot.obj";
-        return f;*/
-        String home = System.getProperty("user.home");
-        String fs = File.separator;
-        return (home + fs + ".hotell" + fs + "ifeed" + fs + "allOrganizationsRoot.obj");
-    }
-
     void persistAllOrganizationsRootToDiscCache() {
         try {
             String f = getPathToAllOrganizationsRootCacheFile();
@@ -180,7 +166,20 @@ public class VgrOrganizationsHome implements Serializable {
         }
     }
 
-    VgrOrganization getAllOrganizationsRootFromDiscCache() {
+    public static String getPathToAllOrganizationsRootCacheFile() throws MalformedURLException {
+        /*ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        String url = ec.getRealPath("/WEB-INF/iFeedJsf-portlet.xml");
+        String webXmlFileUrl = url;
+        String f = webXmlFileUrl.substring(0, webXmlFileUrl.length() - "iFeedJsf-portlet.xml".length());
+        //f = f.replace('/', File.separatorChar);
+        f = f + "allOrganizationsRoot.obj";
+        return f;*/
+        String home = System.getProperty("user.home");
+        String fs = File.separator;
+        return (home + fs + ".hotell" + fs + "ifeed" + fs + "allOrganizationsRoot.obj");
+    }
+
+    public static  VgrOrganization getAllOrganizationsRootFromDiscCache() {
         try {
             String f = getPathToAllOrganizationsRootCacheFile();
             FileInputStream fin = new FileInputStream(f);

@@ -35,6 +35,7 @@ import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import se.vgregion.ifeed.service.ifeed.IFeedService;
@@ -118,6 +119,7 @@ public class IFeedFeedServiceImplTest {
         verify(entry).setUpdated(any(Date.class));
     }
 
+    @Ignore
     @Test
     public void populateEntry_non_default_values() {
         Entry entry = mock(Entry.class);

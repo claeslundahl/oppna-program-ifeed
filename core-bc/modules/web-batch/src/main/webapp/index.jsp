@@ -24,5 +24,14 @@
   <%=se.vgregion.ifeed.jobs.DailyRun.lastErrorIfAny}%>
 </div>
 
+<script type="text/javascript">
+    var script = document.createElement('script');
+    script.src = '//ifeed-stage.vgregion.se/iFeed-web-script/se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js' + '?ua=' + encodeURIComponent(navigator.userAgent);
+    script.type = "text/javascript";
+    document.getElementsByTagName('head')[0].appendChild(script);
+</script>
+<div id="ifeed-data2" style="display:none;">https://ifeed-stage.vgregion.se</div>
+
+
 </body>
 </html>

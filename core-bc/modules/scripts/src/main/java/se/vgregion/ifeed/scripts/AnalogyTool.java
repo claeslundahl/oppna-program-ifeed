@@ -3,7 +3,6 @@ package se.vgregion.ifeed.scripts;
 import se.vgregion.arbetsplatskoder.db.migration.sql.ConnectionExt;
 import se.vgregion.arbetsplatskoder.db.migration.sql.meta.Column;
 import se.vgregion.arbetsplatskoder.db.migration.sql.meta.Table;
-import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
@@ -33,18 +32,19 @@ public class AnalogyTool {
     }
 
 
-    // static ConnectionExt main = CreateAnalogNewTags.getStageConnectionExt();
+    static ConnectionExt main = CreateAnalogNewTags.getStageConnectionExt();
 
 
-    static ConnectionExt main = CopyDatabaseUtil.getRemoteProdConnectionExt();
+    //static ConnectionExt main = CopyDatabaseUtil.getRemoteProdConnectionExt();
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws InterruptedException {
         long now = System.currentTimeMillis();
         main();
         System.out.println("It took: " + (System.currentTimeMillis() - now));
     }
 
-    public static void main() {
+    public static void main() throws InterruptedException {
 
         System.out.println(main.getUrl());
 
@@ -54,9 +54,9 @@ public class AnalogyTool {
         main.update("delete from vgr_ifeed_vgr_ifeed where composites_id < 0 or partof_id < 0");
         main.update("delete from vgr_ifeed_filter where id < 0");
         main.update("delete from vgr_ifeed_ownership where ifeed_id < 0");
-        main.update("delete from vgr_ifeed where id < 0 and id != -4297439");
+        main.update("delete from vgr_ifeed where id < 0");
         main.commit();
-        if (true) return;
+        // if (true) return;
 
         System.out.println("Loads all feeds left. Once.");
         loadAllFeeds();
@@ -76,8 +76,14 @@ public class AnalogyTool {
             if (c % 100 == 0) {
                 System.out.print(" " + c);
             }
+            Long id = (Long) feed.get("id");
+            /*if (Arrays.asList(3325530l, 3325482l, 115882l).contains(id)) {
+                System.out.println("\nHittade " + id);
+            } else {
+                continue;
+            }*/
             List<Map<String, Object>> filters = main.query(
-                    "select * from vgr_ifeed_filter where ifeed_id = ?",
+                    "select distinct ifeed_id from vgr_ifeed_filter where ifeed_id = ? and ifeed_id > 0",
                     0,
                     1_000_000,
                     feed.get("id")
@@ -85,6 +91,7 @@ public class AnalogyTool {
 
 
             if (filters.isEmpty()) {
+                System.out.println("Tom!");
                 continue;
             }
 
@@ -130,6 +137,11 @@ public class AnalogyTool {
                         "from vgr_ifeed f1 where f1.id < 0");
 
         main.commit();
+        Thread.sleep(5_000);
+
+        for (Map<String,Object> item : main.query("select * from vgr_ifeed where id < 0", 0, 1_000_000)) {
+            System.out.println(item);
+        }
     }
 
 
@@ -143,12 +155,16 @@ public class AnalogyTool {
         NavigableMap<Long, IFeed> mapped = new TreeMap<>();
 
         List<Map<String, Object>> items = main.query(
-                "select * from vgr_ifeed",
+                "select * from vgr_ifeed ",
                 0,
                 1_000_000
         );
         List<IFeed> result = new ArrayList<>();
+        int c = 0;
+        System.out.println("Hittade " + items.size());
         for (Map<String, Object> item : items) {
+            c++;
+            System.out.println("Item " + c);
             IFeed feed = new IFeed();
             feed.setId((Long) item.get("id"));
             List<Map<String, Object>> filters = main.query(
@@ -162,8 +178,6 @@ public class AnalogyTool {
                 f.setFilterKey((String) filter.get("filterkey"));
                 f.setFilterQuery((String) filter.get("filterquery"));
                 feed.getFilters().add(f);
-
-
             }
             result.add(feed);
             mapped.put(feed.getId(), feed);
@@ -186,6 +200,7 @@ public class AnalogyTool {
         feed = new HashMap<>(feed);
         long id = ((long) feed.get("id")) * -1;
         feed.put("id", id);
+        feed.put("userid", "lifra1");
         Map<String, Object> and;
         if (main.query("select * from vgr_ifeed where id = ?", 0, 1, id).isEmpty()) {
             main.insert("vgr_ifeed", feed);
@@ -250,7 +265,7 @@ public class AnalogyTool {
                     result++;
                 }
             }
-            // main.commit();
+            main.commit();
         }
 
         return result;
@@ -337,7 +352,14 @@ public class AnalogyTool {
             System.out.println("Feed id:s är " + allFeeds.values());
             throw new RuntimeException();
         }
-        Result r = getSolrHttpClient().query(feed.toQuery(), 0, 1_000_000, null);
+
+        String textFeed = getSolrHttpClient().toText(feed.toQuery(), 0, 1_000_000, null);
+
+        if (textFeed.contains("arium")) {
+            return textFeed.contains("Barium") || textFeed.contains("barium");
+        }
+
+        /*Result r = getSolrHttpClient().query(feed.toQuery(), 0, 1_000_000, null);
         // final String key = "dc.source.origin";
         final String key = "SourceSystem";
 
@@ -353,7 +375,7 @@ public class AnalogyTool {
                     return true;
                 }
             }
-        }
+        }*/
 
         return false;
     }

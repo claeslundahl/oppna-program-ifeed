@@ -40,6 +40,15 @@ public class DateFormatter {
         insideHere.put(withThatKey, issued);
     }
 
+    public static String formatTextDate(String that) {
+        if (that.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
+            String[] parts = that.split(Pattern.quote("T"));
+            String[] subDayParts = parts[1].split(Pattern.quote(":"));
+            return parts[0] + " " + subDayParts[0] + ":" + subDayParts[1];
+        }
+        return that;
+    }
+
     public void formatDates(Map<String, Object> within) {
         formatTextDate("dc.date.validfrom", within);
         formatTextDate("dc.date.issued", within);
@@ -60,6 +69,10 @@ public class DateFormatter {
         return dt.toString(dateFormat.formatter);
     }
 
+    public static String format(final Date date) {
+        return format(date, DateFormat.W3CDTF);
+    }
+
     private final static SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
 
     public static Date parse(final String thatTextDate) {
@@ -68,6 +81,24 @@ public class DateFormatter {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean isSomeDate(Object object) {
+        if (object instanceof Date) {
+            return true;
+        }
+        SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        // Add other parsing formats to try as you like:
+        String[] dateFormats = {"yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z"};
+        for (String dateFormat : dateFormats) {
+            try {
+                out.format(new SimpleDateFormat(dateFormat).parse(object.toString()));
+                return true;
+            } catch (Exception ignore) {
+
+            }
+        }
+        return false;
     }
 
     public static String toUtcDateIfPossible(String dateStr) {

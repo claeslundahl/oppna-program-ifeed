@@ -14,7 +14,9 @@ import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
+import java.util.regex.Pattern;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -63,8 +65,9 @@ public class IFeedViewerControllerTest {
     public void details() {
         String documentId = "1";
         Model model = mock(Model.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
-        String result = controller.details(documentId, model);
+        String result = controller.details(documentId, model, response);
         Assert.assertEquals("documentDetails", result);
 
 
@@ -72,6 +75,11 @@ public class IFeedViewerControllerTest {
                 "</iframe>";
 
         System.out.println(foo.substring(foo.indexOf("src='") + 5, foo.indexOf("/iFeed-web/")));
+    }
+
+    @Test
+    public void foo() {
+        System.out.println("SE2321000131-E000000000001".matches("SE[0-9]{10}\\-E[0-9]{12}"));
     }
 
     @Test
@@ -92,6 +100,15 @@ public class IFeedViewerControllerTest {
 
 
         System.out.println(IFeedViewerController.toTextDateImpl(string));
+    }
+
+    public static void main(String[] args) {
+        String stuff = "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td";
+        String[] parts = stuff.split(Pattern.quote(","));
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = "#table-container " + parts[i];
+        }
+        System.out.println(String.join(", ", parts));
     }
 
 }

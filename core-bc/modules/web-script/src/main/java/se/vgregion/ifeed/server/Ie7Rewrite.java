@@ -54,7 +54,7 @@ public class Ie7Rewrite implements Filter {
     public void doFilter(final ServletRequest request, ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         PrintWriter out = response.getWriter();
         final CharResponseWrapper responseWrapper = new CharResponseWrapper(
-            (HttpServletResponse) response);
+                (HttpServletResponse) response);
 
         HttpServletRequest hr = (HttpServletRequest) request;
         String userAgent = hr.getHeader("User-Agent");
@@ -69,18 +69,19 @@ public class Ie7Rewrite implements Filter {
             } else if (!jsConversionRunning) {
                 jsConversionRunning = true;
                 try {
-                    LOGGER.debug("Rewriting ie-script start!: " + path);
+                    System.out.println("Rewriting ie-script start!: " + path);
                     chain.doFilter(request, responseWrapper);
                     String r = new String(responseWrapper.toString());
                     result = removeFinallyBlockFrom(r);
                     urlToContentCache.put(path, result);
-                    LOGGER.debug("Rewriting ie-script end!: " + path);
-                    LOGGER.debug("Result skript is " + result);
+                    System.out.println("Rewriting ie-script end!: " + path);
+                    System.out.println("Result skript is " + result);
                 } finally {
                     jsConversionRunning = false;
                 }
             } else {
                 result = "alert('Machine not yet ready with script.');";
+                throw new RuntimeException(result);
             }
         } else {
             chain.doFilter(request, responseWrapper);

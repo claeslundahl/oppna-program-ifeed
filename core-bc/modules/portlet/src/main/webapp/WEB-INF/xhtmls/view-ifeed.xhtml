@@ -163,17 +163,18 @@
 
                 <div class="span4 ">
                     <h:outputText style="font-weight: bold;" value="Lägg till: "></h:outputText>
-                    <br/>
-                    <h:commandLink value="EPI-konfiguration (JSON)"
-                                   actionListener="#{tableDef.editNewJsonp()}"
-                                   ajax="true"
-                                   id="epiConfigLink"
-                                   update=":ifeed_view"
-                                   immediate="true">
-                    </h:commandLink>
-                    <br/>
-                    <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
-                    <br/>
+                    <div>
+                        <h:commandLink value="EPI-konfiguration (JSON)"
+                                       actionListener="#{tableDef.editNewJsonp()}"
+                                       ajax="true"
+                                       id="epiConfigLink"
+                                       update=":ifeed_view"
+                                       immediate="true">
+                        </h:commandLink>
+                    </div>
+                    <div>
+                        <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
+                    </div>
                     <a href="#{app.uncache(app.getWebFeedLink())}" target="_blank">Html</a><br/>
 
                     <a id="excel-feed-link" class="link-as-post-form-dont-match"
@@ -227,7 +228,7 @@
               <span class="name">#{ifeedDynamicTableDefsItem.name}</span>
               <span class="edit">
                 <p:commandLink styleClass="link-button-edit" value=" " update=":ifeed_view"
-                               style="color: white;"
+                               style="color: white;" rendered="#{not app.inEditMode}"
                                ajax="false" async="true"
                                action="#{tableDef.editFlow(ifeedDynamicTableDefsItem)}">
                 </p:commandLink>

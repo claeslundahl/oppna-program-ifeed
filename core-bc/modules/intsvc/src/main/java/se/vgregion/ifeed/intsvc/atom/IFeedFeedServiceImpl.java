@@ -145,14 +145,16 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     Entry populateEntry(final Entry e, final Map<String, Object> map) {
 
-        if (map.containsKey("dc.creator")) {
-            e.addAuthor(map.get("dc.creator").toString());
+        if (map.containsKey("dc.contributor.savedby")) {
+            e.addAuthor(map.get("dc.contributor.savedby").toString());
+        } else if (map.containsKey("vgr:VgrExtension.vgr:CreatedBy")) {
+            e.addAuthor(map.get("vgr:VgrExtension.vgr:CreatedBy").toString());
         } else {
             e.addAuthor("- Author missing -");
         }
 
-        if (map.containsKey("dc.title")) {
-            e.setTitle(map.get("dc.title").toString());
+        if (map.containsKey("title")) {
+            e.setTitle(map.get("title").toString());
         } else {
             e.setTitle("- Title missing -");
         }

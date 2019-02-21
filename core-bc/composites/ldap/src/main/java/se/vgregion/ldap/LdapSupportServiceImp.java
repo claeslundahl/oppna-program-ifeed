@@ -1,18 +1,10 @@
 package se.vgregion.ldap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
-import javax.naming.directory.DirContext;
-import javax.naming.directory.SearchControls;
-
 import org.apache.commons.beanutils.BeanMap;
-import org.springframework.ldap.NamingException;
-import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.LdapTemplate;
+
+import javax.naming.directory.SearchControls;
+import java.util.*;
 
 public class LdapSupportServiceImp implements LdapSupportService {
 
@@ -91,15 +83,19 @@ public class LdapSupportServiceImp implements LdapSupportService {
         List<R> result = new ArrayList<R>();
         try {
             LdapBeanContextMapper<R> mapper = new LdapBeanContextMapper<R>(resultType);
-            result.addAll(getLdapTemplate().search(org.getDn(), mkFilter(org), SearchControls.SUBTREE_SCOPE,
-                    mapper));
+            result.addAll(
+                    getLdapTemplate()
+                            .search(
+                                    org.getDn(), mkFilter(org), SearchControls.SUBTREE_SCOPE,
+                                    mapper
+                            )
+            );
             return result;
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
             return result;
         }
     }
-
 
 
 }

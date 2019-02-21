@@ -27,26 +27,8 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        /*IFeed feed = new IFeed();
-        IFeedFilter filter = new IFeedFilter();
-        filter.setFilterKey("dc.type.document.structure");
-        filter.setFilterQuery("Riktlinje koncern*");
-        feed.addFilter(filter);
-        System.out.println(client.getBaseUrl());
-        System.out.println("feed.toQuery(): " + feed.toQuery());
-        Result result = client.query(feed.toQuery(), 0, 100, "title desc");
-        System.out.println("Träffar: " + result.getResponse().getDocs().size() + " st.");*/
-        /*for (Map<String, Object> item : result.getResponse().getDocs()) {
-            System.out.println(item);
-        }*/
-
-        //runLatestFeedQuery();
-
-        for (Field field : client.fetchFields()) {
-            System.out.println(field.getName() + " " + field.getType());
-        }
-
-        // fetchFields();
+        Map<String, Set<Object>> allValues = client.findAllValues();
+        System.out.println("SourceSystem: " + allValues.get("SourceSystem"));
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {

@@ -158,6 +158,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
 
         IFeed ifeed = result.get(0);
+        for (IFeed feed : ifeed.getComposites()) {
+
+        }
+        Json.toJson(ifeed);
+        entityManager.detach(ifeed);
 
         if (!ifeed.getComposites().isEmpty()) {
             List<IFeed> comps = new ArrayList<>();
@@ -169,8 +174,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             ifeed.getComposites().clear();
             ifeed.getComposites().addAll(comps);
         }
-        Json.toJson(ifeed);
-        entityManager.detach(ifeed);
+
+        // entityManager.detach(ifeed);
         return ifeed;
     }
 
@@ -700,15 +705,23 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public void save(DynamicTableDef instance) {
         if (instance.getId() == null) {
             objectRepo.persist(instance);
+            for (ColumnDef columnDef : instance.getColumnDefs()) {
+                columnDef.setTableDef(instance);
+                objectRepo.persist(columnDef);
+            }
         } else {
             objectRepo.merge(instance);
+            for (ColumnDef columnDef : instance.getColumnDefs()) {
+                columnDef.setTableDef(instance);
+                objectRepo.merge(columnDef);
+            }
         }
+
     }
 
     @Override
     @Transactional
     public IFeed copyAndPersistFeed(Long withThatKey, String otherUserId) {
-        // System.out.println("Kopierar för " + otherUserId);
         assert otherUserId != null && !otherUserId.isEmpty();
         IFeed result = findByPrimaryKey(IFeed.class, withThatKey);
         init(result);
@@ -716,6 +729,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         result.setUserId(otherUserId);
         result.setCreatorName(otherUserId);
         objectRepo.persist(result);
+        objectRepo.flush();
+        update(result);
         return result;
     }
 

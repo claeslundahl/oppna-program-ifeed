@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.formbean;
 
 import se.vgregion.common.utils.Json;
+import se.vgregion.ldap.BaseVgrOrganization;
 
 import java.util.ArrayList;
 import java.util.Collection;

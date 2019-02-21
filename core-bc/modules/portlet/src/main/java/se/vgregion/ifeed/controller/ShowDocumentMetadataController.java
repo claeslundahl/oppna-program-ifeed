@@ -7,7 +7,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +33,8 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
 
+//import org.springframework.context.MessageSource;
+
 @Controller
 @RequestMapping("VIEW")
 @SessionAttributes({"ifeed"})
@@ -48,8 +49,8 @@ public class ShowDocumentMetadataController {
     @Autowired
     private LdapPersonService ldapPersonService;
 
-    @Autowired
-    private MessageSource resource;
+    /*@Autowired
+    private MessageSource resource;*/
 
     @Autowired
     private LdapSupportService ldapOrganizationService;
@@ -92,7 +93,7 @@ public class ShowDocumentMetadataController {
                 if (StringUtils.isBlank(metaValue)) {
                     LOGGER.warn("Metadata, {}, not found in document with id: {}", metadata, documentId);
                 }
-                metadataPair.put(resource.getMessage(metadata + ".label", null, metadata, null), metaValue);
+                // metadataPair.put(resource.getMessage(metadata + ".label", null, metadata, null), metaValue);
             }
         } catch (IFeedServiceException e) {
             metadataPair.put("Varning", "Ingen metadata kunde hittas!");
@@ -110,13 +111,13 @@ public class ShowDocumentMetadataController {
         }
     }
 
-    MessageSource getResource() {
+   /* MessageSource getResource() {
         return resource;
     }
 
     void setResource(MessageSource resource) {
         this.resource = resource;
-    }
+    }*/
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleAlfrescoDocumentServiceException(Exception e) {

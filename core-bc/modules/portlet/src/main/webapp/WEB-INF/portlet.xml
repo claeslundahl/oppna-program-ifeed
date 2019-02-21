@@ -132,8 +132,8 @@
       <portlet-mode>EDIT</portlet-mode>
     </supports>
 
-    <supported-locale>sv</supported-locale>
-    <resource-bundle>i18n.ifeed-messages</resource-bundle>
+        <supported-locale>sv</supported-locale>
+<!--        <resource-bundle>i18n.ifeed-messages</resource-bundle>-->
 
     <portlet-info>
       <title>IFeedJsf</title>

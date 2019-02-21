@@ -144,27 +144,55 @@
         - Länk för webben
         - Länk för webben (orginalformat)--%>
 
-
-
     <div>
         <table class="ifeed-metadata-table" style="text-decoration: none;">
             <thead><tr><td colspan="2">Dokumentegenskaper</td></tr></thead>
             <tbody>
-
+            <c:if test="${not empty item['title']}">
             <tr><td class="key">Titel</td><td class="value">${item['title']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['core:ArchivalObject.core:Producer']}">
             <tr><td class="key">Myndighet</td><td class="value">${item['core:ArchivalObject.core:Producer']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['core:ArchivalObject.core:Classification.core:Classification.name']}">
             <tr><td class="key">Klassificeringsstruktur (process)</td><td class="value">${item['core:ArchivalObject.core:Classification.core:Classification.name']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['core:ArchivalObject.core:ObjectType']}">
             <tr><td class="key">Handlingstyp</td><td class="value">${item['core:ArchivalObject.core:ObjectType']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgr:VgrExtension.vgr:PublishedForUnit.id']}">
             <tr><td class="key">Upprättat för enhet</td><td class="value">${item['vgr:VgrExtension.vgr:PublishedForUnit.id']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgrsy:DomainExtension.vgrsy:SubjectClassification']}">
             <tr><td class="key">Regional ämnesindelning</td><td class="value">${item['vgrsy:DomainExtension.vgrsy:SubjectClassification']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgrsy:DomainExtension.vgrsy:SubjectLocalClassification']}">
             <tr><td class="key">Egen ämnesindelning</td><td class="value">${item['vgrsy:DomainExtension.vgrsy:SubjectLocalClassification']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgr:VgrExtension.vgr:Tag']}">
+            <tr><td class="key">Företagsnyckelord</td><td class="value">${item['vgr:VgrExtension.vgr:Tag']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgr:VgrExtension.vgr:Source.id']}">
             <tr><td class="key">DokumentId källa</td><td class="value">${item['vgr:VgrExtension.vgr:Source.id']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgr:VgrExtension.vgr:SourceSystem']}">
             <tr><td class="key">Källsystem</td><td class="value">${item['vgr:VgrExtension.vgr:SourceSystem']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgr:VgrExtension.vgr:CreatedByUnit.id']}">
             <tr><td class="key">Upprättat av enhet</td><td class="value">${item['vgr:VgrExtension.vgr:CreatedByUnit.id']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgr:VgrExtension.vgr:CreatedBy']}">
             <tr><td class="key">Upprättat av (person)</td><td class="value">${item['vgr:VgrExtension.vgr:CreatedBy']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['vgr:VgrExtension.vgr:SecurityClass']}">
             <tr><td class="key">Åtkomsträtt</td><td class="value">${item['vgr:VgrExtension.vgr:SecurityClass']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['url']}">
             <tr><td class="key">Länk för webben</td><td class="value">${item['url']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['originalDownloadLatestVersionUrl']}">
             <tr><td class="key">Länk för webben (orginalformat)</td><td class="value">${item['originalDownloadLatestVersionUrl']}</td></tr>
+            </c:if>
 
             </tbody>
         </table>

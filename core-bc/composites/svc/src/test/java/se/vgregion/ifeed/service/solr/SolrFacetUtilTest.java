@@ -21,9 +21,11 @@ public class SolrFacetUtilTest {
         String baseUrl = "http://vgas1499.vgregion.se:9090/solr/ifeed";
         List<String> result = SolrFacetUtil.fetchFacets(baseUrl, feed, "dc.title");
         System.out.println(result);*/
-        String json = new String(Files.readAllBytes(Paths.get(System.getProperty("user.home"), "feed.json")));
-        IFeed feed = Json.toObject(IFeed.class, json);
-        List<String> result = SolrFacetUtil.fetchFacets(null, feed, "dc.title");
+        /*String json = new String(Files.readAllBytes(Paths.get(System.getProperty("user.home"), "feed.json")));
+        IFeed feed = Json.toObject(IFeed.class, json);*/
+        IFeed feed = new IFeed();
+        List<String> result = SolrFacetUtil.fetchFacets(null, feed, "vgrsy:DomainExtension.vgrsy:SubjectClassification", "*");
+        // List<String> result = SolrFacetUtil.fetchFacets(null, feed, "title");
         for (String r : result) {
             System.out.println(r);
         }

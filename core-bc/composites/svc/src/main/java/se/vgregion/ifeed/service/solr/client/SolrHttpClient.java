@@ -40,7 +40,7 @@ public class SolrHttpClient {
     }
 
     public Result query(String qf, Integer start, Integer rows, String sort) {
-        System.out.println(qf);
+        // System.out.println(qf);
         try {
             Result result = queryImp(qf, start, rows, sort);
             // addTranslationProperties(result);
@@ -148,8 +148,8 @@ public class SolrHttpClient {
 
     public String post(String toThatUrl, String thatData) throws IOException {
 
-        System.out.println("Posting to: " + toThatUrl);
-        System.out.println("That data: " + thatData);
+        /*System.out.println("Posting to: " + toThatUrl);
+        System.out.println("That data: " + thatData);*/
 
         URL oracle = new URL(toThatUrl);
         HttpURLConnection con = (HttpURLConnection) oracle.openConnection();
@@ -159,7 +159,6 @@ public class SolrHttpClient {
 
         int responseCode = con.getResponseCode();
         // System.out.println(con.getResponseMessage());
-
 
         if (responseCode == 200) {
             //toText(con.getInputStream());
@@ -250,19 +249,42 @@ public class SolrHttpClient {
         }
     }
 
-    public static NavigableSet<String> toFacetSet(Result fromThat, String fieldName) {
+    public static NavigableSet<String> toFacetSet(Result fromThat, String fieldName, String starPattern) {
         NavigableSet result = new TreeSet();
         for (Map<String, Object> item : fromThat.getResponse().getDocs()) {
             Object value = item.get(fieldName);
+            if (value == null) {
+                continue;
+            }
             if (value instanceof Collection) {
+                while (starPattern.contains("**")) {
+                    starPattern = starPattern.replace("**", "*");
+                }
+                String[] stars = starPattern.split(Pattern.quote("*"));
+
                 for (Object c : (Collection) value) {
-                    result.add(String.valueOf(c).trim());
+                    String text = String.valueOf(c).trim();
+                    if (stellarMatch(stars, text)) {
+                        result.add(text);
+                        System.out.println(text);
+                    }
                 }
             } else {
                 result.add(String.valueOf(value).trim());
             }
         }
         return result;
+    }
+
+    static boolean stellarMatch(String[] stars, String value) {
+        for (String star : stars) {
+            int index = value.indexOf(star);
+            if (index == -1) {
+                return false;
+            }
+            value = value.substring(index + star.length());
+        }
+        return true;
     }
 
     public Set<String> fetchAllFieldNames() {
@@ -325,7 +347,7 @@ public class SolrHttpClient {
                 }
             }
         }
-        System.out.println("Antal mappningar " + result.size());
+        // System.out.println("Antal mappningar " + result.size());
         return result;
     }
 

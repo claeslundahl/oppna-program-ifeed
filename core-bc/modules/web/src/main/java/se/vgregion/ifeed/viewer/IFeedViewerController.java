@@ -434,9 +434,6 @@ public class IFeedViewerController {
 
         solrQuery.setShowDebugInfo(true);
 
-        System.out.println("sortField: " + sortField);
-        System.out.println("sortDirection: " + sortDirection);
-
         if (sortField == null || sortField.isEmpty()) sortField = IFeedSolrQuery.DEFAULT_SORT_FIELD;
         if (sortDirection == null || sortDirection.isEmpty())
             sortDirection = IFeedSolrQuery.DEFAULT_SORT_DIRECTION.toString();

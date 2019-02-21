@@ -6,12 +6,10 @@ import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 
@@ -30,9 +28,9 @@ public class SolrFacetUtil {
      * @param field       what property to get facets for.
      * @return the top 10 results of the search, sorted descending.
      */
-    public static List<String> fetchFacets(String solrBaseUrl, IFeed feed, String field) {
+    public static List<String> fetchFacets(String solrBaseUrl, IFeed feed, String field, String starFilter) {
         try {
-            return fetchFacetsImpl(solrBaseUrl, feed, field);
+            return fetchFacetsImpl(solrBaseUrl, feed, field, starFilter);
         } catch (Exception e) {
             try {
                 Files.write(Paths.get(System.getProperty("user.home"), "feed.json"), se.vgregion.common.utils.Json.toJson(feed).getBytes());
@@ -44,76 +42,28 @@ public class SolrFacetUtil {
         }
     }
 
-    private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field) throws Exception {
-
-        // System.out.println("solrBaseUrl: " + solrBaseUrl);
-        // System.out.println("Facet find with query " + feed.toQuery());
-
-        if (true) {
-            if (feed == null) throw new NullPointerException();
-            System.out.println("The facet-question to ask: " + feed.toQuery());
-            Result result = client.query(
-                    feed.toQuery(),
+    private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field, String starFilter) throws Exception {
+        if (feed == null) {
+            throw new NullPointerException();
+        }
+        final String question = feed.toQuery();
+        Result result = client.query(
+                question,
+                0,
+                10,
+                field + "%20asc"
+        );
+        if (result.getResponse() == null) {
+            result = client.query(
+                    question,
                     0,
-                    10,
-                    field + "%20asc"
+                    10_000,
+                    null
             );
-            return new ArrayList<>(SolrHttpClient.toFacetSet(result, field));
         }
-
-        String fu = facetUrl(solrBaseUrl, feed, field);
-        URL url = new URL(fu);
-        InputStream stream = url.openStream();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int i = stream.read();
-        while (i != -1) {
-            baos.write(i);
-            i = stream.read();
-        }
-        String result = new String(baos.toByteArray());
-        Map<String, Object> root = (Map<String, Object>) Json.parse(result);
-        if (true) {
-            Map<String, Object> response = (Map<String, Object>) root.get("response");
-            Map<String, Map> docs = (Map) response.get("docs");
-            List<String> sugestions = new ArrayList<>();
-            for (String s : docs.keySet()) {
-                sugestions.addAll(docs.get(s).values());
-            }
-            return sugestions;
-            //return docs.subList(0, Math.min(10, docs.size()));
-        }
-
-        Object tree = Json.parse(result);
-
-
-        Map facetCounts = (Map) ((Map) tree).get("facet_counts");
-        Map facetFields = (Map) ((Map) facetCounts).get("facet_fields");
-        Map facetFieldsMap = (Map) facetFields;
-        Object mapOrList = facetFieldsMap.get(field);
-        if (mapOrList instanceof Map) {
-            Map<String, Object> map = (Map) mapOrList;
-            List<String> list = (List<String>) map.get(field);
-            if (list == null) {
-                list = new ArrayList<>();
-                NavigableMap<String, String> om = new TreeMap(map);
-                for (String s : om.keySet()) {
-                    list.add(om.get(s));
-                }
-            }
-            if (map.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return list.subList(0, 10);
-        } else {
-            List<String> values = new ArrayList<String>();
-            List<Object> resultWithWeight = (List<Object>) mapOrList;
-            // first value is the string, then comes the weight - number of usages...
-            for (int j = 0, k = Math.min(resultWithWeight.size(), 10); j < k; j += 2) {
-                String value = (String) resultWithWeight.get(j);
-                values.add(value);
-            }
-            return values;
-        }
+        List<String> things = new ArrayList<>(SolrHttpClient.toFacetSet(result, field, starFilter));
+        things = things.subList(0, Math.min(10, things.size()));
+        return things;
     }
 
     private static String facetUrl(String solrBaseUrl, IFeed feed, String field) {

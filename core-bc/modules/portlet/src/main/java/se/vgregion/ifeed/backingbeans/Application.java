@@ -814,7 +814,7 @@ public class Application {
             IFeed feed = new IFeed();
             feed.getFilters().addAll(presentFilters);
 
-            List<String> result = iFeedService.fetchFilterSuggestion(feed, newFilter.getId());
+            List<String> result = iFeedService.fetchFilterSuggestion(feed, newFilter.getId(), value + "*");
             System.out.println(result);
             return result;
         } catch (Exception e) {

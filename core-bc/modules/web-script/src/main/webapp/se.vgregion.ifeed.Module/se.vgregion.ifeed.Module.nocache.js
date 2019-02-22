@@ -128,20 +128,14 @@ function getDataHostUrl() {
     }
 }
 
-var previousTooltip = [];
+var currentTooltip = null;
 
 function fillDocumentDetailTooltip(id, here) {
-
-    for (var i = 0; i < previousTooltip.length; i++) {
-        onTooltipOut(previousTooltip[i]);
-    }
-    previousTooltip = [];
-    previousTooltip.push(here);
-
+    currentTooltip = here;
     jsonp(getDataHostUrl() + "/iFeed-web/documents/" + id + "/metadata?type=tooltip", "callback",
         function (response) {
+            if (currentTooltip != here) return;
             here.innerHTML = response.content;
-            here.style.display = 'inline';
             here.style.position = 'absolute';
             here.style.backgroundColor = 'white';
             here.style.width = '500px';
@@ -257,10 +251,17 @@ function fillDocumentDetailTooltip(id, here) {
                 "        }\n" +
                 " .key a, .value a, .key a:hoover, .value a:hoover { text-decoration:none;}\n" +
                 "\n");
+
+            var allTips = document.getElementsByName('ifeed-tooltip');
+            for (var i = 0; i < allTips.length; i++) {
+                onTooltipOut(allTips[i]);
+            }
+            here.style.display = 'inline';
         });
 }
 
 function onTooltipOut(here) {
+    currentTooltip = null;
     if (!here) return;
     here.style.display = 'none';
 }

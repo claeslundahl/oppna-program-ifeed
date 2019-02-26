@@ -238,6 +238,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     public Boolean getLinkNativeDocument() {
+        if (linkNativeDocument == null) {
+            return false;
+        }
         return linkNativeDocument;
     }
 

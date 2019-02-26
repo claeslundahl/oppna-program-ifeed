@@ -441,13 +441,11 @@ public class Application {
 
         this.filters = iFeedService.getFieldInfs();
         cleanFieldsNotFilters(filters);
-
-        if (filters.size() > 0) {
+        if (!filters.isEmpty()) {
             selectedFieldInfRootName = filters.get(0).getName();
         } else {
             selectedFieldInfRootName = "N/A";
         }
-
         this.filtersMap = new HashMap<>();
         for (FieldInf root : filters) {
             filtersMap.put(root.getName(), root);

@@ -10,7 +10,7 @@ public class IfeedFilterUtil {
 
     public static void main(String[] args) throws SQLException {
         // ConnectionExt target = CreateAnalogNewTags.getStageConnectionExt();
-        ConnectionExt target = CopyDatabaseUtil.getRemoteDxpTestConnectionExt();
+        ConnectionExt target = CopyDatabaseUtil.getMainConnectionExt();
 
         System.out.println(target.getUrl());
 

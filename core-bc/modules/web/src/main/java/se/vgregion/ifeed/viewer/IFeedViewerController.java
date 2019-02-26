@@ -726,6 +726,9 @@ public class IFeedViewerController {
         model.addAttribute("defaultSortOrder", defaultsortorder);
 
         IFeed filter = iFeedService.getFeedForSolrQuery(Long.valueOf(feedid));
+        if (filter == null) {
+            throw new ResourceNotFoundException();
+        }
         Result findings = client.query(
                 filter.toQuery(),
                 (limit.intValue() > 0 ? 0 : null),

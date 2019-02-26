@@ -8,6 +8,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -37,6 +39,8 @@ import java.util.Map;
 @Component(value = "iFeedBackingBean")
 @Scope("view")
 public class IFeedBackingBean implements Serializable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IFeedBackingBean.class);
 
     private ThemeDisplay themeDisplay;
     private boolean pageNavigation = false;
@@ -92,8 +96,8 @@ public class IFeedBackingBean implements Serializable {
         List<IFeed> allIFeeds = null;
         try {
             allIFeeds = iFeedService.getIFeeds();
-            ;
         } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
             System.out.println("Autowired iFeedService is null---------------------------------------------------: " + e.toString());
             throw new RuntimeException(e);
         }
@@ -112,7 +116,7 @@ public class IFeedBackingBean implements Serializable {
             }
 
         } catch (Exception e) {
-            System.out.println("Autowired iFeedService is null---------------------------------------------------: " + e.toString());
+            LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
 

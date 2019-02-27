@@ -9,8 +9,7 @@ import java.util.Map;
 public class IfeedFilterUtil {
 
     public static void main(String[] args) throws SQLException {
-        // ConnectionExt target = CreateAnalogNewTags.getStageConnectionExt();
-        ConnectionExt target = CopyDatabaseUtil.getMainConnectionExt();
+        ConnectionExt target = CopyDatabaseUtil.getRemoteProdConnectionExt();
 
         System.out.println(target.getUrl());
 
@@ -22,18 +21,19 @@ public class IfeedFilterUtil {
 
         String selectTableSQL = "select vif.*, vif.ctid from vgr_ifeed_filter vif order by vif.ifeed_id";
         List<Map<String, Object>> items = target.query(selectTableSQL, 0, 1_000_000);
+        System.out.println("Hittade " + items.size() + " rader.");
         int cursor = 0;
         for (Map<String, Object> item : items) {
             Object ctid = item.get("ctid");
             target.update("update vgr_ifeed_filter set id = ? where ctid = ?", cursor++, ctid);
-            if (cursor % 1000 == 0){
+            if (cursor % 500 == 0){
                 System.out.println("Antal färdiga " + cursor);
                 target.commit();
             }
         }
 
-        if (missingPrim)
-            target.update("alter table vgr_ifeed_filter add constraint vgr_ifeed_filter_pkey primary key (id)");
+        /*if (missingPrim)
+            target.update("alter table vgr_ifeed_filter add constraint vgr_ifeed_filter_pkey primary key (id)");*/
 
         target.commit();
     }

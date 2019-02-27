@@ -20,34 +20,36 @@
 
     </c:if>
 
-    <tr>
-        <td></td>
-        <c:forEach items="${columns}" var="column">
-            <td class="ifeed-head-td">
-                <div>
-                    <a class="gwt-Anchor" href="#"
-                       onclick="javascript:toggleFeedOrder(this, '${column.key}'); this.onclick = ''; return false;"
-                       style="font-weight: bold; text-decoration: underline;">
-                            ${column.title}
-                        <c:if test="${defaultSortColumn eq column.key}">
-                            <c:choose>
-                                <c:when test="${defaultSortOrder eq 'asc'}">
-                                    <img
-                                            src="data:image/gif;base64,R0lGODlhEwAJAOMMAFpaWszMzGZmZtPT05mZme7u7nFxcbe3t+Dg4Pf394ODg+np6f///////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEUAA8ALAAAAAATAAkAAAQ8MMhJnz3H2kJp0QCgWUMXDBoREmNiJlsYflo5oZYiA0pLwY/CbjZCSBAawxBgGD0ktWUIZ1ksNAIpQBABADs="
-                                            width="19" height="9" class="gwt-Image" style="border: none;">
-                                </c:when>
-                                <c:otherwise>
-                                    <img
-                                            src="data:image/gif;base64,R0lGODlhEwAJAOMMAFpaWszMzGZmZtPT05mZme7u7nFxcbe3t+Dg4Pf394ODg+np6f///////////////yH5BAEUAA8ALAAAAAATAAkAAAQ9UIBJp3h4LYxHrQMXBBxmfIDBISNSFmiBJeOYlEqlcEMdhBwYRfag+QI3DmFC4B1/pcck+BwRMYeDqDqKAAA7"
-                                            width="19" height="9" class="gwt-Image" style="border: none;">
-                                </c:otherwise>
-                            </c:choose>
-                        </c:if>
-                    </a>
-                </div>
-            </td>
-        </c:forEach>
-    </tr>
+    <c:if test="${showTableHeader}">
+        <tr>
+            <td></td>
+            <c:forEach items="${columns}" var="column">
+                <td class="ifeed-head-td">
+                    <div>
+                        <a class="gwt-Anchor" href="#"
+                           onclick="javascript:toggleFeedOrder(this, '${column.key}'); this.onclick = ''; return false;"
+                           style="font-weight: bold; text-decoration: underline;">
+                                ${column.title}
+                            <c:if test="${defaultSortColumn eq column.key}">
+                                <c:choose>
+                                    <c:when test="${defaultSortOrder eq 'asc'}">
+                                        <img
+                                                src="data:image/gif;base64,R0lGODlhEwAJAOMMAFpaWszMzGZmZtPT05mZme7u7nFxcbe3t+Dg4Pf394ODg+np6f///////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEUAA8ALAAAAAATAAkAAAQ8MMhJnz3H2kJp0QCgWUMXDBoREmNiJlsYflo5oZYiA0pLwY/CbjZCSBAawxBgGD0ktWUIZ1ksNAIpQBABADs="
+                                                width="19" height="9" class="gwt-Image" style="border: none;">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img
+                                                src="data:image/gif;base64,R0lGODlhEwAJAOMMAFpaWszMzGZmZtPT05mZme7u7nFxcbe3t+Dg4Pf394ODg+np6f///////////////yH5BAEUAA8ALAAAAAATAAkAAAQ9UIBJp3h4LYxHrQMXBBxmfIDBISNSFmiBJeOYlEqlcEMdhBwYRfag+QI3DmFC4B1/pcck+BwRMYeDqDqKAAA7"
+                                                width="19" height="9" class="gwt-Image" style="border: none;">
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
+                        </a>
+                    </div>
+                </td>
+            </c:forEach>
+        </tr>
+    </c:if>
 
     <c:forEach items="${items}" var="item" varStatus="status">
 
@@ -61,9 +63,11 @@
                                style="text-decoration: none;"
                                onmouseout="onTooltipOut(this.children[1]); return false;"
                                onmouseover="fillDocumentDetailTooltip('${item.id}', this.children[1])">
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACoElEQVR42q2T3U+SYRjG/VvgT+B9PaiD8qC51odvkHpgWWGZqK10FWWDVX4FaPKRIA2B/MrETIWSlKSA14/eUCDMjzcHZtDWVieStSyvHmnTuTmPfLbf2XNd9309z31nZOz1Ycy88Lgpqjiqj/CHGoIrWRpu5aBmkj+gmVDsU7PC3cWmWclhXSRZag/B7o2jj11OY/PEIDVNgFZ4kpRyRLKj+JgpKslunE41DM7DHUyidTiOWscs7j75AJ1zHg7fEur6oqDLBlLU5cHtJkeMEUF201RiQ+x8m4SCiG52htEd+IRu/xKut4Ug7wij7dUiantDoIsdCepcr2DTIFs/pSyxBOHivqCqMwo5iXDVOo0fv9bSVFg5VLRykD8KovN1DAXql6ALOpSbBln3Od7micPg5HHNPo1KaxAVFg7t3kW0EcrM7H9aAiRWGKbhOWTmWflNg/217Gr/5GdUtYdIpXcofzhOLrPYOOsEmdGPkgdvCD5cavHDwcZASZpXNw1opXf12fhyOutGpVJTgIgCiMa/I/VzDcVaLy40jeI8QaYfRc8YMWD0WwaZyhHe4uGhejqD8pZxyJr9uGh4g/exb8TgN4o0IygiuaVqN260sjC4I8gUa7ci0HK3slDnRbcvjnIjC5nOBze3hD9/19MRQh+/orDWRXDC/DyKvFt9oE9otx6RutIroGWOxJ2eabR5FlCsG4W0YRhnVEMorHHidPUATlX3o7EnSL53jLSvSlDiesG2WaCkXRJRri2leMzBNjIHucVPWn6Bs3UuVBpHYXKGIW9nQefUpChGvfM0Unl2CZVrTubfHoRhaAZdfp6wAK0rAnGVA1ROXZJi6iW77oMo3ywUnWxWUGI9TzGaFSrn3komo+JpRqUQMdXCPd/ef9SW0N736u7wAAAAAElFTkSuQmCC" style="min-width: 16px;"
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACoElEQVR42q2T3U+SYRjG/VvgT+B9PaiD8qC51odvkHpgWWGZqK10FWWDVX4FaPKRIA2B/MrETIWSlKSA14/eUCDMjzcHZtDWVieStSyvHmnTuTmPfLbf2XNd9309z31nZOz1Ycy88Lgpqjiqj/CHGoIrWRpu5aBmkj+gmVDsU7PC3cWmWclhXSRZag/B7o2jj11OY/PEIDVNgFZ4kpRyRLKj+JgpKslunE41DM7DHUyidTiOWscs7j75AJ1zHg7fEur6oqDLBlLU5cHtJkeMEUF201RiQ+x8m4SCiG52htEd+IRu/xKut4Ug7wij7dUiantDoIsdCepcr2DTIFs/pSyxBOHivqCqMwo5iXDVOo0fv9bSVFg5VLRykD8KovN1DAXql6ALOpSbBln3Od7micPg5HHNPo1KaxAVFg7t3kW0EcrM7H9aAiRWGKbhOWTmWflNg/217Gr/5GdUtYdIpXcofzhOLrPYOOsEmdGPkgdvCD5cavHDwcZASZpXNw1opXf12fhyOutGpVJTgIgCiMa/I/VzDcVaLy40jeI8QaYfRc8YMWD0WwaZyhHe4uGhejqD8pZxyJr9uGh4g/exb8TgN4o0IygiuaVqN260sjC4I8gUa7ci0HK3slDnRbcvjnIjC5nOBze3hD9/19MRQh+/orDWRXDC/DyKvFt9oE9otx6RutIroGWOxJ2eabR5FlCsG4W0YRhnVEMorHHidPUATlX3o7EnSL53jLSvSlDiesG2WaCkXRJRri2leMzBNjIHucVPWn6Bs3UuVBpHYXKGIW9nQefUpChGvfM0Unl2CZVrTubfHoRhaAZdfp6wAK0rAnGVA1ROXZJi6iW77oMo3ywUnWxWUGI9TzGaFSrn3komo+JpRqUQMdXCPd/ef9SW0N736u7wAAAAAElFTkSuQmCC"
+                                     style="min-width: 16px;"
                                      width="16" height="16" class="gwt-Image">
-                                <div class="tip" style="display: none; z-index: ${status.index + 10}" id="item${status.index}" name="ifeed-tooltip">
+                                <div class="tip" style="display: none; z-index: ${status.index + 10}"
+                                     id="item${status.index}" name="ifeed-tooltip">
                                     Laddar dokumentinformation, var god vänta.
                                 </div>
                             </a>

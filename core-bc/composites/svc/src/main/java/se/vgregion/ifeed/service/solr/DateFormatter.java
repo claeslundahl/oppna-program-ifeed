@@ -49,6 +49,15 @@ public class DateFormatter {
         return that;
     }
 
+    public static String formatTextToDateOnly(String that) {
+        if (that.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
+            String[] parts = that.split(Pattern.quote("T"));
+            String[] subDayParts = parts[1].split(Pattern.quote(":"));
+            return parts[0] + " " + subDayParts[0] + ":" + subDayParts[1];
+        }
+        return that;
+    }
+
     public void formatDates(Map<String, Object> within) {
         formatTextDate("dc.date.validfrom", within);
         formatTextDate("dc.date.issued", within);
@@ -73,7 +82,7 @@ public class DateFormatter {
         return format(date, DateFormat.W3CDTF);
     }
 
-    private final static SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+    private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public static Date parse(final String thatTextDate) {
         try {

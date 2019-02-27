@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ldap.LdapApi;
 import se.vgregion.ldap.LdapSupportService;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +18,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component(value = "vgrOrganizationsHome")
 @Scope("session")
@@ -138,8 +140,8 @@ public class VgrOrganizationsHome implements Serializable {
 
                     long loadTimeSeconds = (System.currentTimeMillis() - startTime) / 1000;
                     LOGGER.debug("Time to load organizations "
-                        + loadTimeSeconds + " s ("
-                        + (loadTimeSeconds / 60) + " m).");
+                            + loadTimeSeconds + " s ("
+                            + (loadTimeSeconds / 60) + " m).");
                     persistAllOrganizationsRootToDiscCache();
                     return allOrganizationsRoot;
                 }
@@ -179,7 +181,7 @@ public class VgrOrganizationsHome implements Serializable {
         return (home + fs + ".hotell" + fs + "ifeed" + fs + "allOrganizationsRoot.obj");
     }
 
-    public static  VgrOrganization getAllOrganizationsRootFromDiscCache() {
+    public static VgrOrganization getAllOrganizationsRootFromDiscCache() {
         try {
             String f = getPathToAllOrganizationsRootCacheFile();
             FileInputStream fin = new FileInputStream(f);
@@ -295,7 +297,7 @@ public class VgrOrganizationsHome implements Serializable {
             if (organization == null) throw new RuntimeException();*/
             for (IFeedFilter iFeedFilter : iFeed.getFilters()) {
                 if (equals(iFeedFilter.getFilterQuery(), organization.getHsaIdentity()) &&
-                    equals(iFeedFilter.getFilterKey(), application.getNewFilter().getId())) {
+                        equals(iFeedFilter.getFilterKey(), application.getNewFilter().getId())) {
                     return i;
                 }
                 i++;
@@ -307,8 +309,22 @@ public class VgrOrganizationsHome implements Serializable {
         }
     }
 
+    private static LdapApi ldapApi = LdapApi.newInstanceFromConfig();
+
     public void loadFilterQueryForDisplay(IFeedFilter filter) {
-        filter.setFilterQueryForDisplay(findOrganizationByHsaId(filter.getFilterQuery()).getLabel());
+        String filterQuery = filter.getFilterQuery();
+        VgrOrganization organizationByHsaId = findOrganizationByHsaId(filterQuery);
+        String label = null;
+        if (organizationByHsaId == null) {
+            List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", filterQuery));
+            if (!items.isEmpty()) {
+                label = (String) items.get(0).get("ou");
+            }
+        } else {
+            label = organizationByHsaId.getLabel();
+        }
+        //String label = (organizationByHsaId != null) ? organizationByHsaId.getLabel() : "Temporary not found";
+        filter.setFilterQueryForDisplay(label);
     }
 
     public void toggleOrganizationCondition(Application application, VgrOrganization organization) {

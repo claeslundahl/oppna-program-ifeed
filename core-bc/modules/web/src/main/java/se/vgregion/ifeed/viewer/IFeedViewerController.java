@@ -731,8 +731,8 @@ public class IFeedViewerController {
         }
         Result findings = client.query(
                 filter.toQuery(),
-                (limit.intValue() > 0 ? 0 : null),
-                (limit.intValue() > 0 ? limit : null),
+                0,
+                (limit.intValue() > 0 ? limit : 1_000_000),
                 defaultsortcolumn + " " + defaultsortorder
         );
 
@@ -749,7 +749,7 @@ public class IFeedViewerController {
 
             String validFromKey = "dc.date.validfrom";
             textDate = (String) item.get(validFromKey);
-            if (!isBlanc(textDate) && !isTimeStampPassed(textDate)) {
+            if (!isBlanc(textDate) && isTimeStampInFuture(textDate)) {
                 warning += "\nDokumentet börjar gälla: " + format(textDate);
             }
 
@@ -786,7 +786,16 @@ public class IFeedViewerController {
         return null;
     }
 
-    private boolean isTimeStampPassed(String textDate) {
+    public static boolean isTimeStampPassed(String textDate) {
+        if (!DateFormatter.isSomeDate(textDate)) {
+            return false;
+        }
+        Date date = DateFormatter.parse(textDate);
+        Date now = new Date();
+        return date.getTime() < now.getTime();
+    }
+
+    public static boolean isTimeStampInFuture(String textDate) {
         if (!DateFormatter.isSomeDate(textDate)) {
             return false;
         }
@@ -805,7 +814,7 @@ public class IFeedViewerController {
         }
         if (DateFormatter.isSomeDate(value)) {
             if (value instanceof String) {
-                return DateFormatter.formatTextDate((String) value);
+                return DateFormatter.formatTextToDateOnly((String) value);
             }
             return DateFormatter.format((Date) value);
             // return DateFormatter.toUtcDateIfPossible(value.toString()).replace(" ", "&nbsp;");

@@ -111,4 +111,14 @@ public class IFeedViewerControllerTest {
         System.out.println(String.join(", ", parts));
     }
 
+    @Test
+    public void isTimeStampInFuture() {
+        System.out.println(IFeedViewerController.isTimeStampInFuture("2019-02-24T00:00:00Z"));
+    }
+
+    @Test
+    public void isTimeStampPassed() {
+        System.out.println(IFeedViewerController.isTimeStampPassed("2019-02-28T00:00:00Z"));
+    }
+
 }

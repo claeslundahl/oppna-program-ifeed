@@ -1140,7 +1140,7 @@
             "type": "d:ldap_org_value",
             "apelonKey": "",
             "children": [],
-            "filter": true,
+            "filter": false,
             "inHtmlView": true,
             "expanded": false
           },

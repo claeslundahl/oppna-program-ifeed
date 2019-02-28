@@ -1,7 +1,5 @@
 package se.vgregion.ifeed.scheduler;
 
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageListener;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +18,14 @@ import java.util.Map;
  * @author Anders Asplund - Callista Enterprise
  * 
  */
-public class IFeedPublishScheduler implements MessageListener {
+public class IFeedPublishScheduler /*implements MessageListener*/ {
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedPublishScheduler.class);
 
     private ApplicationContext context;
     private IFeedService iFeedService;
     private IFeedSolrQuery iFeedSolrQuery;
 
-    @Override
+    /*@Override
     public final void receive(final Message message) {
         LOGGER.debug("Schedule task is started {}", ToStringBuilder.reflectionToString(message));
 
@@ -59,17 +57,17 @@ public class IFeedPublishScheduler implements MessageListener {
         }
     }
 
-    /**
+    *//**
      *
-     */
+     *//*
     private void initBeans() {
         iFeedService = context.getBean(IFeedService.class);
         iFeedSolrQuery = context.getBean(IFeedSolrQuery.class);
     }
 
-    /**
+    *//**
      * @param configLocation
-     */
+     *//*
     protected void loadContext(String configLocation) {
         LOGGER.debug("Loading spring context");
         if (context == null) {
@@ -84,17 +82,17 @@ public class IFeedPublishScheduler implements MessageListener {
         }
     }
 
-    /**
+    *//**
      * @param c
      * @return
-     */
+     *//*
     private boolean isEmpty(final Collection<?> c) {
         return (c == null || c.size() == 0);
     }
 
-    /**
+    *//**
      * @param args
-     */
+     *//*
     public static void main(final String[] args) {
         IFeedPublishScheduler scheduler = new IFeedPublishScheduler();
         scheduler.receive(null);
@@ -107,5 +105,5 @@ public class IFeedPublishScheduler implements MessageListener {
     protected void setContext(ApplicationContext context) {
         this.context = context;
     }
-
+*/
 }

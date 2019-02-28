@@ -1,37 +1,22 @@
 package se.vgregion.ifeed.controller;
 
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import org.springframework.web.portlet.bind.annotation.ResourceMapping;
-import se.vgregion.common.utils.Json;
-import se.vgregion.ifeed.el.IdentityUtil;
-import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
-import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
-import se.vgregion.ldap.person.Person;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.*;
+import java.util.List;
 
 //import org.springframework.context.MessageSource;
 
@@ -75,7 +60,7 @@ public class ShowDocumentMetadataController {
         return "documentMetadata";
     }
 
-    @ResourceMapping
+    /*@ResourceMapping
     public void showTopDocumentMetadata(@RequestParam(required = true) final String documentId,
                                         ResourceResponse response) {
         Map<String, String> metadataPair = getMetdataValues(documentId);
@@ -115,13 +100,13 @@ public class ShowDocumentMetadataController {
         }
     }
 
-   /* MessageSource getResource() {
+   *//* MessageSource getResource() {
         return resource;
     }
 
     void setResource(MessageSource resource) {
         this.resource = resource;
-    }*/
+    }*//*
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleAlfrescoDocumentServiceException(Exception e) {
@@ -276,24 +261,24 @@ public class ShowDocumentMetadataController {
         return result;
     }
 
-    /**
+    *//**
      * Concatenates several strings and places another string between each of those.
      *
      * @param junctor what string to concatenate between the other parameters.
      * @param items   the different strings to be concatenated
      * @return as string product of the parameters.
-     */
+     *//*
     public static String join(String junctor, String... items) {
         return join(Arrays.asList(items), junctor);
     }
 
-    /**
+    *//**
      * Concatenates several strings and places another string between each of those.
      *
      * @param junctor what string to concatenate between the other parameters.
      * @param list    the different strings to be concatenated
      * @return as string product of the parameters.
-     */
+     *//*
     public static String join(List<?> list, String junctor) {
         StringBuilder sb = new StringBuilder();
         if (list.isEmpty()) {
@@ -325,5 +310,5 @@ public class ShowDocumentMetadataController {
 
     public void setLdapOrganizationService(LdapSupportService ldapOrganizationService) {
         this.ldapOrganizationService = ldapOrganizationService;
-    }
+    }*/
 }

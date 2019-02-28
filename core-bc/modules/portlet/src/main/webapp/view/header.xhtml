@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+
+>
+
+    <header id="banner" role="banner">
+        <div id="heading" class="clearfix">
+            <h1 class="site-title">
+                <a class="logo" href="#{request.contextPath}">
+
+                </a>
+            </h1>
+
+            <div class="top-wrap">
+                <div class="top-navigation-wrap">
+                    <ui:include src="top_navigation.xhtml"/>
+                </div>
+            </div>
+
+            <h:panelGroup rendered="#{not empty userBackingBean.displayName}"> <!-- todo If signed in -->
+                <span class="logged-in-info">Inloggad: #{userBackingBean.displayName}</span>
+                <span class="logout-link"><a href="#{request.contextPath}/logout">Logga ut</a></span>
+            </h:panelGroup>
+
+            <!--<span class="contact-info">
+                <i class="fa fa-envelope"></i>
+                <a class="long-text"
+                   href="mailto:it-kompassen@vgregion.se">it-kompassen@vgregion.se</a>
+                <a class="short-text" href="mailto:it-kompassen@vgregion.se">Kontakta oss</a>
+            </span>-->
+        </div>
+
+    </header>
+
+</f:view>

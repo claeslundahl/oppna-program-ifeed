@@ -8,8 +8,15 @@
           http://www.springframework.org/schema/context/spring-context.xsd"
        xmlns:b="http://www.springframework.org/schema/beans">
 
+    <context:property-placeholder
+            location="classpath:default-config.properties, file:${user.home}/.hotell/ifeed/config.properties"
+            ignore-resource-not-found="true" ignore-unresolvable="true" />
+
+    <context:component-scan base-package="se.vgregion.ifeed.config"/>
     <context:component-scan base-package="se.vgregion.ifeed.backingbeans"/>
+    <context:component-scan base-package="se.vgregion.ifeed.repository"/>
     <context:component-scan base-package="se.vgregion.ifeed.service.ifeed"/>
+    <context:component-scan base-package="se.vgregion.ifeed.service.spring"/>
 
     <context:annotation-config/>
 
@@ -20,7 +27,7 @@
     <import resource="classpath*:spring/ifeed-services-config.xml"/>
 
     <!-- Declaration of bean that is injected into beans with the Autowire annotation. Security. -->
-    <bean id="resourceLocalService" class="com.liferay.portal.kernel.service.ResourceLocalServiceUtil" factory-method="getService" />
+    <!--<bean id="resourceLocalService" class="com.liferay.portal.kernel.service.ResourceLocalServiceUtil" factory-method="getService" />-->
 
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
         <property name="scopes">

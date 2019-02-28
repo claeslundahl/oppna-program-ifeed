@@ -97,6 +97,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
+      <version>${spring.fw.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>

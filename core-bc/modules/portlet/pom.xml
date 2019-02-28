@@ -41,8 +41,45 @@
 
     <plugins>
 
-      <!-- GWT Maven Plugin -->
       <plugin>
+        <groupId>nl.geodienstencentrum.maven</groupId>
+        <artifactId>sass-maven-plugin</artifactId>
+        <version>2.25</version>
+        <configuration>
+
+          <sassSourceDirectory>${basedir}/src/main/webapp/scss</sassSourceDirectory>
+          <!--<resources>
+              <resource>
+                  <source>
+                      <directory>${basedir}/src/main/webapp/scss</directory>
+                      <includes>
+                          <include>**/scss</include>
+                          <include>**/css</include>
+                      </includes>
+                  </source>
+                  &lt;!&ndash;<relativeOutputDirectory>..</relativeOutputDirectory>&ndash;&gt;
+                  <destination>${project.build.directory}/${project.build.finalName}</destination>
+              </resource>
+          </resources>-->
+          <!--<destination>src/main/webapp/resources/default/1_0</destination>-->
+          <useCompass>true</useCompass>
+          <!--<includes>
+              <include>**/scss</include>
+              <include>**/css</include>
+          </includes>-->
+        </configuration>
+        <executions>
+          <execution>
+            <id>compile-sass</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>update-stylesheets</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- GWT Maven Plugin -->
+      <!--<plugin>
         <groupId>net.ltgt.gwt.maven</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>1.0-rc-9</version>
@@ -55,7 +92,7 @@
             compile
           </goal>
         </goals>
-      </plugin>
+      </plugin>-->
 
 <!--
       <plugin>
@@ -187,12 +224,12 @@
       <artifactId>iFeed-core-bc-composite-webcomp</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>javax.portlet</groupId>
       <artifactId>portlet-api</artifactId>
       <version>2.0</version>
       <scope>provided</scope>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
@@ -217,7 +254,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc-portlet</artifactId>
-      <version>3.2.9.RELEASE</version>
+      <version>${spring.fw.version}</version>
     </dependency>
 
     <dependency>
@@ -227,8 +264,21 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>3.2.9.RELEASE</version>
+      <version>${spring.fw.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>4.2.4.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>4.2.4.RELEASE</version>
+    </dependency>
+
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils-bean-collections</artifactId>
@@ -259,13 +309,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.liferay.portal</groupId>
-      <artifactId>com.liferay.portal.kernel</artifactId>
-      <scope>provided</scope>
-      <version>2.50.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>4.1.0.Final</version>
@@ -279,15 +322,20 @@
       <artifactId>hibernate-entitymanager</artifactId>
       <version>3.6.0.Final</version>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
       <version>1.8.0</version>
-    </dependency>
-    <dependency>
+    </dependency>-->
+    <!--<dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
       <version>1.8.0</version>
+    </dependency>-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.8.10</version>
     </dependency>
     <dependency>
       <groupId>postgresql</groupId>
@@ -316,50 +364,6 @@
       <groupId>com.sun.faces</groupId>
       <artifactId>jsf-impl</artifactId>
       <version>2.2.8</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.liferay.faces</groupId>
-      <artifactId>com.liferay.faces.util</artifactId>
-      <version>3.1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.liferay.faces</groupId>
-      <!--
-      <artifactId>liferay-faces-alloy</artifactId>
-      -->
-      <artifactId>com.liferay.faces.alloy</artifactId>
-      <version>3.0.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.liferay.faces</groupId>
-      <artifactId>com.liferay.faces.bridge.api</artifactId>
-      <version>4.1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.liferay.faces</groupId>
-      <artifactId>com.liferay.faces.bridge.ext</artifactId>
-      <version>5.0.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.liferay.faces</groupId>
-      <!--
-      <artifactId>liferay-faces-bridge-impl</artifactId>
-      -->
-      <artifactId>com.liferay.faces.bridge.impl</artifactId>
-      <version>4.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.liferay.faces</groupId>
-      <!--
-      <artifactId>liferay-faces-portal</artifactId>
-      -->
-      <artifactId>com.liferay.faces.portal</artifactId>
-      <version>3.0.1</version>
     </dependency>
 
     <dependency>

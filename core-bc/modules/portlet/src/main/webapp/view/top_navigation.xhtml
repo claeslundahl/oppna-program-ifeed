@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:p="http://primefaces.org/ui"
+
+>
+
+    <nav class="top-navigation clearfix" id="topNavigation">
+        <ul class="top-nav-list clearfix">
+
+            <h:panelGroup rendered="false"> <!-- todo om inloggad -->
+                <li class="top-nav-user">
+                    <span>Inloggad som: ${user_name}</span>
+                </li>
+                <li class="top-nav-signout last">
+                    <a href="${sign_out_url}">
+                        <span>${sign_out_text}</span>
+                    </a>
+                </li>
+            </h:panelGroup>
+            <h:panelGroup rendered="true">
+                <li class="top-nav-signin last">
+                    <a class="signin-link" href="${sign_in_url}">
+                        <span>${sign_in_text}</span>
+                    </a>
+                </li>
+            </h:panelGroup>
+        </ul>
+    </nav>
+
+</f:view>

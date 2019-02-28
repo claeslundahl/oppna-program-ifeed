@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html class="aui" xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta name="viewport" content="width=device-width, user-scalable=no"/>
+
+    <meta content="initial-scale=1.0, width=device-width" name="viewport"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/custom.css"/>
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/aui.css"/>
+
+    <link href="#{request.contextPath}/favicon.ico" rel="Shortcut Icon"/>
+
+    <!--<ui:insert name="extraHeadElements" />-->
+
+</h:head>
+
+<body class="aui portlet-wrapper">
+
+<ui:include src="header.xhtml"/>
+
+<div class="container" id="wrapper">
+    <ui:insert name="content" />
+</div>
+
+<ui:include src="footer.xhtml"/>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        onReady();
+    });
+
+    if (window.location.href.indexOf('it-kompassen.vgregion.se') > -1) {
+        <!-- Piwik -->
+        var _paq = _paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u=(("https:" == document.location.protocol) ? "https" : "http") + "://piwik.vgregion.se/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', ${siteId}]);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+            g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+        })();
+    }
+
+</script>
+
+<!--<ui:include src="loading_mask.xhtml"/>-->
+</body>
+</html>

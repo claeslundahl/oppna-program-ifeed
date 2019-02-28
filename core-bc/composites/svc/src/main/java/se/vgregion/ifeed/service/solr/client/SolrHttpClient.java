@@ -2,11 +2,11 @@ package se.vgregion.ifeed.service.solr.client;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.apache.commons.lang.text.StrBuilder;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.*;
@@ -22,24 +22,22 @@ import java.util.regex.Pattern;
 public class SolrHttpClient {
 
     private final ScriptEngine engine;
-//    private final ScriptEngineManager sem;
+    private final ScriptEngineManager sem;
     private final ScriptObjectMirror JSON; // = (ScriptObjectMirror) engine.eval("JSON");
 
     private final String baseUrl;
 
     public SolrHttpClient(String baseUrl) {
         super();
+        this.baseUrl = baseUrl;
 
-        this.engine = ScriptEngineFactory.getInstance().createJavascriptScriptEngine();
-
+        sem = new ScriptEngineManager();
+        engine = sem.getEngineByName("javascript");
         try {
             JSON = (ScriptObjectMirror) engine.eval("JSON");
         } catch (ScriptException e) {
             throw new RuntimeException(e);
         }
-
-        this.baseUrl = baseUrl;
-
     }
 
     public Result query(String qf, Integer start, Integer rows, String sort) {

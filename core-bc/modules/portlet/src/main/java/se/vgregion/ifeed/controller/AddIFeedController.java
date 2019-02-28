@@ -1,58 +1,37 @@
 package se.vgregion.ifeed.controller;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ResourceLocalService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.PortalUtil;
+//import com.liferay.portal.kernel.service.ResourceLocalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.portlet.bind.annotation.ActionMapping;
-import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.Ownership;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderResponse;
-import javax.validation.Valid;
-import java.util.Map;
 
 @Controller
 @RequestMapping("VIEW")
 @SessionAttributes({"ifeed"})
 public class AddIFeedController {
     private IFeedService iFeedService;
-    private ResourceLocalService resourceLocalService;
+//    private ResourceLocalService resourceLocalService;
 
     public AddIFeedController() {
 
     }
 
     @Autowired
-    public AddIFeedController(final IFeedService iFeedService, final ResourceLocalService resourceLocalService) {
+    public AddIFeedController(final IFeedService iFeedService /*,final ResourceLocalService resourceLocalService*/) {
         super();
         this.iFeedService = iFeedService;
-        this.resourceLocalService = resourceLocalService;
+//        this.resourceLocalService = resourceLocalService;
     }
 
-    @ModelAttribute("ifeed")
+    /*@ModelAttribute("ifeed")
     public IFeed getCommandObject() {
         return new IFeed();
     }
 
     @RenderMapping(params = {"view=showAddIFeedForm"})
-    public String showAddIFeedForm(final RenderResponse response) {
+    public String showAddIFeedForm(final HttpServletResponse response) {
         return "addIFeedForm";
     }
 
@@ -114,5 +93,5 @@ public class AddIFeedController {
 
     protected User fetchUser(PortletRequest request) throws PortalException, SystemException {
         return PortalUtil.getUser(request);
-    }
+    }*/
 }

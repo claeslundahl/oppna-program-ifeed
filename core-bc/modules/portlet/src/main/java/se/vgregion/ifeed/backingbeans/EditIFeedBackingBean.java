@@ -1,10 +1,5 @@
 package se.vgregion.ifeed.backingbeans;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.service.ResourceLocalService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -18,9 +13,13 @@ import se.vgregion.ldap.person.Person;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Monica on 2014-03-28.
@@ -31,8 +30,8 @@ public class EditIFeedBackingBean implements Serializable {
 
     @Autowired
     private IFeedService iFeedService;
-    @Autowired
-    private ResourceLocalService resourceLocalService;
+//    @Autowired
+//    private ResourceLocalService resourceLocalService;
     @Autowired
     private LdapPersonService ldapPersonService;
 
@@ -68,7 +67,7 @@ public class EditIFeedBackingBean implements Serializable {
     public EditIFeedBackingBean() {
     }
 
-    public void addIFeed(Application app) throws SystemException, PortalException {
+    public void addIFeed(Application app) {
         app.viewIFeed(addIFeed());
         // navigationModelBean.setUiNavigation("EDIT_IFEED");
     }
@@ -76,7 +75,7 @@ public class EditIFeedBackingBean implements Serializable {
     public Long addIFeed() {
         //iFeedModelBean.clearBean();
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        PortletRequest portletRequest = (PortletRequest) externalContext.getRequest();
+        HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext.getRequest();
 
         IFeed iFeed = iFeedModelBean.toIFeed();
         /*iFeed.setName(iFeedModelBean.getName());
@@ -89,20 +88,15 @@ public class EditIFeedBackingBean implements Serializable {
         ownership.setUserId(app.getCurrentUser().getScreenName());
         iFeed.getOwnerships().add(ownership);
         */
-        iFeed.setUserId(app.getCurrentUser().getScreenName());
+        iFeed.setUserId(app.getCurrentUser().getId());
 
-        try {
-            iFeed = iFeedService.addIFeed(iFeed);
-            iFeedModelBean.copyValuesFromIFeed(iFeed);
-            ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
-            long companyId = themeDisplay.getCompanyId();
-            long userId = themeDisplay.getUserId();
-            resourceLocalService.addResources(companyId, 0, userId, IFeed.class.getName(), iFeed.getId().longValue(), false, false, true);
-        } catch (PortalException e) {
-            e.printStackTrace();
-        } catch (SystemException e) {
-            e.printStackTrace();
-        }
+        iFeed = iFeedService.addIFeed(iFeed);
+        iFeedModelBean.copyValuesFromIFeed(iFeed);
+//            ThemeDisplay themeDisplay = (ThemeDisplay) httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+//            long companyId = themeDisplay.getCompanyId();
+//            long userId = themeDisplay.getUserId();
+//            resourceLocalService.addResources(companyId, 0, userId, IFeed.class.getName(), iFeed.getId().longValue(), false, false, true);
+
 
         return iFeed.getId();
         // navigationModelBean.setUiNavigation("VIEW_IFEED");
@@ -127,13 +121,13 @@ public class EditIFeedBackingBean implements Serializable {
         this.iFeedService = iFeedService;
     }
 
-    public ResourceLocalService getResourceLocalService() {
-        return resourceLocalService;
-    }
+//    public ResourceLocalService getResourceLocalService() {
+//        return resourceLocalService;
+//    }
 
-    public void setResourceLocalService(ResourceLocalService resourceLocalService) {
-        this.resourceLocalService = resourceLocalService;
-    }
+//    public void setResourceLocalService(ResourceLocalService resourceLocalService) {
+//        this.resourceLocalService = resourceLocalService;
+//    }
 
     public IFeedModelBean getiFeedModelBean() {
         return iFeedModelBean;

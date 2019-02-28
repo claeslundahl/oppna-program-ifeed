@@ -277,7 +277,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     }
 
     @Transactional
-    private void init(Collection<IFeed> result) {
+    public void init(Collection<IFeed> result) {
         if (result == null) {
             return;
         }
@@ -358,7 +358,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
-    public final IFeed addIFeed(final IFeed iFeed) {
+    public IFeed addIFeed(final IFeed iFeed) {
         IFeed r = iFeedRepo.store(iFeed);
         if (r != null) {
             Json.toJson(r);
@@ -369,7 +369,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
-    public final void removeIFeed(final Long id) {
+    public void removeIFeed(final Long id) {
         iFeedRepo.remove(id);
         iFeedRepo.flush();
     }
@@ -389,7 +389,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
-    public final void removeIFeed(IFeed feed) {
+    public void removeIFeed(IFeed feed) {
         feed = objectRepo.findByPrimaryKey(IFeed.class, feed.getId());
         for (DynamicTableDef dynamicTableDef : feed.getDynamicTableDefs()) {
             for (ColumnDef columnDef : dynamicTableDef.getColumnDefs()) {
@@ -405,7 +405,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
-    public final IFeed update(final IFeed iFeed) {
+    public IFeed update(final IFeed iFeed) {
         for (DynamicTableDef dynamicTableDef : iFeed.getDynamicTableDefs()) {
             dynamicTableDef.setIfeed(iFeed);
             if (dynamicTableDef.getId() == null) {
@@ -489,7 +489,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     @Transactional
-    public final IFeed updateIFeed(final IFeed iFeed) {
+    public IFeed updateIFeed(final IFeed iFeed) {
         IFeed oldIFeed = iFeedRepo.find(iFeed.getId());
         if (oldIFeed == null || filterChanged(oldIFeed, iFeed)) {
             oldIFeed.clearTimestamp();

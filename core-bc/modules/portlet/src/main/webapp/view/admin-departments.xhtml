@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:portlet="http://java.sun.com/portlet_2_0">
+
+    <div style="width:100%;">
+        <h2>
+            #{app.isSuperUser() ? 'Administrera Förvaltningar' : 'Välj en administration för att ändra dess grupper'}</h2>
+
+    <span style="float: right; display: inline-block; position:absolute; top: 25px; right: 5px;">
+      <h:commandLink
+              actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}"
+              styleClass="rp-link-button secondary"
+              value="Avbryt"
+              update="ifeed_view" ajax="false" async="true"/>
+
+      <h:commandLink
+              actionListener="#{app.createNewDepartment()}"
+              styleClass="rp-link-button rp-link-button-alt" value="Lägg till"
+              rendered="#{app.isSuperUser()}"
+              update="ifeed_view" ajax="false" async="true"/>
+    </span>
+    </div>
+
+    <div class="ui-datatable-tablewrapper">
+        <table class="rp-table">
+            <thead>
+            <tr>
+                <th class="filter-result-h">Namn</th>
+                <th class="filter-result-h">Grupper</th>
+                <th class="filter-result-h">id</th>
+                <th class="filter-result-d">#{app.isSuperUser() ? 'Ta bort' : 'Beskrivning'}</th>
+            </tr>
+            </thead>
+            <tbody class="ui-datatable-data ui-widget-content">
+            <ui:repeat value="#{app.getVgrDepartments()}" var="department" varStatus="status">
+                <tr class="ui-widget-content #{status.even ? 'ui-datatable-even' : 'ui-datatable-odd'}">
+                    <td>
+                        <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                                       value="#{department.name}"
+                                       actionListener="#{app.editDepartment(department)}"/>
+                    </td>
+                    <td>
+                        <ui:repeat value="#{department.getVgrGroups()}" var="group">
+              <span class="ltr-flowing-department border"
+                    style="white-space: nowrap; float:none; *display: inline; display: inline-block; zoom: 1; margin-top: 0px;">
+                #{group.name}
+              </span>
+                        </ui:repeat>
+                    </td>
+                    <td>${department.id}</td>
+                    <td>
+                        <p:commandLink
+                                action="#{app.deleteDepartment(department)}"
+                                styleClass="link-button-trash"
+                                update=":ifeed_view"
+                                ajax="false"
+                                rendered="#{app.isSuperUser()}"
+                                onclick="confirm('Är du säker du vill ta bort den här posten?')"
+                                async="true">
+                        </p:commandLink>
+                        ${app.isSuperUser() ? '' : department.description}
+                    </td>
+                </tr>
+            </ui:repeat>
+            </tbody>
+        </table>
+    </div>
+
+</f:view>

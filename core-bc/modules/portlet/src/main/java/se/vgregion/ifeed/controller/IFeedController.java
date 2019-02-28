@@ -1,33 +1,11 @@
 package se.vgregion.ifeed.controller;
 
-import static java.lang.Math.min;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
-
-import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.comparators.TransformingComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.util.UriTemplate;
-
-import se.vgregion.common.utils.CommonUtils;
-import se.vgregion.ifeed.formbean.IFeedFormBeanList;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.service.solr.IFeedSolrQuery.SortDirection;
-import se.vgregion.ifeed.types.IFeed;
 
 @Controller
 @RequestMapping("VIEW")
@@ -48,7 +26,7 @@ public class IFeedController {
         this.iFeedAtomFeed = iFeedAtomFeed;
     }
 
-    @RenderMapping
+    /*@RenderMapping
     public String showIFeeds(final Model model, @RequestParam(defaultValue = "100") final int delta,
             @RequestParam(defaultValue = "1") final int cur,
             @RequestParam(defaultValue = "name") final String orderByCol,
@@ -145,6 +123,6 @@ public class IFeedController {
             userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
         }
         return userId;
-    }
+    }*/
 
 }

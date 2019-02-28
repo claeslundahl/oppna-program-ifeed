@@ -7,9 +7,6 @@
   <!-- Loads configuration in the specified order. Duplicated properties is overridden which means that it is possible 
     to change configuration without a recompile. -->
 
-  <context:property-placeholder
-    location="classpath:default-config.properties, file:${user.home}/.hotell/ifeed/config.properties"
-    ignore-resource-not-found="true" ignore-unresolvable="true" />
 
   <import resource="classpath:spring/jpa-connector.xml" />
 

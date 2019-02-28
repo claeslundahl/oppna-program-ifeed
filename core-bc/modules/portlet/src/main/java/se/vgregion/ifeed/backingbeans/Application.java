@@ -1,11 +1,5 @@
 package se.vgregion.ifeed.backingbeans;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ResourceLocalService;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.sun.faces.component.visit.FullVisitContext;
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.solr.client.solrj.SolrServer;
@@ -23,6 +17,7 @@ import se.vgregion.common.utils.MemoryTool;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.Note;
 import se.vgregion.ifeed.formbean.VgrOrganization;
+import se.vgregion.ifeed.repository.UserRepository;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.metadata.MetadataService;
@@ -34,7 +29,14 @@ import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.shared.DynamicTableSortingDef;
-import se.vgregion.ifeed.types.*;
+import se.vgregion.ifeed.types.CachedUser;
+import se.vgregion.ifeed.types.FieldInf;
+import se.vgregion.ifeed.types.FieldsInf;
+import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ifeed.types.Ownership;
+import se.vgregion.ifeed.types.VgrDepartment;
+import se.vgregion.ifeed.types.VgrGroup;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
@@ -50,12 +52,26 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
-import javax.portlet.PortletRequest;
-import java.io.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 // import se.vgregion.varnish.VarnishClient;
@@ -79,8 +95,8 @@ public class Application {
     private String webScriptJsonUrl;
     @Autowired
     private IFeedService iFeedService;
-    @Autowired
-    private ResourceLocalService resourceLocalService;
+//    @Autowired
+//    private ResourceLocalService resourceLocalService;
     @Autowired
     private LdapPersonService ldapPersonService;
     @Value("#{iFeedModelBean}")
@@ -105,6 +121,10 @@ public class Application {
     private UriTemplate iFeedJsonFeed;
     @Autowired
     private UriTemplate iFeedExcelFeed;
+
+    @Autowired
+    private UserRepository userRepository;
+
     private String solrServiceUrl;
     private String selectedFieldInfRootName;
     private VgrGroup group;
@@ -323,7 +343,7 @@ public class Application {
     @PostConstruct
     public void init() {
         if (getCurrentUser() != null) {
-            filter.setUserId(getCurrentUser().getScreenName());
+            filter.setUserId(getCurrentUser().getId());
         }
         setFilters(iFeedService.getFieldInfs());
         if (filter != null) {
@@ -511,8 +531,8 @@ public class Application {
         return null;
     }
 
-    User getUser(PortletRequest request) throws PortalException, SystemException {
-        return PortalUtil.getUser(request);
+    CachedUser getUser(HttpServletRequest request) {
+        return getCurrentUser(); // TODO Correct? It's not about the requested user?
     }
 
     public List<String> completeUserName(String incompleteUserName) {
@@ -707,7 +727,7 @@ public class Application {
         cancelDepartment();
     }
 
-    public void removeFeed(IFeed iFeed) throws SystemException, PortalException {
+    public void removeFeed(IFeed iFeed) {
         iFeedBackingBean.removeBook(iFeed);
         updateFilterQuery();
     }
@@ -731,7 +751,7 @@ public class Application {
         iFeedService.deleteDepartmentEntity(department);
     }
 
-    public boolean mayEditFeed(PortletRequest request, IFeed feed) throws SystemException, PortalException {
+    public boolean mayEditFeed(HttpServletRequest request, IFeed feed) {
         if (iFeedModelBean.getInitalFeed() != null && iFeedModelBean.getInitalFeed().getId().equals(feed.getId())) {
             return AccessGuard.mayEditFeed(getUser(request), iFeedModelBean.getInitalFeed());
         }
@@ -739,28 +759,13 @@ public class Application {
     }
 
     public boolean isSuperUser() {
-        try {
-            return AccessGuard.mayEditAllFeeds(getCurrentUser());
-        } catch (SystemException e) {
-            throw new RuntimeException(e);
-        }
+        return AccessGuard.mayEditAllFeeds(getCurrentUser());
     }
 
-    public User getCurrentUser() {
-        User u = null;
+    public CachedUser getCurrentUser() {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext externalContext = fc.getExternalContext();
-        if (externalContext.getUserPrincipal() == null) {
-
-        } else {
-            Long id = Long.parseLong(externalContext.getUserPrincipal().getName());
-            try {
-                u = UserLocalServiceUtil.getUserById(id);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return u;
+        return userRepository.findUser(externalContext.getUserPrincipal().getName());
     }
 
     public void findResultsByCurrentFeedConditions() {
@@ -991,7 +996,7 @@ public class Application {
     }
 
     public void showMyFeeds() {
-        filter.setCreatorName(getCurrentUser().getScreenName());
+        filter.setCreatorName(getCurrentUser().getId());
     }
 
     public void goToAddIfeed() {
@@ -1358,10 +1363,9 @@ public class Application {
         return sb.toString();
     }
 
-    public void copyAndPersistFeed(PortletRequest request, Long withThatKey)
-            throws SystemException, PortalException {
-        User user = getUser(request);
-        Long clone = iFeedService.copyAndPersistFeed(withThatKey, user.getScreenName()).getId();
+    public void copyAndPersistFeed(HttpServletRequest request, Long withThatKey) {
+        CachedUser user = getUser(request);
+        Long clone = iFeedService.copyAndPersistFeed(withThatKey, user.getId()).getId();
 
         viewIFeed(clone);
         setInEditMode(true);

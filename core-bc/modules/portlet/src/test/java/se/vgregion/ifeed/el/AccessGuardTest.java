@@ -1,25 +1,11 @@
 package se.vgregion.ifeed.el;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Ignore;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import se.vgregion.ifeed.types.IFeed;
-
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
-
+@Ignore
 public class AccessGuardTest {
 
-    User user;
+    /*User user;
     List<Role> roles;
 
     private void addAdminRoleToUser() throws SystemException {
@@ -86,5 +72,5 @@ public class AccessGuardTest {
         IFeed feed = mock(IFeed.class);
         when(feed.getUserId()).thenReturn("userName");
         AccessGuard.mayEditFeed(user, feed);
-    }
+    }*/
 }

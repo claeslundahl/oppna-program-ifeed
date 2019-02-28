@@ -1,17 +1,12 @@
 package se.vgregion.ifeed.backingbeans;
 
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ResourceLocalService;
-import com.liferay.portal.kernel.util.PortalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 
-import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 
@@ -24,16 +19,16 @@ public class RemoveIfeedBackingBean implements Serializable{
     private Long IFeedId;
     @Autowired
     private IFeedService iFeedService;
-    @Autowired
-    private ResourceLocalService resourceLocalService;
+//    @Autowired
+//    private ResourceLocalService resourceLocalService;
     //Set iFeedId in IFeedBackingBean before removing IFeed
     /*    private Long iFeedId;*/
 
     public RemoveIfeedBackingBean() {}
 
-    User getUser(PortletRequest request) throws PortalException, SystemException {
+    /*User getUser(HttpServletRequest request) throws PortalException, SystemException {
         return PortalUtil.getUser(request);
-    }
+    }*/
 
 
 
@@ -71,13 +66,13 @@ public class RemoveIfeedBackingBean implements Serializable{
         this.iFeedService = iFeedService;
     }
 
-    public ResourceLocalService getResourceLocalService() {
+    /*public ResourceLocalService getResourceLocalService() {
         return resourceLocalService;
     }
 
     public void setResourceLocalService(ResourceLocalService resourceLocalService) {
         this.resourceLocalService = resourceLocalService;
-    }
+    }*/
 
     public Long getIFeedId() {
         return IFeedId;

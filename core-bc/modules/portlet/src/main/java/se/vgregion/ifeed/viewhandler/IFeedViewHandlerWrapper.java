@@ -3,17 +3,11 @@ package se.vgregion.ifeed.viewhandler;
 /**
  * Created by Monica on 2014-05-05.
  */
-import com.liferay.portal.kernel.util.PortalUtil;
 
-import java.util.Map;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderRequest;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 public class IFeedViewHandlerWrapper extends ViewHandlerWrapper {
@@ -33,8 +27,8 @@ public class IFeedViewHandlerWrapper extends ViewHandlerWrapper {
     public String calculateRenderKitId(FacesContext context) {
 
         ExternalContext extcontext = FacesContext.getCurrentInstance().getExternalContext();
-        RenderRequest request = (RenderRequest) extcontext.getRequest();
-        HttpServletRequest req = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(request));
+        HttpServletRequest req = (HttpServletRequest) extcontext.getRequest();
+//        HttpServletRequest req = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(request));
 
       /*  HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();*/
         String userAgent = req.getHeader("user-agent");

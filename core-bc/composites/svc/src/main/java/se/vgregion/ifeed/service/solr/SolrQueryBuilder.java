@@ -174,11 +174,11 @@ public class SolrQueryBuilder {
         return iFeedService.mapFieldInfToId();
     }
 
-    public static void setIFeedService(IFeedService iFeedService) {
+    public void setIFeedService(IFeedService iFeedService) {
         SolrQueryBuilder.iFeedService = iFeedService;
     }
 
-    public static IFeedService getIFeedService() {
+    public IFeedService getIFeedService() {
         return iFeedService;
     }
 }

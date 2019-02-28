@@ -24,6 +24,17 @@
     </init-param>
   </filter>-->
 
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.xhtml</url-pattern>
+  </servlet-mapping>
+
   <filter>
     <filter-name>originHeaderFilter</filter-name>
     <filter-class>se.vgregion.ifeed.webcomp.filter.OriginHeaderFilter</filter-class>
@@ -31,6 +42,18 @@
 
   <filter-mapping>
     <filter-name>originHeaderFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- Spring Security -->
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy
+    </filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
@@ -98,9 +121,9 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
-  <listener>
+  <!--<listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-  </listener>
+  </listener>-->
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
@@ -114,10 +137,10 @@
         <param-value>com.sun.el.ExpressionFactoryImpl</param-value>
     </context-param>-->
 
-  <context-param>
+  <!--<context-param>
     <param-name>javax.faces.CONFIG_FILES</param-name>
     <param-value>/WEB-INF/faces-config.xml</param-value>
-  </context-param>
+  </context-param>-->
   <context-param>
     <param-name>javax.faces.PROJECT_STAGE</param-name>
     <param-value>Development</param-value>

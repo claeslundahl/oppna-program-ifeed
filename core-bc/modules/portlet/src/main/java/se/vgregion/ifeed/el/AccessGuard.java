@@ -1,8 +1,6 @@
 package se.vgregion.ifeed.el;
 
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
+import se.vgregion.ifeed.types.CachedUser;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.Ownership;
 
@@ -11,23 +9,23 @@ import javax.faces.context.FacesContext;
 
 public class AccessGuard {
 
-    public static boolean haveRole(User user, String nameOfAccessRole) throws SystemException {
+    public static boolean haveRole(CachedUser user, String nameOfAccessRole) {
         if (user == null) {
             return false;
         }
-        for (Role role : user.getRoles()) {
+        /*for (Role role : user.getRoles()) {
             if (nameOfAccessRole.equals(role.getName())) {
                 return true;
             }
-        }
+        }*/ // TODO
         return false;
     }
 
-    public static boolean mayEditAllFeeds(User user) throws SystemException {
+    public static boolean mayEditAllFeeds(CachedUser user) {
         return haveRole(user, "iFeed-admin");
     }
 
-    public static boolean mayEditFeed(User user, IFeed feed) {
+    public static boolean mayEditFeed(CachedUser user, IFeed feed) {
         try {
             if (user == null) {
                 return false;
@@ -35,7 +33,7 @@ public class AccessGuard {
             if (mayEditAllFeeds(user)) {
                 return true;
             }
-            String screenName = user.getScreenName();
+            String screenName = user.getId();
             if (feed.getUserId() == null) {
                 return true;
             }
@@ -44,7 +42,7 @@ public class AccessGuard {
             }
 
             for (Ownership ownership : feed.getOwnerships()) {
-                if (user.getScreenName().equals(ownership.getUserId())) {
+                if (user.getDisplayName().equals(ownership.getUserId())) {
                     return true;
                 }
             }

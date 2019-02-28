@@ -758,7 +758,15 @@ public class IFeedViewerController {
             }
 
             for (Column column : columns) {
+
                 item.put(column.getKey(), format(item.get(column.getKey())));
+                if (column.getKey().toLowerCase().contains("date")) {
+                    String value = (String) item.get(column.getKey());
+                    if (value != null && value.length() > 10) {
+                        item.put(column.getKey(), value.substring(0, 10));
+                    }
+
+                }
             }
 
             String id = item.get("id").toString().replace("workspace://SpacesStore/", "");
@@ -865,6 +873,10 @@ public class IFeedViewerController {
         if (findigs.getResponse().getDocs().isEmpty()) {
             filter.setFilterQuery("workspace://SpacesStore/" + documentId);
             findigs = client.query(filter.toQuery(), null, null, "title asc");
+        }
+
+        if (findigs.getResponse().getDocs().isEmpty()) {
+            throw new ResourceNotFoundException();
         }
 
         Map<String, Object> doc = findigs.getResponse().getDocs().get(0);

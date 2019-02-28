@@ -1,24 +1,26 @@
 var uniqCallbackSequence = 0;
-function jsonp(url, key, callback) {
-    var appendParam = function (url, key, param) {
-            return url
-                + (url.indexOf("?") > 0 ? "&" : "?")
-                + key + "=" + param;
-        },
-        createScript = function (url, callback) {
-            var head = document.getElementsByTagName('head')[0],
-                script = document.createElement("script");
 
-            script.setAttribute("src", url);
-            head.appendChild(script);
-            callback(function () {
-                setTimeout(function () {
-                    head.removeChild(script);
-                }, 0);
-            });
-        },
-        //q = "q" + Math.round(Math.random() * Date.now());
-        q = "q" + uniqCallbackSequence;
+function appendParam(url, key, param) {
+    return url
+        + (url.indexOf("?") > 0 ? "&" : "?")
+        + key + "=" + param;
+}
+
+function createScript(url, callback) {
+    var head = document.getElementsByTagName('head')[0],
+        script = document.createElement("script");
+
+    script.setAttribute("src", url);
+    head.appendChild(script);
+    callback(function () {
+        setTimeout(function () {
+            head.removeChild(script);
+        }, 0);
+    });
+}
+
+function jsonp(url, key, callback) {
+    var q = "q" + uniqCallbackSequence;
     uniqCallbackSequence++;
 
     createScript(
@@ -87,11 +89,19 @@ function getAllFeedDivs() {
     return result;
 }
 
+var feedAttributeNames = [
+    'columnes','fontsize','defaultsortcolumn','defaultsortorder','extrasortcolumns','showtableheader','linkoriginaldoc','limit','hiderightcolumn','usepost','feedid'
+];
+
 function renderFeed(div) {
     var url = getDataHostUrl() + "/iFeed-web/display?v=1";
-    for (var i = 0; i < div.attributes.length; i++) {
-        var attrib = div.attributes[i];
-        url += '&' + attrib.name + '=' + encodeURIComponent(attrib.value);
+
+    for (var i = 0; i < feedAttributeNames.length; i++) {
+        var name = feedAttributeNames[i];
+        var value = div.getAttribute(name);
+        if (value) {
+            url += '&' + name + '=' + encodeURIComponent(value);
+        }
     }
     jsonp(url, 'callback', function (result) {
         div.innerHTML = result.content;

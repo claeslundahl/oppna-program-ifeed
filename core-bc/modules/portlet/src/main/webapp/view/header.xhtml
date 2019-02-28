@@ -11,18 +11,18 @@
     <header id="banner" role="banner">
         <div id="heading" class="clearfix">
             <h1 class="site-title">
-                <a class="logo" href="#{request.contextPath}">
+                <a class="logo ifeed" href="#{request.contextPath}">
 
                 </a>
             </h1>
 
-            <div class="top-wrap">
+            <!--<div class="top-wrap">
                 <div class="top-navigation-wrap">
                     <ui:include src="top_navigation.xhtml"/>
                 </div>
-            </div>
+            </div>-->
 
-            <h:panelGroup rendered="#{not empty userBackingBean.displayName}"> <!-- todo If signed in -->
+            <h:panelGroup style="float:right;" rendered="#{not empty userBackingBean.displayName}"> <!-- todo If signed in -->
                 <span class="logged-in-info">Inloggad: #{userBackingBean.displayName}</span>
                 <span class="logout-link"><a href="#{request.contextPath}/logout">Logga ut</a></span>
             </h:panelGroup>

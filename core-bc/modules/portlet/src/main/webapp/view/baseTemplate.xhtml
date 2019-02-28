@@ -12,7 +12,6 @@
 
 
     <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/custom.css"/>
-    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/aui.css"/>
 
     <link href="#{request.contextPath}/favicon.ico" rel="Shortcut Icon"/>
 
@@ -22,9 +21,10 @@
 
 <body class="aui portlet-wrapper">
 
-<ui:include src="header.xhtml"/>
 
-<div class="container" id="wrapper">
+<div class="container-fluid" id="wrapper">
+    <ui:include src="header.xhtml"/>
+
     <ui:insert name="content" />
 </div>
 
@@ -32,7 +32,7 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function () {
+    /*$(document).ready(function () {
         onReady();
     });
 
@@ -48,7 +48,7 @@
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
             g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
         })();
-    }
+    }*/
 
 </script>
 

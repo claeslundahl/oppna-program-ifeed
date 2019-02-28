@@ -4,6 +4,8 @@
 	version="2.0">
   <persistence-unit name="ifeed_pu">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <class>se.vgregion.ifeed.types.CachedUser</class>
+    <class>se.vgregion.ifeed.types.Config</class>
     <class>se.vgregion.ifeed.types.IFeed</class>
     <class>se.vgregion.ifeed.types.FieldsInf</class>
     <class>se.vgregion.ifeed.types.IFeedFilter</class>

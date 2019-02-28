@@ -26,7 +26,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     // private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
     @OneToMany(mappedBy = "ifeed")

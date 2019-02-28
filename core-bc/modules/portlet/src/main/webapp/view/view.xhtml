@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
         xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:p="http://primefaces.org/ui" xmlns:portlet="http://java.sun.com/portlet_2_0"
+        template="baseTemplate.xhtml"
         >
 
 
-  <h:head></h:head>
-
+<ui:define name="content">
   <style type="text/css">
 
     .rp-table>tbody>tr>th,
@@ -366,4 +366,6 @@
     };
   </script>
 
-</f:view>
+</ui:define>
+
+</ui:composition>

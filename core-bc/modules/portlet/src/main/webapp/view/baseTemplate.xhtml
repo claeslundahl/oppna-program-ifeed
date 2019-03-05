@@ -12,6 +12,9 @@
 
 
     <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/custom.css"/>
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/theme.css"/>
+
+    <script type="application/javascript" src="#{request.contextPath}/js/util.js"></script>
 
     <link href="#{request.contextPath}/favicon.ico" rel="Shortcut Icon"/>
 
@@ -24,6 +27,21 @@
 
 <div class="container-fluid" id="wrapper">
     <ui:include src="header.xhtml"/>
+
+    <nav id="navigation" role="navigation">
+        <ul role="menubar" class="nav-list clearfix" id="yui_patched_v3_11_0_1_1551778068717_313">
+            <li class="" id="layout_2" data-nav_item_attr_selected="" role="presentation">
+                <a aria-labelledby="layout_2" href="${request.contextPath}/view/view.xhtml" role="menuitem">
+                    <span>Hem</span>
+                </a>
+            </li>
+            <li class="" id="layout_3" data-nav_item_attr_selected="" role="presentation">
+                <a aria-labelledby="layout_3" href="${request.contextPath}/view/about.xhtml" role="menuitem">
+                <span> Om ifeed</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
     <ui:insert name="content" />
 </div>

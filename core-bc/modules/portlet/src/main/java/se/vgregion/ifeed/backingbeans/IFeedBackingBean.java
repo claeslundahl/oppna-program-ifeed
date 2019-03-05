@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
+import se.vgregion.ifeed.repository.UserRepository;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.types.CachedUser;
 import se.vgregion.ifeed.types.Config;
@@ -65,6 +66,10 @@ public class IFeedBackingBean implements Serializable {
 
     @Autowired
     private IFeedService iFeedService;
+
+    @Autowired
+    private UserRepository userRepository;
+
 
 //    @Autowired
 //    private ResourceLocalService resourceLocalService;
@@ -166,30 +171,9 @@ public class IFeedBackingBean implements Serializable {
         // Remove from memory
         iFeedModelBeans.remove(iFeed);
         userIFeedModelBeans.remove(iFeed);
-
-
-        /*try {
-            ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-            long companyId = themeDisplay.getCompanyId();
-            resourceLocalService.deleteResource(companyId, IFeed.class.getName(),
-                ResourceConstants.SCOPE_INDIVIDUAL, iFeed.getId());
-        } catch (PortalException e) {
-            e.printStackTrace();
-        } catch (SystemException e) {
-            e.printStackTrace();
-        }*/
-        throw new UnsupportedOperationException();
-
     }
 
     private String getRemoteUserId(HttpServletRequest request) {
-        /*@SuppressWarnings("unchecked")
-        Map<String, ?> userInfo = (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
-        String userId = "";
-        if (userInfo != null) {
-            userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
-        }
-        return userId;*/
         return request.getRemoteUser();
     }
 
@@ -203,10 +187,8 @@ public class IFeedBackingBean implements Serializable {
     }
 
 
-    CachedUser getUser(HttpServletRequest request) {
-//        return PortalUtil.getUser(request);
-        throw new UnsupportedOperationException();
-
+    private CachedUser getUser(HttpServletRequest request) {
+        return userRepository.findUser(request.getRemoteUser());
     }
 
     public void getFieldsInfs() {

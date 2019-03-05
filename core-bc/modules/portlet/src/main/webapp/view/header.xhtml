@@ -16,23 +16,12 @@
                 </a>
             </h1>
 
-            <!--<div class="top-wrap">
+            <div class="top-wrap">
                 <div class="top-navigation-wrap">
                     <ui:include src="top_navigation.xhtml"/>
                 </div>
-            </div>-->
+            </div>
 
-            <h:panelGroup style="float:right;" rendered="#{not empty userBackingBean.displayName}"> <!-- todo If signed in -->
-                <span class="logged-in-info">Inloggad: #{userBackingBean.displayName}</span>
-                <span class="logout-link"><a href="#{request.contextPath}/logout">Logga ut</a></span>
-            </h:panelGroup>
-
-            <!--<span class="contact-info">
-                <i class="fa fa-envelope"></i>
-                <a class="long-text"
-                   href="mailto:it-kompassen@vgregion.se">it-kompassen@vgregion.se</a>
-                <a class="short-text" href="mailto:it-kompassen@vgregion.se">Kontakta oss</a>
-            </span>-->
         </div>
 
     </header>

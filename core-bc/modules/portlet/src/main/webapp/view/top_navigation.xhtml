@@ -10,20 +10,13 @@
     <nav class="top-navigation clearfix" id="topNavigation">
         <ul class="top-nav-list clearfix">
 
-            <h:panelGroup rendered="false"> <!-- todo om inloggad -->
+            <h:panelGroup rendered="#{not empty userBackingBean.displayName}">
                 <li class="top-nav-user">
-                    <span>Inloggad som: ${user_name}</span>
+                    <span>Inloggad som: ${userBackingBean.displayName}</span>
                 </li>
                 <li class="top-nav-signout last">
-                    <a href="${sign_out_url}">
-                        <span>${sign_out_text}</span>
-                    </a>
-                </li>
-            </h:panelGroup>
-            <h:panelGroup rendered="true">
-                <li class="top-nav-signin last">
-                    <a class="signin-link" href="${sign_in_url}">
-                        <span>${sign_in_text}</span>
+                    <a href="#{request.contextPath}/logout">
+                        <span>Logga ut</span>
                     </a>
                 </li>
             </h:panelGroup>

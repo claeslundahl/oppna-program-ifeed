@@ -28,6 +28,9 @@ public class CachedUser implements Serializable {
     @Column
     private String displayName;
 
+    @Column
+    private Boolean admin;
+
     public String getId() {
         return id;
     }
@@ -66,5 +69,13 @@ public class CachedUser implements Serializable {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public Boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }

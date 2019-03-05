@@ -74,6 +74,12 @@ public class CustomLdapAuthenticationProvider extends LdapAuthenticationProvider
         cachedUser.setId(principal.getUsername());
         cachedUser.setPasswordHash(new BCryptPasswordEncoder().encode(credentials));
 
+        // Preserve admin
+        CachedUser existentUser = userRepository.findUser(cachedUser.getId());
+        if (existentUser != null) {
+            cachedUser.setAdmin(existentUser.isAdmin());
+        }
+
         userRepository.merge(cachedUser);
     }
 }

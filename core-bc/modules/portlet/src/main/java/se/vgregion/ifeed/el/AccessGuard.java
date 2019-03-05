@@ -9,20 +9,8 @@ import javax.faces.context.FacesContext;
 
 public class AccessGuard {
 
-    public static boolean haveRole(CachedUser user, String nameOfAccessRole) {
-        if (user == null) {
-            return false;
-        }
-        /*for (Role role : user.getRoles()) {
-            if (nameOfAccessRole.equals(role.getName())) {
-                return true;
-            }
-        }*/ // TODO
-        return false;
-    }
-
     public static boolean mayEditAllFeeds(CachedUser user) {
-        return haveRole(user, "iFeed-admin");
+        return Boolean.TRUE.equals(user.isAdmin());
     }
 
     public static boolean mayEditFeed(CachedUser user, IFeed feed) {

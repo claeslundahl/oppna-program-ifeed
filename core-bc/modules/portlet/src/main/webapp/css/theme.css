@@ -77,7 +77,7 @@ body .ui-paginator span {
 
 body .ui-paginator-last,
 body .ui-paginator-first {
-    background-image: url(/rp-bootstrap-theme/images/paginator/pager-simple-sprite.png);
+    background-image: url(../images/paginator/pager-simple-sprite.png);
     background-repeat: no-repeat;
     border: none;
     height: 20px;
@@ -137,7 +137,7 @@ body .ui-messages-error-summary {
 }
 
 body .ui-message-info-icon, .ui-message-warn-icon, .ui-message-error-icon, .ui-message-fatal-icon, body .ui-messages-error-icon {
-    background: #FDD url(/rp-bootstrap-theme/images/messages/error.png) no-repeat -1px 50%;
+    background: #FDD url(../images/messages/error.png) no-repeat -1px 50%;
 
 }
 
@@ -156,7 +156,7 @@ body .ui-message-error {
 /*----------------Primefaces error icon --------------------------------------*/
 
 body .ui-icon .ui-icon-alert .ui-confirm-dialog-severity {
-    background: #FDD url(/rp-bootstrap-theme/images/messages/error.png) no-repeat -1px 50%;
+    background: #FDD url(../images/messages/error.png) no-repeat -1px 50%;
 }
 
 body .no-padding .aui-fieldset-content {
@@ -231,11 +231,11 @@ body .bookmark-title-toggle {
 }
 
 body .bookmark-item-minimized .bookmark-title-toggle {
-    background: transparent url(/rp-bootstrap-theme/images/arrows/rp-arrow-right.png) left center no-repeat;
+    background: transparent url(../images/arrows/rp-arrow-right.png) left center no-repeat;
 }
 
 body .bookmark-item-maximized .bookmark-title-toggle {
-    background: transparent url(/rp-bootstrap-theme/images/arrows/rp-arrow-down.png) left center no-repeat;
+    background: transparent url(../images/arrows/rp-arrow-down.png) left center no-repeat;
 }
 
 body .bookmark-title-wrap a.bookmark-title {
@@ -284,11 +284,11 @@ body .bookmark-controls a {
 }
 
 body .bookmark-controls a.bookmark-edit {
-    background: transparent url(/rp-bootstrap-theme/images/common/edit.png) 0 0 no-repeat;
+    background: transparent url(../images/common/edit.png) 0 0 no-repeat;
 }
 
 .delete-link {
-    background: transparent url(/rp-bootstrap-theme/images/common/close.png) 0 0 no-repeat !important;
+    background: transparent url(../images/common/close.png) 0 0 no-repeat !important;
     height: 16px;
     width: 16px;
 }
@@ -297,7 +297,7 @@ body .bookmark-controls a.bookmark-edit {
 /*------------------ Primefaces link button for confirmDialog ---------------------*/
 .centered-link-button {
     background: #c7c6c5;
-    background: #bebdbc url(/rp-bootstrap-theme/images/buttons/button-bg.png) 0 0 repeat-x;
+    background: #bebdbc url(../images/buttons/button-bg.png) 0 0 repeat-x;
     border: 1px solid #a5a4a3;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -315,7 +315,7 @@ body .bookmark-controls a.bookmark-edit {
 }
 
 .centered-link-button-alt {
-    background: #2865ad url(/rp-bootstrap-theme/images/buttons/button-bg-normal.png) 0 0 repeat-x;
+    background: #2865ad url(../images/buttons/button-bg-normal.png) 0 0 repeat-x;
     border: 1px solid #2f71a8;
     border-color: #2f71a8 #052a73 #052a73 #2f71a8;
     color: #fff !important;
@@ -374,7 +374,7 @@ body .ui-widget-overlay {
 }
 
 /*body .ui-button .ui-button-text {
-    background: #2865ad url(/rp-bootstrap-theme/images/icons/icon-rp-close.png) 0 0 repeat-x;
+    background: #2865ad url(../images/icons/icon-rp-close.png) 0 0 repeat-x;
 
 
     border: 1px solid #2f71a8;
@@ -425,7 +425,7 @@ body .ui-dialog .ui-dialog-titlebar-close, .ui-dialog .ui-dialog-titlebar-minimi
 }
 
 body .ui-dialog-titlebar-close {
-    background: transparent url(/rp-bootstrap-theme/images/icons/icon-rp-close.png) 0 0 no-repeat;
+    background: transparent url(../images/icons/icon-rp-close.png) 0 0 no-repeat;
     height: 24px;
     width: 24px;
     opacity: 0.7;
@@ -505,7 +505,7 @@ body .autoWidthDialog {
 
 .pagination .ui-paginator-last,
 .pagination .ui-paginator-first {
-    background-image: url(/rp-bootstrap-theme/images/paginator/pager-simple-sprite.png);
+    background-image: url(../images/paginator/pager-simple-sprite.png);
     background-repeat: no-repeat;
     border: none;
     height: 20px;
@@ -554,7 +554,7 @@ body .autoWidthDialog {
 }
 
 .vgr-boolean-buttons ul.aui-tabview-list {
-    background: #2f72a9 url(/rp-bootstrap-theme/images/portlet/portlet-hd-bg-2.png) top left repeat-x;
+    background: #2f72a9 url(../images/portlet/portlet-hd-bg-2.png) top left repeat-x;
     border: 1px solid #245780;
     border-bottom: 0;
     -moz-border-radius: 3px 3px 0 0;
@@ -583,7 +583,7 @@ body .autoWidthDialog {
 }
 
 .vgr-boolean-buttons .aui-button-content {
-    background: url(/rp-bootstrap-theme/images/navigation/navigation-separator.png) top right repeat-y;
+    background: url(../images/navigation/navigation-separator.png) top right repeat-y;
     border: none;
     padding: 0 2px 0 0;
     margin: 0;
@@ -609,7 +609,7 @@ body .autoWidthDialog {
 }
 
 .vgr-boolean-buttons .aui-button a:hover {
-    background: #3a84c1 url(/rp-bootstrap-theme/images/navigation/navigation-bg-hover.png) top left repeat-x;
+    background: #3a84c1 url(../images/navigation/navigation-bg-hover.png) top left repeat-x;
     color: #fff;
 }
 
@@ -626,7 +626,7 @@ body .autoWidthDialog {
 .vgr-boolean-buttons .aui-button-active a,
 .vgr-boolean-buttons .aui-button-active a:link,
 .vgr-boolean-buttons .aui-button-active a:hover {
-    background: #548332 url(/rp-bootstrap-theme/images/navigation/navigation-bg-active.png) top left repeat-x;
+    background: #548332 url(../images/navigation/navigation-bg-active.png) top left repeat-x;
     color: #fff;
 }
 
@@ -683,7 +683,7 @@ body .ui-widget-header .ui-state-active {
 /*------------------------------ Link buttons -----------------------------------*/
 .link-button-help {
     display:block;
-    background-image: url(/rp-bootstrap-theme/images/icons/help.png?);
+    background-image: url(../images/icons/help.png?);
     background-repeat: no-repeat;
     height: 18px;
     width: 18px;
@@ -692,7 +692,7 @@ body .ui-widget-header .ui-state-active {
 
 .link-button-add {
     display:block;
-    background-image: url(/rp-bootstrap-theme/images/icons/add.png);
+    background-image: url(../images/icons/add.png);
     background-repeat: no-repeat;
     height: 18px;
     width: 18px;
@@ -702,7 +702,7 @@ body .ui-widget-header .ui-state-active {
 
 .link-button-trash {
     display: inline;
-    background-image: url(/rp-bootstrap-theme/images/icons/blue_trash.png);
+    background-image: url(../images/icons/blue_trash.png);
     background-repeat: no-repeat;
     height: 18px;
     width: 18px;
@@ -712,7 +712,7 @@ body .ui-widget-header .ui-state-active {
 .edit a.link-button-edit {
     display: inline-block;
     vertical-align: middle;
-    background-image: url('/iFeed-portlet/img/edit.png');
+    background-image: url(../img/edit.png);
     background-repeat: no-repeat;
     height: 18px;
     width: 18px;
@@ -721,7 +721,7 @@ body .ui-widget-header .ui-state-active {
 
 .link-button-rss {
     display:block;
-    background-image: url(/rp-bootstrap-theme/images/icons/rss.png?);
+    background-image: url(../images/icons/rss.png?);
     background-repeat: no-repeat;
     height: 18px;
     width: 18px;
@@ -754,7 +754,7 @@ body .ui-widget-header .ui-state-active {
 body .button-group .ui-state-active {
     /*background: #6eac2c url("images/ui-bg_gloss-wave_50_6eac2c_500x100.png") 50% 50% repeat-x;*/
     font-weight: normal;
-    background: #548332 url(/rp-bootstrap-theme/images/navigation/navigation-bg-active.png) top left repeat-x !important;
+    background: #548332 url(../images/navigation/navigation-bg-active.png) top left repeat-x !important;
     color: #fff;
     font-weight: normal;
     color: #ffffff;
@@ -769,7 +769,7 @@ body .button-group .ui-state-default {
      border-radius: 6px 6px 0 0;*/
     /* padding: .3em 1em;*/
 
-    background: #2865ad url(/rp-bootstrap-theme/images/buttons/button-bg-normal.png) 0 0 repeat-x;
+    background: #2865ad url(../images/buttons/button-bg-normal.png) 0 0 repeat-x;
     border: 1px solid #2f71a8;
     border-color: #2f71a8 #052a73 #052a73 #2f71a8;
     color: #fff;
@@ -784,7 +784,7 @@ body .button-group .ui-state-default {
 /*.ifeed-table .ui-sortable-column-icon {
     width: 16px;
     height: 16px;
-    background:url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background:url(../images/arrows/ui-icons.png);
 }*/
 
 body .aui table {
@@ -805,13 +805,13 @@ body .aui table {
 }
 
 .ifeed-table .ui-sortable-column-icon {
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
     width: 15px;
     height: 15px;
 }
 
 .ifeed-table .ui-state-active .ui-sortable-column-icon {
-    /* background-image: url(/rp-bootstrap-theme/images/arrows/arrow-down-blue.png);
+    /* background-image: url(../images/arrows/arrow-down-blue.png);
      height: 8px;*/
 }
 
@@ -983,7 +983,7 @@ margin-bottom: 5px;*/
 .vgr-accordion .ui-icon {
     width: 16px;
     height: 16px;
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
 
 }
 
@@ -1249,7 +1249,7 @@ body .ui-panel.ui-panel-collapsed-h .ui-panel-title {
     border: none;
 }
 .tabs-min .ui-tabs-nav .ui-state-active {
-    background: transparent url(/rp-bootstrap-theme/images/icons/position-arrow.png) no-repeat bottom center;
+    background: transparent url(../images/icons/position-arrow.png) no-repeat bottom center;
     border: none;
 }
 .tabs-min .ui-tabs-nav .ui-state-default a {
@@ -1284,7 +1284,7 @@ body .ui-panel.ui-panel-collapsed-h .ui-panel-title {
     padding: 7px 20px 7px 12px;
     margin-bottom: 20px;
 
-    background: #2865ad url(/rp-bootstrap-theme/css/../images/buttons/button-bg-normal.png) 0 0 repeat-x;
+    background: #2865ad url(../images/buttons/button-bg-normal.png) 0 0 repeat-x;
     border: 1px solid #2f71a8;
     border-color: #2f71a8 #052a73 #052a73 #2f71a8;
     color: #fff;
@@ -1311,7 +1311,7 @@ body .ui-panel.ui-panel-collapsed-h .ui-panel-title {
 .vgr-fieldset .ui-icon {
     width: 16px;
     height: 16px;
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
 }
 
 /*
@@ -1619,10 +1619,10 @@ body .ui-selectlistbox .wijmo-wijsuperpanel-hbarcontainer.ui-widget-header {
     margin-top: 3px;
 }
 .ifeed-selectonemenu .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
 }
 .ifeed-selectonemenu .ui-state-default .ui-icon {
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
 }
 .ifeed-selectonemenu .ui-icon {
     display: block;
@@ -1636,7 +1636,7 @@ body .ui-selectlistbox .wijmo-wijsuperpanel-hbarcontainer.ui-widget-header {
 .ifeed-selectonemenu .ui-icon {
     width: 16px;
     height: 16px;
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
 }
 .ifeed-selectonemenu  .ui-icon {
     -moz-border-radius: 10px;
@@ -1841,10 +1841,10 @@ body .ui-selectlistbox .wijmo-wijsuperpanel-hbarcontainer.ui-widget-header {
     padding:3px 5px;
 }
 .autocomplete .ui-state-active .ui-icon {
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
 }
 .autocomplete .ui-state-default .ui-icon {
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
 }
 .autocomplete .ui-autocomplete-token-icon {
     margin-top: -9px;
@@ -1865,7 +1865,7 @@ body .ui-selectlistbox .wijmo-wijsuperpanel-hbarcontainer.ui-widget-header {
 .autocomplete .ui-icon {
     width: 16px;
     height: 16px;
-    background-image: url(/rp-bootstrap-theme/images/arrows/ui-icons.png);
+    background-image: url(../images/arrows/ui-icons.png);
 }
 .autocomplete .ui-icon {
     -moz-border-radius: 10px;
@@ -1886,7 +1886,7 @@ body .ui-selectlistbox .wijmo-wijsuperpanel-hbarcontainer.ui-widget-header {
 .autocomplete .ui-widget-content .ui-state-active,
 .autocomplete .ui-widget-header .ui-state-active {
     border: 1px solid #c4ced5;
-    background: #85b2cb url(/rp-bootstrap-theme/images/arrows/ui-icons.png) 50% 50% repeat-x;
+    background: #85b2cb url(../images/arrows/ui-icons.png) 50% 50% repeat-x;
 
     background: #dfebf5;
     font-weight: bold;
@@ -1927,7 +1927,7 @@ body .ui-selectlistbox .wijmo-wijsuperpanel-hbarcontainer.ui-widget-header {
 .autocomplete .ui-widget-header .ui-state-default {
     border: 1px solid #c4ced5;
     border-radius: 0px;
-   /* background: #c4c4c4 url(/rp-bootstrap-theme/images/arrows/ui-icons.png) 50% 50% repeat-x;
+   /* background: #c4c4c4 url(../images/arrows/ui-icons.png) 50% 50% repeat-x;
     background: #c4c4c4 linear-gradient(top, rgba(255,255,255,0.8), rgba(255,255,255,0));
     background: #c4c4c4 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
     background: #c4c4c4 -moz-linear-gradient(top, rgba(255,255,255,0.8), rgba(255,255,255,0));

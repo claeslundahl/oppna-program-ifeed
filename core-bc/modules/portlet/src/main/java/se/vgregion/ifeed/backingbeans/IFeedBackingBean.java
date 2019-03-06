@@ -58,6 +58,9 @@ public class IFeedBackingBean implements Serializable {
     private String popupConfString;
     private List<String> governance;
 
+    @Value("${environment.text}")
+    private String environmentText;
+
     @Value("#{navigationModelBean}")
     private NavigationModelBean navigationModelBean;
 
@@ -393,6 +396,14 @@ public class IFeedBackingBean implements Serializable {
             popupConfString = iFeedService.getConfig("popup").getSetting();
         }
         return popupConfString;
+    }
+
+    public String getEnvironmentText() {
+        return environmentText;
+    }
+
+    public void setEnvironmentText(String environmentText) {
+        this.environmentText = environmentText;
     }
 
     public void setPopupConfString(String popupConfString) {

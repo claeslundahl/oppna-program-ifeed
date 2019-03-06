@@ -85,7 +85,7 @@
 
                     <h:panelGroup>
                         <br/>
-                        <span style="font-weight: bold;"><i class="icon-user"></i>Ägare:</span><br/>
+                        <span style="font-weight: bold;"><i class="fa fa-user"></i>Ägare:</span><br/>
                         <h:outputText
                                 value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
                                 rendered="#{not app.inEditMode}"/>
@@ -104,7 +104,7 @@
 
 
                     <div>
-                        <div style="font-weight: bold;"><i class="icon-user"></i>Administratörer:
+                        <div style="font-weight: bold;"><i class="fa fa-user"></i>Administratörer:
                         </div>
 
                         <p:autoComplete id="createNewAdminInput"

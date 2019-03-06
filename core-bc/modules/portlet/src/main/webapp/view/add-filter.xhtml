@@ -31,7 +31,7 @@
                                     action="#{ifeedFilter.setExpanded(!ifeedFilter.isExpanded())}">
                                 <f:ajax render="@form" onevent="refreshResults()"/>
                                 <div title="#{ifeedFilter.help}"
-                                     class="#{ifeedFilter.isExpanded() ? 'icon-chevron-down' : 'icon-chevron-right'}"></div>
+                                     class="#{ifeedFilter.isExpanded() ? 'fa fa-chevron-down' : 'fa fa-chevron-right'}"></div>
                                 #{ifeedFilter.name}
                             </h:commandLink>
                         </td>

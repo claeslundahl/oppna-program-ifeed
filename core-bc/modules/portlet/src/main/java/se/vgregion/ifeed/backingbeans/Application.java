@@ -95,8 +95,6 @@ public class Application {
     private String webScriptJsonUrl;
     @Autowired
     private IFeedService iFeedService;
-//    @Autowired
-//    private ResourceLocalService resourceLocalService;
     @Autowired
     private LdapPersonService ldapPersonService;
     @Value("#{iFeedModelBean}")
@@ -176,11 +174,7 @@ public class Application {
     }
 
     private static void cleanFieldsNotFilters(List<FieldInf> filters) {
-        for (FieldInf fieldInf : new ArrayList<>(filters)) {
-            if (!fieldInf.isFilter()) {
-                filters.remove(fieldInf);
-            }
-        }
+        filters.removeIf(next -> !next.isFilter());
     }
 
     public static String urlToPostForm(String url, String id) {

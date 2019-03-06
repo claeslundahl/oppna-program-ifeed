@@ -48,6 +48,11 @@ body {
     position: relative;
   }
 
+  input, button, select, textarea {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+  }
+
   .ie6 body {
     height: 100%;
   }
@@ -530,5 +535,12 @@ body {
     -moz-transition: background-position .1s linear;
     -o-transition: background-position .1s linear;
     transition: background-position .1s linear;
+  }
+
+  hr {
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid white;
   }
 }

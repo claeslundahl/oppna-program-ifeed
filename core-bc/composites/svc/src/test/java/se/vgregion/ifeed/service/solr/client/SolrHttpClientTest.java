@@ -26,9 +26,24 @@ public class SolrHttpClientTest {
 
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
+
+
     public static void main(String[] args) throws IOException, URISyntaxException {
-        Map<String, Set<Object>> allValues = client.findAllValues();
-        System.out.println("SourceSystem: " + allValues.get("SourceSystem"));
+        /*Map<String, Set<Object>> allValues = client.findAllValues();
+        System.out.println("SourceSystem: " + allValues.get("SourceSystem"));*/
+        IFeedFilter i = new IFeedFilter();
+        i.setFilterQuery("Narhalsan MBL CSG");
+        i.setFilterKey("dc.type.document.serie");
+        IFeed feed = new IFeed();
+        feed.addFilter(i);
+        Result items = client.query(feed.toQuery(), 0, 1_000_000, null);
+        NavigableSet<String> names = new TreeSet<>();
+        for (Map<String, Object> doc : items.getResponse().getDocs()) {
+            names.add((String) doc.get("dc.title"));
+        }
+        for (String name : names) {
+            System.out.println(name);
+        }
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {
@@ -38,7 +53,6 @@ public class SolrHttpClientTest {
         url = uri.toURL();
 
         return url.toExternalForm();
-        // return url.toString();
     }
 
 

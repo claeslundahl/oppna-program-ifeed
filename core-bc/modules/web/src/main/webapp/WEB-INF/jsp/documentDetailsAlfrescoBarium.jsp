@@ -477,21 +477,9 @@
             </tr>
             </thead>
             <tbody>
-            <c:if test="${not empty item['dc.publisher.forunit']}">
-            <tr>
-                <td class="key">Publicerat för enhet (autokomplettering)</td>
-                <td class="value">${item['dc.publisher.forunit']}</td>
-            </tr>
-                </c:if>
-                <c:if test="${not empty item['dc.publisher.forunit.flat']}">
-            <tr>
-                <td class="key">Publicerat för enhet (för sortering)</td>
-                <td class="value">${item['dc.publisher.forunit.flat']}</td>
-            </tr>
-                </c:if>
                 <c:if test="${not empty item['dc.publisher.forunit.id']}">
             <tr>
-                <td class="key">Publicerat för enhet ID (VGR:s organisationsträd)</td>
+                <td class="key">Publicerat för enhet</td>
                 <td class="value">${item['dc.publisher.forunit.id']}</td>
             </tr>
                 </c:if>

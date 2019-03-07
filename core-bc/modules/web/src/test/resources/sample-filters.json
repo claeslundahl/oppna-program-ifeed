@@ -1,0 +1,32 @@
+[
+  {
+    "filterQuery": "arkiverade",
+    "filterKey": "dc.type.document.serie",
+    "operator": "matching",
+    "children": []
+  },
+  {
+    "filterQuery": "SE2321000131-E000000011325",
+    "filterKey": "dc.publisher.forunit.id",
+    "operator": "matching",
+    "children": []
+  },
+  {
+    "filterQuery": "Möten:- minnesanteckningar ▒vriga",
+    "filterKey": "dc.type.record",
+    "operator": "matching",
+    "children": []
+  },
+  {
+    "filterQuery": "Mötesdokument",
+    "filterKey": "dc.type.document",
+    "operator": "matching",
+    "children": []
+  },
+  {
+    "filterQuery": "områdesledning",
+    "filterKey": "dc.type.file.process",
+    "operator": "matching",
+    "children": []
+  }
+]

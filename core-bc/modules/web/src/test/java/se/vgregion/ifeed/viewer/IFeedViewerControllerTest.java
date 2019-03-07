@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.viewer;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import junit.framework.Assert;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -8,15 +10,21 @@ import org.apache.solr.common.SolrDocumentList;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Type;
 import java.text.ParseException;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -102,13 +110,29 @@ public class IFeedViewerControllerTest {
         System.out.println(IFeedViewerController.toTextDateImpl(string));
     }
 
+    /**
+     * @param args
+     */
+
     public static void main(String[] args) {
-        String stuff = "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td";
-        String[] parts = stuff.split(Pattern.quote(","));
-        for (int i = 0; i < parts.length; i++) {
-            parts[i] = "#table-container " + parts[i];
+/*        System.out.println(IFeedViewerControllerTest.class.getResource("/sample-filters.json"));
+        String text = new Scanner(IFeedViewerControllerTest.class.getResourceAsStream("/sample-filters.json"), "UTF-8").useDelimiter("\\A").next();
+        Type listType = new TypeToken<ArrayList<IFeedFilter>>() {
+        }.getType();
+        List<IFeedFilter> filters = new Gson().fromJson(text, listType);*/
+        IFeed feed = new IFeed();
+        //feed.getFilters().addAll(filters);
+        IFeedFilter filter = new IFeedFilter("*test*", "title");
+        feed.addFilter(filter);
+        IFeedViewerController controller = new IFeedViewerController(null, null, null);
+
+        ExtendedModelMap model = new ExtendedModelMap();
+        controller.getIFeedByInstance(feed, model, "title", "asc", null, null, null, new String[]{"title"});
+
+        List<Map<String, Object>> items = (List<Map<String, Object>>) model.get("result");
+        for (Map<String, Object> item : items) {
+            System.out.println(item);
         }
-        System.out.println(String.join(", ", parts));
     }
 
     @Test

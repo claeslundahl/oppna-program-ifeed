@@ -406,7 +406,6 @@ public class IFeedViewerController {
                                      Integer endBy,
                                      String fromPage,
                                      String[] fieldToSelect) {
-        // Util.setLocalValue(retrievedFeed);
 
         if (fromPage != null && !"".equals(fromPage.trim())) {
             Integer i = callsToJsonpMetadata.get(fromPage);
@@ -451,14 +450,23 @@ public class IFeedViewerController {
                 sortField + "%20" + sortDirection
         );
 
-        // !!!!!!!!!!!!!!
-        /*FieldInf root = new FieldInf(iFeedService.getFieldInfs());
-        Set<String> includes = root.getAllIds();
+        SortingMap sorter = new SortingMap();
 
         for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
-            copyValueFromSofiaToAlfrescoBariumFields(item);
-            item.keySet().retainAll(includes);
-        }*/
+            Comparable comparable = (Comparable) item.get(sortField);
+            if (comparable == null) {
+                comparable = "";
+            }
+            sorter.get(comparable).add(item);
+        }
+
+        if (otherResult != null && otherResult.getResponse() != null && otherResult.getResponse().getDocs() != null
+                && fieldToSelect != null && fieldToSelect.length > 0) {
+            Set<String> keys = new HashSet<>(Arrays.asList(fieldToSelect));
+            for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
+                item.keySet().retainAll(keys);
+            }
+        }
 
         if (retrievedFeed.getLinkNativeDocument()) {
             for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
@@ -473,13 +481,42 @@ public class IFeedViewerController {
             }
         }
 
-        model.addAttribute("result", otherResult.getResponse().getDocs());
+        List<Map<String, Object>> result = ("asc".equalsIgnoreCase(sortDirection)) ? sorter.getSortedValues() : sorter.getReversedSortedValues();
+
+        // model.addAttribute("result", otherResult.getResponse().getDocs());
+
+        model.addAttribute("result", result);
 
         return "documentList";
     }
 
     SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
+    private class SortingMap extends TreeMap<Comparable, List<Map<String, Object>>> {
+
+        @Override
+        public List<Map<String, Object>> get(Object key) {
+            if (!containsKey(key)) {
+                put((Comparable) key, new ArrayList<>());
+            }
+            return super.get(key);
+        }
+
+        List<Map<String, Object>> getSortedValues() {
+            List<Map<String, Object>> result = new ArrayList<>();
+            for (Comparable comparable : SortingMap.this.keySet()) {
+                result.addAll(SortingMap.this.get(comparable));
+            }
+            return result;
+        }
+
+        List<Map<String, Object>> getReversedSortedValues() {
+            List<Map<String, Object>> result = getSortedValues();
+            Collections.reverse(result);
+            return result;
+        }
+
+    }
 
     /**
      * There are other names for the fields in the SOFIA-specification. That could lead to strange behavior for the

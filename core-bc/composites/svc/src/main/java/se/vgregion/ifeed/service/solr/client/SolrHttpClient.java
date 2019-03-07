@@ -129,6 +129,11 @@ public class SolrHttpClient {
         // System.out.println(json);
 
         Result result = new GsonBuilder().create().fromJson(json, Result.class);
+
+/*        if (result.getResponse() == null) {
+            System.out.println("f");
+        }*/
+
         if (sort != null && !sort.trim().isEmpty()) {
             final String[] parts = sort.split(Pattern.quote(" "));
             if (parts.length == 2) {

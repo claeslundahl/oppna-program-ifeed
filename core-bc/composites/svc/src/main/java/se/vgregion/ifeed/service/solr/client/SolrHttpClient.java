@@ -133,6 +133,7 @@ public class SolrHttpClient {
             System.out.println("f");
         }*/
 
+/*
         if (sort != null && !sort.trim().isEmpty()) {
             final String[] parts = sort.split(Pattern.quote(" "));
             if (parts.length == 2) {
@@ -148,6 +149,7 @@ public class SolrHttpClient {
                 }
             }
         }
+*/
         return result;
     }
 

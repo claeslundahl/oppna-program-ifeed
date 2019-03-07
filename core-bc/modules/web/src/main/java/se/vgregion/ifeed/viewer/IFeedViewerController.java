@@ -407,22 +407,22 @@ public class IFeedViewerController {
                                      String fromPage,
                                      String[] fieldToSelect) {
 
-        if (fromPage != null && !"".equals(fromPage.trim())) {
+        /*if (fromPage != null && !"".equals(fromPage.trim())) {
             Integer i = callsToJsonpMetadata.get(fromPage);
             if (i == null) {
                 callsToJsonpMetadata.put(fromPage, 1);
             } else {
                 callsToJsonpMetadata.put(fromPage, i.intValue() + 1);
             }
-        }
+        }*/
 
         if (retrievedFeed == null) {
             // Throw 404 if the feed doesn't exist
             throw new ResourceNotFoundException();
         }
 
-        IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
-        if (startBy != null && startBy >= 0) {
+        //IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
+        /*if (startBy != null && startBy >= 0) {
             solrQuery.setStart(startBy);
             if (endBy != null && endBy > startBy) {
                 solrQuery.setRows(endBy - startBy);
@@ -430,46 +430,52 @@ public class IFeedViewerController {
         } else {
             solrQuery.setRows(25_000);
         }
-
-        solrQuery.setShowDebugInfo(true);
+        solrQuery.setShowDebugInfo(true);*/
 
         if (sortField == null || sortField.isEmpty()) sortField = IFeedSolrQuery.DEFAULT_SORT_FIELD;
         if (sortDirection == null || sortDirection.isEmpty())
             sortDirection = IFeedSolrQuery.DEFAULT_SORT_DIRECTION.toString();
 
 
-        if (sortField == null || sortField.trim().isEmpty() || "null".equalsIgnoreCase(sortField) || "dc.title".equalsIgnoreCase(sortField)) {
+        if (sortField == null || sortField.trim().isEmpty() || "null".equalsIgnoreCase(sortField) /*|| "dc.title".equalsIgnoreCase(sortField)*/) {
             // sortField = "dc.title";
             sortField = "title";
         }
 
-        Result otherResult = client.query(
-                retrievedFeed.toQuery(),
-                (startBy != null && startBy >= 0) ? startBy : 0,
-                (endBy != null ? endBy : 25_000),
-                sortField + "%20" + sortDirection
-        );
-
-        SortingMap sorter = new SortingMap();
-
-        for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
-            Comparable comparable = (Comparable) item.get(sortField);
-            if (comparable == null) {
-                comparable = "";
-            }
-            sorter.get(comparable).add(item);
+        if (startBy == null) {
+            startBy = 0;
         }
 
-        if (otherResult != null && otherResult.getResponse() != null && otherResult.getResponse().getDocs() != null
+        if (endBy == null) {
+            endBy = 1_000_000;
+        }
+
+        Result result = client.query(retrievedFeed.toQuery(), startBy, endBy, sortField + "%20" + sortDirection);
+
+        /*SortingMap sorter = new SortingMap();
+
+        for (Map<String, Object> item : result.getResponse().getDocs()) {
+            Comparable comparable = (Comparable) item.get(sortField);
+
+            if (comparable == null) {
+                comparable = "";
+            } else if (comparable instanceof String) {
+                comparable = ((String) comparable).toLowerCase();
+            }
+
+            sorter.get(comparable).add(item);
+        }*/
+
+        if (result != null && result.getResponse() != null && result.getResponse().getDocs() != null
                 && fieldToSelect != null && fieldToSelect.length > 0) {
             Set<String> keys = new HashSet<>(Arrays.asList(fieldToSelect));
-            for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
+            for (Map<String, Object> item : result.getResponse().getDocs()) {
                 item.keySet().retainAll(keys);
             }
         }
 
         if (retrievedFeed.getLinkNativeDocument()) {
-            for (Map<String, Object> item : otherResult.getResponse().getDocs()) {
+            for (Map<String, Object> item : result.getResponse().getDocs()) {
                 String originalDownloadLatestVersionUrl = (String) item.get("originalDownloadLatestVersionUrl");
                 if (originalDownloadLatestVersionUrl != null && !"".equals(originalDownloadLatestVersionUrl.trim())) {
                     // Is a Sofia doc.
@@ -481,11 +487,11 @@ public class IFeedViewerController {
             }
         }
 
-        List<Map<String, Object>> result = ("asc".equalsIgnoreCase(sortDirection)) ? sorter.getSortedValues() : sorter.getReversedSortedValues();
-
+        // List<Map<String, Object>> result = ("asc".equalsIgnoreCase(sortDirection)) ? sorter.getSortedValues() : sorter.getReversedSortedValues();
         // model.addAttribute("result", otherResult.getResponse().getDocs());
-
-        model.addAttribute("result", result);
+        // result = result.subList(startBy, endBy);
+        // model.addAttribute("result", result);
+        model.addAttribute("result", result.getResponse().getDocs());
 
         return "documentList";
     }

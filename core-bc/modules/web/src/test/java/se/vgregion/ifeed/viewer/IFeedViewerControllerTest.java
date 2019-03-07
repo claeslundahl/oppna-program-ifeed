@@ -115,19 +115,13 @@ public class IFeedViewerControllerTest {
      */
 
     public static void main(String[] args) {
-/*        System.out.println(IFeedViewerControllerTest.class.getResource("/sample-filters.json"));
-        String text = new Scanner(IFeedViewerControllerTest.class.getResourceAsStream("/sample-filters.json"), "UTF-8").useDelimiter("\\A").next();
-        Type listType = new TypeToken<ArrayList<IFeedFilter>>() {
-        }.getType();
-        List<IFeedFilter> filters = new Gson().fromJson(text, listType);*/
         IFeed feed = new IFeed();
-        //feed.getFilters().addAll(filters);
         IFeedFilter filter = new IFeedFilter("*test*", "title");
         feed.addFilter(filter);
         IFeedViewerController controller = new IFeedViewerController(null, null, null);
 
         ExtendedModelMap model = new ExtendedModelMap();
-        controller.getIFeedByInstance(feed, model, "title", "asc", null, null, null, new String[]{"title"});
+        controller.getIFeedByInstance(feed, model, "title", "asc", 0, 10, null, new String[]{"title"});
 
         List<Map<String, Object>> items = (List<Map<String, Object>>) model.get("result");
         for (Map<String, Object> item : items) {

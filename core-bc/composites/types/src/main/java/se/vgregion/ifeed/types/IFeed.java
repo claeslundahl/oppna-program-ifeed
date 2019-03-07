@@ -35,8 +35,6 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @Version
     private Long version;
 
-    //@ElementCollection(fetch = FetchType.EAGER)
-    //@CollectionTable(name = "vgr_ifeed_filter", joinColumns = @JoinColumn(name = "ifeed_id"))
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "feed")
     protected Set<IFeedFilter> filters = new HashSet<>();
 

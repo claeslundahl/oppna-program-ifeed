@@ -10,6 +10,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Web Application Starter Project</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <script type="text/javascript" src="se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js"></script>
 </head>
 

@@ -10,6 +10,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.*;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,6 +27,8 @@ public class SolrHttpClient {
     private final ScriptObjectMirror JSON; // = (ScriptObjectMirror) engine.eval("JSON");
 
     private final String baseUrl;
+
+    private WeakReference<Map<String, Field>> fields = new WeakReference<>(null);
 
     public SolrHttpClient(String baseUrl) {
         super();
@@ -86,7 +89,11 @@ public class SolrHttpClient {
                 fq = fq + "&rows=" + rows;
             }
             if (sort != null && !sort.trim().isEmpty()) {
-                fq = fq + "&sort=" + sort;
+                String tempSort = sort;
+                if (tempSort.contains(" ")) {
+                    tempSort = URLEncoder.encode(tempSort, "UTF-8");
+                }
+                fq = fq + "&sort=" + tempSort;
             }
             fq = fq + "&wt=json&q=*%3A*";
 
@@ -101,6 +108,15 @@ public class SolrHttpClient {
     }
 
     private Result queryImp(String fq, Integer start, Integer rows, String sort) throws IOException {
+        if (fields.get() == null) {
+            List<Field> temp = fetchFields();
+            Map<String, Field> map = new HashMap<>();
+            for (Field field : temp) {
+                map.put(field.getName(), field);
+            }
+
+            fields = new WeakReference<>(map);
+        }
 
         /*if (fq == null || fq.trim().isEmpty()) fq = "";
         else fq = URLEncoder.encode(fq, "UTF-8");
@@ -134,23 +150,23 @@ public class SolrHttpClient {
             System.out.println("f");
         }*/
 
-/*
         if (sort != null && !sort.trim().isEmpty()) {
             final String[] parts = sort.split(Pattern.quote(" "));
             if (parts.length == 2) {
                 final String sortKey = parts[0];
                 final String dir = parts[1];
-
-                Collections.sort(result.getResponse().getDocs(), (o1, o2) -> {
-                    String s1 = (o1.get(sortKey) + "").toLowerCase(), s2 = (o2.get(sortKey) + "").toLowerCase();
-                    return s1.compareTo(s2);
-                });
-                if ("desc".equalsIgnoreCase(dir)) {
-                    Collections.reverse(result.getResponse().getDocs());
+                Field field = fields.get().get(sortKey);
+                if ("text_basic_token".equals(field.getType())) {
+                    Collections.sort(result.getResponse().getDocs(), (o1, o2) -> {
+                        String s1 = (o1.get(sortKey) + "").toLowerCase(), s2 = (o2.get(sortKey) + "").toLowerCase();
+                        return s1.compareTo(s2);
+                    });
+                    if ("desc".equalsIgnoreCase(dir)) {
+                        Collections.reverse(result.getResponse().getDocs());
+                    }
                 }
             }
         }
-*/
         return result;
     }
 
@@ -236,6 +252,8 @@ public class SolrHttpClient {
             throw new RuntimeException(e);
         }
     }
+
+
 
     public List<Field> fetchFields() {
         try {

@@ -291,15 +291,9 @@
                 <td class="value">${item['dc.creator.freetext']}</td>
             </tr>
                 </c:if>
-                <c:if test="${not empty item['dc.creator.forunit']}">
-            <tr>
-                <td class="key">Skapat av enhet (autokomplettering)</td>
-                <td class="value">${item['dc.creator.forunit']}</td>
-            </tr>
-                </c:if>
                 <c:if test="${not empty item['dc.creator.forunit.id']}">
             <tr>
-                <td class="key">Skapat av enhet ID (VGR:s organisationsträd)</td>
+                <td class="key">Skapat av enhet</td>
                 <td class="value">${item['dc.creator.forunit.id']}</td>
             </tr>
                 </c:if>

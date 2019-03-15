@@ -31,7 +31,7 @@ public class SolrHttpClientTest {
     public static void main(String[] args) throws IOException, URISyntaxException {
         /*Map<String, Set<Object>> allValues = client.findAllValues();
         System.out.println("SourceSystem: " + allValues.get("SourceSystem"));*/
-        IFeedFilter i = new IFeedFilter();
+        /*IFeedFilter i = new IFeedFilter();
         i.setFilterQuery("Narhalsan MBL CSG");
         i.setFilterKey("dc.type.document.serie");
         IFeed feed = new IFeed();
@@ -43,6 +43,11 @@ public class SolrHttpClientTest {
         }
         for (String name : names) {
             System.out.println(name);
+        }*/
+
+        List<Field> fields = client.fetchFields();
+        for (Field field : fields) {
+            System.out.println(field);
         }
     }
 

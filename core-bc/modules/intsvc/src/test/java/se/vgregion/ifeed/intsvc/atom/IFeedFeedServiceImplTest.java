@@ -1,19 +1,19 @@
 package se.vgregion.ifeed.intsvc.atom;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.apache.abdera.model.Element;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.types.IFeed;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,24 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.namespace.QName;
-import javax.xml.transform.*;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.abdera.model.Element;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.Feed;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
-import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.types.IFeed;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class IFeedFeedServiceImplTest {
 
@@ -50,6 +36,7 @@ public class IFeedFeedServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
+
         iFeedService = mock(IFeedService.class);
         context = mock(UriInfo.class);
         solrQuery = mock(IFeedSolrQuery.class);

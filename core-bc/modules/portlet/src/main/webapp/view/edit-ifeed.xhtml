@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:portlet="http://java.sun.com/portlet_2_0"  >
+
+  <h:head></h:head>
+
+  <p:messages id="error-messagess"/>
+
+  <div class="ifeed-columns-left">
+    <h:outputLabel  value="Titel:">
+
+    </h:outputLabel>
+    <p:inputText id="editTitle" name="title" value="#{iFeedModelBean.name}">
+    </p:inputText>
+    <h:outputLabel  value="Beskrivning:"></h:outputLabel>
+    <div class="ifeed-text-field">
+      <p:inputTextarea autoResize="false"  value="#{iFeedModelBean.description}" maxlength="1000"/>
+    </div>
+
+  </div>
+  <div class="ifeed-columns-right">
+
+    <h:outputLabel style="display: inline;" value="Länka till orginaldokument i html-vyn:"></h:outputLabel>
+
+    <p:selectBooleanButton id="booleanButton" value="#{iFeedModelBean.linkNativeDocument}" onLabel="Ja" offLabel="Nej" style="width:60px" />
+    <br></br>
+    <h:outputLabel  value="Lägg till administratör:"></h:outputLabel>
+    <div class="autocomplete">
+      <p:autoComplete id="createOwnershipInputSimple"
+                      value="#{iFeedModelBean.newOwnershipNames}"
+                      completeMethod="#{editIFeedBackingBean.completeUserName}"
+                      forceSelection="true"
+                      multiple="true"/>
+    </div>
+
+  </div>
+
+  <div class="vgr-fieldset" style="clear: both;">
+
+    <h:outputLabel  value="Tillagda filter:"></h:outputLabel>
+    <div  style="display: inline;" class="autocomplete">
+      <p:autoComplete id="createFilter"
+                      value="#{iFeedModelBean.newOwnershipNames}"
+                      completeMethod="#{editIFeedBackingBean.completeUserName}"
+                      forceSelection="true"
+                      multiple="true"
+                      dropdown="true"/>
+    </div>
+
+    <p:fieldset legend="Lägg till ett filter" toggleable="true" collapsed="true" toggleSpeed="500">
+
+      <div style=" margin-left: 0px; display: block;" class="vgr-accordion">
+        <p:accordionPanel activeIndex="null"  multiple="true" value="#{iFeedBackingBean.fieldInfs}" var="fieldInf" dynamic="true" id="filterAccordion">
+          <p:tab title="#{fieldInf.name}" id="filterTab">
+
+            <p:dataTable  id="filterTable" var="child" value="#{fieldInf.children}" >
+
+              <p:column style="width: 10px;">
+                <p:commandLink styleClass="link-button-help" update=":ifeed_view" ajax="true" async="true" />
+              </p:column>
+
+              <!-- onclick="filterDialog.show();" onclick="filterDialog.show();"-->
+
+              <p:column style="width: 10px;">
+
+                <p:commandLink styleClass="link-button-add" actionListener="#{filterModelBean.setFieldInf(child)}"
+                               id="addFilterButton" value="" type="button"/>
+
+                <p:overlayPanel
+                        appendToBody="false"
+                        id="filterPanel2"
+                        at="right bottom"
+                        for="addFilterButton"
+                        hideEffect="fade"
+                        dynamic="true">
+
+                  <div> #{child.name}: </div>
+                  <p:inputText rendered="#{child.getType() != 'd:date'}" value="#{filterModelBean.newFilterValue}"  id="filterText" />
+
+                  <p:calendar rendered="#{child.getType() eq 'd:date'}" id="inlineDate" mode="inline" locale="sv_SE"/>
+                  <div>
+                    <p:commandLink styleClass="rp-link-button rp-link-button-alt" id="addFilterToDB" value="Lägg till"
+                                   ajax="false" actionListener="#{editIFeedBackingBean.addFilter()}" oncomplete="overlay.hide();">
+                    </p:commandLink>
+                  </div>
+                </p:overlayPanel>
+              </p:column>
+
+              <p:column >
+                <h:outputText value="#{child.name}" />
+              </p:column>
+
+            </p:dataTable>
+          </p:tab>
+
+        </p:accordionPanel>
+
+      </div>
+    </p:fieldset>
+  </div>
+
+
+  <h2>Min träfflista</h2>
+
+  <div class="ifeed-table">
+    <p:dataTable
+            id="ifeedFilterTable"
+            var="iFeed"
+            value="#{iFeedBackingBean.iFeedModelBeans}"
+            widgetVar="ifeed_result_table"
+            emptyMessage="Inga iFeeds hittades">
+
+      <p:column id="infoColumn">
+        <p:commandLink styleClass="link-button-help"></p:commandLink>
+      </p:column>
+
+      <p:column id="titleColumn" headerText="Namn">
+        <h:outputText value="#{iFeed.name}" />
+      </p:column>
+
+      <p:column id="dateIdColumn" headerText="Ägare ändring">
+        <h:outputText value="#{iFeed.ownershipUserIds}" />
+      </p:column>
+
+    </p:dataTable>
+  </div>
+
+</ui:composition>

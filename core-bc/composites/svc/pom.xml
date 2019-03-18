@@ -15,7 +15,8 @@
   <name>${project.artifactId}</name>
 
   <properties>
-    <liferay.version>6.2.10-GA1</liferay.version>
+    <!--<liferay.version>6.2.10-GA1</liferay.version>-->
+    <liferay.version>2.46.0</liferay.version>
   </properties>
 
   <build>
@@ -47,6 +48,7 @@
   </build>
 
   <dependencies>
+
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>iFeed-core-bc-composite-apelon-svc</artifactId>
@@ -66,6 +68,18 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <version>4.2.4.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-ldap</artifactId>
+      <version>4.2.4.RELEASE</version>
     </dependency>
 
     <dependency>
@@ -94,7 +108,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
-      <version>3.1.2.RELEASE</version>
+      <version>${spring.fw.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -102,7 +116,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
       <exclusions>
@@ -111,7 +125,7 @@
           <artifactId>commons-logging</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>se.vgregion.daoframework</groupId>
       <artifactId>dao-framework</artifactId>
@@ -141,19 +155,24 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-lgpl</artifactId>
-      <version>1.9.0</version>
+      <version>1.9.13</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-lgpl</artifactId>
-      <version>1.9.0</version>
+      <version>1.9.13</version>
     </dependency>
     <dependency>
-      <groupId>com.liferay.portal</groupId>
-      <artifactId>portal-service</artifactId>
-      <version>${liferay.version}</version>
-      <scope>provided</scope>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.8.7</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.8.7</version>
+    </dependency>
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
@@ -194,12 +213,13 @@
       <artifactId>httpclient</artifactId>
       <version>4.5</version>
     </dependency>
-   <!-- <dependency>
-      <groupId>se.vgregion.arbetsplatskoder</groupId>
-      <artifactId>arbetsplatskoder-bc-composite-db-migration-svc</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>-->
+
+      <!-- <dependency>
+         <groupId>se.vgregion.arbetsplatskoder</groupId>
+         <artifactId>arbetsplatskoder-bc-composite-db-migration-svc</artifactId>
+         <version>1.0-SNAPSHOT</version>
+         <scope>test</scope>
+       </dependency>-->
     <!--<dependency>
       <groupId>se.vgregion.iFeed</groupId>
       <artifactId>iFeed-core-bc-module-scripts</artifactId>

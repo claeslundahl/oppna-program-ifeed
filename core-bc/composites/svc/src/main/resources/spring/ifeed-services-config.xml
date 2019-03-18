@@ -56,7 +56,7 @@
   </bean>
 
   <bean id="solrQueryBuilderDummy" class="se.vgregion.ifeed.service.solr.SolrQueryBuilder">
-    <property name="iFeedService" ref="iFeedService"/>
+    <property name="IFeedService" ref="iFeedService"/>
   </bean>
 
   <bean id="iFeedService" class="se.vgregion.ifeed.service.ifeed.IFeedServiceImpl">
@@ -84,16 +84,16 @@
   </bean>
 
   <bean id="alfrescoDocumentService" class="se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService">
-    <constructor-arg value="${alfresco.metadata.service}" />
     <constructor-arg>
       <bean class="org.springframework.web.client.RestTemplate">
         <property name="messageConverters">
           <list>
-            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
           </list>
         </property>
       </bean>
     </constructor-arg>
+    <constructor-arg value="${alfresco.metadata.service}" />
   </bean>
 
   <!--<jaxws:client id="vocabularyService" serviceClass="vocabularyservices.wsdl.metaservice_vgr_se.v2.VocabularyService"
@@ -121,7 +121,7 @@
   <bean class="org.springframework.web.client.RestTemplate">
     <property name="messageConverters">
       <list>
-        <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
         </bean>
       </list>
     </property>

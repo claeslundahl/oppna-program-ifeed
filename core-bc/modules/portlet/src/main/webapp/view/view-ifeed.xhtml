@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+>
+
+    <div class="container-fluid clearfix">
+
+        <div style="float: left;">
+            <h1>#{iFeedModelBean.name}
+
+                <h:panelGroup rendered="#{not empty iFeedModelBean.id}">(
+                    <h:outputText value="Id: "></h:outputText>
+                    <h:outputText value="#{iFeedModelBean.id}"></h:outputText>
+                    )
+                </h:panelGroup>
+            </h1>
+
+            <div>
+                <a id="basicFeedInfoDisplayLink" style="display:none; cursor: pointer;"
+                   onclick="toggle('basicFeedInfo', 'basicFeedInfoDisplayLink', 'basicFeedInfoHideLink');">
+                    Visa detaljer
+                </a>
+                <a id="basicFeedInfoHideLink" style="cursor: pointer;"
+                   onclick="toggle('basicFeedInfo', 'basicFeedInfoDisplayLink', 'basicFeedInfoHideLink');">
+                    Dölj detaljer
+                </a>
+            </div>
+        </div>
+
+        <div class="ifeed-buttons" style="float: right">
+            <p:commandLink styleClass="rp-link-button secondary" value="Tillbaka" update=":ifeed_view"
+                           id="backIfeedLink"
+                           ajax="false" async="true"
+                           actionListener="#{navigationModelBean.setUiNavigation('USER_IFEEDS')}">
+            </p:commandLink>
+            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Ändra" update=":ifeed_view"
+                           rendered="#{not app.inEditMode and app.mayEditFeed(request, iFeedModelBean)}"
+                           id="startEditIfeedLink"
+                           ajax="false" async="true" actionListener="#{app.setInEditMode(!app.isInEditMode())}">
+            </p:commandLink>
+            <p:commandLink styleClass="rp-link-button secondary" value="Avbryt" update=":ifeed_view"
+                           rendered="#{app.inEditMode}"
+                           id="cancelEditIfeedLink"
+                           ajax="false" async="true" actionListener="#{app.cancelEdit()}">
+            </p:commandLink>
+            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Spara" update=":ifeed_view"
+                           rendered="#{app.isInEditMode()}"
+                           id="updateFeedLink"
+                           ajax="false" async="true" actionListener="#{app.update()}">
+            </p:commandLink>
+            <p:commandLink styleClass="rp-link-button rp-link-button-alt" value="Kopiera" update=":ifeed_view"
+                           rendered="#{not app.isInEditMode()}"
+                           id="createCopyOfCommand"
+                           ajax="false" async="true"
+                           actionListener="#{app.copyAndPersistFeed(request, iFeedModelBean.id)}">
+            </p:commandLink>
+        </div>
+
+
+        <div id="basicFeedInfo">
+
+            <h:panelGroup layout="block" styleClass="row-fluid border" style="display:block;" id="basicFeedInfo">
+                <div class="span4 first">
+                    <h:panelGroup>
+                        <h:outputText style="font-weight: bold;" value="Namn: "></h:outputText>
+                        <br/>
+                        <h:outputText value="#{iFeedModelBean.name}" label="text" rendered="#{not app.inEditMode}"/>
+                        <h:inputText value="#{iFeedModelBean.name}" label="text" rendered="#{app.inEditMode}"
+                                     id="nameOfFeedInput">
+                        </h:inputText>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <br/>
+                        <h:outputText style="font-weight: bold;" value="Beskrivning: "></h:outputText>
+                        <br/>
+                        <h:outputText value="#{iFeedModelBean.description}" label="text"
+                                      rendered="#{not app.inEditMode}"/>
+                        <h:inputText value="#{iFeedModelBean.description}" label="text" rendered="#{app.inEditMode}"
+                                     id="descriptionInput">
+                        </h:inputText>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <br/>
+                        <span style="font-weight: bold;"><i class="fa fa-user"></i>Ägare:</span><br/>
+                        <h:outputText
+                                value="#{app.fetchLdapPersonFullName(iFeedModelBean.userId)} (#{iFeedModelBean.userId})"
+                                rendered="#{not app.inEditMode}"/>
+                        <p:autoComplete id="createOwnershipInput"
+                                        required="true"
+                                        requiredMessage="'Ägare' är obligatorisk information!"
+                                        value="#{iFeedModelBean.userId}"
+                                        completeMethod="#{app.completeUserName}"
+                                        forceSelection="true"
+                                        rendered="#{app.inEditMode}"
+                                        title="Skriv in vgr-id för ny ägare här. Observera att du kan bli av med möjligheten att ändra posten om du inte samtidigt lagt till dig själv som administratör innan du sparar ändringen."
+                                        multiple="false"/>
+                        <p:watermark for="createOwnershipInput" value="Ändra ägare här"/>
+                        <h:message for="createOwnershipInput" style="color:red"/>
+                    </h:panelGroup>
+
+
+                    <div>
+                        <div style="font-weight: bold;"><i class="fa fa-user"></i>Administratörer:
+                        </div>
+
+                        <p:autoComplete id="createNewAdminInput"
+                                        value="#{app.newOwnershipUserId}"
+                                        completeMethod="#{app.completeUser}"
+                                        var="user"
+                                        rendered="#{app.inEditMode}"
+                                        itemLabel="#{(user['class'].simpleName eq 'String') ? user : user.userName}"
+                                        itemValue="#{(user['class'].simpleName eq 'String') ? user : user.userName}"
+                                        styleClass="createNewAdminInput master-item"
+                                        title="Skriv in vgr-id och klicka på 'Lägg till'' för att lägg till en användare som administratör på feedet."
+                                        multiple="false">
+
+                            <p:column>
+                                <h:outputText value="#{user.firstName} #{user.lastName}"/>
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{user.userName}"/>
+                            </p:column>
+
+                        </p:autoComplete>
+
+                        <p:watermark for="createNewAdminInput" value="Vgr-Id för ny admin"/>
+
+                        <p:commandLink styleClass="ltr-flowing-item"
+                                       value="Lägg till"
+                                       update="basicFeedInfo"
+                                       rendered="#{app.inEditMode}"
+                                       id="addOwnershipLink"
+                                       ajax="false" async="true" actionListener="#{app.createNewOwnership()}">
+                        </p:commandLink>
+
+                        <ui:repeat value="#{iFeedModelBean.getOwnershipsAsList()}" var="getOwnershipsAsListItem"
+                                   idFoo="owners"
+                                   varStatus="status">
+                          <span class="ltr-flowing-item">
+                            <span class="name">#{app.fetchLdapPersonFullName(getOwnershipsAsListItem.userId)} (#{getOwnershipsAsListItem.userId})</span>
+                            <span class="remove">
+                              <p:commandLink value=" " update=":ifeed_view"
+                                             rendered="#{app.inEditMode}"
+                                             styleClass="link-button-trash"
+                                             ajax="false" async="true"
+                                             id="remove_#{getOwnershipsAsListItem.userId}"
+                                             actionListener="#{iFeedModelBean.getOwnershipsAsList().remove(getOwnershipsAsListItem)}">
+                              </p:commandLink>
+                            </span>
+                          </span>
+                        </ui:repeat>
+                    </div>
+                </div>
+
+                <div class="span4">
+                    <ui:include src="show-department-and-group.xhtml"/>
+                </div>
+
+                <div class="span4 ">
+                    <h:outputText style="font-weight: bold;" value="Lägg till: "></h:outputText>
+                    <div>
+                        <h:commandLink value="EPI-konfiguration (JSON)"
+                                       actionListener="#{tableDef.editNewJsonp()}"
+                                       ajax="true"
+                                       id="epiConfigLink"
+                                       update=":ifeed_view"
+                                       immediate="true">
+                        </h:commandLink>
+                    </div>
+                    <div>
+                        <h:outputText style="font-weight: bold;" value="Länkar till dokumentlista: "></h:outputText>
+                    </div>
+                    <a href="#{app.uncache(app.getWebFeedLink())}" target="_blank">Html</a><br/>
+
+                    <a id="excel-feed-link" class="link-as-post-form-dont-match"
+                       onclick="alert('Du måste spara eller gå ur, avbryta, ändringsläget innan du tar ut excel-fil.'); return false;"
+                       href="javascript:void(0);"
+                       target="_blank"
+                       style="#{not app.inEditMode ? 'display:none;':''}"
+                       type="text/csv;charset=UTF-8">Excel</a>
+
+                    <a id="excel-feed-link2" class="link-as-post-form-dont-match"
+                       href="#{app.uncache(app.getExcelFeedLink())}"
+                       target="_blank"
+                       style="#{app.inEditMode ? 'display:none;':''}"
+                       type="text/csv;charset=UTF-8">Excel</a>
+
+                    <br/>
+
+                    <a href="#{app.uncache(app.getRssFeedLink())}" target="_blank">Rss</a><br/>
+                    <a href="#{app.uncache(app.getAtomFeedLink())}" target="_blank">Atom</a><br/>
+
+                    <a id="json-feed-link" href="#{app.uncacheJson(app.getJsonFeedLink())}"
+                       target="_blank">Json</a><br/>
+                    <div style="display:none;">#{app.uncacheJson(app.join(app.getJsonFeedLink(), '&#38;f=dc.title&#38;f=dc.date.issued&#38;f=dc.title&#38;callback=__gwt_jsonp__.P0.onSuccess'))}</div>
+                    <h:panelGroup>
+                        <h:outputText style="font-weight: bold;" value="Länkad till orginaldokument i html-vyn: "/>
+                        <br/>
+                        <h:outputText value="#{ (iFeedModelBean.linkNativeDocument==true) ? 'Ja' : 'Nej' }"
+                                      rendered="#{not app.inEditMode}"/>
+                        <h:selectBooleanCheckbox value="#{iFeedModelBean.linkNativeDocument}"
+                                                 rendered="#{app.inEditMode}"
+                                                 id="linkNativeDocumentCheckBox"
+                                                 ajax="true"/>
+                    </h:panelGroup>
+
+                    <div>
+                        <ui:include src="composite-feeds-part.xhtml"/>
+                    </div>
+
+                </div>
+            </h:panelGroup>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <h3 style="display: inline;">
+            EPI-konfigurationer (JSON):
+        </h3>
+        <ui:repeat value="#{iFeedModelBean.dynamicTableDefs}" var="ifeedDynamicTableDefsItem" varStatus="status"
+                   id="ifeedDynamicTableDefsRepeat">
+            <span class="ltr-flowing-item ifeed-border">
+              <span class="name">#{ifeedDynamicTableDefsItem.name}</span>
+              <span class="edit">
+                <p:commandLink styleClass="link-button-edit" value=" " update=":ifeed_view"
+                               style="color: white;" rendered="#{not app.inEditMode}"
+                               ajax="false" async="true"
+                               action="#{tableDef.editFlow(ifeedDynamicTableDefsItem)}">
+                </p:commandLink>
+              </span>
+
+              <span class="remove">
+                <p:commandLink styleClass="link-button-trash" value=" " update=":ifeed_view"
+                               style="color: white;"
+                               rendered="#{app.inEditMode}"
+                               ajax="false" async="true"
+                               action="#{app.removeFlow(ifeedDynamicTableDefsItem)}">
+                </p:commandLink>
+              </span>
+            </span>
+        </ui:repeat>
+    </div>
+
+
+    <div class="container-fluid">
+        <h3 style="display: inline;">
+            Filter:
+        </h3>
+        <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="getFiltersAsListItem" varStatus="status"
+                   id="getFiltersAsListRepeat">
+    <span class="ltr-flowing-item ifeed-border" style="#{getFiltersAsListItem.isContainer()?'display:none;':''}">
+      <span class="name">#{app.getFieldsByNameIndex().get(getFiltersAsListItem.filterKey).name}</span>
+
+      <span class="name-value-delimiter">
+        <h:outputText value="="
+                      rendered="#{getFiltersAsListItem.operator eq 'matching' or empty getFiltersAsListItem.operator}"/>
+        <h:outputText value="&lt;" rendered="#{getFiltersAsListItem.operator eq 'lesser'}"/>
+        <h:outputText value="&gt;" rendered="#{getFiltersAsListItem.operator eq 'greater'}"/>
+      </span>
+      <span>#{empty getFiltersAsListItem.filterQueryForDisplay ? getFiltersAsListItem.filterQuery : getFiltersAsListItem.filterQueryForDisplay}</span>
+
+      <span class="edit">
+        <p:commandLink styleClass="link-button-edit" value=" " update=":ifeed_view"
+                       style="color: white;"
+                       rendered="#{app.inEditMode}"
+                       ajax="false" async="true"
+                       action="#{app.editFilterValue(getFiltersAsListItem)}"
+                       action-former="#{app.editFilterValue(getFiltersAsListItem)}">
+        </p:commandLink>
+      </span>
+
+      <span class="remove">
+        <p:commandLink styleClass="link-button-trash" value=" " update=":ifeed_view"
+                       style="color: white;"
+                       rendered="#{app.inEditMode}"
+                       ajax="false" async="true"
+                       action="#{iFeedModelBean.removeFilter(getFiltersAsListItem)}">
+        </p:commandLink>
+      </span>
+    </span>
+            <span class="ltr-flowing-item ifeed-border"
+                  style="#{!getFiltersAsListItem.isContainer()?'display:none;':'white-space: inherit;'}">
+                #{getFiltersAsListItem.toText()}
+            </span>
+        </ui:repeat>
+    </div>
+
+
+    <div class="container-fluid">
+
+        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{app.inEditMode}">
+            <div class="span4 first">
+                <ui:include src="add-filter.xhtml"/>
+            </div>
+            <div class="span4">
+                <ui:include src="add-filter-content.xhtml"></ui:include>
+            </div>
+            <div class="span4 last">
+                <ui:include src="results.xhtml"/>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{!app.inEditMode}">
+            <div class="span6 first">
+                <ui:include src="results.xhtml"/>
+            </div>
+            <div class="span6 last">
+                &#160;
+            </div>
+        </h:panelGroup>
+
+    </div>
+
+    <script type="text/javascript">
+        //<![CDATA[
+        function toggle() {
+            var dta = 'display-toggle'; // name of the attribute... for brievety.
+            for (var i = 0; i < arguments.length; i++) {
+                var id = arguments[i];
+                $('#' + id).toggle();
+            }
+        }
+
+        function refreshResults() {
+            setTimeout(function () {
+                try {
+                    document.getElementById('rerun-ifeed-loading').click();
+                } catch (e) {
+                }
+            }, 500);
+        }
+
+        $(document).ready(function () {
+            $("a.excel-feed-link").click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var href = this.href;
+                var parts = href.split('?');
+                var url = parts[0];
+                var params = parts[1].split('&');
+                var pp, inputs = '';
+                for (var i = 0, n = params.length; i < n; i++) {
+                    pp = params[i].split('=');
+                    inputs += '<input type="hidden" name="' + pp[0] + '" value="' + pp[1] + '" />';
+                }
+                $("body").append('<form action="' + url + '" method="post" id="poster" target="_blank">' + inputs + '</form>');
+                $("#poster").submit();
+            });
+        });
+
+        var excelForm = document.getElementById('excelForm');
+        if (excelForm)
+            excelForm.parentNode.removeChild(excelForm);
+
+        // console.log("Before appending excel form");
+        var node = document.createElement("div");
+        document.getElementsByTagName('body')[0].appendChild(node);
+        node.innerHTML = "#{app.getExcelFeedLinkForm()}";
+        //]]>
+
+    </script>
+
+</ui:composition>

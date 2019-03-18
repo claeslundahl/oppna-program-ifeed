@@ -1,20 +1,16 @@
 package se.vgregion.ifeed.backingbeans;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.ResourceConstants;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.ResourceLocalService;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
+import se.vgregion.ifeed.repository.UserRepository;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.types.CachedUser;
 import se.vgregion.ifeed.types.Config;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
@@ -24,7 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +34,8 @@ import java.util.Map;
 @Scope("view")
 public class IFeedBackingBean implements Serializable {
 
-    private ThemeDisplay themeDisplay;
+    private static final Logger LOGGER = LoggerFactory.getLogger(IFeedBackingBean.class);
+
     private boolean pageNavigation = false;
 
     private SelectItem[] manufacturerOptions;
@@ -61,6 +58,9 @@ public class IFeedBackingBean implements Serializable {
     private String popupConfString;
     private List<String> governance;
 
+    @Value("${environment.text}")
+    private String environmentText;
+
     @Value("#{navigationModelBean}")
     private NavigationModelBean navigationModelBean;
 
@@ -71,7 +71,11 @@ public class IFeedBackingBean implements Serializable {
     private IFeedService iFeedService;
 
     @Autowired
-    private ResourceLocalService resourceLocalService;
+    private UserRepository userRepository;
+
+
+//    @Autowired
+//    private ResourceLocalService resourceLocalService;
 
     protected UriTemplate iFeedAtomFeed;
 
@@ -91,8 +95,9 @@ public class IFeedBackingBean implements Serializable {
 
         List<IFeed> allIFeeds = null;
         try {
-            allIFeeds = iFeedService.getIFeeds();;
+            allIFeeds = iFeedService.getIFeeds();
         } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
             System.out.println("Autowired iFeedService is null---------------------------------------------------: " + e.toString());
             throw new RuntimeException(e);
         }
@@ -111,7 +116,7 @@ public class IFeedBackingBean implements Serializable {
             }
 
         } catch (Exception e) {
-            System.out.println("Autowired iFeedService is null---------------------------------------------------: " + e.toString());
+            LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
 
@@ -123,7 +128,7 @@ public class IFeedBackingBean implements Serializable {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
-        PortletRequest request = (PortletRequest) externalContext.getRequest();
+        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 
         List<IFeed> userIFeeds = null;
         try {
@@ -152,12 +157,12 @@ public class IFeedBackingBean implements Serializable {
         return userIFeeds;
     }
 
-    public void removeBook(IFeed iFeed) throws PortalException, SystemException {
+    public void removeBook(IFeed iFeed) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
-        PortletRequest request = (PortletRequest) externalContext.getRequest();
+        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 
-        User user = getUser(request);
+        CachedUser user = getUser(request);
 
         IFeed feed = iFeedService.getIFeed(iFeed.getId());
         if (!AccessGuard.mayEditFeed(user, feed)) {
@@ -169,32 +174,13 @@ public class IFeedBackingBean implements Serializable {
         // Remove from memory
         iFeedModelBeans.remove(iFeed);
         userIFeedModelBeans.remove(iFeed);
-
-
-        try {
-            ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-            long companyId = themeDisplay.getCompanyId();
-            resourceLocalService.deleteResource(companyId, IFeed.class.getName(),
-                    ResourceConstants.SCOPE_INDIVIDUAL, iFeed.getId());
-        } catch (PortalException e) {
-            e.printStackTrace();
-        } catch (SystemException e) {
-            e.printStackTrace();
-        }
-
     }
 
-    private String getRemoteUserId(PortletRequest request) {
-        @SuppressWarnings("unchecked")
-        Map<String, ?> userInfo = (Map<String, ?>) request.getAttribute(PortletRequest.USER_INFO);
-        String userId = "";
-        if (userInfo != null) {
-            userId = (String) userInfo.get(PortletRequest.P3PUserInfos.USER_LOGIN_ID.toString());
-        }
-        return userId;
+    private String getRemoteUserId(HttpServletRequest request) {
+        return request.getRemoteUser();
     }
 
-    public void viewIFeed(Long id) throws PortalException, SystemException {
+    public void viewIFeed(Long id) {
         //FacesContext facesContext = FacesContext.getCurrentInstance();
         //ExternalContext externalContext = facesContext.getExternalContext();
         //PortletRequest request = (PortletRequest) externalContext.getRequest();
@@ -204,8 +190,8 @@ public class IFeedBackingBean implements Serializable {
     }
 
 
-    User getUser(PortletRequest request) throws PortalException, SystemException {
-        return PortalUtil.getUser(request);
+    private CachedUser getUser(HttpServletRequest request) {
+        return userRepository.findUser(request.getRemoteUser());
     }
 
     public void getFieldsInfs() {
@@ -319,9 +305,9 @@ public class IFeedBackingBean implements Serializable {
         this.filteredIFeedModelBeans = filteredIFeedModelBeans;
     }
 
-    public ResourceLocalService getResourceLocalService() {
-        return resourceLocalService;
-    }
+//    public ResourceLocalService getResourceLocalService() {
+//        return resourceLocalService;
+//    }
 
     public void saveFieldInfString() {
         FieldsInf inf = new FieldsInf();
@@ -410,6 +396,14 @@ public class IFeedBackingBean implements Serializable {
             popupConfString = iFeedService.getConfig("popup").getSetting();
         }
         return popupConfString;
+    }
+
+    public String getEnvironmentText() {
+        return environmentText;
+    }
+
+    public void setEnvironmentText(String environmentText) {
+        this.environmentText = environmentText;
     }
 
     public void setPopupConfString(String popupConfString) {

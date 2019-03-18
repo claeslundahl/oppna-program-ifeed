@@ -1,51 +1,14 @@
 package se.vgregion.ifeed.controller;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.util.PortalUtil;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.portlet.bind.annotation.ActionMapping;
-import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import org.springframework.web.util.UriTemplate;
-import se.vgregion.ifeed.el.AccessGuard;
-import se.vgregion.ifeed.formbean.FilterFormBean;
-import se.vgregion.ifeed.formbean.SearchResultList;
-import se.vgregion.ifeed.formbean.VgrOrganization;
-import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.service.metadata.MetadataService;
-import se.vgregion.ifeed.service.solr.IFeedResults;
-import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.types.*;
-import se.vgregion.ifeed.types.FilterType.Filter;
-import se.vgregion.ldap.LdapSupportService;
-import se.vgregion.ldap.person.LdapPersonService;
-import se.vgregion.ldap.person.Person;
+import se.vgregion.ifeed.types.FieldInf;
 
-import javax.annotation.Resource;
-import javax.portlet.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("VIEW")
@@ -55,7 +18,7 @@ public class EditIFeedController {
 
     private static List<FieldInf> fieldInfs = new ArrayList<FieldInf>();
 
-    @Autowired
+    /*@Autowired
     private IFeedService iFeedService;
     @Autowired
     private IFeedSolrQuery iFeedSolrQuery;
@@ -362,7 +325,7 @@ public class EditIFeedController {
         sessionStatus.setComplete();
     }
 
-    /*
+    *//*
     @ResourceMapping("findPeople")
     public void searchPeople(@RequestParam final String filterValue, ResourceResponse response) {
         List<Person> people = ldapPersonService.getPeople(filterValue, 10);
@@ -397,7 +360,7 @@ public class EditIFeedController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }*//*
 
     public static String replace(String s, Map<String, String> map) {
         if (s == null) {
@@ -408,7 +371,7 @@ public class EditIFeedController {
         }
         return s;
     }
-/*
+*//*
     @ResourceMapping("findOrgs")
     public void searchOrg(@RequestParam String parentOrg, @RequestParam String url, ResourceResponse response)
             throws IOException {
@@ -488,26 +451,26 @@ public class EditIFeedController {
 
         return result;
     }
-    */
+    *//*
 
-    /**
+    *//**
      * Concatenates several strings and places another string between each of those.
      *
      * @param junctor what string to concatenate between the other parameters.
      * @param items   the different strings to be concatenated
      * @return as string product of the parameters.
-     */
+     *//*
     public static String join(String junctor, String... items) {
         return join(Arrays.asList(items), junctor);
     }
 
-    /**
+    *//**
      * Concatenates several strings and places another string between each of those.
      *
      * @param junctor what string to concatenate between the other parameters.
      * @param list    the different strings to be concatenated
      * @return as string product of the parameters.
-     */
+     *//*
     public static String join(List<?> list, String junctor) {
         StringBuilder sb = new StringBuilder();
         if (list.isEmpty()) {
@@ -660,5 +623,5 @@ public class EditIFeedController {
 
     public UriTemplate getRssIFeedAtomFeed() {
         return this.rssIFeedAtomFeed;
-    }
+    }*/
 }

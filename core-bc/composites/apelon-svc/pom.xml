@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!-- This is the Service-composite Maven POM. Template version: 1.5-SNAPSHOT Generation time : 2011-01-14 11:17:18 CET -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>se.vgregion.iFeed</groupId>
@@ -15,7 +16,8 @@
   <name>${project.artifactId}</name>
 
   <properties>
-    <liferay.version>6.2.10-GA1</liferay.version>
+    <!--<liferay.version>6.2.10-GA1</liferay.version>-->
+    <liferay.version>2.46.0</liferay.version>
   </properties>
 
   <build>
@@ -43,13 +45,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.4</version>
-<!--        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>se.vgregion.IntegrationTest</mainClass>
-            </manifest>
-          </archive>
-        </configuration>-->
+        <!--        <configuration>
+                  <archive>
+                    <manifest>
+                      <mainClass>se.vgregion.IntegrationTest</mainClass>
+                    </manifest>
+                  </archive>
+                </configuration>-->
       </plugin>
     </plugins>
   </build>

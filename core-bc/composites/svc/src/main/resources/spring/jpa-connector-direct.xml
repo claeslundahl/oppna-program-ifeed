@@ -8,10 +8,7 @@
 		http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-  <context:annotation-config />
-  <tx:annotation-driven />
-
-  <!-- The purpose of this file is to use a direct connection to a database. Can be used for development puropse for 
+  <!-- The purpose of this file is to use a direct connection to a database. Can be used for development puropse for
     example. Use this configuration by setting system property datasource.connector=direct -->
 
   <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
@@ -35,14 +32,12 @@
   <bean id="jpaVendor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
     <property name="database" value="${hibernate.vendor.database}"/>
     <property name="databasePlatform" value="${hibernate.vendor.databaseDialect}"/>
-    <property name="generateDdl" value="true"/>
-    <!--<property name="generateDdl" value="${hibernate.vendor.generateDdl}" />-->
-    <property name="showSql" value="false"/>
+    <!--<property name="generateDdl" value="true"/>-->
+    <property name="generateDdl" value="${hibernate.vendor.generateDdl}" />
+    <property name="showSql" value="true"/>
     <!--<property name="showSql" value="${hibernate.database.showsql}" />-->
 
   </bean>
-
-  <context:property-placeholder location="file:${user.home}/.hotell/ifeed/config.properties"/>
 
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
     <property name="driverClassName" value="${datasource.connector.direct.driverClassName}"/>
@@ -50,7 +45,5 @@
     <property name="username" value="${datasource.connector.direct.username}"/>
     <property name="password" value="${datasource.connector.direct.password}"/>
   </bean>
-
-  <context:component-scan base-package="se.vgregion.*" />
 
 </beans>

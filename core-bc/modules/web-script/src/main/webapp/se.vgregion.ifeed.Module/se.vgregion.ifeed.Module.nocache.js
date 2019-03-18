@@ -341,21 +341,3 @@ function addCss(css) {
 }*/
 
 setTimeout(startIfeedRend, 1500);
-
-
-
-
-function runCallback() {
-    var methodName = 'q()';
-    if (window[methodName]) {
-        eval(methodName);
-    } else {
-        setTimeout(
-            runCallback, 500
-        );
-    }
-}
-runCallback();
-
-
-

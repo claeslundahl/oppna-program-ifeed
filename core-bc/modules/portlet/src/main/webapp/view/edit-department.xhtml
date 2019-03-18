@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                >
+
+    <p:panel rendered="#{app.department != null}">
+        <h:panelGrid style="border-spacing: 15px; border-collapse: separate;" columns="1" cellspacing="15"
+                     styleClass="align-top-table">
+            <p:panel>
+                <h4>Förvaltning
+                    <h:outputText rendered="#{!app.isSuperUser()}" value=": #{app.department.name}"
+                                  stylex="width: 90%;"/>
+                </h4>
+                <h:inputText rendered="#{app.isSuperUser()}" value="#{app.department.name}" stylex="width: 90%;"/>
+            </p:panel>
+
+            <p:panel rendered="#{!app.department.getVgrGroups().isEmpty()}">
+                <table class="rp-table" style="width: auto;">
+                    <thead>
+                    <tr>
+                        <th>Grupp</th>
+                        <th>Dokumentflöden</th>
+                        <th>Ta bort</th>
+                    </tr>
+                    </thead>
+                    <ui:repeat value="#{app.department.getVgrGroups()}" var="group"
+                               varStatus="groupsVarStatus">
+                        <tr>
+                            <td>
+                                <h:inputText id="groupId#{group.id}name#{group.name.hashCode()}" value="#{group.name}"/>
+                            </td>
+                            <td>
+                                <ui:repeat value="#{group.memberFeeds}" var="item"
+                                           id="groupId#{group.id}memberFeedsLoop">
+                                    <h:commandLink update=":ifeed_view" ajax="false" async="true"
+                                                   value="#{item.name}"
+                                                   id="groupId#{group.id}memberFeedsLoop#{item.id}"
+                                                   actionListener="#{app.viewIFeed(item.id)}"/>
+                                    &#160;
+                                </ui:repeat>
+                            </td>
+                            <td>
+                                <h:commandLink value=" " update=":ifeed_view"
+                                               styleClass="link-button-trash"
+                                               ajax="false" async="true" id="removeDepartmentsGroup_#{group.id}"
+                                               actionListener="#{app.removeDepartmentsGroup(group)}"/>
+                            </td>
+                        </tr>
+                    </ui:repeat>
+                </table>
+            </p:panel>
+
+            <p:panel class="button-holder clearfix">
+                <p:commandLink value="Lägg till grupp" update=":ifeed_view"
+                               styleClass="rp-link-button secondary"
+                               ajax="false" async="true"
+                               actionListener="#{app.createGroup()}">
+                </p:commandLink>
+                <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                               value="Avbryt"
+                               styleClass="rp-link-button secondary"
+                               actionListener="#{app.cancelDepartment()}"/>
+                <p:commandLink update=":ifeed_view" ajax="false" async="true"
+                               value="Spara"
+                               styleClass="rp-link-button rp-link-button-alt"
+                               actionListener="#{app.saveDepartment()}"/>
+            </p:panel>
+        </h:panelGrid>
+
+    </p:panel>
+
+</ui:composition>

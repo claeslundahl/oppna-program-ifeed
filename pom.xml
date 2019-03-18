@@ -23,23 +23,23 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>3.1.2.RELEASE</version>
+        <version>${spring.fw.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>3.1.2.RELEASE</version>
+        <version>${spring.fw.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-tx</artifactId>
-        <version>3.1.2.RELEASE</version>
+        <version>${spring.fw.version}</version>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>3.1.2.RELEASE</version>
-      </dependency>
+        <version>${spring.fw.version}</version>
+      </dependency>-->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
@@ -66,12 +66,12 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>3.1.2.RELEASE</version>
+        <version>${spring.fw.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
-        <version>3.1.2.RELEASE</version>
+        <version>${spring.fw.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -152,9 +152,9 @@
 
   <properties>
     <apache.cxf.version>2.3.2</apache.cxf.version>
-    <spring.fw.version>3.1.2.RELEASE</spring.fw.version>
-    <!--<spring.fw.version>4.3.19.RELEASE</spring.fw.version>-->
-    <liferay.version>6.2.10.15</liferay.version>
+    <spring.fw.version>4.3.12.RELEASE</spring.fw.version>
+    <!--<liferay.version>6.2.10.15</liferay.version>-->
+    <liferay.version>2.46.0</liferay.version>
   </properties>
 
   <dependencies>

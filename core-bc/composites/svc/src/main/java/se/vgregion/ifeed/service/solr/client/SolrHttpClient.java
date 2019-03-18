@@ -107,7 +107,8 @@ public class SolrHttpClient {
     }
 
     private Result queryImp(String fq, Integer start, Integer rows, String sort) throws IOException {
-        if (fields.get() == null) {
+        Map<String, Field> stringFieldMap = fields.get();
+        if (stringFieldMap == null) {
             List<Field> temp = fetchFields();
             Map<String, Field> map = new HashMap<>();
             for (Field field : temp) {
@@ -115,6 +116,7 @@ public class SolrHttpClient {
             }
 
             fields = new WeakReference<>(map);
+            stringFieldMap = map;
         }
 
         /*if (fq == null || fq.trim().isEmpty()) fq = "";
@@ -154,7 +156,7 @@ public class SolrHttpClient {
             if (parts.length == 2) {
                 final String sortKey = parts[0];
                 final String dir = parts[1];
-                Field field = fields.get().get(sortKey);
+                Field field = stringFieldMap.get(sortKey);
                 if ("text_basic_token".equals(field.getType())) {
                     Collections.sort(result.getResponse().getDocs(), (o1, o2) -> {
                         String s1 = (o1.get(sortKey) + "").toLowerCase(), s2 = (o2.get(sortKey) + "").toLowerCase();
@@ -251,8 +253,6 @@ public class SolrHttpClient {
             throw new RuntimeException(e);
         }
     }
-
-
 
     public List<Field> fetchFields() {
         try {

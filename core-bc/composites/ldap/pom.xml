@@ -19,10 +19,10 @@
       <artifactId>spring-core</artifactId>
 
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-    </dependency>
+    </dependency>-->
     <dependency>
       <artifactId>spring-tx</artifactId>
       <groupId>org.springframework</groupId>
@@ -39,10 +39,10 @@
           <artifactId>spring-core</artifactId>
           <groupId>org.springframework</groupId>
         </exclusion>
-        <exclusion>
+        <!--<exclusion>
           <artifactId>spring-beans</artifactId>
           <groupId>org.springframework</groupId>
-        </exclusion>
+        </exclusion>-->
         <exclusion>
           <artifactId>commons-logging</artifactId>
           <groupId>commons-logging</groupId>

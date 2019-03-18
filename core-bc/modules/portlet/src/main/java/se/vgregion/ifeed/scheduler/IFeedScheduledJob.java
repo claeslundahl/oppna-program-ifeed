@@ -6,18 +6,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import se.vgregion.ifeed.service.metadata.MetadataService;
 
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageListener;
 
 /**
  * @author bjornryding
  * 
  */
 @Deprecated
-public class IFeedScheduledJob implements MessageListener {
+public class IFeedScheduledJob /*implements MessageListener*/ {
     /**
      *
      */
@@ -35,7 +32,7 @@ public class IFeedScheduledJob implements MessageListener {
      * 
      * @see com.liferay.portal.kernel.messaging.MessageListener#receive(
      * com.liferay.portal.kernel.messaging.Message) */
-    @Override
+    /*@Override
     public final void receive(final Message message) {
         LOGGER.debug("Schedule task is started {}", ToStringBuilder.reflectionToString(message));
 
@@ -48,7 +45,7 @@ public class IFeedScheduledJob implements MessageListener {
         } else {
             LOGGER.error("Couldn't find bean for MetadataService");
         }
-    }
+    }*/
 
     /**
      *
@@ -83,11 +80,11 @@ public class IFeedScheduledJob implements MessageListener {
         this.service = service;
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Message messag = new Message();
         messag.setDestinationName("foo");
         new IFeedScheduledJob().receive(messag);
-    }
+    }*/
 
 
 }

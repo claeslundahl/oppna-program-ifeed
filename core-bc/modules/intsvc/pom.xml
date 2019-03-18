@@ -97,6 +97,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
+      <version>${spring.fw.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -134,11 +135,23 @@
       <groupId>org.apache.abdera</groupId>
       <artifactId>abdera-core</artifactId>
       <version>1.1.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>stax</groupId>
+          <artifactId>stax-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.abdera</groupId>
       <artifactId>abdera-parser</artifactId>
       <version>1.1.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.abdera</groupId>

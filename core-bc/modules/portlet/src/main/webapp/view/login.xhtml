@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="baseTemplate.xhtml"
+>
+
+    <ui:define name="content">
+        <!--<h:head>
+            <meta name="viewport" content="width=device-width, user-scalable=no"/>
+            <script type="text/javascript" src="#{request.contextPath}/js/clarity.js?t=25">
+            </script>
+
+        </h:head>-->
+
+        <style>
+            #badLogin, #loggedOut {
+                font-weight: bold;
+                font-size: 1.3em;
+            }
+        </style>
+
+        <h2 class="welcome-heading" style="text-align: center">iFeed Admin</h2>
+
+        <div class="p1"><span style="font-size:16px;">För att logga in i iFeed Admin behöver du vara anställd inom Västra Götalandsregionen. Du loggar in med samma uppgifter som du använder för att logga in på din dator och till Outlook.</span></div>
+
+        <div id="badLogin" style="visibility: hidden; ">Felaktig inloggning</div>
+        <div id="loggedOut" style="visibility: hidden; ">Du har loggats ut</div>
+
+        <form name="login" action="login.xhtml" method="post">
+            <div>
+                <label for="username">Användarnamn</label>
+            </div>
+            <div>
+                <input id="username" type="text" name="username" value=""/>
+            </div>
+            <div>
+                <label for="password">Lösenord</label>
+            </div>
+            <div>
+                <input id="password" type="password" name="password" />
+            </div>
+            <div class="button-holder">
+                <input class="btn btn-primary" name="submit" type="submit" value="Logga in"/>
+            </div>
+        </form>
+
+        <script>
+            document.body.onload = function () {
+                document.login.username.focus();
+            };
+
+            if (window.location.href.indexOf("?error") > -1) {
+                document.getElementById("badLogin").setAttribute("style", "visibility: visible");
+            }
+
+            if (window.location.href.indexOf("?logout") > -1) {
+                document.getElementById("loggedOut").setAttribute("style", "visibility: visible");
+            }
+        </script>
+
+    </ui:define>
+
+</ui:composition>
+

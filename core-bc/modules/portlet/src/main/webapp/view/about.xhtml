@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="baseTemplate.xhtml"
+>
+
+    <ui:define name="content">
+
+        <div class="portlet-boundary portlet-static portlet-static-end portlet-journal-content ">
+            <section class="portlet">
+                <header class="portlet-topper">
+                    <h1 class="portlet-title">
+                    <span>
+                        <span class="taglib-text hide-accessible">Vad är ifeed?</span>
+                    </span>
+                    </h1>
+                </header>
+                <div class="portlet-content">
+                    <div class=" portlet-content-container" style="">
+                        <div class="portlet-body">
+                            <div class="journal-content-article"><p>
+                                <strong>IFeed är ett verktyg för att filtrera ut dokumentsamlingar från Alfresco, Barium och SOFIA med hjälp av metadata (data om informationen). I ifeed under "EPI-konfiguration (JSON)" kan man få hjälp att skapa en kod som används tillsammans med webbpubliceringsverktyget Episerver för att visa upp dokumentsamlingar.</strong>
+                            </p>
+                                <p>Dokumentsamlingen på webbsidan utgörs alltid av en realtidssökning. Det innebär att webbsidan visar de senaste dokumenten som är publicerade från Alfresco, Barium och SOFIA. Avpubliceras ett dokument så avspeglas detta på webbsidan - en teknik som säkerställer att de dokument som är giltiga alltid återfinns på webben.</p>
+                                <p>Vid övergång från Alfresco till SOFIA kan tidigare tillverkad filtrering återanvändas i Episerver. De dokument som är filtrerade från Alfresco har ett extra filter som har fått samma namn som grundfiltret men med ett minustecken framför id-numret. Dokument från Barium har inte ett extra filter.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="portlet-boundary portlet-static portlet-static-end portlet-journal-content ">
+            <section class="portlet">
+                <header class="portlet-topper">
+                    <h1 class="portlet-title">
+                    <span>
+                        <span class="taglib-text hide-accessible">Vad är ifeed?</span>
+                    </span>
+                    </h1>
+                </header>
+                <div class="portlet-content">
+                    <div class=" portlet-content-container" style="">
+                        <div class="portlet-body">
+                            <div class="journal-content-article">
+                                <p>Hur går till att filtrera från Alfresco och SOFIA?</p>
+                                <p><a href="http://itguiden.vgregion.se/smartass/3817.guide">Hur går det till att skapa ett Ifeed</a>?</p>
+                                <p><a href="http://itguiden.vgregion.se/smartass/3862.guide">Hur går det till att koppla ihop två flöden?</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+
+    </ui:define>
+</ui:composition>

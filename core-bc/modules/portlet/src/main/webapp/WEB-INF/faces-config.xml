@@ -17,10 +17,10 @@
     </application>
 
     <navigation-rule>
-        <from-view-id>/WEB-INF/xhtmls/view.xhtml</from-view-id>
+        <from-view-id>/view/view.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>view</from-outcome>
-            <to-view-id>/WEB-INF/xhtmls/view.xhtml</to-view-id>
+            <to-view-id>/view/view.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 

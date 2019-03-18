@@ -1,13 +1,9 @@
 package se.vgregion.ifeed.jsf;
 
-import com.liferay.portal.util.PortalUtil;
-
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
-import javax.portlet.PortletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ContentTypePhaseListener implements PhaseListener {
@@ -22,8 +18,7 @@ public class ContentTypePhaseListener implements PhaseListener {
         }
 
         public void beforePhase(PhaseEvent event) {
-            PortletResponse pr = (PortletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
-            HttpServletResponse response = PortalUtil.getHttpServletResponse(pr);
+            HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
             /*response.addHeader("Access-Control-Allow-Origin", "*");
             response.addHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");*/
         }

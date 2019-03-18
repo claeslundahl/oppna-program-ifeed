@@ -772,6 +772,11 @@ public class IFeedViewerController {
         if (filter == null) {
             throw new ResourceNotFoundException();
         }
+
+        if (defaultsortcolumn != null && "dc.title".equals(defaultsortcolumn)) {
+            defaultsortcolumn = "title";
+        }
+
         Result findings = client.query(
                 filter.toQuery(),
                 0,

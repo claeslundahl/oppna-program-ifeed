@@ -109,10 +109,16 @@ function renderFeed(div) {
 }
 
 function startIfeedRend() {
-    var feedDivs = getAllFeedDivs();
-    for (var i = 0; i < feedDivs.length; i++) {
-        var feedDiv = feedDivs[i];
-        renderFeed(feedDiv);
+    // alert('I startIfeedRend');
+    try {
+        var feedDivs = getAllFeedDivs();
+        for (var i = 0; i < feedDivs.length; i++) {
+            var feedDiv = feedDivs[i];
+            renderFeed(feedDiv);
+        }
+    }catch (e) {
+        alert(e);
+        alert(e.message);
     }
 }
 
@@ -319,34 +325,37 @@ function addCss(css) {
     document['addedCssHashes'].push(css.hashCode());
 }
 
-var domIsReady = (function(domIsReady) {
-    var isBrowserIeOrNot = function() {
-        return (!document.attachEvent || typeof document.attachEvent === "undefined" ? 'not-ie' : 'ie');
+/*if (window.attachEvent) {
+    window.attachEvent('onload', startIfeedRend);
+} else {
+    if (window.onload) {
+        var currentOnLoad = window.onload;
+        var newOnLoad = function (evt) {
+            currentOnLoad(evt);
+            startIfeedRend();
+        };
+        window.onload = newOnLoad;
+    } else {
+        window.onload = startIfeedRend;
     }
+}*/
 
-    domIsReady = function(callback) {
-        if(callback && typeof callback === 'function'){
-            if(isBrowserIeOrNot() !== 'ie') {
-                document.addEventListener("DOMContentLoaded", function() {
-                    return callback();
-                });
-            } else {
-                document.attachEvent("onreadystatechange", function() {
-                    if(document.readyState === "complete") {
-                        return callback();
-                    }
-                });
-            }
-        } else {
-            console.error('The callback is not a function!');
-        }
+setTimeout(startIfeedRend, 1500);
+
+
+
+
+function runCallback() {
+    var methodName = 'q()';
+    if (window[methodName]) {
+        eval(methodName);
+    } else {
+        setTimeout(
+            runCallback, 500
+        );
     }
+}
+runCallback();
 
-    return domIsReady;
-})(domIsReady || {});
 
-(function(document, window, domIsReady, undefined) {
-    domIsReady(function() {
-        startIfeedRend();
-    });
-})(document, window, domIsReady);
+

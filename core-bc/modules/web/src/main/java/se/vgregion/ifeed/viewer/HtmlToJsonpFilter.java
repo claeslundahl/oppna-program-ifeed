@@ -36,8 +36,30 @@ public class HtmlToJsonpFilter implements Filter {
                 String servletResponse = responseWrapper.toString();
 
 
+                String callbackName = request.getParameterMap().get("callback")[0];
+                String data = putResultIntoJson(servletResponse) + ";\n";
+                String js = String.format("(function(){ var data = %s;\n " +
+                        "     function runCallback() {\n" +
+                        "      var methodName = '%s';\n" +
+                        "      if (window[methodName]) {\n" +
+                        "          eval(methodName+'(data);');\n" +
+                        "          delete data;" +
+                        "      } else {\n" +
+                        "          setTimeout(\n" +
+                        "              runCallback, 500\n" +
+                        "          );\n" +
+                        "      }\n" +
+                        "      }\n" +
+                        "      runCallback();" +
+                        "})();", data, callbackName);
+
+
+                //out.write(js.getBytes());
+
+                servletResponse = js;
+
                 HttpServletResponse httpResponse = (HttpServletResponse) response;
-                servletResponse = request.getParameter("callback") + "(" + putResultIntoJson(servletResponse) + ");";
+                // servletResponse = request.getParameter("callback") + "(" + putResultIntoJson(servletResponse) + ");";
                 httpResponse.addHeader("Access-Control-Allow-Origin", "*");
                 httpResponse.addHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
                 httpResponse.setContentType("text/javascript;charset=UTF-8");

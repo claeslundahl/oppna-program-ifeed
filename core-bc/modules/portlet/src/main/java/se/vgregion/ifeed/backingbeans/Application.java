@@ -155,6 +155,7 @@ public class Application {
     private IFeedFilter oldFilterVersion;
     @Autowired
     private SolrServer solrServer;
+    private CachedUser user;
 
     {
         try {
@@ -757,9 +758,14 @@ public class Application {
     }
 
     public CachedUser getCurrentUser() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = fc.getExternalContext();
-        return userRepository.findUser(externalContext.getUserPrincipal().getName());
+        if (user == null) {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = fc.getExternalContext();
+            user = userRepository.findUser(externalContext.getUserPrincipal().getName());
+            return user;
+        } else {
+            return user;
+        }
     }
 
     public void findResultsByCurrentFeedConditions() {

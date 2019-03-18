@@ -209,12 +209,6 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         initializedFeeds.set(null);
         now = System.currentTimeMillis() - now;
 
-        try {
-            Files.write(Paths.get(System.getProperty("user.home"), "feed.json"), Json.toJson(rv).getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         return rv;
     }
 

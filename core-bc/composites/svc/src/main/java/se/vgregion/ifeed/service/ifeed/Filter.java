@@ -32,7 +32,7 @@ public class Filter extends IFeed {
         addConditionIfAnyValue("o.group.id = ?", getGroup() != null ? getGroup().getId() : null, condition, values);
         addConditionIfAnyValue("o.id = ?", getId(), condition, values);
 
-        sb.append(" left join o.ownerships ow ");
+        sb.append(" left join fetch o.ownerships ow ");
         sb.append(" left join o.composites cs ");
         sb.append(" left join o.partOf pof ");
         sb.append(" left join o.dynamicTableDefs dtab ");

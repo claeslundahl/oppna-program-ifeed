@@ -75,7 +75,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
      * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getIFeed(java.lang.Long) */
     @Override
     @GET
-    @Produces({"application/xml", "application/atom+xml;type=feed;charset=UTF-8"})
+    @Produces({"application/atom+xml", "application/atom+xml;type=feed;charset=UTF-8"})
 //    @Produces({"application/xml", "application/atom+xml;type=feed;charset=UTF-8"})
     @Path("/{id}/feed")
     public Feed getIFeed(@PathParam("id") Long id, @QueryParam("by") String sortField,

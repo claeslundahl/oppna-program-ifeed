@@ -19,11 +19,7 @@
 
   <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
     <property name="order" value="1" />
-    <property name="mediaTypes">
-      <map>
-        <entry key="json" value="application/json" />
-        <entry key="xml" value="application/xml" />
-      </map>
+    <property name="contentNegotiationManager" ref="contentNegotiationManager">
     </property>
     <property name="defaultViews">
       <list>
@@ -35,7 +31,20 @@
         </bean>
       </list>
     </property>
-    <property name="ignoreAcceptHeader" value="true" />
+  </bean>
+
+  <bean id="contentNegotiationManager"  class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+    <property name="favorPathExtension" value="true" />
+    <property name="ignoreAcceptHeader" value="true"/>
+    <property name="useJaf" value="false"/>
+    <property name="defaultContentType" value="text/html" />
+
+    <property name="mediaTypes">
+      <map>
+        <entry key="json" value="application/json" />
+        <entry key="xml" value="application/xml" />
+      </map>
+    </property>
   </bean>
 
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

@@ -15,8 +15,10 @@
         	http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
         	http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
+  <import resource="classpath*:spring/ifeed-services-config.xml"/>
   <import resource="classpath:META-INF/cxf/cxf.xml" />
-  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+  <!--<import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />-->
+  <!--<import resource="classpath:META-INF/cxf/cxf-extension-jaxws.xml" />-->
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
   <jaxrs:server id="iFeedIntService" address="/">
@@ -39,11 +41,11 @@
     </property>
   </bean>
 
-  <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.AtomFeedProvider">
+  <bean id="atomFeedProvider" class="org.apache.cxf.jaxrs.provider.atom.AtomFeedProvider">
     <property name="formattedOutput" value="true" />
   </bean>
 
-  <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.AtomEntryProvider">
+  <bean id="atomEntryProvider" class="org.apache.cxf.jaxrs.provider.atom.AtomEntryProvider">
     <property name="formattedOutput" value="true" />
   </bean>
 

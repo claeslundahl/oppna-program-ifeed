@@ -76,6 +76,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     @Override
     @GET
     @Produces({"application/xml", "application/atom+xml;type=feed;charset=UTF-8"})
+//    @Produces({"application/xml", "application/atom+xml;type=feed;charset=UTF-8"})
     @Path("/{id}/feed")
     public Feed getIFeed(@PathParam("id") Long id, @QueryParam("by") String sortField,
                          @QueryParam("dir") String sortDirection) {

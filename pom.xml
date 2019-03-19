@@ -151,10 +151,10 @@
   </scm>
 
   <properties>
-    <apache.cxf.version>2.3.2</apache.cxf.version>
+    <apache.cxf.version>3.1.6</apache.cxf.version>
     <spring.fw.version>4.3.12.RELEASE</spring.fw.version>
     <!--<liferay.version>6.2.10.15</liferay.version>-->
-    <liferay.version>2.46.0</liferay.version>
+    <!--<liferay.version>2.46.0</liferay.version>-->
   </properties>
 
   <dependencies>

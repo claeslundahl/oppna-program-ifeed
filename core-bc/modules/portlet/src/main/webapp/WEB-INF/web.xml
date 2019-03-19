@@ -203,4 +203,9 @@
     <param-value>/WEB-INF/tld/xhtml-tags.taglib.xml</param-value>
 §  </context-param>-->
 
+  <error-page>
+    <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+    <location>/index.html</location>
+  </error-page>
+
 </web-app>

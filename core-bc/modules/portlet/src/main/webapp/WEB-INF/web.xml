@@ -205,7 +205,7 @@
 
   <error-page>
     <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-    <location>/view-expired.html</location>
+    <location>/view-expired.xhtml</location>
   </error-page>
 
 </web-app>

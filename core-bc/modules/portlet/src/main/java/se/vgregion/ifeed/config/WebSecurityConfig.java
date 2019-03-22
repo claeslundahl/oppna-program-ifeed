@@ -20,9 +20,12 @@ import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.security.ldap.userdetails.LdapAuthority;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsService;
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
-import se.vgregion.ifeed.repository.UserRepository;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import se.vgregion.ifeed.filter.HeaderAuthenticationFilter;
+import se.vgregion.ifeed.service.ifeed.UserService;
 import se.vgregion.ifeed.service.spring.CustomLdapAuthenticationProvider;
 import se.vgregion.ifeed.service.spring.CustomUserDetailsService;
+import se.vgregion.ifeed.service.spring.HeaderAuthenticationProvider;
 
 import javax.sql.DataSource;
 import java.util.Collection;
@@ -56,18 +59,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         FilterBasedLdapUserSearch userSearch = new FilterBasedLdapUserSearch("OU=usr-Pers",
                 "(cn={0})", contextSource());
         http
+                .logout().invalidateHttpSession(true).deleteCookies("JSESSIONID").logoutSuccessUrl("/logout.html").and()
                 .authorizeRequests()
-                .antMatchers("/js/**", "/css/**", "/images/**", "/fonts/**", "/javax.faces.resource/**", "/view/login.xhtml*", "/favicon.ico")
+                .antMatchers("/js/**", "/css/**", "/images/**", "/fonts/**", "/javax.faces.resource/**", "/view/login.xhtml*", "/logout.html", "/favicon.ico")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .addFilterBefore(new HeaderAuthenticationFilter(), BasicAuthenticationFilter.class)
                 .csrf().disable()
                 .rememberMe()
                 .userDetailsService(new LdapUserDetailsService(userSearch, getLdapAuthoritiesPopulator()))
@@ -87,7 +92,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         BindAuthenticator authenticator = new BindAuthenticator(contextSource());
         authenticator.setUserSearch(new FilterBasedLdapUserSearch("OU=usr-Pers", "(cn={0})", contextSource()));
 
-        auth.authenticationProvider(new CustomLdapAuthenticationProvider(userRepository, authenticator, getLdapAuthoritiesPopulator()));
+        auth.authenticationProvider(new HeaderAuthenticationProvider(userService, contextSource(),"(cn={0})", "OU=usr-Pers"));
+        auth.authenticationProvider(new CustomLdapAuthenticationProvider(userService, authenticator, getLdapAuthoritiesPopulator()));
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 

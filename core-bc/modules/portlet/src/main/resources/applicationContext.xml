@@ -20,6 +20,8 @@
 
     <context:annotation-config/>
 
+    <bean class="se.vgregion.ifeed.service.ifeed.UserService" />
+
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
 
     <import resource="classpath*:spring/ifeed-datasource-config.xml" />

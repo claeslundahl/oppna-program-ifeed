@@ -38,6 +38,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             grantedAuthorities.add(grantedAuthority);
 
+            if (user.getId() == null || user.getPasswordHash() == null) {
+                throw new UsernameNotFoundException(
+                        "User has never logged in via LDAP and thus hasn't any password hash cached."
+                );
+            }
+
             return new User(user.getId(), user.getPasswordHash(), grantedAuthorities);
         } else {
             throw new UsernameNotFoundException("User not found");

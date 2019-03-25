@@ -491,8 +491,11 @@ public class IFeedViewerController {
         // model.addAttribute("result", otherResult.getResponse().getDocs());
         // result = result.subList(startBy, endBy);
         // model.addAttribute("result", result);
-        model.addAttribute("result", result.getResponse().getDocs());
-
+        if (result.getResponse() == null || result.getResponse().getDocs() == null) {
+            model.addAttribute("result", new ArrayList<>());
+        } else {
+            model.addAttribute("result", result.getResponse().getDocs());
+        }
         return "documentList";
     }
 

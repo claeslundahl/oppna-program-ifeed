@@ -12,6 +12,7 @@ import org.springframework.security.ldap.userdetails.LdapAuthority;
 import se.vgregion.ifeed.service.ifeed.UserService;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,10 +40,10 @@ public class HeaderAuthenticationProvider implements AuthenticationProvider {
         DirContextOperations dirContextOperations = search.searchForUser((principal).getUsername());
 
         HashMap<String, List<String>> attributes = new HashMap<>();
-        attributes.put("displayName", Arrays.asList(dirContextOperations.getStringAttribute("displayName")));
-        attributes.put("userId", Arrays.asList(authentication.getName()));
-        attributes.put("mail", Arrays.asList(dirContextOperations.getStringAttribute("mail")));
-        attributes.put("dn", Arrays.asList(dirContextOperations.getDn().toString()));
+        attributes.put("displayName", Collections.singletonList(dirContextOperations.getStringAttribute("displayName")));
+        attributes.put("userId", Collections.singletonList(authentication.getName()));
+        attributes.put("mail", Collections.singletonList(dirContextOperations.getStringAttribute("mail")));
+        attributes.put("dn", Collections.singletonList(dirContextOperations.getDn().toString()));
 
         LdapAuthority ldapAuthority = new LdapAuthority("user", dirContextOperations.getDn().toString(), attributes);
 

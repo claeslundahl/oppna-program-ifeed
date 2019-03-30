@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.viewer;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,7 +167,10 @@ public class IFeedViewerController {
      *                                   ajax script.
      * @return
      */
+
     @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata")
+    @ResponseStatus(value = HttpStatus.OK)
+    // @ResponseBody - does not work. Truncates the result!
     public String getIFeed(@PathVariable String listIdOrSerializedInstance, Model model,
                            @RequestParam(value = "by", required = false) String sortField,
                            @RequestParam(value = "dir", required = false) String sortDirection,
@@ -175,14 +180,23 @@ public class IFeedViewerController {
                            @RequestParam(value = "f", required = false) String[] f/*,
                          @RequestParam(value = "f") MultiValueMap<String, String> allRequestParams*/) {
         //String[] f = toStringArray(allRequestParams, "f");
+
         if (isNumeric(listIdOrSerializedInstance)) {
             Long id = Long.parseLong(listIdOrSerializedInstance);
-            return getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
+            getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
         } else {
             IFeed ifeed = IFeed.fromJson(listIdOrSerializedInstance);
-            return getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, null/*, f*/);
+            getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, null/*, f*/);
         }
+
+        jsonResult.set(gson.toJson(model.asMap().get("result")));
+        // return gson.toJson(model.asMap().get("result"));
+        return "thisDoesNotMatherItSeems";
     }
+    // Todo: user fix problem with ResponseBody and use that instead.
+    public static ThreadLocal<String> jsonResult = new ThreadLocal<>();
+
+    private final static Gson gson = new GsonBuilder().create();
 
     /**
      * Gets the ifeed from either a db or from a plain instance (sent as text).
@@ -399,13 +413,13 @@ public class IFeedViewerController {
      *                      ajax script.
      * @return what jsp to use...
      */
-    public String getIFeedByInstance(IFeed retrievedFeed, Model model,
-                                     String sortField,
-                                     String sortDirection,
-                                     Integer startBy,
-                                     Integer endBy,
-                                     String fromPage,
-                                     String[] fieldToSelect) {
+    String getIFeedByInstance(IFeed retrievedFeed, Model model,
+                              String sortField,
+                              String sortDirection,
+                              Integer startBy,
+                              Integer endBy,
+                              String fromPage,
+                              String[] fieldToSelect) {
 
         /*if (fromPage != null && !"".equals(fromPage.trim())) {
             Integer i = callsToJsonpMetadata.get(fromPage);
@@ -493,8 +507,10 @@ public class IFeedViewerController {
         // model.addAttribute("result", result);
         if (result.getResponse() == null || result.getResponse().getDocs() == null) {
             model.addAttribute("result", new ArrayList<>());
+            // model.addAttribute(new ArrayList<>());
         } else {
             model.addAttribute("result", result.getResponse().getDocs());
+            // model.addAttribute(result.getResponse().getDocs());
         }
         return "documentList";
     }

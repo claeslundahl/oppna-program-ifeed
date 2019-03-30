@@ -89,7 +89,7 @@
 </noscript>
 
 <h2>Som iframe</h2>
-<iframe src='#{request.contextPath}/documentlists/${param.ifeedId}/?by=dc.title&dir=asc' id='iframenoscript'
+<iframe src='${request.contextPath}/iFeed-web/documentlists/${param.ifeedId}/?by=dc.title&dir=asc' id='iframenoscript'
         name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
 </iframe>
 

@@ -26,6 +26,10 @@ public class HtmlToJsonpFilter implements Filter {
 
         if (request.getParameterMap().containsKey("callback")) {
             String url = ((HttpServletRequest) request).getRequestURL().toString();
+            System.out.println();
+            System.out.println("The call contains callback ");
+            System.out.println(url);
+            System.out.println();
             if (!url.endsWith(".json")) {
                 PrintWriter out = response.getWriter();
                 CharResponseWrapper responseWrapper = new CharResponseWrapper(

@@ -125,39 +125,23 @@ public class SolrHttpClient {
             stringFieldMap = map;
         }
 
-        // String json = toText(fq, start, rows, sort);
         String json = toText(fq, start, 1_000_000, sort);
 
         Result result = new GsonBuilder().create().fromJson(json, Result.class);
-
-        /*if (sort != null && !sort.trim().isEmpty()) {*/
         final String[] parts = sort.split(Pattern.quote(sort.contains("%20") ? "%20" : " "));
-        // if (parts.length == 2) {
         final String sortKey = parts[0];
         final String dir = parts[1];
         Field field = stringFieldMap.get(sortKey);
-        //if ("text_basic_token".equals(field.getType())) {
-        Collections.sort(result.getResponse().getDocs(), (o1, o2) -> {
-            String s1 = (o1.get(sortKey) + "").toLowerCase(), s2 = (o2.get(sortKey) + "").toLowerCase();
-            return s1.compareTo(s2);
-        });
+        Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortKey));
         if ("desc".equalsIgnoreCase(dir)) {
             Collections.reverse(result.getResponse().getDocs());
         }
-        //}
-        // }
-        /*}*/
 
         result.getResponse().setDocs(result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size())));
-        // result.getResponse().setNumFound(result.getResponse().getDocs().size());
         return result;
     }
 
     public String post(String toThatUrl, String thatData) throws IOException {
-
-        /*System.out.println("Posting to: " + toThatUrl);
-        System.out.println("That data: " + thatData);*/
-
         URL oracle = new URL(toThatUrl);
         HttpURLConnection con = (HttpURLConnection) oracle.openConnection();
         con.setDoOutput(true);
@@ -165,10 +149,7 @@ public class SolrHttpClient {
         wr.writeBytes(thatData);
 
         int responseCode = con.getResponseCode();
-        // System.out.println(con.getResponseMessage());
-
         if (responseCode == 200) {
-            //toText(con.getInputStream());
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -203,8 +184,6 @@ public class SolrHttpClient {
             return out.toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-
         }
     }
 

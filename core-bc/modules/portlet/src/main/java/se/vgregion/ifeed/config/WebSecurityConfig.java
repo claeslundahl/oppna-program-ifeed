@@ -49,9 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${ldap.password}")
     private String ldapPassword;
 
-    @Value("${rememberMe.token}")
-    private String rememeberMeToken;
-
     @Autowired
     private DataSource dataSource;
 
@@ -77,9 +74,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe()
                 .userDetailsService(new LdapUserDetailsService(userSearch, getLdapAuthoritiesPopulator()))
                 .tokenRepository(new InMemoryTokenRepositoryImpl())
-                .key(rememeberMeToken)
-                .rememberMeCookieName("remember-me")
-                .tokenValiditySeconds(60 * 60 * 24 * 30)
                 .and()
                 .formLogin()
                 .loginPage("/view/login.xhtml")

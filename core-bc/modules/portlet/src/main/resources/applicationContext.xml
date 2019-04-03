@@ -10,7 +10,7 @@
 
     <context:property-placeholder
             location="classpath:default-config.properties, file:${user.home}/.hotell/ifeed/config.properties"
-            ignore-resource-not-found="true" ignore-unresolvable="true" />
+            ignore-resource-not-found="false" ignore-unresolvable="false" />
 
     <context:component-scan base-package="se.vgregion.ifeed.config"/>
     <context:component-scan base-package="se.vgregion.ifeed.backingbeans"/>

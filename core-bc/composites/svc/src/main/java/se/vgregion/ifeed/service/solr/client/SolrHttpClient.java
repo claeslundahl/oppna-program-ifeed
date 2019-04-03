@@ -107,6 +107,12 @@ public class SolrHttpClient {
     }
 
     private Result queryImp(String fq, Integer start, Integer rows, String sort) throws IOException {
+        if (start == null) start = 0;
+        if (rows == null) rows = 1_000_000;
+        if (sort == null || sort.trim().equals("") || sort.trim().contains("dc.title")) {
+            sort = "title asc";
+        }
+
         Map<String, Field> stringFieldMap = fields.get();
         if (stringFieldMap == null) {
             List<Field> temp = fetchFields();
@@ -119,63 +125,23 @@ public class SolrHttpClient {
             stringFieldMap = map;
         }
 
-        /*if (fq == null || fq.trim().isEmpty()) fq = "";
-        else fq = URLEncoder.encode(fq, "UTF-8");
-        if (!fq.isEmpty()) {
-            fq = "fq=" + fq;
-        }
-        if (start != null) {
-            fq = fq + "&start=" + start;
-        }
-        if (rows != null) {
-            fq = fq + "&rows=" + rows;
-        }
-        boolean haveSort = false;
-        if (sort != null && !sort.trim().isEmpty()) {
-            haveSort = true;
-            fq = fq + "&sort=" + sort;
-        }
-        fq = fq + "&wt=json&q=*%3A*";
-
-        System.out.println(fq);*/
-
-        // String json = post(baseUrl + "select", fq);
-
-        String json = toText(fq, start, rows, sort);
-
-        // System.out.println(json);
+        String json = toText(fq, start, 1_000_000, sort);
 
         Result result = new GsonBuilder().create().fromJson(json, Result.class);
-
-/*        if (result.getResponse() == null) {
-            System.out.println("f");
-        }*/
-
-        if (sort != null && !sort.trim().isEmpty()) {
-            final String[] parts = sort.split(Pattern.quote(" "));
-            if (parts.length == 2) {
-                final String sortKey = parts[0];
-                final String dir = parts[1];
-                Field field = stringFieldMap.get(sortKey);
-                if ("text_basic_token".equals(field.getType())) {
-                    Collections.sort(result.getResponse().getDocs(), (o1, o2) -> {
-                        String s1 = (o1.get(sortKey) + "").toLowerCase(), s2 = (o2.get(sortKey) + "").toLowerCase();
-                        return s1.compareTo(s2);
-                    });
-                    if ("desc".equalsIgnoreCase(dir)) {
-                        Collections.reverse(result.getResponse().getDocs());
-                    }
-                }
-            }
+        final String[] parts = sort.split(Pattern.quote(sort.contains("%20") ? "%20" : " "));
+        final String sortKey = parts[0];
+        final String dir = parts[1];
+        Field field = stringFieldMap.get(sortKey);
+        Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortKey));
+        if ("desc".equalsIgnoreCase(dir)) {
+            Collections.reverse(result.getResponse().getDocs());
         }
+
+        result.getResponse().setDocs(result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size())));
         return result;
     }
 
     public String post(String toThatUrl, String thatData) throws IOException {
-
-        /*System.out.println("Posting to: " + toThatUrl);
-        System.out.println("That data: " + thatData);*/
-
         URL oracle = new URL(toThatUrl);
         HttpURLConnection con = (HttpURLConnection) oracle.openConnection();
         con.setDoOutput(true);
@@ -183,10 +149,7 @@ public class SolrHttpClient {
         wr.writeBytes(thatData);
 
         int responseCode = con.getResponseCode();
-        // System.out.println(con.getResponseMessage());
-
         if (responseCode == 200) {
-            //toText(con.getInputStream());
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -221,8 +184,6 @@ public class SolrHttpClient {
             return out.toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-
         }
     }
 

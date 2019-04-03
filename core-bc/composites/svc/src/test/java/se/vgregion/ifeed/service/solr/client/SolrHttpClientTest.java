@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.service.solr.client;
 
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
@@ -45,10 +46,16 @@ public class SolrHttpClientTest {
             System.out.println(name);
         }*/
 
-        List<Field> fields = client.fetchFields();
+        Map<String, Object> doc = fetchDocumentByName("Minnesanteckningar 180522");
+
+        System.out.println(
+                new GsonBuilder().setPrettyPrinting().create().toJson(doc)
+        );
+
+        /*List<Field> fields = client.fetchFields();
         for (Field field : fields) {
             System.out.println(field);
-        }
+        }*/
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {
@@ -107,6 +114,15 @@ public class SolrHttpClientTest {
 
     static Map<String, Object> fetchDocument(String byThatId) {
         IFeedFilter filter = new IFeedFilter(byThatId, "id");
+        Result results = client.query(filter.toQuery(), null, null, "title asc");
+        if (results.getResponse() == null || results.getResponse().getNumFound() == 0) {
+            return null;
+        }
+        return results.getResponse().getDocs().get(0);
+    }
+
+    static Map<String, Object> fetchDocumentByName(String value) {
+        IFeedFilter filter = new IFeedFilter(value, "title");
         Result results = client.query(filter.toQuery(), null, null, "title asc");
         if (results.getResponse() == null || results.getResponse().getNumFound() == 0) {
             return null;

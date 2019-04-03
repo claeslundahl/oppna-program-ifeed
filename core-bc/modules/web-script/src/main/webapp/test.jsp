@@ -1,16 +1,16 @@
 <%@ page isELIgnored="false" %>
 <!doctype html>
-<!-- The DOCTYPE declaration above will set the    -->
-<!-- browser's rendering engine into               -->
-<!-- "Standards Mode". Replacing this declaration  -->
+<!-- The DOCTYPE declaration above will set the -->
+<!-- browser's rendering engine into -->
+<!-- "Standards Mode". Replacing this declaration -->
 <!-- with a "Quirks Mode" doctype may lead to some -->
-<!-- differences in layout.                        -->
+<!-- differences in layout. -->
 
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Web Application Starter Project</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
     <script type="text/javascript" src="se.vgregion.ifeed.Module/se.vgregion.ifeed.Module.nocache.js"></script>
 </head>
 
@@ -81,9 +81,17 @@
         hiderightcolumn="no"
         usepost="no"
         feedid='${param.ifeedId}'>
-</div><noscript><iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/118188/?by=dc.title&dir=asc' id='iframenoscript' name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
-</iframe>
+</div>
+<noscript>
+    <iframe src='http://ifeed.vgregion.se/iFeed-web/documentlists/118188/?by=dc.title&dir=asc' id='iframenoscript'
+            name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
+    </iframe>
 </noscript>
+
+<h2>Som iframe</h2>
+<iframe src='${request.contextPath}/iFeed-web/documentlists/${param.ifeedId}/?by=dc.title&dir=asc' id='iframenoscript'
+        name='iframenoscript' style='width: 100%; height: 400px' frameborder='0'>
+</iframe>
 
 <div id="ifeed-data2">http://localhost:8081</div>
 

@@ -30,32 +30,10 @@ public class SolrHttpClientTest {
 
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        /*Map<String, Set<Object>> allValues = client.findAllValues();
-        System.out.println("SourceSystem: " + allValues.get("SourceSystem"));*/
-        /*IFeedFilter i = new IFeedFilter();
-        i.setFilterQuery("Narhalsan MBL CSG");
-        i.setFilterKey("dc.type.document.serie");
-        IFeed feed = new IFeed();
-        feed.addFilter(i);
-        Result items = client.query(feed.toQuery(), 0, 1_000_000, null);
-        NavigableSet<String> names = new TreeSet<>();
-        for (Map<String, Object> doc : items.getResponse().getDocs()) {
-            names.add((String) doc.get("dc.title"));
-        }
-        for (String name : names) {
-            System.out.println(name);
-        }*/
-
-        Map<String, Object> doc = fetchDocumentByName("Minnesanteckningar 180522");
-
+        Map<String, Object> doc = fetchDocumentByName("*Regionportal*");
         System.out.println(
                 new GsonBuilder().setPrettyPrinting().create().toJson(doc)
         );
-
-        /*List<Field> fields = client.fetchFields();
-        for (Field field : fields) {
-            System.out.println(field);
-        }*/
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {
@@ -123,6 +101,7 @@ public class SolrHttpClientTest {
 
     static Map<String, Object> fetchDocumentByName(String value) {
         IFeedFilter filter = new IFeedFilter(value, "title");
+        System.out.println(client.getBaseUrl());
         Result results = client.query(filter.toQuery(), null, null, "title asc");
         if (results.getResponse() == null || results.getResponse().getNumFound() == 0) {
             return null;

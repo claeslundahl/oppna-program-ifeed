@@ -1090,7 +1090,7 @@
         "inTooltip": false,
         "children": [
           {
-            "id": "vgr:VgrExtension.vgr:Title",
+            "id": "title",
             "name": "Titel",
             "help": "Titel",
             "type": "d:text_facet",
@@ -1140,7 +1140,7 @@
             "type": "d:ldap_org_value",
             "apelonKey": "",
             "children": [],
-            "filter": false,
+            "filter": true,
             "inHtmlView": true,
             "expanded": false
           },
@@ -1284,7 +1284,7 @@
         "inTooltip": false,
         "children": [
           {
-            "id": "vgr:VgrExtension.vgr:Title",
+            "id": "title",
             "name": "Titel",
             "help": "Titel",
             "type": "d:text_facet",
@@ -1489,7 +1489,7 @@
         "expanded": false,
         "children": [
           {
-            "id": "vgr:VgrExtension.vgr:Title",
+            "id": "title",
             "name": "Titel",
             "help": "Titel",
             "type": "d:text_facet",

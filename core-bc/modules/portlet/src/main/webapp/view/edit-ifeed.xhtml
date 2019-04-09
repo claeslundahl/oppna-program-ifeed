@@ -78,7 +78,7 @@
                         dynamic="true">
 
                   <div> #{child.name}: </div>
-                  <p:inputText rendered="#{child.getType() != 'd:date'}" value="#{filterModelBean.newFilterValue}"  id="filterText" />
+                  <!--<p:inputText rendered="#{child.getType() != 'd:date'}" value="#{filterModelBean.newFilterValue}"  id="filterText" />-->
 
                   <p:calendar rendered="#{child.getType() eq 'd:date'}" id="inlineDate" mode="inline" locale="sv_SE"/>
                   <div>

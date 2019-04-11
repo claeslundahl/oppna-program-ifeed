@@ -66,6 +66,7 @@
 
             <p:autoComplete value="#{app.newFilter.value}"
                             rendered="#{app.newFilter.type == 'd:ldap_value'}"
+                            minQueryLength="3"
                             completeMethod="#{app.completeUserName}"
                             forceSelection="true"
                             style="z-index: 101"
@@ -74,6 +75,7 @@
 
             <p:autoComplete value="#{app.newFilter.value}"
                             rendered="#{app.newFilter.type == 'd:text_facet'}"
+                            minQueryLength="2"
                             completeMethod="#{app.newFilterSuggestion}"
                             forceSelection="false"
                             style="z-index: 101; background: aliceblue; height: 24px; top: 4px; position: relative;"

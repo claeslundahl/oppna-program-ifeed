@@ -37,14 +37,14 @@
                             <f:ajax render="@form" action="click"/>
                             <!--img class="toggle-symbol minimized" src="#{request.contextPath}/img/white-cross.png" -->
 
-                            <div class="icon-chevron-right"></div>
+                            <div class="fa fa-chevron-right"></div>
                         </h:commandLink>
 
                         <h:commandLink title="Stäng" styleClass="select-org" onclick="$('a.select-org').attr('onclick', '')"
                                        rendered="#{not organization.leaf and organization.open}"
                                        actionListener="#{vgrOrganizationsHome.closeChildrenFlat(organization)}">
                             <f:ajax render="@form" action="click"/>
-                            <div class="icon-chevron-down"></div>
+                            <div class="fa fa-chevron-down"></div>
                             <!--img class="toggle-symbol expanded" src="#{request.contextPath}/img/white-cross.png" -->
                         </h:commandLink>
                     </td>

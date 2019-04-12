@@ -34,7 +34,7 @@ public class DynamicTableDef extends AbstractEntity {
     private Boolean linkOriginalDoc = false;
     private Boolean hideRightColumn = false;
 
-    @OneToMany(mappedBy = "tableDef", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tableDef", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
 
     @OneToMany(mappedBy = "tableDef", cascade = CascadeType.ALL)

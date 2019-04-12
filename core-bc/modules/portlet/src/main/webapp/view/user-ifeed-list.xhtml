@@ -22,8 +22,7 @@
                 <div class="clearfix">
 
                     <p:commandLink actionListener="#{navigationModelBean.setUiNavigation('ADMIN_DEPARTMENTS')}"
-                                   rendered="#{app.isSuperUser()}"
-                                   styleClass="rp-link-button" value="Ändra förvaltningar"
+                                   styleClass="rp-link-button" value="#{app.isSuperUser() ? 'Ändra förvaltningar' : 'Ändra grupper'}"
                                    update=":ifeed_view" ajax="true" async="true"/>
 
                     <p:commandLink actionListener="#{navigationModelBean.setUiNavigation('FIELD_CONFIG')}"

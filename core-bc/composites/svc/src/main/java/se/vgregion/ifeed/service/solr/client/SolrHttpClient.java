@@ -132,12 +132,16 @@ public class SolrHttpClient {
         final String sortKey = parts[0];
         final String dir = parts[1];
         Field field = stringFieldMap.get(sortKey);
-        Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortKey));
-        if ("desc".equalsIgnoreCase(dir)) {
-            Collections.reverse(result.getResponse().getDocs());
+
+        if (result.getResponse() != null) {
+            Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortKey));
+            if ("desc".equalsIgnoreCase(dir)) {
+                Collections.reverse(result.getResponse().getDocs());
+            }
+
+            result.getResponse().setDocs(result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size())));
         }
 
-        result.getResponse().setDocs(result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size())));
         return result;
     }
 

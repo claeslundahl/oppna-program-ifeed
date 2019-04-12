@@ -23,6 +23,10 @@ function jsonp(url, key, callback) {
     var q = "q" + uniqCallbackSequence;
     uniqCallbackSequence++;
 
+    if (window['jsonpPreventCache']) {
+        url = url + '&t=' + new Date().getTime();
+    }
+
     createScript(
         appendParam(url, key, q), function (remove) {
             window[q] =

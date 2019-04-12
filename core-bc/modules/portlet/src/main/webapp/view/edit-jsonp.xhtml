@@ -206,6 +206,9 @@
           </div>
 
           <h:outputScript>
+
+            window['jsonpPreventCache'] = true;
+
             function on() {
               if (console) console.log("se.vgregion.ifeed.client.Starter.init()");
               startIfeedRend();

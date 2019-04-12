@@ -308,6 +308,10 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public static String escapeFieldName(String forSolr) {
+        if (forSolr == null) {
+            return null;
+        }
+
         String escaped = forSolr.replaceAll(keyRegex, "\\\\$1");
         return escaped;
     }

@@ -16,7 +16,7 @@
         </f:facet>
 
         <h:outputText value="Namn" rendered="#{app.mayEditFeed(request, iFeedModelBean)}"/>
-        <h:inputText value="#{tableDef.name}" rendered="#{app.mayEditFeed(request, iFeedModelBean)}">
+        <h:inputText id="tableDefNameInput" value="#{tableDef.name}" rendered="#{app.mayEditFeed(request, iFeedModelBean)}">
           <f:ajax event="change" render="jsonp-result" listener="#{tableDef.toTableMarkup()}"/>
         </h:inputText>
         <h:outputText
@@ -195,7 +195,7 @@
                              id="okCloseEditJsonpViewLink"
                              update=":ifeed_view"
                              rendered="#{app.mayEditFeed(request, iFeedModelBean)}"
-                             onclick="#{empty tableDef.name ? 'alert(\'Namn måste vara ifyllt innan du godkänner inmatningen.\'); return false;' : ''}"
+                             onclick="if (document.getElementById('ifeed_view:tableDefNameInput').value.length === 0) { alert('Namn måste vara ifyllt innan du godkänner inmatningen.'); return false; }"
                              ajax="true">
               </h:commandLink>
             </div>

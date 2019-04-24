@@ -228,7 +228,7 @@
               <span class="name">#{ifeedDynamicTableDefsItem.name}</span>
               <span class="edit">
                 <p:commandLink styleClass="link-button-edit" value=" " update=":ifeed_view"
-                               style="color: white;" rendered="#{not app.inEditMode}"
+                               style="color: white;" rendered="#{app.inEditMode}"
                                ajax="false" async="true"
                                action="#{tableDef.editFlow(ifeedDynamicTableDefsItem)}">
                 </p:commandLink>

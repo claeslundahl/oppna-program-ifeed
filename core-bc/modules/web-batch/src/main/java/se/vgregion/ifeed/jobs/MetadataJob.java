@@ -18,6 +18,7 @@ public class MetadataJob implements ServletContextListener {
     private static MetadataService metadataService;
 
     private static MidnightRun midnightRun;
+    private ClassPathXmlApplicationContext context;
 
     public MetadataJob() {
         super();
@@ -34,7 +35,7 @@ public class MetadataJob implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent context) {
-        loadContext("classpath*:spring/ifeed-*.xml");
+        /*loadContext("classpath*:spring/ifeed-*.xml");
         if (midnightRun == null) {
             midnightRun = new MidnightRun(() -> todo());
             midnightRun.startTimer();
@@ -44,11 +45,11 @@ public class MetadataJob implements ServletContextListener {
                 final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
                 executor.schedule(() -> midnightRun.run(), 2, TimeUnit.SECONDS);
             }
-        }
+        }*/
     }
 
     synchronized void todo() {
-//        metadataService = null;
+        metadataService = null;
 //         loadContext("classpath*:spring/ifeed-*.xml");
         if (metadataService != null) {
             LOGGER.info("Importing metadata");
@@ -60,7 +61,7 @@ public class MetadataJob implements ServletContextListener {
 
     protected void loadContext(final String configLocation) {
         try {
-            ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(configLocation);
+            context = new ClassPathXmlApplicationContext(configLocation);
              MetadataService service = context.getBean(MetadataService.class);
             setMetadataService(service);
         } catch (BeansException e) {

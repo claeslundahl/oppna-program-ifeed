@@ -30,7 +30,7 @@ public class AccessGuard {
             }
 
             for (Ownership ownership : feed.getOwnerships()) {
-                if (user.getDisplayName().equals(ownership.getUserId())) {
+                if (user.getId().equals(ownership.getUserId())) {
                     return true;
                 }
             }

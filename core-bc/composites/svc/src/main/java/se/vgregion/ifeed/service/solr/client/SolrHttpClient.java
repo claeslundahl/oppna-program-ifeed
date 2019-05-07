@@ -3,6 +3,7 @@ package se.vgregion.ifeed.service.solr.client;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 
 import javax.script.ScriptEngine;
@@ -123,6 +124,10 @@ public class SolrHttpClient {
 
             fields = new WeakReference<>(map);
             stringFieldMap = map;
+        }
+
+        if (StringUtils.isEmpty(fq)) {
+            throw new IllegalArgumentException("We don't want to query with empty filter query...");
         }
 
         String json = toText(fq, start, 1_000_000, sort);

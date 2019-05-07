@@ -6,6 +6,7 @@ import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.SolrServerFactory;
+import se.vgregion.ifeed.service.solr.client.Field;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.FieldsInf;
@@ -17,6 +18,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -97,18 +99,23 @@ public class InvocerUtil {
 
     public static Set<String> getKeysWithMultiValues(final List<FieldsInf> fieldsToUseInTheSearch) {
         try {
-            /*InvocerUtil invocerUtil = new InvocerUtil();
-            IFeedResults result = invocerUtil.findByDocumentName("*", fieldsToUseInTheSearch);*/
 
-            Result result = SolrHttpClient.newInstanceFromConfig().query("", 0, 500, null);
-            for (Map<String, Object> map : result.getResponse().getDocs()) {
-                return getKeysWithMultiValues(map);
-            }
+            List<Field> fields = SolrHttpClient.newInstanceFromConfig().fetchFields();
+
+            return fields.stream()
+                    .filter(field -> {
+                        boolean sortable = field.getType().equalsIgnoreCase("string")
+                                || field.getType().equalsIgnoreCase("long")
+                                || field.getType().equalsIgnoreCase("tdate");
+
+                        return !sortable || field.getMultiValued();
+                    })
+                    .map(Field::getName)
+                    .collect(Collectors.toSet());
         } catch (Exception e) {
             System.out.println("Fel i getKeysWithMultiValues");
             throw new RuntimeException("Fel i getKeysWithMultiValues", e);
         }
-        return null;
     }
 
     public static Set<String> getKeysWithMultiValues(Map<String, Object> fromThisSample) {

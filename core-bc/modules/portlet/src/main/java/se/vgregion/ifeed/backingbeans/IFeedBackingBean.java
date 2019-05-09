@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.repository.UserRepository;
@@ -157,6 +158,7 @@ public class IFeedBackingBean implements Serializable {
         return userIFeeds;
     }
 
+    @Transactional
     public void removeBook(IFeed iFeed) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -169,11 +171,11 @@ public class IFeedBackingBean implements Serializable {
             throw new RuntimeException();
         }
         //iFeedService.removeIFeed(iFeed.getId());
-        iFeedService.removeIFeed(iFeed);
+        iFeedService.removeIFeed(feed);
 
         // Remove from memory
-        iFeedModelBeans.remove(iFeed);
-        userIFeedModelBeans.remove(iFeed);
+        iFeedModelBeans.remove(feed);
+        userIFeedModelBeans.remove(feed);
     }
 
     private String getRemoteUserId(HttpServletRequest request) {

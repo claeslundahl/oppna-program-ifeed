@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.scripts;
 
+import org.postgresql.Driver;
 import se.vgregion.arbetsplatskoder.db.migration.sql.ConnectionExt;
 
 import java.nio.file.Path;

@@ -29,7 +29,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @GeneratedValue
     protected Long id;
 
-    @OneToMany(mappedBy = "ifeed")
+    @OneToMany(mappedBy = "ifeed", cascade = CascadeType.ALL)
     private final List<DynamicTableDef> dynamicTableDefs = new ArrayList<DynamicTableDef>();
 
     @Version

@@ -32,7 +32,7 @@ public class AnalogyTool {
     }
 
 
-    static ConnectionExt main = CreateAnalogNewTags.getStageConnectionExt();
+    static ConnectionExt main = CopyDatabaseUtil.getMainConnectionExt();
 
 
     //static ConnectionExt main = CopyDatabaseUtil.getRemoteProdConnectionExt();
@@ -40,7 +40,8 @@ public class AnalogyTool {
 
     public static void main(String[] args) throws InterruptedException {
         long now = System.currentTimeMillis();
-        main();
+        System.out.println(main.getUrl());
+        //main();
         System.out.println("It took: " + (System.currentTimeMillis() - now));
     }
 
@@ -48,14 +49,14 @@ public class AnalogyTool {
 
         System.out.println(main.getUrl());
 
-        // if (true) return;
+        if (true) return;
 
         System.out.println("Removes all old generated feeds.");
         main.update("delete from vgr_ifeed_vgr_ifeed where composites_id < 0 or partof_id < 0");
         main.update("delete from vgr_ifeed_filter where id < 0");
         main.update("delete from vgr_ifeed_ownership where ifeed_id < 0");
         main.update("delete from vgr_ifeed where id < 0");
-        main.commit();
+        commit();
         // if (true) return;
 
         System.out.println("Loads all feeds left. Once.");
@@ -136,12 +137,16 @@ public class AnalogyTool {
                         "select f1.id, f1.id*-1\n" +
                         "from vgr_ifeed f1 where f1.id < 0");
 
-        main.commit();
+        commit();
         Thread.sleep(5_000);
 
         for (Map<String,Object> item : main.query("select * from vgr_ifeed where id < 0", 0, 1_000_000)) {
             System.out.println(item);
         }
+    }
+    
+    static void commit() {
+        main.rollback();
     }
 
 
@@ -214,7 +219,7 @@ public class AnalogyTool {
                     null
             );
             main.insert("vgr_ifeed_filter", and);
-            // main.commit();
+            // commit();
             System.out.println("Skapade " + and);
         } else {
             System.out.println("Försöker hämta med params " + id + " and ");
@@ -265,7 +270,7 @@ public class AnalogyTool {
                     result++;
                 }
             }
-            main.commit();
+            commit();
         }
 
         return result;

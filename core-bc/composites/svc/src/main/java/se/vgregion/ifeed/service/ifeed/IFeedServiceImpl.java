@@ -2,6 +2,7 @@ package se.vgregion.ifeed.service.ifeed;
 
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import javax.persistence.Query;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
 import java.util.*;
 
 @Service
@@ -384,16 +386,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     @Transactional
     public void removeIFeed(IFeed feed) {
-        feed = objectRepo.findByPrimaryKey(IFeed.class, feed.getId());
-        for (DynamicTableDef dynamicTableDef : feed.getDynamicTableDefs()) {
-            for (ColumnDef columnDef : dynamicTableDef.getColumnDefs()) {
-                objectRepo.delete(columnDef);
-            }
-            dynamicTableDef.getColumnDefs().clear();
-            objectRepo.delete(dynamicTableDef);
-        }
-        feed.getDynamicTableDefs().clear();
-        objectRepo.delete(feed);
+        iFeedRepo.remove(feed.getId());
+    }
+
+    public void remove(IFeed feed) {
+        EntityManager em = objectRepo.getEntityManager();
+        Session session = (Session)em.getDelegate();
+        Connection con = session.connection();
     }
 
 

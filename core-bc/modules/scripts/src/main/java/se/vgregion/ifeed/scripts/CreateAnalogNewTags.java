@@ -16,7 +16,7 @@ public class CreateAnalogNewTags {
     static ConnectionExt here = getStageConnectionExt();
 
     public static void main(String[] args) {
-        int created = (createFeeds());
+        int created = createFeeds();
         System.out.println("Number of created shadow-feeds: " + created);
         insertTranslations();
         here.commit();

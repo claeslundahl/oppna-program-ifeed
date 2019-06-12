@@ -32,7 +32,7 @@ public class AnalogyTool {
     }
 
 
-    static ConnectionExt main = CopyDatabaseUtil.getMainConnectionExt();
+    static ConnectionExt main = CopyDatabaseUtil.getRemoteStageConnectionExt();
 
 
     //static ConnectionExt main = CopyDatabaseUtil.getRemoteProdConnectionExt();
@@ -41,7 +41,7 @@ public class AnalogyTool {
     public static void main(String[] args) throws InterruptedException {
         long now = System.currentTimeMillis();
         System.out.println(main.getUrl());
-        //main();
+        main();
         System.out.println("It took: " + (System.currentTimeMillis() - now));
     }
 
@@ -49,15 +49,17 @@ public class AnalogyTool {
 
         System.out.println(main.getUrl());
 
-        if (true) return;
-
-        System.out.println("Removes all old generated feeds.");
-        main.update("delete from vgr_ifeed_vgr_ifeed where composites_id < 0 or partof_id < 0");
-        main.update("delete from vgr_ifeed_filter where id < 0");
-        main.update("delete from vgr_ifeed_ownership where ifeed_id < 0");
-        main.update("delete from vgr_ifeed where id < 0");
-        commit();
         // if (true) return;
+
+        /*System.out.println("Removes all old generated feeds.");
+        int removeCount = 0;
+        removeCount +=  main.update("delete from vgr_ifeed_vgr_ifeed where composites_id < 0 or partof_id < 0");
+        removeCount +=   main.update("delete from vgr_ifeed_filter where id < 0");
+        removeCount +=   main.update("delete from vgr_ifeed_ownership where ifeed_id < 0");
+        removeCount +=   main.update("delete from vgr_ifeed where id < 0");
+        System.out.println("Antal borttagna: " + removeCount);
+        main.rollback();
+        if (true) return;*/
 
         System.out.println("Loads all feeds left. Once.");
         loadAllFeeds();
@@ -78,11 +80,11 @@ public class AnalogyTool {
                 System.out.print(" " + c);
             }
             Long id = (Long) feed.get("id");
-            /*if (Arrays.asList(3325530l, 3325482l, 115882l).contains(id)) {
+            if (Arrays.asList(127032l).contains(id)) {
                 System.out.println("\nHittade " + id);
             } else {
                 continue;
-            }*/
+            }
             List<Map<String, Object>> filters = main.query(
                     "select distinct ifeed_id from vgr_ifeed_filter where ifeed_id = ? and ifeed_id > 0",
                     0,
@@ -169,7 +171,7 @@ public class AnalogyTool {
         System.out.println("Hittade " + items.size());
         for (Map<String, Object> item : items) {
             c++;
-            System.out.println("Item " + c);
+            // System.out.println("Item " + c);
             IFeed feed = new IFeed();
             feed.setId((Long) item.get("id"));
             List<Map<String, Object>> filters = main.query(

@@ -3,7 +3,6 @@ package se.vgregion.ifeed.service.solr.client;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 
 import javax.script.ScriptEngine;
@@ -126,25 +125,31 @@ public class SolrHttpClient {
             stringFieldMap = map;
         }
 
-        if (StringUtils.isEmpty(fq)) {
-            throw new IllegalArgumentException("We don't want to query with empty filter query...");
-        }
-
-        String json = toText(fq, start, 1_000_000, sort);
-
-        Result result = new GsonBuilder().create().fromJson(json, Result.class);
         final String[] parts = sort.split(Pattern.quote(sort.contains("%20") ? "%20" : " "));
         final String sortKey = parts[0];
         final String dir = parts[1];
         Field field = stringFieldMap.get(sortKey);
 
-        if (result.getResponse() != null) {
-            Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortKey));
-            if ("desc".equalsIgnoreCase(dir)) {
-                Collections.reverse(result.getResponse().getDocs());
+        if ("text_basic_token".equals(field.getType())) {
+            String strNameVersionOfField = sortKey + "_string";
+            if (stringFieldMap.containsKey(strNameVersionOfField)) {
+                sort = strNameVersionOfField + " " +    dir;
             }
+        }
 
-            result.getResponse().setDocs(result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size())));
+        String json = toText(fq, start, 1_000_000, sort);
+
+        Result result = new GsonBuilder().create().fromJson(json, Result.class);
+
+        if ("text_basic_token".equals(field.getType())) {
+            if (result.getResponse() != null) {
+                Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortKey));
+                if ("desc".equalsIgnoreCase(dir)) {
+                    Collections.reverse(result.getResponse().getDocs());
+                }
+
+                result.getResponse().setDocs(result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size())));
+            }
         }
 
         return result;

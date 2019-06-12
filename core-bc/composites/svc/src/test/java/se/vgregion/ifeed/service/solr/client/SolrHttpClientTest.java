@@ -27,13 +27,22 @@ public class SolrHttpClientTest {
 
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
-
-
     public static void main(String[] args) throws IOException, URISyntaxException {
-        Map<String, Object> doc = fetchDocumentByName("*Regionportal*");
+        System.out.println(client.getBaseUrl());
+        Map<String, Set<Object>> everything = client.findAllValues();
+
+        for (String key : everything.keySet()) {
+            for (Object value : everything.get(key)) {
+                if (value.toString().toLowerCase().contains("testvgr") && value.toString().toLowerCase().contains("vgr")) {
+                    System.out.println(String.format("Hittade i nyckel '%s': '%s'", key, value.toString()));
+                }
+            }
+        }
+
+        /*Map<String, Object> doc = fetchDocumentByName("*Regionportal*");
         System.out.println(
                 new GsonBuilder().setPrettyPrinting().create().toJson(doc)
-        );
+        );*/
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {

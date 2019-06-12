@@ -15,6 +15,11 @@ import java.util.Properties;
 
 public class CopyDatabaseUtil {
 
+    public static ConnectionExt getRemoteStageConnectionExt() {
+        Properties prop = getRemoteStageProperties();
+        return toConnectionExt(prop);
+    }
+
     public static ConnectionExt getMainConnectionExt() {
         Properties prop = getMainJdbcProperties();
         return toConnectionExt(prop);
@@ -66,6 +71,11 @@ public class CopyDatabaseUtil {
 
     private static Properties getProdJdbcProperties() {
         Path path = (Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config-prod.properties"));
+        return getProperties(path);
+    }
+
+    private static Properties getRemoteStageProperties() {
+        Path path = (Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config-stage.properties"));
         return getProperties(path);
     }
 

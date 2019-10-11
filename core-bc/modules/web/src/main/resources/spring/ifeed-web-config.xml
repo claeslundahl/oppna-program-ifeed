@@ -22,6 +22,8 @@
 
   <bean class="se.vgregion.ifeed.viewer.JsonpCallbackFilter" id="jsonpCallbackFilter" />
 
+  <import resource="classpath*:spring/ifeed-datasource-config.xml" />
+
   <import resource="classpath*:spring/ldap-config.xml"/>
 
 <!--  <mvc:interceptors>

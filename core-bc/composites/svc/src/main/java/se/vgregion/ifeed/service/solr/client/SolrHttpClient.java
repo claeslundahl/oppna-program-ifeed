@@ -43,7 +43,6 @@ public class SolrHttpClient {
     }
 
     public Result query(String qf, Integer start, Integer rows, String sort) {
-        // System.out.println(qf);
         try {
             Result result = queryImp(qf, start, rows, sort);
             // addTranslationProperties(result);
@@ -95,8 +94,6 @@ public class SolrHttpClient {
                 fq = fq + "&sort=" + tempSort;
             }
             fq = fq + "&wt=json&q=*%3A*";
-
-            System.out.println(fq);
 
             String json = post(baseUrl + "select", fq);
 
@@ -266,7 +263,6 @@ public class SolrHttpClient {
                     String text = String.valueOf(c).trim();
                     if (stellarMatch(stars, text)) {
                         result.add(text);
-                        System.out.println(text);
                     }
                 }
             } else {
@@ -347,7 +343,6 @@ public class SolrHttpClient {
                 }
             }
         }
-        // System.out.println("Antal mappningar " + result.size());
         return result;
     }
 

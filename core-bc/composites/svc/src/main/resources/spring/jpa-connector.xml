@@ -42,6 +42,6 @@
 
   <!-- Used to be more explicit in what we need to set up the jpa context. The real datasource is configured in a separate 
     config file (jpa-connector-jndi.xml or jpa-connector-direct.xml) -->
-  <bean id="dataSource" abstract="true" />
+  <!--<bean id="dataSource" abstract="true" />-->
 
 </beans>

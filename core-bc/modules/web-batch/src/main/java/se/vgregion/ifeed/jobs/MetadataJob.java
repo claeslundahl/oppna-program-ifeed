@@ -48,7 +48,7 @@ public class MetadataJob implements ServletContextListener {
         }*/
     }
 
-    synchronized void todo() {
+    public synchronized void todo() {
         metadataService = null;
 //         loadContext("classpath*:spring/ifeed-*.xml");
         if (metadataService != null) {

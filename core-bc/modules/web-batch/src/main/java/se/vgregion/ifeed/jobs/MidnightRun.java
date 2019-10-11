@@ -19,7 +19,7 @@ public class MidnightRun {
 
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-    private final long day = (24 * 60 * 60 * 1000);
+    private final long day = (24l * 60l * 60l * 1000l);
 
     private Task currentTask;
     private static Date nextRun;

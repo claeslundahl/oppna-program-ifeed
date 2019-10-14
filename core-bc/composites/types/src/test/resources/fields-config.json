@@ -1134,17 +1134,6 @@
             "expanded": false
           },
           {
-            "id": "vgr:VgrExtension.vgr:PublishedForUnit",
-            "name": "Upprättat för enhet namn",
-            "help": "Upprättat för enhet",
-            "type": "d:ldap_org_value",
-            "apelonKey": "",
-            "children": [],
-            "filter": true,
-            "inHtmlView": true,
-            "expanded": false
-          },
-          {
             "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
             "name": "Upprättat för enhet",
             "help": "Upprättat för enhet",

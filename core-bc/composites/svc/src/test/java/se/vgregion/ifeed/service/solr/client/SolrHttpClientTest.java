@@ -31,13 +31,7 @@ public class SolrHttpClientTest {
         System.out.println(client.getBaseUrl());
         Map<String, Set<Object>> everything = client.findAllValues();
 
-        for (String key : everything.keySet()) {
-            for (Object value : everything.get(key)) {
-                if (value.toString().toLowerCase().contains("testvgr") && value.toString().toLowerCase().contains("vgr")) {
-                    System.out.println(String.format("Hittade i nyckel '%s': '%s'", key, value.toString()));
-                }
-            }
-        }
+        client.fetchFields();
 
         /*Map<String, Object> doc = fetchDocumentByName("*Regionportal*");
         System.out.println(

@@ -283,7 +283,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-    private Set<IFeed> getAllNestedFeedsFlattly() {
+    public Set<IFeed> getAllNestedFeedsFlattly() {
         final Set<IFeed> result = new HashSet<IFeed>();
         gatherAllNestedFeeds(result);
         return result;

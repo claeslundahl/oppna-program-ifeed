@@ -331,8 +331,7 @@ public class SolrHttpClient {
         };
 
         Result everything = query("", 0, 1_000_000, null);
-
-
+        
         for (Map<String, Object> item : everything.getResponse().getDocs()) {
             for (String key : item.keySet()) {
                 Object value = item.get(key);

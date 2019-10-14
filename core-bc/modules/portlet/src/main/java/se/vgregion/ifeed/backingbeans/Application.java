@@ -934,13 +934,24 @@ public class Application {
         return result;
     }
 
+
+
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
+        Set<String> ifeedFilterNames = new HashSet<>();
+        for (IFeed iFeed : iFeedModelBean.getAllNestedFeedsFlattly()) {
+            for (IFeedFilter filter : iFeed.getFilters()) {
+                ifeedFilterNames.add(filter.getFilterKey());
+            }
+        }
+
         Set<String> blackList = getMultiValueKeys();
         List<SelectItemGroup> result = new ArrayList();
         if (filters == null) {
             this.filters = new ArrayList<>(iFeedService.getFieldInfs());
         }
         for (FieldInf parent : getFilters()) {
+
+            boolean found = false;
 
             for (FieldInf child : parent.getChildren()) {
                 SelectItemGroup group = new SelectItemGroup(child.getName() + " (" + parent.getName() + ")");
@@ -951,11 +962,16 @@ public class Application {
                         if (!blackList.contains(grandChild.getId())) {
                             items.add(new SelectItem(grandChild.getId(), grandChild.getName()));
                         }
+                        if (ifeedFilterNames.contains(grandChild.getId())) {
+                            found = true;
+                        }
                     }
                 }
 
-                group.setSelectItems(items.toArray(new SelectItem[items.size()]));
-                result.add(group);
+                if (found) {
+                    group.setSelectItems(items.toArray(new SelectItem[items.size()]));
+                    result.add(group);
+                }
             }
 
         }

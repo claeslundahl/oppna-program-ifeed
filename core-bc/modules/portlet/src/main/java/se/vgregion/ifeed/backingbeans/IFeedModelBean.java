@@ -49,7 +49,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
         getDynamicTableDefs().addAll(iFeed.getDynamicTableDefs());
         long time = System.currentTimeMillis();
         VgrGroup group = iFeed.getGroup();
-        System.out.println("Getting group takes " + (System.currentTimeMillis() - time));
+        // System.out.println("Getting group takes " + (System.currentTimeMillis() - time));
         setGroup(group);
         setDepartment(iFeed.getDepartment());
         getComposites().clear();

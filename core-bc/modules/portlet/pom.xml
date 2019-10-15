@@ -393,7 +393,11 @@
       <scope>test</scope>
     </dependency>
     <!-- END: Required for bridge:inputFile -->
-
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.6</version>
+    </dependency>
   </dependencies>
 
 </project>

@@ -424,22 +424,20 @@ public class Application {
     }
 
     public void viewIFeed(Long id) {
-        long now = System.currentTimeMillis();
+        // long now = System.currentTimeMillis();
         viewIFeedImp(id);
-        long executionTime = System.currentTimeMillis() - now;
+        /*long executionTime = System.currentTimeMillis() - now;
         System.out.println("Time for viewIFeedImp " + executionTime);
 
-        long executionTimeSum = executionTime;
+        long executionTimeSum = executionTime;*/
 
-        now = System.currentTimeMillis();
+        // now = System.currentTimeMillis();
         initFieldsInsideModel();
-        executionTime = System.currentTimeMillis() - now;
-        System.out.println("Time for initFieldsInsideModel " + executionTime);
-
-        executionTimeSum += executionTime;
-
-        MemoryTool memoryTool = new MemoryTool();
-        memoryTool.measure(this);
+        // executionTime = System.currentTimeMillis() - now;
+        // System.out.println("Time for initFieldsInsideModel " + executionTime);
+        // executionTimeSum += executionTime;
+        /*MemoryTool memoryTool = new MemoryTool();
+        memoryTool.measure(this);*/
     }
 
     private void viewIFeedImp(Long id) {

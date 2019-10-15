@@ -98,7 +98,6 @@ public class SolrQueryBuilder {
     }
 
     private static String getAndFormatFilterQuery(IFeedFilter iFeedFilter) {
-        System.out.println("getAndFormatFilterQuery");
         String ff = iFeedFilter.getFilterQuery();
 
         if (isSomeKindOfDate(iFeedFilter)) {

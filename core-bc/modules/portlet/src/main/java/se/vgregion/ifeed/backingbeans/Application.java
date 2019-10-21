@@ -551,7 +551,7 @@ public class Application {
         try {
             List<Person> people = ldapPersonService.getPeople(vgrId, 1);
             Person person = people.get(0);
-            return person.getFirstName() + " " + person.getLastName();
+            return (person.getFirstName() + " " + person.getLastName()).trim();
         } catch (Exception e) {
             return "[Inget namn funnet]";
         }
@@ -960,7 +960,7 @@ public class Application {
                         if (!blackList.contains(grandChild.getId())) {
                             items.add(new SelectItem(grandChild.getId(), grandChild.getName()));
                         }
-                        if (ifeedFilterNames.contains(grandChild.getId())) {
+                        if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
                             found = true;
                         }
                     }
@@ -1213,9 +1213,16 @@ public class Application {
         List<IFeed> result = iFeedService.getIFeedsByFilter(sample, 0, 10);
         List<String> names = new ArrayList<String>();
         for (IFeed iFeed : result) {
-            names.add(iFeed.getName() + " (" + iFeed.getId() + ")");
+            names.add(iFeed.getName().trim() + " (" + iFeed.getId() + ")");
             //iFeed.toJson();
         }
+
+        System.out.println();
+        for (String name : names) {
+            System.out.println(name);
+        }
+        System.out.println();
+
         return names;
     }
 

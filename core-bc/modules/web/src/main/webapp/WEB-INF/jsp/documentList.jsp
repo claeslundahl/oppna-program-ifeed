@@ -34,5 +34,8 @@
 <div>
 
 </div>
+<div style="display: none;" id="query">
+    ${query}
+</div>
 </body>
 </html>

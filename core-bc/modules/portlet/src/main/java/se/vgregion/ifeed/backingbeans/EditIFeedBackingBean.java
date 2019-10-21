@@ -141,7 +141,7 @@ public class EditIFeedBackingBean implements Serializable {
 
         Set<Ownership> target = iFeedModelBean.getOwnerships();
         Ownership ownership = new Ownership();
-        ownership.setName(newOwnershipName);
+        ownership.setName(newOwnershipName.trim());
         ownership.setIfeed(iFeedModelBean);
         target.add(ownership);
     }

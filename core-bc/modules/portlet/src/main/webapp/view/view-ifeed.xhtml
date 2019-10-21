@@ -148,7 +148,7 @@
                                              rendered="#{app.inEditMode}"
                                              styleClass="link-button-trash"
                                              ajax="false" async="true"
-                                             id="remove_#{getOwnershipsAsListItem.userId}"
+                                             id="remove_#{getOwnershipsAsListItem.userId.trim()}"
                                              actionListener="#{iFeedModelBean.getOwnershipsAsList().remove(getOwnershipsAsListItem)}">
                               </p:commandLink>
                             </span>

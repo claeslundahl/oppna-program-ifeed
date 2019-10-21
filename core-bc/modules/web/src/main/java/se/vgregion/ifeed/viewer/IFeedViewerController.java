@@ -513,6 +513,7 @@ public class IFeedViewerController {
             model.addAttribute("result", result.getResponse().getDocs());
             // model.addAttribute(result.getResponse().getDocs());
         }
+        model.addAttribute("query", client.getLatestCallAsGet());
         return "documentList";
     }
 

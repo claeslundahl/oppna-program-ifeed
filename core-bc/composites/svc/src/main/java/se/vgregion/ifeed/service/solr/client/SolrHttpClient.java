@@ -28,6 +28,8 @@ public class SolrHttpClient {
     private final String baseUrl;
 
     private WeakReference<Map<String, Field>> fields = new WeakReference<>(null);
+    private String latestCall;
+    private String latestCallAsGet;
 
     public SolrHttpClient(String baseUrl) {
         super();
@@ -95,7 +97,11 @@ public class SolrHttpClient {
             }
             fq = fq + "&wt=json&q=*%3A*";
 
-            String json = post(baseUrl + "select", fq);
+            latestCall = baseUrl + "select";
+
+            latestCallAsGet = baseUrl + "select?" + fq;
+
+            String json = post(latestCall, fq);
 
             return json;
         } catch (Exception e) {
@@ -343,6 +349,14 @@ public class SolrHttpClient {
             }
         }
         return result;
+    }
+
+    public String getLatestCall() {
+        return latestCall;
+    }
+
+    public String getLatestCallAsGet() {
+        return latestCallAsGet;
     }
 
 }

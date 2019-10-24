@@ -140,7 +140,7 @@ public class SolrHttpClient {
             }
         }
 
-        String json = toText(fq, start, 1_000_000, sort);
+        String json = toText(fq, start, "text_basic_token".equals(field.getType()) ? 1_000_000 : rows, sort);
 
         Result result = new GsonBuilder().create().fromJson(json, Result.class);
 

@@ -128,7 +128,7 @@ public class TableDefModel extends DynamicTableDef {
   }
 
   private FieldInf getFirstBestFieldInf() {
-    for (FieldInf fieldInf : app.getFilters()) {
+    for (FieldInf fieldInf : app.getFieldSuitableForSorting()) {
       FieldInf r = getFirstBestFieldInf(fieldInf);
       if (r != null) {
         return r;

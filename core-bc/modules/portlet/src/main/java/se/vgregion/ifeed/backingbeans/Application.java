@@ -932,9 +932,78 @@ public class Application {
         return result;
     }
 
+    public List<FieldInf> getFieldSuitableForSorting() {
+        Set<String> ifeedFilterNames = new HashSet<>();
+        for (IFeed iFeed : iFeedModelBean.getAllNestedFeedsFlattly()) {
+            for (IFeedFilter filter : iFeed.getFilters()) {
+                ifeedFilterNames.add(filter.getFilterKey());
+            }
+        }
 
+        Set<String> blackList = getMultiValueKeys();
+        List<FieldInf> result = new ArrayList();
+        if (filters == null) {
+            this.filters = new ArrayList<>(iFeedService.getFieldInfs());
+        }
+        for (FieldInf parent : getFilters()) {
+
+            boolean found = false;
+
+            FieldInf root = parent.toDetachedCopy();
+            for (FieldInf child : parent.getChildren()) {
+                // SelectItemGroup group = new SelectItemGroup(child.getName() + " (" + parent.getName() + ")");
+                FieldInf group = child.toDetachedCopy();
+
+                List<FieldInf> items = new ArrayList<>();
+
+                for (FieldInf grandChild : child.getChildren()) {
+                    if (grandChild.isInHtmlView()) {
+                        if (!blackList.contains(grandChild.getId())) {
+                            items.add(grandChild.toDetachedCopy());
+                        }
+                        if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
+                            found = true;
+                        }
+                    }
+                }
+
+                if (found) {
+                    //group.setSelectItems(items.toArray(new SelectItem[items.size()]));
+                    root.getChildren().add(group);
+                    group.getChildren().addAll(items);
+                    result.add(root);
+                }
+            }
+        }
+
+        for (FieldInf fieldInf : result) {
+            fieldInf.init();
+        }
+
+        return result;
+    }
 
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
+        List<SelectItemGroup> result = new ArrayList<>();
+
+        for (FieldInf top : getFieldSuitableForSorting()) {
+
+            List<SelectItem> items = new ArrayList<>();
+            for (FieldInf field : top.getChildren()) {
+                SelectItemGroup g = new SelectItemGroup(field.getName() + " (" + top.getName() + ")");
+                for (FieldInf leaf : field.getChildren()) {
+                    items.add(new SelectItem(leaf.getId(), leaf.getName()));
+                }
+                g.setSelectItems(items.toArray(new SelectItem[items.size()]));
+                result.add(g);
+            }
+
+        }
+        return result;
+        // return fieldInfsAsSelectItemGroupsOriginal();
+    }
+
+    public List<SelectItemGroup> fieldInfsAsSelectItemGroupsOriginal() {
         Set<String> ifeedFilterNames = new HashSet<>();
         for (IFeed iFeed : iFeedModelBean.getAllNestedFeedsFlattly()) {
             for (IFeedFilter filter : iFeed.getFilters()) {
@@ -1454,6 +1523,10 @@ public class Application {
 
     public void setFiltersMap(Map<String, FieldInf> filtersMap) {
         this.filtersMap = filtersMap;
+    }
+
+    public void setiFeedModelBean(IFeedModelBean iFeedModelBean) {
+        this.iFeedModelBean = iFeedModelBean;
     }
 
 }

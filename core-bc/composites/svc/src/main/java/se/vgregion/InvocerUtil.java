@@ -104,11 +104,11 @@ public class InvocerUtil {
 
             return fields.stream()
                     .filter(field -> {
-                        boolean sortable = field.getType().equalsIgnoreCase("string")
+                        /*boolean sortable = field.getType().equalsIgnoreCase("string")
                                 || field.getType().equalsIgnoreCase("long")
-                                || field.getType().equalsIgnoreCase("tdate");
+                                || field.getType().equalsIgnoreCase("tdate");*/
 
-                        return !sortable || field.getMultiValued();
+                        return /*!sortable ||*/ field.getMultiValued();
                     })
                     .map(Field::getName)
                     .collect(Collectors.toSet());

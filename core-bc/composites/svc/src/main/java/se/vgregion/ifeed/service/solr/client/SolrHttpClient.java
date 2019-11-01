@@ -136,7 +136,7 @@ public class SolrHttpClient {
         if ("text_basic_token".equals(field.getType())) {
             String strNameVersionOfField = sortKey + "_string";
             if (stringFieldMap.containsKey(strNameVersionOfField)) {
-                sort = strNameVersionOfField + " " +    dir;
+                sort = strNameVersionOfField + " " + dir;
             }
         }
 
@@ -337,7 +337,7 @@ public class SolrHttpClient {
         };
 
         Result everything = query("", 0, 1_000_000, null);
-        
+
         for (Map<String, Object> item : everything.getResponse().getDocs()) {
             for (String key : item.keySet()) {
                 Object value = item.get(key);

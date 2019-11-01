@@ -401,4 +401,13 @@ public class FieldInf implements Serializable {
         void each(FieldInf item);
     }
 
+    public FieldInf toDetachedCopy() {
+        FieldInf result = new FieldInf();
+        BeanMap self = BeanMap.create(this);
+        BeanMap bm = BeanMap.create(result);
+        bm.putAll(self);
+        result.setParent(null);
+        return result;
+    }
+
 }

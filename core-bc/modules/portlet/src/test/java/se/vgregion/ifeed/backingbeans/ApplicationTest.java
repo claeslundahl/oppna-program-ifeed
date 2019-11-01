@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+
 public class ApplicationTest {
 
     @Test
@@ -51,5 +52,12 @@ public class ApplicationTest {
         String[] r = "hej hoppsan (89)".split("\\(|\\)");
         System.out.println(Arrays.asList(r));
     }
+
+/*    @Test
+    public void fieldInfsAsSelectItemGroupsOriginal() {
+        Application application = new Application();
+        application.setiFeedModelBean(new IFeedModelBean());
+        application.fieldInfsAsSelectItemGroupsOriginal();
+    }*/
 
 }

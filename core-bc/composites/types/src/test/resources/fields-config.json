@@ -950,7 +950,7 @@
             "type": "d:text",
             "apelonKey": "",
             "children": [],
-            "filter": false,
+            "filter": true,
             "inHtmlView": true,
             "expanded": false
           },

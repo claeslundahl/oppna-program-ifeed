@@ -28,10 +28,13 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
+        // client = new SolrHttpClient("http://i3-stage-index.vgregion.se:9090/solr/ifeed/");
         System.out.println(client.getBaseUrl());
-        Map<String, Set<Object>> everything = client.findAllValues();
+        // Map<String, Set<Object>> everything = client.findAllValues();
 
-        client.fetchFields();
+        List<Field> fields = client.fetchFields();
+
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(fields));
 
         /*Map<String, Object> doc = fetchDocumentByName("*Regionportal*");
         System.out.println(

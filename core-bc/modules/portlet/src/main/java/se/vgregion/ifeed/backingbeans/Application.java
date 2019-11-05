@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.InvocerUtil;
 import se.vgregion.common.utils.Json;
-import se.vgregion.common.utils.MemoryTool;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.Note;
 import se.vgregion.ifeed.formbean.VgrOrganization;
@@ -29,14 +28,7 @@ import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.shared.DynamicTableSortingDef;
-import se.vgregion.ifeed.types.CachedUser;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.FieldsInf;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
-import se.vgregion.ifeed.types.Ownership;
-import se.vgregion.ifeed.types.VgrDepartment;
-import se.vgregion.ifeed.types.VgrGroup;
+import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
@@ -53,25 +45,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 
 // import se.vgregion.varnish.VarnishClient;
@@ -966,14 +944,18 @@ public class Application {
                         }
                     }
                 }
-
+                // ändring börjar
                 if (found) {
                     //group.setSelectItems(items.toArray(new SelectItem[items.size()]));
                     root.getChildren().add(group);
                     group.getChildren().addAll(items);
-                    result.add(root);
                 }
             }
+            if (found) {
+                //group.setSelectItems(items.toArray(new SelectItem[items.size()]));
+                result.add(root);
+            }
+            // ändring slutar
         }
 
         for (FieldInf fieldInf : result) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
+import se.vgregion.ifeed.service.solr.client.Field;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
 
@@ -56,6 +57,8 @@ public interface IFeedService {
     void removeIFeed(Long id);
 
     List<FieldsInf> getFieldsInfs();
+
+    FieldInf getFieldInf(String byId);
 
     Config getConfig(String withThatId);
 

@@ -23,6 +23,8 @@ public class FieldInf implements Serializable {
 
     private String id, name, help, type, apelonKey = "", value;
 
+    private Set<String> counterparts = new HashSet<>();
+
     private final List<FieldInf> children = new ArrayList<FieldInf>();
 
     private boolean filter, inHtmlView, expanded, inTooltip;
@@ -397,6 +399,14 @@ public class FieldInf implements Serializable {
         });
     }
 
+    public Set<String> getCounterparts() {
+        return counterparts;
+    }
+
+    public void setCounterparts(Set<String> counterparts) {
+        this.counterparts = counterparts;
+    }
+
     public interface Visitor {
         void each(FieldInf item);
     }
@@ -408,6 +418,13 @@ public class FieldInf implements Serializable {
         bm.putAll(self);
         result.setParent(null);
         return result;
+    }
+
+    public String[] toSolrKeys() {
+        List<String> result = new ArrayList<>();
+        result.add(id);
+        result.addAll(counterparts);
+        return result.toArray(new String[result.size()]);
     }
 
 }

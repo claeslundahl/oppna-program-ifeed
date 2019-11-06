@@ -918,7 +918,7 @@ public class Application {
             }
         }
 
-        Set<String> blackList = getMultiValueKeys();
+        // Set<String> blackList = getMultiValueKeys();
         List<FieldInf> result = new ArrayList();
         if (filters == null) {
             this.filters = new ArrayList<>(iFeedService.getFieldInfs());
@@ -934,9 +934,9 @@ public class Application {
 
                 for (FieldInf grandChild : child.getChildren()) {
                     if (grandChild.isInHtmlView()) {
-                        if (!blackList.contains(grandChild.getId())) {
-                            items.add(grandChild.toDetachedCopy());
-                        }
+                        // if (!blackList.contains(grandChild.getId())) {
+                        items.add(grandChild.toDetachedCopy());
+                        // }
                         if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
                             found = true;
                         }
@@ -1455,9 +1455,9 @@ public class Application {
 
         List<Map<String, Object>> result = null;
         SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
-        Result fromSolr = client.query(retrievedFeed.toQuery(), 0, 501, "title asc");
+        Result fromSolr = client.query(retrievedFeed.toQuery(), 0, 501, null, null);
         if (fromSolr != null && fromSolr.getResponse() != null && fromSolr.getResponse().getDocs() != null)
-            result = client.query(retrievedFeed.toQuery(), 0, 501, "title asc").getResponse().getDocs();
+            result = client.query(retrievedFeed.toQuery(), 0, 501, null, null).getResponse().getDocs();
         this.searchResults = result;
     }
 

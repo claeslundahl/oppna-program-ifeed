@@ -741,6 +741,7 @@
           },
           {
             "id": "dc.date.issued",
+            "corresponding": ["core:ArchivalObject.core:CreatedDateTime"],
             "name": "Publiceringsdatum",
             "help": "Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen.",
             "type": "d:date",

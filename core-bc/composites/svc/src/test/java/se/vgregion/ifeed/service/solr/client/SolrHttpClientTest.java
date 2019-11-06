@@ -32,9 +32,8 @@ public class SolrHttpClientTest {
         System.out.println(client.getBaseUrl());
         // Map<String, Set<Object>> everything = client.findAllValues();
 
-        List<Field> fields = client.fetchFields();
-
-        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(fields));
+        //List<Field> fields = client.fetchFields();
+        // System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(fields));
 
         /*Map<String, Object> doc = fetchDocumentByName("*Regionportal*");
         System.out.println(
@@ -91,8 +90,8 @@ public class SolrHttpClientTest {
         }
     }
 
-    static void fetchAllWithSourceSystem() {
-        IFeedFilter filter = new IFeedFilter("SourceSystem", "*");
+    /*static void fetchAllWithSourceSystem() {
+        IFeedFilter filter = new IFeedFilter("*", "SourceSystem");
         System.out.println("Antal " + client.query(filter.toQuery(), null, null, null).getResponse().getNumFound());
     }
 
@@ -103,9 +102,9 @@ public class SolrHttpClientTest {
             return null;
         }
         return results.getResponse().getDocs().get(0);
-    }
+    }*/
 
-    static Map<String, Object> fetchDocumentByName(String value) {
+/*    static Map<String, Object> fetchDocumentByName(String value) {
         IFeedFilter filter = new IFeedFilter(value, "title");
         System.out.println(client.getBaseUrl());
         Result results = client.query(filter.toQuery(), null, null, "title asc");
@@ -113,7 +112,7 @@ public class SolrHttpClientTest {
             return null;
         }
         return results.getResponse().getDocs().get(0);
-    }
+    }*/
 
     static void findById() {
         System.out.println(client.getBaseUrl());
@@ -122,7 +121,7 @@ public class SolrHttpClientTest {
         filter.setFilterKey("id");
         filter.setFilterQuery("14a94647-9364-491f-ba1c-8dc76963b0b7");
         System.out.println(filter.toQuery());
-        Result result = client.query(filter.toQuery(), 0, 100_000, "title asc");
+        Result result = client.query(filter.toQuery(), 0, 100_000, null, null);
         for (Map<String, Object> doc : result.getResponse().getDocs()) {
             for (String key : doc.keySet()) {
                 System.out.println(key + " = " + doc.get(key));
@@ -288,123 +287,6 @@ public class SolrHttpClientTest {
         }
     }
 
-    static void testAllIndexFields() {
-        List<String> fieldNames = Arrays.asList(
-                "core:ArchivalObject.core:Producer",
-                "core:ArchivalObject.core:Classification.core:Classification.name",
-                "core:ArchivalObject.core:ObjectType",
-                "vgr:VgrExtension.vgr:PublishedForUnit.id",
-                "vgrsy:DomainExtension.vgrsy:SubjectClassification",
-                "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
-                "vgr:VgrExtension.vgr:Tag",
-                "vgr:VgrExtension.vgr:SourceSystem",
-                "vgr:VgrExtension.vgr:CreatedByUnit.id",
-                "vgr:VgrExtension.vgr:CreatedBy",
-                "vgr:VgrExtension.vgr:RevisedAvailableFrom",
-                "vgr:VgrExtension.vgr:RevisedAvailableTo",
-                "vgr:VgrExtension.vgr:SecurityClass",
-                "dc.title",
-                "dc.title.filename",
-                "dc.title.filename.native",
-                "dc.title.alternative",
-                "dc.description",
-                "dc.type.document",
-                "dc.type.document.structure",
-                "dc.type.document.structure.id",
-                "dc.type.record",
-                "dc.type.record.id",
-                "dc.coverage.hsacode",
-                "dc.coverage.hsacode.id",
-                "dcterms.audience",
-                "dc.audience",
-                "dcterms.audience.id",
-                "dc.identifier.version",
-                "dc.contributor.savedby",
-                "dc.contributor.savedby.id",
-                "dc.date.saved",
-                "vgregion.status.document",
-                "vgregion.status.document.id",
-                "vgr.status.document",
-                "vgr.status.document.id",
-                "dc.source.documentid",
-                "dc.source",
-                "dc.creator",
-                "dc.creator.id",
-                "dc.creator.freetext",
-                "dc.creator.forunit",
-                "dc.creator.forunit.id",
-                "dc.creator.project-assignment",
-                "dc.creator.document",
-                "dc.creator.document.id",
-                "dc.creator.function",
-                "dc.creator.recordscreator",
-                "dc.creator.recordscreator.id",
-                "dc.date.validfrom",
-                "dc.date.validto",
-                "dc.date.availablefrom",
-                "dc.date.availableto",
-                "dc.date.copyrighted",
-                "dc.contributor.acceptedby",
-                "dc.contributor.acceptedby.id",
-                "dc.contributor.acceptedby.freetext",
-                "dc.date.accepted",
-                "dc.contributor.acceptedby.role",
-                "dc.contributor.acceptedby.unit.freetext",
-                "dc.contributor.controlledby",
-                "dc.contributor.controlledby.id",
-                "dc.contributor.controlledby.freetext",
-                "dc.date.controlled",
-                "dc.contributor.controlledby.role",
-                "dc.contributor.controlledby.unit.freetext",
-                "dc.publisher.forunit",
-                "dc.publisher.forunit.flat",
-                "dc.publisher.forunit.id",
-                "dc.publisher.project-assignment",
-                "dc.rights.accessrights",
-                "dc.publisher",
-                "dc.publisher.id",
-                "dc.date.issued",
-                "dc.identifier.documentid",
-                "dc.identifier",
-                "dc.identifier.native",
-                "dc.type.process.name",
-                "dc.type.file.process",
-                "dc.type.file",
-                "dc.identifier.diarie.id",
-                "dc.type.document.serie",
-                "dc.type.document.id",
-                "dc.subject.keywords",
-                "dc.subject.authorkeywords",
-                "language",
-                "dc.language",
-                "dc.relation.isversionof",
-                "dc.relation.replaces",
-                "dc.format.extent",
-                "dc.identifier.location",
-                "dc.type.templatename",
-                "dc.format.extent.mimetype",
-                "dc.format.extent.mimetype.native",
-                "dc.format.extension",
-                "dc.format.extension.native",
-                "dc.identifier.checksum",
-                "dc.identifier.checksum.native",
-                "dc.source.origin"
-        );
-
-        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
-        for (String fieldName : fieldNames) {
-            IFeed feed = new IFeed();
-            IFeedFilter filter = new IFeedFilter(
-                    "*",
-                    fieldName
-            );
-            feed.addFilter(filter);
-            Result result = client.query(feed.toQuery(), 0, 10_000, "title asc");
-            System.out.println(fieldName + " " + result.getResponse().getDocs().size());
-        }
-
-    }
-
     static void runLatestFeedQuery() throws IOException {
         Properties properties = new Properties();
         properties.load(new ByteArrayInputStream(Files.readAllBytes(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties"))));
@@ -423,7 +305,7 @@ public class SolrHttpClientTest {
 
         // System.out.println(client.post("http://i3-dev.vgregion.se:9090/solr/ifeed/select", "&start=0&rows=10&sort=core_ArchivalObject_core_ObjectType%20asc&wt=json&q=*%3A*"));
 
-        Result result = client.query(feed.toQuery(), 0, 1_000_000, "dc.title%20asc");
+        Result result = client.query(feed.toQuery(), 0, 1_000_000, null, null);
 
         int i = 0;
         for (Map<String, Object> doc : result.getResponse().getDocs()) {

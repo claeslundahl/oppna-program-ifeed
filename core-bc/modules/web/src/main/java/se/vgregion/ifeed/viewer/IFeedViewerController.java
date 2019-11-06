@@ -422,31 +422,10 @@ public class IFeedViewerController {
                               String fromPage,
                               String[] fieldToSelect) {
 
-        /*if (fromPage != null && !"".equals(fromPage.trim())) {
-            Integer i = callsToJsonpMetadata.get(fromPage);
-            if (i == null) {
-                callsToJsonpMetadata.put(fromPage, 1);
-            } else {
-                callsToJsonpMetadata.put(fromPage, i.intValue() + 1);
-            }
-        }*/
-
         if (retrievedFeed == null) {
             // Throw 404 if the feed doesn't exist
             throw new ResourceNotFoundException();
         }
-
-        //IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
-        /*if (startBy != null && startBy >= 0) {
-            solrQuery.setStart(startBy);
-            if (endBy != null && endBy > startBy) {
-                solrQuery.setRows(endBy - startBy);
-            }
-        } else {
-            solrQuery.setRows(25_000);
-        }
-        solrQuery.setShowDebugInfo(true);*/
-
         if (sortField == null || sortField.isEmpty()) sortField = IFeedSolrQuery.DEFAULT_SORT_FIELD;
         if (sortDirection == null || sortDirection.isEmpty())
             sortDirection = IFeedSolrQuery.DEFAULT_SORT_DIRECTION.toString();
@@ -465,21 +444,8 @@ public class IFeedViewerController {
             endBy = 1_000_000;
         }
 
-        Result result = client.query(retrievedFeed.toQuery(), startBy, endBy, sortField + "%20" + sortDirection);
-
-        /*SortingMap sorter = new SortingMap();
-
-        for (Map<String, Object> item : result.getResponse().getDocs()) {
-            Comparable comparable = (Comparable) item.get(sortField);
-
-            if (comparable == null) {
-                comparable = "";
-            } else if (comparable instanceof String) {
-                comparable = ((String) comparable).toLowerCase();
-            }
-
-            sorter.get(comparable).add(item);
-        }*/
+        FieldInf field = iFeedService.getFieldInf(sortField);
+        Result result = client.query(retrievedFeed.toQuery(), startBy, endBy, sortDirection, field);
 
         if (result != null && result.getResponse() != null && result.getResponse().getDocs() != null
                 && fieldToSelect != null && fieldToSelect.length > 0) {
@@ -802,7 +768,8 @@ public class IFeedViewerController {
                 filter.toQuery(),
                 0,
                 (limit.intValue() > 0 ? limit : 1_000_000),
-                defaultsortcolumn + " " + defaultsortorder
+                //defaultsortcolumn + " " + defaultsortorder
+                null, null
         );
 
         model.addAttribute("items", findings.getResponse().getDocs());
@@ -938,10 +905,10 @@ public class IFeedViewerController {
         IFeedFilter filter = new IFeedFilter();
         filter.setFilterQuery(documentId);
         filter.setFilterKey("id");
-        Result findigs = client.query(filter.toQuery(), null, null, "title asc");
+        Result findigs = client.query(filter.toQuery(), null, null, null, null);
         if (findigs.getResponse().getDocs().isEmpty()) {
             filter.setFilterQuery("workspace://SpacesStore/" + documentId);
-            findigs = client.query(filter.toQuery(), null, null, "title asc");
+            findigs = client.query(filter.toQuery(), null, null, null, null);
         }
 
         if (findigs.getResponse().getDocs().isEmpty()) {
@@ -1270,7 +1237,7 @@ public class IFeedViewerController {
         IFeedFilter filter = new IFeedFilter();
         filter.setFilterQuery(documentId);
         filter.setFilterKey("id");
-        Map<String, Object> doc = client.query(filter.toQuery(), 0, 1, "").getResponse().getDocs().get(0);
+        // Map<String, Object> doc = client.query(filter.toQuery(), 0, 1, "").getResponse().getDocs().get(0);
 
         Map<String, String> idValueMap = new HashMap<String, String>();
         List<FieldsInf> infs = iFeedService.getFieldsInfs(); // todo cache?

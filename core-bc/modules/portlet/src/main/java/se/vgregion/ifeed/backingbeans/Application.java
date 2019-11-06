@@ -923,10 +923,8 @@ public class Application {
         if (filters == null) {
             this.filters = new ArrayList<>(iFeedService.getFieldInfs());
         }
+        boolean found = false;
         for (FieldInf parent : getFilters()) {
-
-            boolean found = false;
-
             FieldInf root = parent.toDetachedCopy();
             for (FieldInf child : parent.getChildren()) {
                 // SelectItemGroup group = new SelectItemGroup(child.getName() + " (" + parent.getName() + ")");
@@ -944,18 +942,14 @@ public class Application {
                         }
                     }
                 }
-                // ändring börjar
-                if (found) {
-                    //group.setSelectItems(items.toArray(new SelectItem[items.size()]));
-                    root.getChildren().add(group);
-                    group.getChildren().addAll(items);
-                }
+                group.getChildren().addAll(items);
+                root.getChildren().add(group);
             }
             if (found) {
                 //group.setSelectItems(items.toArray(new SelectItem[items.size()]));
                 result.add(root);
+                found = false;
             }
-            // ändring slutar
         }
 
         for (FieldInf fieldInf : result) {
@@ -970,8 +964,8 @@ public class Application {
 
         for (FieldInf top : getFieldSuitableForSorting()) {
 
-            List<SelectItem> items = new ArrayList<>();
             for (FieldInf field : top.getChildren()) {
+                List<SelectItem> items = new ArrayList<>();
                 SelectItemGroup g = new SelectItemGroup(field.getName() + " (" + top.getName() + ")");
                 for (FieldInf leaf : field.getChildren()) {
                     items.add(new SelectItem(leaf.getId(), leaf.getName()));
@@ -979,7 +973,6 @@ public class Application {
                 g.setSelectItems(items.toArray(new SelectItem[items.size()]));
                 result.add(g);
             }
-
         }
         return result;
         // return fieldInfsAsSelectItemGroupsOriginal();

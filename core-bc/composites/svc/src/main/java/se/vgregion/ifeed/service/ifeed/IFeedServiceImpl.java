@@ -560,6 +560,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     }
 
     @Override
+    public FieldInf getFieldInf(String byId) {
+        return mapFieldInfToId().get(byId);
+    }
+
+    @Override
     public Config getConfig(String withThatId) {
         return objectRepo.findByPrimaryKey(Config.class, withThatId);
     }
@@ -638,7 +643,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     public List<String> fetchFilterSuggestion(IFeed feed, String fieldId, String starFilter) {
-        return SolrFacetUtil.fetchFacets(getSolrServiceUrl(), feed, fieldId, starFilter);
+        FieldInf field = getFieldInfs().stream().filter(f -> fieldId.equals(f.getId())).findFirst().get();
+        return SolrFacetUtil.fetchFacets(getSolrServiceUrl(), feed,  field, starFilter);
     }
 
     public ObjectRepo getObjectRepo() {

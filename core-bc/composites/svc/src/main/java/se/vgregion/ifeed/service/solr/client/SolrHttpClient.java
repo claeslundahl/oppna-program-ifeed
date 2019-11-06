@@ -3,7 +3,9 @@ package se.vgregion.ifeed.service.solr.client;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
+import se.vgregion.ifeed.types.FieldInf;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -44,10 +46,11 @@ public class SolrHttpClient {
         }
     }
 
-    public Result query(String qf, Integer start, Integer rows, String sort) {
+    // public Result query(String qf, Integer start, Integer rows, String dir, String ... sort) {
+
+    public Result query(String qf, Integer start, Integer rows, String dir, FieldInf sortField) {
         try {
-            Result result = queryImp(qf, start, rows, sort);
-            // addTranslationProperties(result);
+            Result result = queryImp(qf, start, rows, dir, sortField);
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -109,7 +112,41 @@ public class SolrHttpClient {
         }
     }
 
-    private Result queryImp(String fq, Integer start, Integer rows, String sort) throws IOException {
+    /*private Result queryImp(String fq, Integer start, Integer rows, String dir, String[] sortFields) {
+        throw new RuntimeException();
+    }*/
+
+    private Result queryImp(String fq, Integer start, Integer rows, String dir, FieldInf sortOn) {
+        if (start == null) start = 0;
+        if (rows == null) rows = 1_000_000;
+
+        String[] sortFields = sortOn == null ? null : sortOn.toSolrKeys();
+
+        if (sortFields == null || sortFields.length == 0) {
+            sortFields = new String[]{"title"};
+        }
+
+        if (StringUtils.isBlank(dir)) {
+            dir = "asc";
+        }
+
+        String json = toText(fq, start, 1_000_000, null);
+        Result result = new GsonBuilder().create().fromJson(json, Result.class);
+
+        if (result.getResponse() != null) {
+            Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortFields));
+            if ("desc".equalsIgnoreCase(dir)) {
+                Collections.reverse(result.getResponse().getDocs());
+            }
+            result.getResponse().setDocs(
+                    result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size()))
+            );
+        }
+
+        return result;
+    }
+
+    private Result queryImpOld(String fq, Integer start, Integer rows, String sort) throws IOException {
         if (start == null) start = 0;
         if (rows == null) rows = 1_000_000;
         if (sort == null || sort.trim().equals("") || sort.trim().contains("dc.title")) {
@@ -296,7 +333,8 @@ public class SolrHttpClient {
                 "",
                 0,
                 1_000_000,
-                "title asc"
+                "asc",
+                null
         ).getResponse().getDocs();
 
         for (Map<String, Object> doc : docs) {
@@ -336,7 +374,7 @@ public class SolrHttpClient {
             }
         };
 
-        Result everything = query("", 0, 1_000_000, null);
+        Result everything = query("", 0, 1_000_000, null, null);
 
         for (Map<String, Object> item : everything.getResponse().getDocs()) {
             for (String key : item.keySet()) {

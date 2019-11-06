@@ -3,6 +3,7 @@ package se.vgregion.ifeed.service.solr;
 import org.apache.commons.lang.StringUtils;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
+import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -28,7 +29,7 @@ public class SolrFacetUtil {
      * @param field       what property to get facets for.
      * @return the top 10 results of the search, sorted descending.
      */
-    public static List<String> fetchFacets(String solrBaseUrl, IFeed feed, String field, String starFilter) {
+    public static List<String> fetchFacets(String solrBaseUrl, IFeed feed, FieldInf field, String starFilter) {
         try {
             return fetchFacetsImpl(solrBaseUrl, feed, field, starFilter);
         } catch (Exception e) {
@@ -42,7 +43,8 @@ public class SolrFacetUtil {
         }
     }
 
-    private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, String field, String starFilter) throws Exception {
+    private static List<String> fetchFacetsImpl(String solrBaseUrl, IFeed feed, FieldInf fi, String starFilter) throws Exception {
+        String field = fi.getId();
         if (feed == null) {
             throw new NullPointerException();
         }
@@ -51,13 +53,15 @@ public class SolrFacetUtil {
                 question,
                 0,
                 10,
-                field + "%20asc"
+                "asc",
+                fi
         );
         if (result.getResponse() == null) {
             result = client.query(
                     question,
                     0,
                     10_000,
+                    null,
                     null
             );
         }

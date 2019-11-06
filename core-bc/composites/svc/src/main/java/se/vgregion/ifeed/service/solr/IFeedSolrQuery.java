@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.solr.client.Field;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
+import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -244,7 +246,7 @@ public class IFeedSolrQuery extends SolrQuery {
         IFeedResults results = new IFeedResults();
         results.setQueryUrl(ClientUtils.toQueryString(this, false));
 
-        results.addAll(prepareAndPerformQuery(iFeed.getSortField(), direction, iFeed, fieldsToSelect));
+        results.addAll(prepareAndPerformQuery(getFieldInf(iFeed.getSortField()), direction, iFeed, fieldsToSelect));
 
         return results;
     }
@@ -257,21 +259,30 @@ public class IFeedSolrQuery extends SolrQuery {
         addFeedFilters(iFeed);
         addOffsetFilter(offset);
 
-        List<Map<String, Object>> result = prepareAndPerformQuery(DEFAULT_SORT_FIELD, DEFAULT_SORT_DIRECTION, iFeed, fieldsToSelect);
+        FieldInf defaultField = getFieldInf(DEFAULT_SORT_FIELD);
+
+        List<Map<String, Object>> result = prepareAndPerformQuery(defaultField, DEFAULT_SORT_DIRECTION, iFeed, fieldsToSelect);
 
         return result;
     }
 
-    public List<Map<String, Object>> getIFeedResults(IFeed iFeed, String sortField, SortDirection sortDirection, final String[] fieldsToSelect) {
+    protected FieldInf getFieldInf(String byId) {
+        FieldInf defaultField = iFeedService.getFieldInfs().stream().filter(f -> byId.equals(f.getId())).findFirst().get();
+        return defaultField;
+    }
+
+    public List<Map<String, Object>> getIFeedResults(IFeed iFeed, FieldInf sortField, SortDirection sortDirection, final String[] fieldsToSelect) {
         latestArg2getIFeedResults.set(iFeed);
         addFeedFilters(iFeed);
         addUnPublishedFilter();
         return prepareAndPerformQuery(sortField, sortDirection, iFeed, fieldsToSelect);
     }
 
-    private List<Map<String, Object>> prepareAndPerformQuery(String sortField,
+    private List<Map<String, Object>> prepareAndPerformQuery(FieldInf fieldInf,
                                                              final SortDirection sortDirection, IFeed feed,
                                                              final String[] fieldsToSelect) {
+
+        String sortField = fieldInf == null ? null : fieldInf.getId();
         long before = System.currentTimeMillis();
         // List<Map<String, Object>> result = prepareAndPerformQueryImpl(sortField, sortDirection, fieldsToSelect);
         LOGGER.debug("Time for solr " + (System.currentTimeMillis() - before) + " for id " + (feed != null ? feed.getId() : "null"));
@@ -279,7 +290,7 @@ public class IFeedSolrQuery extends SolrQuery {
             //sortField = "dc.title";
             sortField = "title";
         }
-        Result someOtherResult = client.query(feed.toQuery(), 0, DEFAULT_SOLR_RESULT_SIZE, sortField + "%20" + sortDirection);
+        Result someOtherResult = client.query(feed.toQuery(), 0, DEFAULT_SOLR_RESULT_SIZE, sortDirection.name(), fieldInf);
         // if (sortField.equals("dc.title") || sortField.equals("title")) {
         SortingMap sortingMap = new SortingMap();
         for (Map<String, Object> item : someOtherResult.getResponse().getDocs()) {

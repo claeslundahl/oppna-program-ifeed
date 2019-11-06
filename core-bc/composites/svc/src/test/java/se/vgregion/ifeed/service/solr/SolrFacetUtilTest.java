@@ -23,12 +23,11 @@ public class SolrFacetUtilTest {
         System.out.println(result);*/
         /*String json = new String(Files.readAllBytes(Paths.get(System.getProperty("user.home"), "feed.json")));
         IFeed feed = Json.toObject(IFeed.class, json);*/
-        IFeed feed = new IFeed();
+        /*IFeed feed = new IFeed();
         List<String> result = SolrFacetUtil.fetchFacets(null, feed, "vgrsy:DomainExtension.vgrsy:SubjectClassification", "*");
-        // List<String> result = SolrFacetUtil.fetchFacets(null, feed, "title");
         for (String r : result) {
             System.out.println(r);
-        }
+        }*/
     }
 
 }

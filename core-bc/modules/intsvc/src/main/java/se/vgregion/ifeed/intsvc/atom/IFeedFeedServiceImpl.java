@@ -103,7 +103,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
         // Populate the feed with search results
         populateFeed(f,
-                solrQuery.getIFeedResults(retrievedFeed, sortField, getEnum(SortDirection.class, sortDirection), null));
+                solrQuery.getIFeedResults(retrievedFeed, iFeedService.getFieldInf(sortField), getEnum(SortDirection.class, sortDirection), null));
 
         solrQuery.clear();
 

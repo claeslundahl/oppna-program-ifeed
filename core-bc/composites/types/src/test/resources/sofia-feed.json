@@ -1,0 +1,56 @@
+{
+  "id": 450794590,
+  "dynamicTableDefs": [],
+  "version": 2,
+  "filters": [
+    {
+      "id": 450794591,
+      "filterQuery": "Cecilia*",
+      "filterKey": "vgr:VgrExtension.vgr:CreatedBy",
+      "operator": "matching",
+      "fieldInf": {
+        "level": 0,
+        "id": "vgr:VgrExtension.vgr:CreatedBy",
+        "name": "Upprättat av (person)",
+        "help": "Upprättat av (person)",
+        "type": "d:text_facet",
+        "apelonKey": "",
+        "counterparts": [],
+        "children": [],
+        "filter": true,
+        "inHtmlView": true,
+        "expanded": false,
+        "inTooltip": false
+      },
+      "children": []
+    }
+  ],
+  "name": "20191107 SOFIA",
+  "description": "",
+  "userId": "clalu4",
+  "ownerships": [],
+  "composites": [
+    {
+      "id": 450794586,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 450794589,
+          "filterQuery": "svami",
+          "filterKey": "dc.contributor.savedby.id",
+          "children": []
+        }
+      ],
+      "name": "20191107 Alfresco",
+      "description": "",
+      "userId": "clalu4",
+      "ownerships": [],
+      "composites": [],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    }
+  ],
+  "sortDirection": "asc",
+  "linkNativeDocument": false
+}

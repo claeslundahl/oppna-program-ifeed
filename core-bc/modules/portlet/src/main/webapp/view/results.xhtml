@@ -7,69 +7,6 @@
 >
 
     <h:panelGroup rendered="#{iFeedModelBean.hasAnyFilter()}">
-
-        <!--
-                <style type="text/css">
-                    #table-container table.ifeed-metadata-table {
-                        width: 400px;
-                    }
-
-                    #table-container table.ifeed-metadata-table td {
-
-                        /* These are technically the same, but use both */
-                        overflow-wrap: break-word;
-                        word-wrap: break-word;
-
-                        -ms-word-break: break-all;
-                        /* This is the dangerous one in WebKit, as it breaks things wherever */
-                        word-break: break-all;
-                        /* Instead use this non-standard one: */
-                        word-break: break-word;
-
-                        /* Adds a hyphen where the word breaks, if supported (No Blink) */
-                        -ms-hyphens: auto;
-                        -moz-hyphens: auto;
-                        -webkit-hyphens: auto;
-                        hyphens: auto;
-
-                    }
-                </style>
-        -->
-
-        <!--<style type="text/css">
-            .popupContent {
-                width: 450px;
-                background-color: white;
-            }
-
-            #table-container {
-                width: 400px;
-                background-color: white;
-                border: gray thin solid;
-                padding: 10px 10px;
-            }
-
-            #table-container table.ifeed-metadata-table td {
-                vertical-align: top;
-                /* These are technically the same, but use both */
-                overflow-wrap: break-word;
-                word-wrap: break-word;
-
-                -ms-word-break: break-all;
-                /* This is the dangerous one in WebKit, as it breaks things wherever */
-                word-break: break-all;
-                /* Instead use this non-standard one: */
-                word-break: break-word;
-
-                /* Adds a hyphen where the word breaks, if supported (No Blink) */
-                -ms-hyphens: auto;
-                -moz-hyphens: auto;
-                -webkit-hyphens: auto;
-                hyphens: auto;
-
-            }
-        </style>-->
-
         <h:panelGroup rendered="#{app.inEditMode}" styleClass="ifeed-step" layout="block">
             <span>Din träfflista</span>
         </h:panelGroup>
@@ -78,56 +15,6 @@
             <h:selectBooleanCheckbox value="#{app.limitOnResultCount}" rendered="false"/>
         </h:panelGroup>
 
-        <!--<div class="#{app.inEditMode ? 'ifeed-filter-box' : ''}">
-            <div>
-                ( <span class="ifeed-step ifeed-count-0" id="ifeed-count-0">0</span> st
-                <ui:fragment rendered="#{header['User-Agent'].contains('; MSIE ')}"> - visar max 200</ui:fragment>
-                )
-            </div>
-            <ui:fragment rendered="#{header['User-Agent'].contains('; MSIE ')}">
-                <div
-                        class="ifeedDocList"
-                        columnes="dc.title|Titel (autokomplettering)|left|,dc.date.issued|Publicerad|left|"
-                        fontSize="auto"
-                        defaultsortcolumn="dc.title"
-                        defaultsortorder="asc"
-                        showTableHeader="yes"
-                        linkOriginalDoc="no"
-                        maxHitLimit="#{app.limitOnResultCount ? '100' : '0'}"
-                        limit="200"
-                        hiderightcolumn="yes"
-                        usepost="yes"
-                        feedid='#{app.urlEncode(iFeedModelBean.toJson())}'>
-                </div>
-            </ui:fragment>
-
-            <ui:fragment rendered="#{!header['User-Agent'].contains('; MSIE ')}">
-                <div
-                        class="ifeedDocList"
-                        columnes="dc.title|Titel (autokomplettering)|left|,dc.date.issued|Publicerad|left|"
-                        fontSize="auto"
-                        defaultsortcolumn="dc.title"
-                        defaultsortorder="asc"
-                        showTableHeader="yes"
-                        linkOriginalDoc="no"
-                        maxHitLimit="#{app.limitOnResultCount ? '100' : '0'}"
-                        hiderightcolumn="yes"
-                        usepost="yes"
-                        feedid='#{app.urlEncode(iFeedModelBean.toJson())}'>
-                </div>
-            </ui:fragment>
-
-        </div>-->
-        <!--<div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>
-        <button id="rerun-ifeed-loading" style="display:none;">Should be hidden</button>-->
-        <!--<h:outputScript>
-            function on() {
-                try{
-                    se.vgregion.ifeed.client.Starter.init();
-                }catch(e){}
-            }
-            setTimeout(on, 300);
-        </h:outputScript>-->
     </h:panelGroup>
 
     <div id="ifeed-data2" style="display:none;">#{app.webScriptJsonUrl}</div>
@@ -181,5 +68,9 @@
         var imgs = document.getElementsByTagName("img");
 
     </h:outputScript>
+
+    <div>
+        <textarea>#{iFeedModelBean.toJson()}</textarea>
+    </div>
 
 </ui:composition>

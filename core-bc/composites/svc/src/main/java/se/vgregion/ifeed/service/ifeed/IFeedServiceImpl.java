@@ -643,7 +643,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     @Override
     public List<String> fetchFilterSuggestion(IFeed feed, String fieldId, String starFilter) {
-        FieldInf field = getFieldInfs().stream().filter(f -> fieldId.equals(f.getId())).findFirst().get();
+        FieldInf field = getFieldInf(fieldId);
         return SolrFacetUtil.fetchFacets(getSolrServiceUrl(), feed,  field, starFilter);
     }
 

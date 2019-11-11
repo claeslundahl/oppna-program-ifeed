@@ -2,6 +2,7 @@ package se.vgregion.ifeed.backingbeans;
 
 import com.sun.faces.component.visit.FullVisitContext;
 import org.apache.commons.beanutils.BeanMap;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 // import se.vgregion.varnish.VarnishClient;
 
@@ -193,7 +195,7 @@ public class Application {
         return value;
     }
 
-    public static List<Note> toTooltipRows(Map<String, Object> item) {
+    /*public static List<Note> toTooltipRows(Map<String, Object> item) {
         if (item == null) {
             return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
         }
@@ -204,9 +206,9 @@ public class Application {
         } else {
             return toAlfrescoBariumTooltipRows(item);
         }
-    }
+    }*/
 
-    public static List<Note> toSofiaTooltipRows(Map<String, Object> item) {
+    /*public static List<Note> toSofiaTooltipRows(Map<String, Object> item) {
         List<Note> result = new ArrayList<>();
 
         toTooltipRow(item, "core:ArchivalObject.idType", "N/A", result);
@@ -269,9 +271,9 @@ public class Application {
             return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
         }
         return result;
-    }
+    }*/
 
-    public static List<Note> toAlfrescoBariumTooltipRows(Map<String, Object> item) {
+    /*public static List<Note> toAlfrescoBariumTooltipRows(Map<String, Object> item) {
         List<Note> result = new ArrayList<>();
 
         //toTooltipRow(item, "dc.title", "Titel", result);
@@ -288,7 +290,7 @@ public class Application {
             return Arrays.asList(new Note("Ingen information", "Metadata för den här posten saknas."));
         }
         return result;
-    }
+    }*/
 
     private static void toTooltipRow(Map<String, Object> item, String key, String label, List<Note> notes) {
         Note note = toTooltipRow(item, key, label);
@@ -910,33 +912,66 @@ public class Application {
         return result;
     }
 
-    public List<FieldInf> getFieldSuitableForSorting() {
+    public static boolean isBlendingMetadataSpecifications(IFeed feed, List<FieldInf> fields) {
+        final Set<IFeedFilter> allFilters = feed.getAllNestedFeedsFlattly()
+                .stream().map(f -> f.getFilters()).flatMap(Collection::stream).collect(Collectors.toSet());
+
+        final Set<String> allFilterKeys = allFilters.stream()
+                .map(fi -> fi.getFilterKey()).collect(Collectors.toSet());
+
+        int hits = 0;
+        for (FieldInf field : fields) {
+            if (field.isFilter()) {
+                final MutableBoolean hit = new MutableBoolean(false);
+                field.visit(item -> {
+                    if (allFilterKeys.contains(item.getId())) {
+                        hit.setValue(true);
+                    }
+                });
+                if (hit.getValue().equals(true)) {
+                    hits++;
+                }
+            }
+        }
+
+        return hits > 1;
+    }
+
+    static List<FieldInf> getFieldSuitableForSorting(IFeed forThat, List<FieldInf> fromThese) {
+        if (isBlendingMetadataSpecifications(forThat, fromThese)) {
+            FieldInf oneWithBlendedFields = new FieldInf();
+            oneWithBlendedFields.setName("Fält");
+            oneWithBlendedFields.getChildren().addAll(getFilterFieldsForBothMetadataSets(fromThese));
+            FieldInf oneWithBlendedFieldsRoot = new FieldInf();
+            oneWithBlendedFieldsRoot.setName("Alfresco-Barium/SOFIA");
+            oneWithBlendedFieldsRoot.getChildren().add(oneWithBlendedFields);
+            return Arrays.asList(oneWithBlendedFieldsRoot);
+        }
+
+        return getMetadataSetAlreadyInFeed(forThat, fromThese);
+    }
+
+    static List<FieldInf> getMetadataSetAlreadyInFeed(IFeed forThat, List<FieldInf> fromThese) {
         Set<String> ifeedFilterNames = new HashSet<>();
-        for (IFeed iFeed : iFeedModelBean.getAllNestedFeedsFlattly()) {
+        for (IFeed iFeed : forThat.getAllNestedFeedsFlattly()) {
             for (IFeedFilter filter : iFeed.getFilters()) {
                 ifeedFilterNames.add(filter.getFilterKey());
             }
         }
 
-        // Set<String> blackList = getMultiValueKeys();
         List<FieldInf> result = new ArrayList();
-        if (filters == null) {
-            this.filters = new ArrayList<>(iFeedService.getFieldInfs());
-        }
+
         boolean found = false;
-        for (FieldInf parent : getFilters()) {
+        for (FieldInf parent : fromThese) {
             FieldInf root = parent.toDetachedCopy();
             for (FieldInf child : parent.getChildren()) {
-                // SelectItemGroup group = new SelectItemGroup(child.getName() + " (" + parent.getName() + ")");
                 FieldInf group = child.toDetachedCopy();
 
                 List<FieldInf> items = new ArrayList<>();
 
                 for (FieldInf grandChild : child.getChildren()) {
                     if (grandChild.isInHtmlView()) {
-                        // if (!blackList.contains(grandChild.getId())) {
                         items.add(grandChild.toDetachedCopy());
-                        // }
                         if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
                             found = true;
                         }
@@ -946,7 +981,6 @@ public class Application {
                 root.getChildren().add(group);
             }
             if (found) {
-                //group.setSelectItems(items.toArray(new SelectItem[items.size()]));
                 result.add(root);
                 found = false;
             }
@@ -958,6 +992,93 @@ public class Application {
 
         return result;
     }
+
+    public List<FieldInf> getFieldSuitableForSorting() {
+        return getFieldSuitableForSorting(getIFeedModelBean(), getFilters());
+    }
+
+    public List<FieldInf> getFieldSuitableForSorting_old() {
+        Set<String> ifeedFilterNames = new HashSet<>();
+        for (IFeed iFeed : iFeedModelBean.getAllNestedFeedsFlattly()) {
+            for (IFeedFilter filter : iFeed.getFilters()) {
+                ifeedFilterNames.add(filter.getFilterKey());
+            }
+        }
+
+        List<FieldInf> result = new ArrayList();
+        if (filters == null) {
+            this.filters = new ArrayList<>(iFeedService.getFieldInfs());
+        }
+
+        boolean found = false;
+        for (FieldInf parent : getFilters()) {
+            FieldInf root = parent.toDetachedCopy();
+            for (FieldInf child : parent.getChildren()) {
+                FieldInf group = child.toDetachedCopy();
+
+                List<FieldInf> items = new ArrayList<>();
+
+                for (FieldInf grandChild : child.getChildren()) {
+                    if (grandChild.isInHtmlView()) {
+                        items.add(grandChild.toDetachedCopy());
+                        if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
+                            found = true;
+                        }
+                    }
+                }
+                group.getChildren().addAll(items);
+                root.getChildren().add(group);
+            }
+            if (found) {
+                result.add(root);
+                found = false;
+            }
+        }
+
+        for (FieldInf fieldInf : result) {
+            fieldInf.init();
+        }
+
+        return result;
+    }
+
+    static Set<String> toAllFieldsSet(FieldInf fieldInf) {
+        Set<String> result = new TreeSet<>(fieldInf.getCounterparts());
+        result.add(fieldInf.getId());
+        return result;
+    }
+
+    public static List<FieldInf> getFilterFieldsForBothMetadataSets(List<FieldInf> fromThese) {
+        List<FieldInf> result = new ArrayList<>();
+
+        Map<Set<String>, List<FieldInf>> id2fields = new HashMap<>() {
+            @Override
+            public List<FieldInf> get(Object key) {
+                if (!containsKey(key)) {
+                    put((Set<String>) key, new ArrayList<>());
+                }
+                return super.get(key);
+            }
+        };
+
+        for (FieldInf fieldInf : fromThese) {
+            if (fieldInf.isFilter()) {
+                fieldInf.visit(item -> {
+                    if (item.getId() != null && !item.getId().trim().isEmpty() && !item.getCounterparts().isEmpty()) {
+                        id2fields.get(toAllFieldsSet(item)).add(item);
+                    }
+                });
+            }
+        }
+
+        for (Set<String> key : id2fields.keySet()) {
+            FieldInf first = id2fields.get(key).get(0);
+            result.add(first);
+        }
+
+        return result;
+    }
+
 
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
         List<SelectItemGroup> result = new ArrayList<>();

@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.service.solr.client.Field;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.types.FieldInf;
@@ -267,7 +266,7 @@ public class IFeedSolrQuery extends SolrQuery {
     }
 
     protected FieldInf getFieldInf(String byId) {
-        FieldInf defaultField = iFeedService.getFieldInfs().stream().filter(f -> byId.equals(f.getId())).findFirst().get();
+        FieldInf defaultField = iFeedService.getFieldInf(byId);
         return defaultField;
     }
 

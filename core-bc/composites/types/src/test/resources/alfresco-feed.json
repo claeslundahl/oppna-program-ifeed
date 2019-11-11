@@ -1,0 +1,34 @@
+{
+  "id": 450794586,
+  "dynamicTableDefs": [],
+  "version": 3,
+  "filters": [
+    {
+      "id": 450794589,
+      "filterQuery": "svami",
+      "filterKey": "dc.contributor.savedby.id",
+      "fieldInf": {
+        "level": 0,
+        "id": "dc.contributor.savedby.id",
+        "name": "Sparat av ID",
+        "help": "Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager",
+        "type": "d:ldap_value",
+        "apelonKey": "",
+        "counterparts": [],
+        "children": [],
+        "filter": true,
+        "inHtmlView": true,
+        "expanded": false,
+        "inTooltip": false
+      },
+      "children": []
+    }
+  ],
+  "name": "20191107 Alfresco",
+  "description": "",
+  "userId": "clalu4",
+  "ownerships": [],
+  "composites": [],
+  "sortDirection": "asc",
+  "linkNativeDocument": false
+}

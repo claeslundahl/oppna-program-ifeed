@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.lang.reflect.Type;
@@ -22,6 +23,7 @@ public class FieldInfTest {
         Assert.assertEquals(csvRow, copy.toCsvRow());
     }
 
+    @Ignore
     @Test
     public void initForMiniView() {
         FieldInf fi = getSampleFieldInf();

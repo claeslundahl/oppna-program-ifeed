@@ -764,12 +764,13 @@ public class IFeedViewerController {
             defaultsortcolumn = "title";
         }
 
+        FieldInf fieldInf = iFeedService.getFieldInf(defaultsortcolumn);
+
         Result findings = client.query(
                 filter.toQuery(),
                 0,
                 (limit.intValue() > 0 ? limit : 1_000_000),
-                //defaultsortcolumn + " " + defaultsortorder
-                null, null
+                defaultsortorder, fieldInf
         );
 
         model.addAttribute("items", findings.getResponse().getDocs());

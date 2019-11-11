@@ -112,10 +112,6 @@ public class SolrHttpClient {
         }
     }
 
-    /*private Result queryImp(String fq, Integer start, Integer rows, String dir, String[] sortFields) {
-        throw new RuntimeException();
-    }*/
-
     private Result queryImp(String fq, Integer start, Integer rows, String dir, FieldInf sortOn) {
         if (start == null) start = 0;
         if (rows == null) rows = 1_000_000;

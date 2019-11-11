@@ -39,6 +39,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static se.vgregion.ifeed.viewer.Column.toColumns;
 
@@ -773,6 +774,8 @@ public class IFeedViewerController {
                 defaultsortorder, fieldInf
         );
 
+        fillInCounterpartValues(findings.getResponse().getDocs(), iFeedService.getFieldInfs());
+
         model.addAttribute("items", findings.getResponse().getDocs());
 
         for (Map<String, Object> item : findings.getResponse().getDocs()) {
@@ -820,6 +823,54 @@ public class IFeedViewerController {
         }
 
         return "display";
+    }
+
+/*    static Object getFirstNotNullValue(Map<String, Object> fromThat, Collection<String> tryTheseKeys) {
+        for (String key : tryTheseKeys) {
+            Object value = fromThat.get(key);
+            if (value != null && !"".equals(value) && !"[]".equals(value.toString())) {
+                return value;
+            }
+        }
+        return null;
+    }*/
+
+/*    private boolean isBlank(Object s) {
+        if (s == null) {
+            return true;
+        }
+        if (s instanceof String) {
+            return "".equals(((String) s).trim());
+        }
+        return false;
+    }*/
+
+
+
+    static void fillInCounterpartValues(List<Map<String, Object>> fromIntoItems, List<FieldInf> basedOnThose) {
+        for (Map<String, Object> fromIntoItem : fromIntoItems) {
+            fillInCounterpartValues(fromIntoItem, basedOnThose);
+        }
+    }
+
+    static void fillInCounterpartValues(Map<String, Object> fromInto, List<FieldInf> basedOnThose) {
+        new FieldInf(basedOnThose).visit(item -> {
+            final Object value = fromInto.get(item.getId());
+            if (!isBlank(item.getId()) && !item.getCounterparts().isEmpty() && !isBlank(value)) {
+                for (String counterpart : item.getCounterparts()) {
+                    if (isBlank(fromInto.get(counterpart)))
+                        fromInto.put(counterpart, value);
+                }
+            }
+        });
+    }
+
+    static boolean isBlank(Object value) {
+        if(value == null) return true;
+        String asText = value.toString().trim();
+        if (asText.equals("") || asText.equals("[]"))
+            return true;
+        return false;
     }
 
     private static Object getFirstNotEmpty(Object... items) {

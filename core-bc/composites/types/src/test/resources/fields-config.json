@@ -1064,7 +1064,8 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false
+            "expanded": false,
+            "counterparts": ["vgr:VgrExtension.vgr:SourceSystem"]
           }
         ],
         "filter": false,
@@ -1199,7 +1200,8 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false
+            "expanded": false,
+            "counterparts": ["dc.source.origin"]
           }
         ],
         "filter": false,

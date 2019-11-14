@@ -3,7 +3,7 @@ package se.vgregion.ifeed.types;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import net.sf.cglib.beans.BeanMap;
+import se.vgregion.common.utils.BeanMap;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 import javax.persistence.*;
@@ -118,13 +118,13 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
             String[] cells = row.split(Pattern.quote("|"));
             FieldInf fi = new FieldInf();
 
-            BeanMap bm = BeanMap.create(fi);
+            BeanMap bm = new BeanMap(fi);
             for (int c = 0, j = fieldPosition.size(); c < j; c++) {
                 if (c >= cells.length) {
                     continue;
                 }
                 String name = fieldPosition.get(c);
-                Class<?> type = bm.getPropertyType(name);
+                Class<?> type = bm.getType(name);
 
                 if (type.equals(Boolean.TYPE)) {
                     String part = cells[c].trim();

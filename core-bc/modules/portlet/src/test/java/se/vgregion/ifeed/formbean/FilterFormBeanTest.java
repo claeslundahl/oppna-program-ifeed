@@ -3,8 +3,8 @@ package se.vgregion.ifeed.formbean;
 import java.util.Date;
 
 import junit.framework.Assert;
-import net.sf.cglib.beans.BeanMap;
 
+import se.vgregion.common.utils.BeanMap;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,10 +19,10 @@ public class FilterFormBeanTest {
 
     @Test
     public void testGetterSetterMirrorsEachOther() {
-        BeanMap bm = BeanMap.create(bean);
+        BeanMap bm = new BeanMap(bean);
         bm.setBean(bean);
         for (Object key : bm.keySet()) {
-            Class<?> type = bm.getPropertyType(key.toString());
+            Class<?> type = bm.getType(key.toString());
             Object value = null;
 
             if (type.isAssignableFrom(String.class)) {
@@ -33,7 +33,7 @@ public class FilterFormBeanTest {
             }
 
             if (value != null) {
-                bm.put(key, value);
+                bm.put((String) key, value);
                 Assert.assertEquals(value, bm.get(key));
             }
         }
@@ -52,5 +52,7 @@ public class FilterFormBeanTest {
         Assert.assertEquals(0, month);
         Assert.assertEquals(1, day);
     }
+
+
 
 }

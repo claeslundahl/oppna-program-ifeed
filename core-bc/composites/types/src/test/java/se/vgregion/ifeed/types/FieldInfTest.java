@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import se.vgregion.common.utils.BeanMap;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -76,7 +77,6 @@ public class FieldInfTest {
         });
         FieldInf tooltip = fi.getChildren().get(0);
         System.out.println(gson.toJson(tooltip));
-
     }
 
 }

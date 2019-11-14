@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.formbean;
 
-import net.sf.cglib.beans.BeanMap;
+import se.vgregion.common.utils.BeanMap;
 
 import java.util.Collection;
 
@@ -11,13 +11,13 @@ public class Generator {
     }
 
     private static void printAsTypescript(Object obj) throws NoSuchFieldException {
-        BeanMap bm = BeanMap.create(obj);
+        BeanMap bm = new BeanMap(obj);
 
         for (Object key : bm.keySet()) {
             if (key.equals("class")) {
                 continue;
             }
-            Class pt = bm.getPropertyType((String) key);
+            Class pt = bm.getType((String) key);
             if (Collection.class.isAssignableFrom(pt)) {
                 /*Field field = obj.getClass().getField((String) key);
                 ParameterizedType par= (ParameterizedType) field.getGenericType();

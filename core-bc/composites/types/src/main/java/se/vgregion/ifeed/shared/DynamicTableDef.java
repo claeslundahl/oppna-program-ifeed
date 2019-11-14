@@ -38,7 +38,7 @@ public class DynamicTableDef extends AbstractEntity {
     private List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
 
     @OneToMany(mappedBy = "tableDef", cascade = CascadeType.ALL)
-    @OrderBy("name index")
+    // @OrderBy("name index")
     private List<DynamicTableSortingDef> extraSorting = new ArrayList<DynamicTableSortingDef>();
 
     @ManyToOne
@@ -215,7 +215,7 @@ public class DynamicTableDef extends AbstractEntity {
     /*
     public static void main(String[] args) {
         IfeedDynamicTableDef bean = new IfeedDynamicTableDef();
-        BeanMap bm = BeanMap.create(bean);
+        BeanMap bm = new BeanMap(bean);
         StringBuilder sb = new StringBuilder();
         for (Object key : bm.keySet()) {
             sb.append("map.put(\"" + key + "\", " + key + ");\n");

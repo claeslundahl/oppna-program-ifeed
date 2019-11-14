@@ -6,15 +6,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class Json {
 
     // private static LdapSupportService ldapSupportService;
@@ -49,23 +45,6 @@ public class Json {
 
     public static String toJson(Object obj) {
         return gson.toJson(obj);
-    }
-
-    public static String toJsonOld(Object obj) {
-        if (obj == null) {
-            return "null";
-        }
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            new ObjectMapper().writeValue(baos, obj);
-            baos.flush();
-            baos.close();
-
-            String r = new String(baos.toByteArray(), "UTF-8");
-            return r;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static <T> T toObject(Class<T> clazz, String json) {

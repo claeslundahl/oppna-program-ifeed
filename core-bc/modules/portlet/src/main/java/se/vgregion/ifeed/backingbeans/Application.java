@@ -1,7 +1,6 @@
 package se.vgregion.ifeed.backingbeans;
 
 import com.sun.faces.component.visit.FullVisitContext;
-import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.InvocerUtil;
+import se.vgregion.common.utils.BeanMap;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.Note;
@@ -975,6 +975,8 @@ public class Application {
                         if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
                             found = true;
                         }
+                    } else {
+                        group.getChildren().remove(grandChild);
                     }
                 }
                 group.getChildren().addAll(items);
@@ -1333,7 +1335,7 @@ public class Application {
         for (DynamicTableDef item : iFeedModelBean.getDynamicTableDefs()) {
             if (dynamicTableDef.getId() != null && (item.getId() == dynamicTableDef.getId() || dynamicTableDef.getId().equals(item.getId()))) {
                 found = true;
-                new BeanMap(item).putAllWriteable(bm);
+                new BeanMap(item).putAllApplicable(bm);
                 item.setColumnDefs(dynamicTableDef.getColumnDefs());
                 iFeedService.save(item);
                 break;
@@ -1341,7 +1343,7 @@ public class Application {
         }
         if (!found) {
             DynamicTableDef instance = new DynamicTableDef();
-            new BeanMap(instance).putAllWriteable(bm);
+            new BeanMap(instance).putAllApplicable(bm);
             instance.setColumnDefs(new ArrayList<>(dynamicTableDef.getColumnDefs()));
             instance.setExtraSorting(new ArrayList<>(dynamicTableDef.getExtraSorting()));
             iFeedModelBean.getDynamicTableDefs().add(instance);
@@ -1353,7 +1355,7 @@ public class Application {
             iFeedService.save(instance);
         } else {
             DynamicTableDef dtd = new DynamicTableDef();
-            new BeanMap(dtd).putAllWriteable(bm);
+            new BeanMap(dtd).putAllApplicable(bm);
             iFeedService.save(dtd);
         }
 

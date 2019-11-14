@@ -1,0 +1,134 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------< se.vgregion.iFeed:iFeed-core-bc-module-portlet >-----------
+[INFO] Building iFeed-core-bc-module-portlet 1.13-SNAPSHOT
+[INFO] --------------------------------[ war ]---------------------------------
+[WARNING] The POM for com.sun.xml.bind:jaxb-core:jar:2.2.11 is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+[WARNING] The POM for com.sun.xml.bind:jaxb-impl:jar:2.2.11 is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ iFeed-core-bc-module-portlet ---
+[INFO] se.vgregion.iFeed:iFeed-core-bc-module-portlet:war:1.13-SNAPSHOT
+[INFO] +- com.google.gwt:gwt-user:jar:2.8.1:compile
+[INFO] |  +- com.google.jsinterop:jsinterop-annotations:jar:1.0.1:compile
+[INFO] |  +- com.google.jsinterop:jsinterop-annotations:jar:sources:1.0.1:compile
+[INFO] |  +- javax.validation:validation-api:jar:1.0.0.GA:compile
+[INFO] |  +- javax.validation:validation-api:jar:sources:1.0.0.GA:compile
+[INFO] |  \- org.w3c.css:sac:jar:1.3:compile
+[INFO] +- se.vgregion.iFeed:iFeed-core-bc-composite-ldap:jar:1.13-SNAPSHOT:compile
+[INFO] |  +- org.springframework.ldap:spring-ldap-core-tiger:jar:1.3.1.RELEASE:compile
+[INFO] |  |  \- org.springframework.ldap:spring-ldap-core:jar:1.3.1.RELEASE:compile
+[INFO] |  |     \- commons-lang:commons-lang:jar:2.5:compile
+[INFO] |  +- se.vgregion.iFeed:iFeed-core-bc-composite-util:jar:1.13-SNAPSHOT:compile
+[INFO] |  |  \- com.google.code.gson:gson:jar:2.8.2:compile
+[INFO] |  \- commons-pool:commons-pool:jar:20030825.183949:compile
+[INFO] +- se.vgregion.iFeed:iFeed-core-bc-composite-webcomp:jar:1.13-SNAPSHOT:compile
+[INFO] |  +- se.vgregion.iFeed:iFeed-core-bc-composite-svc:jar:1.13-SNAPSHOT:compile
+[INFO] |  |  +- se.vgregion.iFeed:iFeed-core-bc-composite-apelon-svc:jar:1.13-SNAPSHOT:compile
+[INFO] |  |  |  +- javax.xml:jaxb-impl:jar:2.1:compile
+[INFO] |  |  |  +- javax.jws:javax.jws-api:jar:1.1:compile
+[INFO] |  |  |  \- javax.xml.ws:jaxws-api:jar:2.3.1:compile
+[INFO] |  |  |     \- javax.xml.soap:javax.xml.soap-api:jar:1.4.0:compile
+[INFO] |  |  +- org.springframework.security:spring-security-ldap:jar:4.2.4.RELEASE:compile
+[INFO] |  |  +- org.apache.solr:solr-solrj:jar:4.5.1:compile
+[INFO] |  |  |  +- org.apache.zookeeper:zookeeper:jar:3.4.5:compile
+[INFO] |  |  |  +- commons-io:commons-io:jar:2.1:compile
+[INFO] |  |  |  +- org.noggit:noggit:jar:0.5:compile
+[INFO] |  |  |  +- org.apache.httpcomponents:httpmime:jar:4.2.3:compile
+[INFO] |  |  |  \- org.codehaus.woodstox:wstx-asl:jar:3.2.7:runtime
+[INFO] |  |  +- org.apache.httpcomponents:httpclient:jar:4.5:compile
+[INFO] |  |  |  +- org.apache.httpcomponents:httpcore:jar:4.4.1:compile
+[INFO] |  |  |  \- commons-codec:commons-codec:jar:1.9:compile
+[INFO] |  |  +- org.springframework:spring-orm:jar:4.3.12.RELEASE:compile
+[INFO] |  |  |  \- org.springframework:spring-jdbc:jar:4.3.12.RELEASE:compile
+[INFO] |  |  +- se.vgregion.daoframework:dao-framework:jar:3.5:compile
+[INFO] |  |  +- se.vgregion.daoframework:dao-framework-jpa:jar:3.5:compile
+[INFO] |  |  |  \- org.slf4j:jcl-over-slf4j:jar:1.6.1:compile
+[INFO] |  |  +- joda-time:joda-time:jar:1.6.2:compile
+[INFO] |  |  +- org.apache.cxf:cxf-rt-frontend-jaxws:jar:3.1.6:compile
+[INFO] |  |  |  +- xml-resolver:xml-resolver:jar:1.2:compile
+[INFO] |  |  |  +- org.ow2.asm:asm:jar:5.0.4:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-core:jar:3.1.6:compile
+[INFO] |  |  |  |  +- org.codehaus.woodstox:woodstox-core-asl:jar:4.4.1:compile
+[INFO] |  |  |  |  |  \- org.codehaus.woodstox:stax2-api:jar:3.1.4:compile
+[INFO] |  |  |  |  \- org.apache.ws.xmlschema:xmlschema-core:jar:2.2.1:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-bindings-soap:jar:3.1.6:compile
+[INFO] |  |  |  |  +- org.apache.cxf:cxf-rt-wsdl:jar:3.1.6:compile
+[INFO] |  |  |  |  |  \- wsdl4j:wsdl4j:jar:1.6.3:compile
+[INFO] |  |  |  |  \- org.apache.cxf:cxf-rt-databinding-jaxb:jar:3.1.6:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-bindings-xml:jar:3.1.6:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-frontend-simple:jar:3.1.6:compile
+[INFO] |  |  |  \- org.apache.cxf:cxf-rt-ws-addr:jar:3.1.6:compile
+[INFO] |  |  |     \- org.apache.cxf:cxf-rt-ws-policy:jar:3.1.6:compile
+[INFO] |  |  |        \- org.apache.neethi:neethi:jar:3.0.3:compile
+[INFO] |  |  +- org.apache.cxf:cxf-rt-frontend-jaxrs:jar:3.1.6:compile
+[INFO] |  |  |  +- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:compile
+[INFO] |  |  |  +- javax.annotation:javax.annotation-api:jar:1.2:compile
+[INFO] |  |  |  \- org.apache.cxf:cxf-rt-transports-http:jar:3.1.6:compile
+[INFO] |  |  +- org.codehaus.jackson:jackson-core-lgpl:jar:1.9.13:compile
+[INFO] |  |  \- org.codehaus.jackson:jackson-mapper-lgpl:jar:1.9.13:compile
+[INFO] |  \- se.vgregion.iFeed:iFeed-core-bc-composite-types:jar:1.13-SNAPSHOT:compile
+[INFO] |     \- cglib:cglib-nodep:jar:2.2.2:runtime
+[INFO] +- taglibs:standard:jar:1.1.2:compile
+[INFO] +- javax.servlet:jstl:jar:1.2:provided
+[INFO] +- org.springframework:spring-core:jar:4.3.12.RELEASE:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.2:compile
+[INFO] +- org.springframework:spring-web:jar:4.3.12.RELEASE:compile
+[INFO] |  +- org.springframework:spring-aop:jar:4.3.12.RELEASE:compile
+[INFO] |  \- org.springframework:spring-beans:jar:4.3.12.RELEASE:compile
+[INFO] +- org.springframework:spring-webmvc:jar:4.3.12.RELEASE:compile
+[INFO] |  \- org.springframework:spring-expression:jar:4.3.12.RELEASE:compile
+[INFO] +- org.springframework:spring-webmvc-portlet:jar:4.3.12.RELEASE:compile
+[INFO] +- org.springframework:spring-context:jar:4.3.12.RELEASE:compile
+[INFO] +- org.springframework:spring-context-support:jar:4.3.12.RELEASE:compile
+[INFO] +- org.springframework.security:spring-security-config:jar:4.2.4.RELEASE:compile
+[INFO] |  +- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  \- org.springframework.security:spring-security-core:jar:4.2.4.RELEASE:compile
+[INFO] +- org.springframework.security:spring-security-web:jar:4.2.4.RELEASE:compile
+[INFO] +- org.apache.commons:commons-lang3:jar:3.3:compile
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.0.1:provided
+[INFO] +- org.postgresql:postgresql:jar:9.4.1212.jre7:test
+[INFO] +- org.hibernate:hibernate-validator:jar:4.1.0.Final:compile
+[INFO] +- org.springframework:spring-tx:jar:4.3.12.RELEASE:compile
+[INFO] +- org.hibernate:hibernate-entitymanager:jar:5.4.8.Final:compile
+[INFO] |  +- org.jboss.logging:jboss-logging:jar:3.3.2.Final:compile
+[INFO] |  +- org.hibernate:hibernate-core:jar:5.4.8.Final:compile
+[INFO] |  |  +- org.javassist:javassist:jar:3.24.0-GA:compile
+[INFO] |  |  +- antlr:antlr:jar:2.7.7:compile
+[INFO] |  |  +- org.jboss:jandex:jar:2.0.5.Final:compile
+[INFO] |  |  +- com.fasterxml:classmate:jar:1.3.4:compile
+[INFO] |  |  +- javax.activation:javax.activation-api:jar:1.2.0:compile
+[INFO] |  |  \- org.glassfish.jaxb:jaxb-runtime:jar:2.3.1:compile
+[INFO] |  |     +- org.glassfish.jaxb:txw2:jar:2.3.1:compile
+[INFO] |  |     +- com.sun.istack:istack-commons-runtime:jar:3.0.7:compile
+[INFO] |  |     +- org.jvnet.staxex:stax-ex:jar:1.8:compile
+[INFO] |  |     \- com.sun.xml.fastinfoset:FastInfoset:jar:1.2.15:compile
+[INFO] |  +- org.dom4j:dom4j:jar:2.1.1:compile
+[INFO] |  +- org.hibernate.common:hibernate-commons-annotations:jar:5.1.0.Final:compile
+[INFO] |  +- javax.persistence:javax.persistence-api:jar:2.2:compile
+[INFO] |  +- net.bytebuddy:byte-buddy:jar:1.10.2:compile
+[INFO] |  \- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:jar:1.1.1.Final:compile
+[INFO] +- org.apache.commons:commons-collections4:jar:4.4:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-core:jar:2.8.10:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.8.7:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-annotations:jar:2.8.0:compile
+[INFO] +- postgresql:postgresql:jar:8.4-702.jdbc4:test
+[INFO] +- org.slf4j:slf4j-log4j12:jar:1.6.1:compile
+[INFO] +- javax.el:el-api:jar:2.2:provided
+[INFO] +- com.sun.faces:jsf-api:jar:2.2.19:compile
+[INFO] +- com.sun.faces:jsf-impl:jar:2.2.19:compile
+[INFO] +- org.primefaces:primefaces:jar:5.3:compile
+[INFO] +- xerces:xercesImpl:jar:2.6.2:provided
+[INFO] +- org.mockito:mockito-all:jar:1.9.5:test
+[INFO] +- javax.xml.bind:jaxb-api:jar:2.2.11:compile
+[INFO] +- com.sun.xml.bind:jaxb-core:jar:2.2.11:compile
+[INFO] +- com.sun.xml.bind:jaxb-impl:jar:2.2.11:compile
+[INFO] +- javax.activation:activation:jar:1.1.1:compile
+[INFO] +- log4j:log4j:jar:1.2.16:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.6.1:compile
+[INFO] \- junit:junit:jar:4.8.1:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.845 s
+[INFO] Finished at: 2019-11-12T14:09:16+01:00
+[INFO] ------------------------------------------------------------------------

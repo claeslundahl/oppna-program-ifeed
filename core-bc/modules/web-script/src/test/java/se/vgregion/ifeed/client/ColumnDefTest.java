@@ -1,7 +1,7 @@
 package se.vgregion.ifeed.client;
 
 import junit.framework.Assert;
-import org.apache.commons.collections.BeanMap;
+import se.vgregion.common.utils.BeanMap;
 import org.junit.Test;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;

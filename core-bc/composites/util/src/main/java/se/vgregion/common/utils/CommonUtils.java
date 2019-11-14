@@ -1,6 +1,6 @@
 package se.vgregion.common.utils;
 
-import net.sf.cglib.beans.BeanMap;
+import se.vgregion.common.utils.BeanMap;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -103,7 +103,7 @@ public final class CommonUtils {
                     newInstance();
             result.add(fi);
 
-            BeanMap bm = BeanMap.create(fi);
+            BeanMap bm = new BeanMap(fi);
             for (int c = 0, j = fieldPosition.size(); c < j; c++) {
                 if (c >= cells.length) {
                     continue;
@@ -112,7 +112,7 @@ public final class CommonUtils {
                 if (name == null || !bm.containsKey(name)) {
                     continue;
                 }
-                Class<?> type = bm.getPropertyType(name);
+                Class<?> type = bm.getType(name);
 
                 if (type.equals(Boolean.TYPE)) {
                     String part = cells[c].trim();
@@ -131,7 +131,7 @@ public final class CommonUtils {
     public static String toBeanText(Collection keys, Collection<? extends Object> items) {
         Collection<Map> itemz = new HashSet<>();
         for (Object item : items) {
-            itemz.add((Map) BeanMap.create(item));
+            itemz.add((Map) new BeanMap(item));
         }
         return toText(keys, itemz);
     }

@@ -1,18 +1,12 @@
 /**
- * 
+ *
  */
 package se.vgregion.ifeed.types;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 

@@ -2,15 +2,12 @@ package se.vgregion.ifeed.types;
 
 
 import com.google.gson.annotations.Expose;
-import org.apache.commons.collections.BeanMap;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.regex.Pattern;
-
-import javax.imageio.plugins.bmp.BMPImageWriteParam;
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by clalu4 on 2014-06-24.

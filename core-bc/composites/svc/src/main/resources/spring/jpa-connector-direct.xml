@@ -23,7 +23,7 @@
     <property name="jpaVendorAdapter" ref="jpaVendor"/>
     <property name="jpaPropertyMap">
       <map>
-        <entry key="hibernate.hbm2ddl.auto" value="auto"/>
+        <entry key="hibernate.hbm2ddl.auto" value="update"/>
         <entry key="hibernate.format_sql" value="${hibernate.database.showsql}"/>
       </map>
     </property>
@@ -45,5 +45,7 @@
     <property name="username" value="${datasource.connector.direct.username}"/>
     <property name="password" value="${datasource.connector.direct.password}"/>
   </bean>
+
+
 
 </beans>

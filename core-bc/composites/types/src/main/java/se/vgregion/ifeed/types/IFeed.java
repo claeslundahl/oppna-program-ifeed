@@ -78,6 +78,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 /*        if (filters == null) {
             return Collections.emptySet();
         }*/
+        if (filters == null) filters = new HashSet<>();
         return filters;
     }
 
@@ -105,11 +106,12 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     public void setFilters(Set<IFeedFilter> filters) {
-        if (this.filters == null) {
+        /*if (this.filters == null) {
             this.filters = new HashSet<IFeedFilter>();
         }
         this.filters.clear();
-        this.filters.addAll(filters);
+        this.filters.addAll(filters);*/
+        this.filters = filters;
     }
 
     public void removeFilter(IFeedFilter filter) {

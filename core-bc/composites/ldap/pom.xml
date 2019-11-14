@@ -27,6 +27,7 @@
       <artifactId>spring-tx</artifactId>
       <groupId>org.springframework</groupId>
     </dependency>
+<!--
     <dependency>
       <groupId>org.springframework.ldap</groupId>
       <artifactId>spring-ldap-core-tiger</artifactId>
@@ -39,33 +40,45 @@
           <artifactId>spring-core</artifactId>
           <groupId>org.springframework</groupId>
         </exclusion>
-        <!--<exclusion>
-          <artifactId>spring-beans</artifactId>
-          <groupId>org.springframework</groupId>
-        </exclusion>-->
         <exclusion>
           <artifactId>commons-logging</artifactId>
           <groupId>commons-logging</groupId>
         </exclusion>
       </exclusions>
     </dependency>
-    
+-->
+
+    <!-- https://mvnrepository.com/artifact/org.springframework.ldap/spring-ldap-core-tiger -->
     <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils-bean-collections</artifactId>
-      <version>1.8.3</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils-core</artifactId>
-      <version>1.8.3</version>
+      <groupId>org.springframework.ldap</groupId>
+      <artifactId>spring-ldap-core-tiger</artifactId>
+      <version>2.3.2.RELEASE</version>
     </dependency>
 
-    
+    <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
     <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>se.vgregion.iFeed</groupId>
+      <artifactId>iFeed-core-bc-composite-util</artifactId>
+      <version>1.13-SNAPSHOT</version>
+    </dependency>
+    
+<!--    <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
       <version>20030825.183949</version>
+    </dependency>-->
+    <!-- https://mvnrepository.com/artifact/commons-pool/commons-pool -->
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <version>1.6</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

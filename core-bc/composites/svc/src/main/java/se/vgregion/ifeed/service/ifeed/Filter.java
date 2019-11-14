@@ -6,8 +6,10 @@ import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.Ownership;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by clalu4 on 2014-06-10.
@@ -43,7 +45,23 @@ public class Filter extends IFeed {
             sb.append(join(condition, " AND "));
         }
 
-        return sb.toString() + " order by o.name";
+        String result = sb.toString() + " order by o.name";
+        //System.out.println(result);
+        //System.out.println(fixUnIndexedParameterQuestionMarks(result));
+        return fixUnIndexedParameterQuestionMarks(result);
+    }
+
+    static String fixUnIndexedParameterQuestionMarks(String inThatJpql) {
+        StringBuilder sb = new StringBuilder();
+        String[] parts = inThatJpql.split(Pattern.quote("?"));
+        int i = 1;
+        for (String part : Arrays.asList(parts).subList(0, parts.length - 1)) {
+            sb.append(part);
+            sb.append("?" + i);
+            i++;
+        }
+        sb.append(parts[parts.length - 1]);
+        return sb.toString();
     }
 
     private void addConditionIfAnyValue(String jpql, Object value, List<Object> sb, List<Object> values) {

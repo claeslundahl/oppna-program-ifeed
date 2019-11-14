@@ -186,7 +186,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
-      <version>3.6.0.Final</version>
+      <version>${hibernate.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

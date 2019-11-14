@@ -1,7 +1,6 @@
 package se.vgregion.ifeed.backingbeans;
 
-
-import net.sf.cglib.beans.BeanMap;
+import se.vgregion.common.utils.BeanMap;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.common.utils.CommonUtils;
@@ -28,8 +27,8 @@ public class VgrDepartmentModel extends VgrDepartment implements Serializable {
 
 
     private void copy(Object from, Object into) {
-        BeanMap fromMap = BeanMap.create(from);
-        BeanMap intoMap = BeanMap.create(into);
+        BeanMap fromMap = new BeanMap(from);
+        BeanMap intoMap = new BeanMap(into);
         intoMap.putAll(fromMap);
     }
 

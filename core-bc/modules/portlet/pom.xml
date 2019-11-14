@@ -279,16 +279,16 @@
       <version>4.2.4.RELEASE</version>
     </dependency>
 
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils-bean-collections</artifactId>
-      <version>1.8.3</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils-core</artifactId>
-      <version>1.8.3</version>
-    </dependency>
+    <!--    <dependency>
+          <groupId>commons-beanutils</groupId>
+          <artifactId>commons-beanutils-bean-collections</artifactId>
+          <version>1.8.3</version>
+        </dependency>
+        <dependency>
+          <groupId>commons-beanutils</groupId>
+          <artifactId>commons-beanutils-core</artifactId>
+          <version>1.8.3</version>
+        </dependency>-->
 
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -321,7 +321,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
-      <version>3.6.0.Final</version>
+      <version>${hibernate.version}</version>
     </dependency>
     <!--<dependency>
       <groupId>org.codehaus.jackson</groupId>
@@ -333,6 +333,17 @@
       <artifactId>jackson-mapper-asl</artifactId>
       <version>1.8.0</version>
     </dependency>-->
+
+
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.4</version>
+      <scope>compile</scope>
+    </dependency>
+
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>

@@ -1,6 +1,6 @@
 package se.vgregion.ldap;
 
-import org.apache.commons.beanutils.BeanMap;
+import se.vgregion.common.utils.BeanMap;
 import org.springframework.ldap.core.LdapTemplate;
 
 import javax.naming.directory.SearchControls;

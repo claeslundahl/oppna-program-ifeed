@@ -1,7 +1,7 @@
 package se.vgregion.ifeed.types;
 
-import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang.StringUtils;
+import se.vgregion.common.utils.BeanMap;
 
 import java.io.Serializable;
 import java.util.*;
@@ -76,7 +76,7 @@ public class FieldInf implements Serializable {
     @Override
     public String toString() {
         return FieldInf.class.getSimpleName() + "(" + getId() + ")";
-        /*BeanMap bm = BeanMap.create(this);
+        /*BeanMap bm = new BeanMap(this);
         Map<?, ?> outer = new HashMap<Object, Object>(bm);
         return outer.toString();*/
     }
@@ -92,26 +92,6 @@ public class FieldInf implements Serializable {
     public List<FieldInf> getChildren() {
         return children;
     }
-
-    /*public List<FieldInf> getFilterCriteriaTypes() {
-        List<FieldInf> result = new ArrayList<FieldInf>();
-        for (FieldInf fi : getChildren()) {
-            if (fi.isFilter()) {
-                result.add(fi);
-            }
-        }
-        return result;
-    }*/
-
-    /*public List<FieldInf> getFilterCriteriaAndViewTypes() {
-        List<FieldInf> result = new ArrayList<FieldInf>();
-        for (FieldInf fi : getChildren()) {
-            if (fi.isFilter() || fi.isInHtmlView()) {
-                result.add(fi);
-            }
-        }
-        return result;
-    }*/
 
     public String getApelonKey() {
         return apelonKey;
@@ -178,12 +158,12 @@ public class FieldInf implements Serializable {
 
 
     public String toCsvText() {
-        BeanMap bm = BeanMap.create(this);
+        BeanMap bm = new BeanMap(this);
         List<String> values = new ArrayList<>();
         for (Object o : getCsvBeanKeys()) {
             values.add((String) o);
         }
-        return StringUtils.join(values, ";") + "\n" +
+        return String.join(";", values) + "\n" +
                 toCsvText(0);
     }
 
@@ -204,7 +184,7 @@ public class FieldInf implements Serializable {
 
     public String toCsvRow() {
         List<String> values = new ArrayList<>();
-        BeanMap bm = BeanMap.create(this);
+        BeanMap bm = new BeanMap(this);
         for (String o : getCsvBeanKeys()) {
             Object value = bm.get(o);
             if (value == null) {
@@ -218,7 +198,7 @@ public class FieldInf implements Serializable {
 
     public static FieldInf fromCsvRow(String text) {
         FieldInf result = new FieldInf();
-        BeanMap bm = BeanMap.create(result);
+        BeanMap bm = new BeanMap(result);
         String[] parts = text.split(Pattern.quote(";"));
         int i = 0;
         for (String o : getCsvBeanKeys()) {
@@ -232,7 +212,7 @@ public class FieldInf implements Serializable {
     }
 
     static Collection<String> getCsvBeanKeys() {
-        List<String> result = new ArrayList<>(BeanMap.create(new FieldInf()).keySet());
+        List<String> result = new ArrayList<>(new BeanMap(new FieldInf()).keySet());
         result.remove("class");
         result.remove("children");
         result.remove("value");
@@ -413,9 +393,9 @@ public class FieldInf implements Serializable {
 
     public FieldInf toDetachedCopy() {
         FieldInf result = new FieldInf();
-        BeanMap self = BeanMap.create(this);
-        BeanMap bm = BeanMap.create(result);
-        bm.putAll(self);
+        BeanMap self = new BeanMap(this);
+        BeanMap bm = new BeanMap(result);
+        bm.putAllApplicable(self);
         result.setParent(null);
         return result;
     }
@@ -427,4 +407,18 @@ public class FieldInf implements Serializable {
         return result.toArray(new String[result.size()]);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof FieldInf) {
+            FieldInf fi = (FieldInf) obj;
+            if (fi.id == id) {
+                return true;
+            }
+            if (fi.id == null || id == null){
+                return false;
+            }
+            return fi.id.equals(id);
+        }
+        return false;
+    }
 }

@@ -1,9 +1,8 @@
 package se.vgregion.ifeed.backingbeans;
 
-
-import net.sf.cglib.beans.BeanMap;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import se.vgregion.common.utils.BeanMap;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.types.*;
@@ -33,9 +32,9 @@ public class IFeedModelBean extends IFeed implements Serializable {
     private List<String> newOwnershipNames = new MirrorOwnershipToTextList(ownerships);
 
     private void copy(Object from, Object into) {
-        BeanMap fromMap = BeanMap.create(from);
-        BeanMap intoMap = BeanMap.create(into);
-        intoMap.putAll(fromMap);
+        BeanMap fromMap = new BeanMap(from);
+        BeanMap intoMap = new BeanMap(into);
+        intoMap.putAllApplicable(fromMap);
     }
 
     public void copyValuesFromIFeed(IFeed iFeed) {
@@ -128,27 +127,34 @@ public class IFeedModelBean extends IFeed implements Serializable {
         this.ownershipUserIds = ownershipUserIds;
     }
 
+
     /**
      * Clears fields in IFeedModelBean so that the input fields
      * will be empty in the gui and no incorrect data will be saved.
      */
     public void clearBean() {
-        BeanMap bm = BeanMap.create(this);
+        clearBean(this);
+    }
 
-        for (Object key : bm.keySet()) {
+    static void clearBean(IFeed thatOne) {
+        new BeanMap(thatOne).clear();
+/*
+        BeanMap bm = new BeanMap(thatOne);
+
+        for (String key : bm.keySet()) {
             if (!"class".equals(key)) {
                 try {
-                    Class type = bm.getPropertyType((String) key);
-                    if (!type.isPrimitive()) {
+                    Class type = bm.getType((String) key);
+                    if (!type.isPrimitive() && null != bm.getPropertyDesc(key).getWriteMethod()) {
                         Object value = bm.get(key);
                         if (value instanceof Collection) {
                             ((Collection) value).clear();
                         } else {
-                            bm.put(key, null);
+                            bm.put((String) key, null);
                         }
                     } else {
                         if (type == Long.TYPE) {
-                            bm.put(key, 0l);
+                            bm.put((String) key, 0l);
                         }
                     }
                 } catch (UnsupportedOperationException uoe) {
@@ -156,6 +162,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
                 }
             }
         }
+*/
     }
 
     /*

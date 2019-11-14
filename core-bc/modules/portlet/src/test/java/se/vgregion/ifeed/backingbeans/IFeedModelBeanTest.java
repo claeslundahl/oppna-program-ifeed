@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import se.vgregion.ifeed.types.IFeed;
 
+import java.io.IOException;
+
 public class IFeedModelBeanTest {
 
     @Test
@@ -13,6 +15,11 @@ public class IFeedModelBeanTest {
 
         System.out.println(iFeedModelBean.toJson());
         // System.out.println(iFeed.toJson());
+    }
+
+    @Test
+    public void clearBean() throws IOException {
+        IFeedModelBean.clearBean(ApplicationTest.getAlfrescoFeed());
     }
 
 }

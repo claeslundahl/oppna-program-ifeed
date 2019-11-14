@@ -6,39 +6,53 @@ This is the Business Component Maven POM.
 Template version: 1.5-SNAPSHOT
 Generation time : 2011-01-14 11:17:18 CET
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <dependencies>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.0.1</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-  <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <parent>
+        <groupId>se.vgregion.iFeed</groupId>
+        <artifactId>iFeed-system</artifactId>
+        <version>1.13-SNAPSHOT</version>
+    </parent>
     <groupId>se.vgregion.iFeed</groupId>
-    <artifactId>iFeed-system</artifactId>
+    <artifactId>iFeed-core-bc</artifactId>
+    <packaging>pom</packaging>
     <version>1.13-SNAPSHOT</version>
-  </parent>
-  <groupId>se.vgregion.iFeed</groupId>
-  <artifactId>iFeed-core-bc</artifactId>
-  <packaging>pom</packaging>
-  <version>1.13-SNAPSHOT</version>
-  <name>${project.artifactId}</name>
+    <name>${project.artifactId}</name>
 
-  <modules>
-    <module>composites/types</module>
-    <module>composites/apelon-svc</module>
-    <module>composites/svc</module>
-    <module>composites/webcomp</module>
-    <module>composites/ldap</module>
-    <module>modules/web-script</module>
-    <module>modules/portlet</module>
-    <module>modules/scripts</module>
-    <module>modules/intsvc</module>
-    <module>modules/web</module>
-    <module>modules/web-batch</module>
-  </modules>
+    <modules>
+        <module>composites/util</module>
+        <module>composites/types</module>
+        <module>composites/apelon-svc</module>
+        <module>composites/svc</module>
+        <module>composites/webcomp</module>
+        <module>composites/ldap</module>
+        <module>modules/web-script</module>
+        <module>modules/portlet</module>
+        <module>modules/scripts</module>
+        <module>modules/intsvc</module>
+        <module>modules/web</module>
+        <module>modules/web-batch</module>
+    </modules>
 
 </project>

@@ -1,6 +1,6 @@
 package se.vgregion.ifeed.backingbeans;
 
-import org.apache.commons.collections.BeanMap;
+import se.vgregion.common.utils.BeanMap;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.ifeed.service.ifeed.Filter;
@@ -25,7 +25,7 @@ public class FilterModel extends Filter {
         BeanMap bm = new BeanMap(this);
         for (Object key : bm.keySet()) {
             String name = (String) key;
-            if (bm.getWriteMethod(name) != null) {
+            if (bm.getPropertyDesc(name).getWriteMethod() != null) {
                 try {
                     bm.put(name, null);
                 } catch (Exception e) {

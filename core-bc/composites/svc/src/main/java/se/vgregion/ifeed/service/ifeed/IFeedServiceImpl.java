@@ -1,7 +1,6 @@
 package se.vgregion.ifeed.service.ifeed;
 
-import net.sf.cglib.beans.BeanMap;
-import org.apache.commons.collections.CollectionUtils;
+import se.vgregion.common.utils.BeanMap;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -375,9 +374,9 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public VgrDepartment loadDepartment(Long id) {
         VgrDepartment result = objectRepo.findByPrimaryKey(VgrDepartment.class, id);
         for (VgrGroup vg : result.getVgrGroups()) {
-            new HashMap(BeanMap.create(vg));
+            new HashMap(new BeanMap(vg));
             for (IFeed feed : vg.getMemberFeeds()) {
-                new HashMap(BeanMap.create(feed));
+                new HashMap(new BeanMap(feed));
             }
         }
         return result;
@@ -392,7 +391,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     public void remove(IFeed feed) {
         EntityManager em = objectRepo.getEntityManager();
         Session session = (Session)em.getDelegate();
-        Connection con = session.connection();
+        //Connection con = session.connection();
     }
 
 
@@ -540,7 +539,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
             return true;
         }
 
-        return !CollectionUtils.isEqualCollection(oldFilters, newFilters);
+        return oldFilters.equals(newFilters);
     }
 
     private boolean equals(Object o1, Object o2) {

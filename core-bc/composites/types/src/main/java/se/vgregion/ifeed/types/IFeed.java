@@ -61,12 +61,12 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ifeed")
     protected Set<Ownership> ownerships = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    protected List<IFeed> composites = new SetishArrayList<>();
+    @ManyToMany(/*cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}*/)
+    protected List<IFeed> composites = new DistinctArrayList<>();
 
     @Expose(serialize = false, deserialize = true)
-    @ManyToMany(mappedBy = "composites", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    protected List<IFeed> partOf = new SetishArrayList<>();
+    @ManyToMany(mappedBy = "composites"/*, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}*/)
+    protected List<IFeed> partOf = new DistinctArrayList<>();
 
     private String sortField;
 
@@ -413,7 +413,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return composites;
     }
 
-    private static class SetishArrayList<E> extends ArrayList<E> {
+    private static class DistinctArrayList<E> extends ArrayList<E> {
         @Override
         public boolean add(E e) {
             if (!contains(e)) {

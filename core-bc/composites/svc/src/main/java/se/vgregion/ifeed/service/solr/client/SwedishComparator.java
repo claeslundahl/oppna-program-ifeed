@@ -17,8 +17,8 @@ public class SwedishComparator implements Comparator<Map<String, Object>> {
     public int compare(Map<String, Object> o1, Map<String, Object> o2) {
         String s1 = getFirstNonBlankValue(o1),
                 s2 = getFirstNonBlankValue(o2);
-        s1 = swapÅÄ(s1);
-        s2 = swapÅÄ(s2);
+        s1 = swapÅÄ(s1).toLowerCase();
+        s2 = swapÅÄ(s2).toLowerCase();
         return s1.compareTo(s2);
     }
 

@@ -1469,51 +1469,6 @@ public class Application {
         return multiValueKeys.get();
     }
 
-    /*public void updateSearchResults(IFeed retrievedFeed,
-                                    String sortField,
-                                    String sortDirection,
-                                    Integer startBy,
-                                    Integer endBy,
-                                    String[] fieldToSelect) {
-        if (retrievedFeed == null) {
-            // Throw 404 if the feed doesn't exist
-            throw new RuntimeException("404");
-        }
-
-        List<Map<String, Object>> result = null;
-        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
-        result = client.query(retrievedFeed.toQuery(), 0, 501, sortField + " " + sortDirection).getResponse().getDocs();
-        this.searchResults = result;
-
-        if (false) {
-            IFeedSolrQuery solrQuery = new IFeedSolrQuery(solrServer, iFeedService);
-            if (startBy != null && startBy >= 0) {
-                solrQuery.setStart(startBy);
-                if (endBy != null && endBy > startBy) {
-                    solrQuery.setRows(endBy - startBy);
-                }
-            } else {
-                solrQuery.setRows(25000);
-            }
-            solrQuery.setShowDebugInfo(true);
-
-
-            result = solrQuery.getIFeedResults(retrievedFeed, sortField,
-                    getEnum(IFeedSolrQuery.SortDirection.class, sortDirection), fieldToSelect);
-
-            for (Map<String, Object> item : result) {
-                String alfrescoId = (String) item.get("dc.identifier.documentid");
-                if (alfrescoId != null) {
-                    alfrescoId = alfrescoId.replace("workspace://SpacesStore/", "");
-                    item.put("alfrescoId", alfrescoId);
-                    formatDates(item);
-                }
-            }
-
-            this.searchResults = result;
-        }
-    }*/
-
     public String uncache(String thatUrl) {
 /*        LOGGER.debug("How many times is this called?");
         if (varnishClient == null) {

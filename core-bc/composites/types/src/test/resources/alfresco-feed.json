@@ -1,18 +1,65 @@
 {
-  "id": 450794586,
-  "dynamicTableDefs": [],
-  "version": 3,
+  "id": 37600,
+  "dynamicTableDefs": [
+    {
+      "id": 114919,
+      "name": "Extrakolumn",
+      "fontSize": "auto",
+      "defaultSortColumn": "dc.title",
+      "defaultSortOrder": "asc",
+      "feedId": "37600",
+      "maxHitLimit": 0,
+      "showTableHeader": false,
+      "linkOriginalDoc": false,
+      "hideRightColumn": false,
+      "columnDefs": [
+        {
+          "id": 114920,
+          "name": "dc.title",
+          "label": "Titel (autokomplettering)",
+          "alignment": "left",
+          "width": "70"
+        }
+      ],
+      "extraSorting": [],
+      "fkIfeedId": 37600
+    }
+  ],
+  "version": 16,
   "filters": [
     {
-      "id": 450794589,
-      "filterQuery": "svami",
-      "filterKey": "dc.contributor.savedby.id",
+      "id": 9553,
+      "filterQuery": "SE2321000131-E000000001234",
+      "filterKey": "dc.publisher.forunit.id",
+      "operator": "matching",
       "fieldInf": {
         "level": 0,
-        "id": "dc.contributor.savedby.id",
-        "name": "Sparat av ID",
-        "help": "Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager",
-        "type": "d:ldap_value",
+        "id": "dc.publisher.forunit.id",
+        "name": "Publicerat för enhet ID (VGR:s organisationsträd)",
+        "help": "ID för den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)",
+        "type": "d:ldap_org_value",
+        "apelonKey": "",
+        "counterparts": [],
+        "children": [],
+        "filter": true,
+        "inHtmlView": true,
+        "expanded": false,
+        "inTooltip": false
+      },
+      "filterQueryForDisplay": "Sjukhusgemensamt (SE2321000131-E000000001234)",
+      "children": []
+    },
+    {
+      "id": 9554,
+      "filterQuery": "systematiskt brandskyddsarbete",
+      "filterKey": "dc.type.file.process",
+      "operator": "matching",
+      "fieldInf": {
+        "level": 0,
+        "id": "dc.type.file.process",
+        "name": "Ärendetyp",
+        "help": "Beskrivning av en serie/följd av åtgärder. (Fritext). Ex supportärende, bidragsansökan",
+        "type": "d:text",
         "apelonKey": "",
         "counterparts": [],
         "children": [],
@@ -22,13 +69,3330 @@
         "inTooltip": false
       },
       "children": []
+    },
+    {
+      "id": 9555,
+      "filterQuery": "Barium",
+      "filterKey": "dc.source.origin",
+      "operator": "matching",
+      "fieldInf": {
+        "level": 0,
+        "id": "dc.source.origin",
+        "name": "Källsystem",
+        "help": "Källsystem till dokumentet, handlingen eller resursen. (Systemstyrt)",
+        "type": "d:text",
+        "apelonKey": "",
+        "counterparts": [
+          "dc.source.origin"
+        ],
+        "children": [],
+        "filter": true,
+        "inHtmlView": true,
+        "expanded": false,
+        "inTooltip": false
+      },
+      "children": []
     }
   ],
-  "name": "20191107 Alfresco",
-  "description": "",
-  "userId": "clalu4",
+  "name": "Administration a-ö",
+  "description": "Nugemensamma ämnen a-ö",
+  "userId": "svami",
   "ownerships": [],
-  "composites": [],
+  "composites": [
+    {
+      "id": 4410369,
+      "dynamicTableDefs": [
+        {
+          "id": 4464139,
+          "name": "Test att spara",
+          "fontSize": "auto",
+          "defaultSortColumn": "dc.title",
+          "defaultSortOrder": "asc",
+          "feedId": "4410369",
+          "maxHitLimit": 0,
+          "showTableHeader": true,
+          "linkOriginalDoc": false,
+          "hideRightColumn": false,
+          "columnDefs": [
+            {
+              "id": 4464140,
+              "name": "dc.title",
+              "label": "Titel (autokomplettering)",
+              "alignment": "left",
+              "width": "70"
+            }
+          ],
+          "extraSorting": [],
+          "fkIfeedId": 4410369
+        }
+      ],
+      "version": 6,
+      "filters": [
+        {
+          "id": 18336,
+          "filterQuery": "avvikelser",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18337,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18338,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Avvikelser",
+      "description": "NUgemensamma dokument för  avvikelser",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4410370,
+          "userId": "svami",
+          "ifeedId": 4410369
+        }
+      ],
+      "composites": [
+        {
+          "id": -4410369,
+          "dynamicTableDefs": [],
+          "version": 6,
+          "filters": [
+            {
+              "id": -11364,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -11365,
+                  "filterQuery": "avvikelser",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -11366,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11367,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -11368,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -11369,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -11370,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11371,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11372,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": -11373,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            }
+          ],
+          "name": "Avvikelser",
+          "description": "NUgemensamma dokument för  avvikelser",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4495275,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 19856,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 19853,
+          "filterQuery": "ansvarsfördelning",
+          "filterKey": "dc.type.file",
+          "children": []
+        },
+        {
+          "id": 19854,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19855,
+          "filterQuery": "systematiskt brandskyddsarbete",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "systematiskt brandskyddsarbete/ansvarsfördelning",
+      "description": "",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -4495275,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -12118,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -12119,
+                  "filterQuery": "ansvarsfördelning",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -12120,
+                  "filterQuery": "systematiskt brandskyddsarbete",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -12121,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12122,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -12123,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -12124,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -12125,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12126,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12127,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": -12128,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            }
+          ],
+          "name": "systematiskt brandskyddsarbete/ansvarsfördelning",
+          "description": "",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4495277,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 19857,
+          "filterQuery": "systematiskt brandskyddsarbete",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 19858,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 19859,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19860,
+          "filterQuery": "arbetsfördelning",
+          "filterKey": "dc.type.file",
+          "children": []
+        }
+      ],
+      "name": "systematiskt brandskyddsarbete/arbetsfördelning",
+      "description": "",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -4495277,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -24469,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -24459,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -24460,
+                  "filterQuery": "arbetsfördelning",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -24461,
+                  "filterQuery": "systematiskt brandskyddsarbete",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -24462,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24463,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -24464,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -24465,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -24466,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24467,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24468,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "systematiskt brandskyddsarbete/arbetsfördelning",
+          "description": "",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4495309,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 19865,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19866,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19867,
+          "filterQuery": "checklista och kontrollplan",
+          "filterKey": "dc.type.file",
+          "children": []
+        },
+        {
+          "id": 19868,
+          "filterQuery": "systematiskt brandskyddsarbete",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "systematiskt brandskyddsarbete/checklista och kontrollplan",
+      "description": "",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -4495309,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -5593,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -5583,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -5584,
+                  "filterQuery": "checklista och kontrollplan",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -5585,
+                  "filterQuery": "systematiskt brandskyddsarbete",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -5586,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -5587,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -5588,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -5589,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -5590,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -5591,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -5592,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "systematiskt brandskyddsarbete/checklista och kontrollplan",
+          "description": "",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4495308,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 19861,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19862,
+          "filterQuery": "handlingsplaner",
+          "filterKey": "dc.type.file",
+          "children": []
+        },
+        {
+          "id": 19863,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 19864,
+          "filterQuery": "systematiskt brandskyddsarbete",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "systematiskt brandskyddsarbete/handlingsplaner",
+      "description": "",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -4495308,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -12129,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -12130,
+                  "filterQuery": "handlingsplaner",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -12131,
+                  "filterQuery": "systematiskt brandskyddsarbete",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -12132,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12133,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -12134,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -12135,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -12136,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12137,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12138,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": -12139,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            }
+          ],
+          "name": "systematiskt brandskyddsarbete/handlingsplaner",
+          "description": "",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4495310,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 19872,
+          "filterQuery": "regler och styrande dokument",
+          "filterKey": "dc.type.file",
+          "children": []
+        },
+        {
+          "id": 19869,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 19870,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19871,
+          "filterQuery": "systematiskt brandskyddsarbete",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "Systematiskt brandskyddsarbete/regler och styrande dokument",
+      "description": "",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -4495310,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -12150,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -12140,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -12141,
+                  "filterQuery": "regler och styrande dokument",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -12142,
+                  "filterQuery": "systematiskt brandskyddsarbete",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -12143,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12144,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -12145,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -12146,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -12147,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12148,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12149,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Systematiskt brandskyddsarbete/regler och styrande dokument",
+          "description": "",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4495311,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 19873,
+          "filterQuery": "utbildningar",
+          "filterKey": "dc.type.file",
+          "children": []
+        },
+        {
+          "id": 19874,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19875,
+          "filterQuery": "systematiskt brandskyddsarbete",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 19876,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        }
+      ],
+      "name": "Systematiskt brandskyddsarbete/utbildningar",
+      "description": "",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -4495311,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -5713,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -5717,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -5718,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -5719,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -5714,
+                  "filterQuery": "utbildningar",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -5715,
+                  "filterQuery": "systematiskt brandskyddsarbete",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -5716,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -5720,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -5721,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -5722,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": -5723,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            }
+          ],
+          "name": "Systematiskt brandskyddsarbete/utbildningar",
+          "description": "",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4448232,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 18928,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18929,
+          "filterQuery": "dödsfall",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18930,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Dödsfall",
+      "description": "NU-gemensamma dokument om dödsfall",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4448233,
+          "userId": "svami",
+          "ifeedId": 4448232
+        }
+      ],
+      "composites": [
+        {
+          "id": -4448232,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -7555,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -7546,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -7547,
+                  "filterQuery": "dödsfall",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -7548,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -7549,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -7550,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -7551,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -7552,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -7553,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -7554,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Dödsfall",
+          "description": "NU-gemensamma dokument om dödsfall",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4410371,
+      "dynamicTableDefs": [],
+      "version": 5,
+      "filters": [
+        {
+          "id": 18339,
+          "filterQuery": "ekonomi",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18340,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18341,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Ekonomi",
+      "description": "NU-gemensamma dokument om ekonomi",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4410372,
+          "userId": "svami",
+          "ifeedId": 4410371
+        }
+      ],
+      "composites": [],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4451936,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 19009,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19010,
+          "filterQuery": "Förebyggande hälso- och sjukvård, stödverksamhet",
+          "filterKey": "dc.coverage.hsacode",
+          "children": []
+        },
+        {
+          "id": 19011,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Hälsofrämjande",
+      "description": "NU-gemensamma styrdokument om Hälsofrämjande/Sjukdomsprevention",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4451938,
+          "userId": "svami",
+          "ifeedId": 4451936
+        }
+      ],
+      "composites": [
+        {
+          "id": -4451936,
+          "dynamicTableDefs": [],
+          "version": 3,
+          "filters": [
+            {
+              "id": -12210,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -12202,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -12203,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12204,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -12205,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -12206,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -12207,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12208,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -12209,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Hälsofrämjande",
+          "description": "NU-gemensamma styrdokument om Hälsofrämjande/Sjukdomsprevention",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4410961,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 18352,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18349,
+          "filterQuery": "kommunikation",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18350,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18351,
+          "filterQuery": "information",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "Information/Kommunikation",
+      "description": "NU-gemensamma styrdokument om Information/Kommunikation",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4428170,
+          "userId": "svami",
+          "ifeedId": 4410961
+        }
+      ],
+      "composites": [
+        {
+          "id": -4410961,
+          "dynamicTableDefs": [],
+          "version": 3,
+          "filters": [
+            {
+              "id": -10330,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -10315,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -10316,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -10317,
+                      "filterQuery": "information",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    },
+                    {
+                      "id": -10318,
+                      "filterQuery": "kommunikation",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -10319,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10320,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10321,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -10322,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -10323,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -10324,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10325,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10326,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10327,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10328,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10329,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Information/Kommunikation",
+          "description": "NU-gemensamma styrdokument om Information/Kommunikation",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4410963,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 18353,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18354,
+          "filterQuery": "it-stöd",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18355,
+          "filterQuery": "telefoni",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18356,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "IT-stöd/Telefoni",
+      "description": "NU-gemensamma styrdokument om IT-stöd/Telefoni",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4411545,
+          "userId": "svami",
+          "ifeedId": 4410963
+        }
+      ],
+      "composites": [],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4428172,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 18480,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18481,
+          "filterQuery": "journalföring",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18478,
+          "filterQuery": "sekretess",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18479,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Journalföring/Sekretess",
+      "description": "NU-gemensamma styrdokument om Journalföring/Sekretess",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4428173,
+          "userId": "svami",
+          "ifeedId": 4428172
+        }
+      ],
+      "composites": [],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4411548,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 18360,
+          "filterQuery": "beredskap",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18361,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18362,
+          "filterQuery": "katastrof",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18363,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Katastrof/Beredskap",
+      "description": "NU-gemensamma styrdokument om Katastrof/Beredskap",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4411549,
+          "userId": "svami",
+          "ifeedId": 4411548
+        }
+      ],
+      "composites": [
+        {
+          "id": -4411548,
+          "dynamicTableDefs": [],
+          "version": 3,
+          "filters": [
+            {
+              "id": -10707,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -10692,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -10693,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -10694,
+                      "filterQuery": "beredskap",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    },
+                    {
+                      "id": -10695,
+                      "filterQuery": "katastrof",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -10696,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10697,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10698,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -10699,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -10700,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -10701,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10702,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10703,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10704,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10705,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10706,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Katastrof/Beredskap",
+          "description": "NU-gemensamma styrdokument om Katastrof/Beredskap",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4411550,
+      "dynamicTableDefs": [],
+      "version": 4,
+      "filters": [
+        {
+          "id": 18368,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18369,
+          "filterQuery": "ledning",
+          "filterKey": "dc.type.file",
+          "children": []
+        },
+        {
+          "id": 18364,
+          "filterQuery": "utveckling",
+          "filterKey": "dc.type.file",
+          "children": []
+        },
+        {
+          "id": 18365,
+          "filterQuery": "delegering",
+          "filterKey": "dc.type.file",
+          "children": []
+        },
+        {
+          "id": 18366,
+          "filterQuery": "sjukhusadministration",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18367,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Ledning/Utveckling/Delegering",
+      "description": "NU-gemensamma styrdokument om Ledning/Utveckling/Delegering",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4411551,
+          "userId": "svami",
+          "ifeedId": 4411550
+        }
+      ],
+      "composites": [
+        {
+          "id": -4411550,
+          "dynamicTableDefs": [],
+          "version": 4,
+          "filters": [
+            {
+              "id": -11161,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -11162,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -11163,
+                      "filterQuery": "delegering",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    },
+                    {
+                      "id": -11164,
+                      "filterQuery": "ledning",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    },
+                    {
+                      "id": -11165,
+                      "filterQuery": "utveckling",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -11166,
+                  "filterQuery": "sjukhusadministration",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -11167,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11168,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11169,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -11170,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -11171,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -11172,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11173,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11174,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11175,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11176,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11177,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": -11178,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            }
+          ],
+          "name": "Ledning/Utveckling/Delegering",
+          "description": "NU-gemensamma styrdokument om Ledning/Utveckling/Delegering",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4411552,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 18370,
+          "filterQuery": "lokal",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18371,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18372,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18373,
+          "filterQuery": "vårdmiljö",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "Lokaler",
+      "description": "NU-gemensamma styrdokument om Lokaler",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4411553,
+          "userId": "svami",
+          "ifeedId": 4411552
+        }
+      ],
+      "composites": [
+        {
+          "id": -4411552,
+          "dynamicTableDefs": [],
+          "version": 3,
+          "filters": [
+            {
+              "id": -11021,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -11006,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -11007,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -11008,
+                      "filterQuery": "lokal",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    },
+                    {
+                      "id": -11009,
+                      "filterQuery": "vårdmiljö",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -11010,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11011,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11012,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -11013,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -11014,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -11015,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11016,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11017,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11018,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11019,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11020,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Lokaler",
+          "description": "NU-gemensamma styrdokument om Lokaler",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4411554,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 18374,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18375,
+          "filterQuery": "läkemedelshantering",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18376,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Läkemedelshantering",
+      "description": "NU-gemensamma styrdokument om Läkemedelshantering",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4411555,
+          "userId": "svami",
+          "ifeedId": 4411554
+        }
+      ],
+      "composites": [],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4529342,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 20496,
+          "filterQuery": "Medicinteknisk verksamhet",
+          "filterKey": "dc.coverage.hsacode",
+          "children": []
+        },
+        {
+          "id": 20494,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 20495,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Medicinteknisk utrustning - nugemensamma",
+      "description": "Nugemensamma dok som berör Medicinteknisk utrustning",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4529343,
+          "userId": "svami",
+          "ifeedId": 4529342
+        }
+      ],
+      "composites": [
+        {
+          "id": -4529342,
+          "dynamicTableDefs": [],
+          "version": 3,
+          "filters": [
+            {
+              "id": -13047,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -13039,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -13040,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -13041,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -13042,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -13043,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -13044,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -13045,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -13046,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Medicinteknisk utrustning - nugemensamma",
+          "description": "Nugemensamma dok som berör Medicinteknisk utrustning",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4232714,
+      "dynamicTableDefs": [],
+      "version": 8,
+      "filters": [
+        {
+          "id": 16950,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 16951,
+          "filterQuery": "miljö",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 16952,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Miljö ledningssystem a-ö (Nya reviderade)",
+      "description": "",
+      "userId": "svami",
+      "ownerships": [
+        {
+          "id": 4232715,
+          "userId": "svami",
+          "ifeedId": 4232714
+        }
+      ],
+      "composites": [
+        {
+          "id": 4248070,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": 17005,
+              "filterQuery": "nu/ledningssystem/dokumentstyrning",
+              "filterKey": "dc.type.document.serie",
+              "children": []
+            },
+            {
+              "id": 17006,
+              "filterQuery": "genomförande",
+              "filterKey": "dc.type.file",
+              "children": []
+            },
+            {
+              "id": 17007,
+              "filterQuery": "miljö",
+              "filterKey": "dc.type.file.process",
+              "children": []
+            }
+          ],
+          "name": "Miljö ledningssystem genomförande/dokumentstyrning",
+
+          "description": "",
+          "userId": "svami",
+          "ownerships": [
+            {
+              "id": 4248071,
+              "userId": "svami",
+              "ifeedId": 4248070
+            }
+          ],
+          "composites": [
+            {
+              "id": -4248070,
+              "dynamicTableDefs": [],
+              "version": 2,
+              "filters": [
+                {
+                  "id": -4081,
+                  "operator": "and",
+                  "children": [
+                    {
+                      "id": -4082,
+                      "filterQuery": "genomförande",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    },
+                    {
+                      "id": -4083,
+                      "filterQuery": "miljö",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    },
+                    {
+                      "id": -4084,
+                      "filterQuery": "nu/ledningssystem/dokumentstyrning",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -4085,
+                  "filterQuery": "SOFIA",
+                  "filterKey": "dc.source.origin",
+                  "operator": "matching",
+                  "children": []
+                }
+              ],
+              "name": "Miljö ledningssystem genomförande/dokumentstyrning",
+
+              "description": "",
+              "userId": "lifra1",
+              "ownerships": [],
+              "composites": [],
+              "sortField": "dc.title",
+              "sortDirection": "desc"
+            }
+          ],
+          "sortField": "dc.title",
+          "sortDirection": "desc"
+        },
+        {
+          "id": -4232714,
+          "dynamicTableDefs": [],
+          "version": 8,
+          "filters": [
+            {
+              "id": -17650,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -17641,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -17642,
+                  "filterQuery": "miljö",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -17643,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -17644,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -17645,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -17646,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -17647,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -17648,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -17649,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Miljö ledningssystem a-ö (Nya reviderade)",
+          "description": "",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortField": "dc.title",
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortField": "dc.title",
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4451939,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 19012,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19013,
+          "filterQuery": "palliativ vård",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 19014,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 19015,
+          "filterQuery": "Hospisverksamhet",
+          "filterKey": "dc.coverage.hsacode",
+          "children": []
+        }
+      ],
+      "name": "Palliativ vård",
+      "description": "NU-gemensamma dokument om palliativ vård",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4451940,
+          "userId": "svami",
+          "ifeedId": 4451939
+        }
+      ],
+      "composites": [
+        {
+          "id": -4451939,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -9093,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -9084,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -9085,
+                  "filterQuery": "palliativ vård",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "children": []
+                },
+                {
+                  "id": -9086,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -9087,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -9088,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -9089,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -9090,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -9091,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -9092,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Palliativ vård",
+          "description": "NU-gemensamma dokument om palliativ vård",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4411556,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 18377,
+          "filterQuery": "patientsäkerhet",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18378,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18379,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Patientsäkerhet",
+      "description": "NU-gemensamma styrdokument om Patientsäkerhet",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4411557,
+          "userId": "svami",
+          "ifeedId": 4411556
+        }
+      ],
+      "composites": [],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4411558,
+      "dynamicTableDefs": [],
+      "version": 4,
+      "filters": [
+        {
+          "id": 18380,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18381,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18382,
+          "filterQuery": "vårdplatskapacitet",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18383,
+          "filterQuery": "patientadministration",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "Patient-/Vårdplatsadministration",
+      "description": "NU-gemensamm styrdokument om Patient-/Vårdplatsadministration",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4428171,
+          "userId": "svami",
+          "ifeedId": 4411558
+        }
+      ],
+      "composites": [],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 113849,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 11305,
+          "filterQuery": "SE2321000131-E000000009441",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11306,
+          "filterQuery": "verksamhetsstyrning",
+          "filterKey": "dc.type.file",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11307,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11308,
+          "filterQuery": "strålsäkerhet",
+          "filterKey": "dc.type.file.process",
+          "operator": "matching",
+          "children": []
+        }
+      ],
+      "name": "Strålsäker Verksamhetsstyrning",
+      "description": "Process i ledningssystemet för strålsäkerhet",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -113849,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -24083,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -24073,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -24074,
+                  "filterQuery": "verksamhetsstyrning",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24075,
+                  "filterQuery": "strålsäkerhet",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24076,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24077,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -24078,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -24079,
+                      "filterQuery": "SE2321000131-E000000009441",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -24080,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24081,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24082,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Strålsäker Verksamhetsstyrning",
+          "description": "Process i ledningssystemet för strålsäkerhet",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 113845,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 11289,
+          "filterQuery": "strålsäker arbetsmiljö",
+          "filterKey": "dc.type.file",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11290,
+          "filterQuery": "strålsäkerhet",
+          "filterKey": "dc.type.file.process",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11291,
+          "filterQuery": "SE2321000131-E000000009441",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11292,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        }
+      ],
+      "name": "Strålsäker arbetsmiljö",
+      "description": "Process i ledningssystemet för strålsäkerhet",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -113845,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -24121,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -24111,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -24112,
+                  "filterQuery": "strålsäker arbetsmiljö",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24113,
+                  "filterQuery": "strålsäkerhet",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24114,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24115,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -24116,
+                      "filterQuery": "SE2321000131-E000000009441",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -24117,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -24118,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24119,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24120,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Strålsäker arbetsmiljö",
+          "description": "Process i ledningssystemet för strålsäkerhet",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 113847,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 11297,
+          "filterQuery": "SE2321000131-E000000009441",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11298,
+          "filterQuery": "uppföljning",
+          "filterKey": "dc.type.file",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11299,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11300,
+          "filterQuery": "strålsäkerhet",
+          "filterKey": "dc.type.file.process",
+          "operator": "matching",
+          "children": []
+        }
+      ],
+      "name": "Strålsäker Uppföljning",
+      "description": "process i ledningssystemet för strålsäkerhet",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -113847,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -24135,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -24125,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -24126,
+                  "filterQuery": "uppföljning",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24127,
+                  "filterQuery": "strålsäkerhet",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24128,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24129,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -24130,
+                      "filterQuery": "SE2321000131-E000000009441",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -24131,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -24132,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24133,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24134,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Strålsäker Uppföljning",
+          "description": "process i ledningssystemet för strålsäkerhet",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 113848,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 11301,
+          "filterQuery": "strålsäkerhet",
+          "filterKey": "dc.type.file.process",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11302,
+          "filterQuery": "SE2321000131-E000000009441",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11303,
+          "filterQuery": "utbildning",
+          "filterKey": "dc.type.file",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11304,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        }
+      ],
+      "name": "Strålsäker Utbildning",
+      "description": "Process i ledningssystemet för strålsäkerhet",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -113848,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -24034,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -24035,
+                  "filterQuery": "utbildning",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24036,
+                  "filterQuery": "strålsäkerhet",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24037,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24038,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -24039,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -24040,
+                      "filterQuery": "SE2321000131-E000000009441",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -24041,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24042,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24043,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": -24044,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            }
+          ],
+          "name": "Strålsäker Utbildning",
+          "description": "Process i ledningssystemet för strålsäkerhet",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 113846,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 11296,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11293,
+          "filterQuery": "SE2321000131-E000000009441",
+          "filterKey": "dc.publisher.forunit.id",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11294,
+          "filterQuery": "strålsäker utrustning",
+          "filterKey": "dc.type.file",
+          "operator": "matching",
+          "children": []
+        },
+        {
+          "id": 11295,
+          "filterQuery": "strålsäkerhet",
+          "filterKey": "dc.type.file.process",
+          "operator": "matching",
+          "children": []
+        }
+      ],
+      "name": "Strålsäker utrustning",
+      "description": "Process i ledningssystemet för strålsäkerhet",
+      "userId": "svami",
+      "ownerships": [],
+      "composites": [
+        {
+          "id": -113846,
+          "dynamicTableDefs": [],
+          "version": 2,
+          "filters": [
+            {
+              "id": -24150,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -24140,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -24141,
+                  "filterQuery": "strålsäker utrustning",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24142,
+                  "filterQuery": "strålsäkerhet",
+                  "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                  "operator": "matching",
+                  "children": []
+                },
+                {
+                  "id": -24143,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24144,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -24145,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    },
+                    {
+                      "id": -24146,
+                      "filterQuery": "SE2321000131-E000000009441",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "operator": "matching",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -24147,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24148,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -24149,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Strålsäker utrustning",
+          "description": "Process i ledningssystemet för strålsäkerhet",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4411563,
+      "dynamicTableDefs": [],
+      "version": 3,
+      "filters": [
+        {
+          "id": 18387,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18388,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18389,
+          "filterQuery": "Sjuktransportverksamhet",
+          "filterKey": "dc.coverage.hsacode",
+          "children": []
+        },
+        {
+          "id": 18390,
+          "filterQuery": "transport",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        },
+        {
+          "id": 18391,
+          "filterQuery": "parkering",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "Transport/Parkering",
+      "description": "NU-gemensamma styrdokument om Transport/Parkering",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4411564,
+          "userId": "svami",
+          "ifeedId": 4411563
+        }
+      ],
+      "composites": [
+        {
+          "id": -4411563,
+          "dynamicTableDefs": [],
+          "version": 3,
+          "filters": [
+            {
+              "id": -10723,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            },
+            {
+              "id": -10708,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -10709,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -10710,
+                      "filterQuery": "parkering",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    },
+                    {
+                      "id": -10711,
+                      "filterQuery": "transport",
+                      "filterKey": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -10712,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10713,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10714,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -10715,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -10716,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -10717,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10718,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10719,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10720,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10721,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -10722,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "name": "Transport/Parkering",
+          "description": "NU-gemensamma styrdokument om Transport/Parkering",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4411565,
+      "dynamicTableDefs": [],
+      "version": 6,
+      "filters": [
+        {
+          "id": 18392,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 18393,
+          "filterQuery": "Vårdhygienverksamhet",
+          "filterKey": "dc.coverage.hsacode",
+          "children": []
+        },
+        {
+          "id": 18394,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        }
+      ],
+      "name": "Vårdhygien",
+      "description": "NU-gemensamma styrdokument om Vårdhygien",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4411566,
+          "userId": "svami",
+          "ifeedId": 4411565
+        }
+      ],
+      "composites": [
+        {
+          "id": -4411565,
+          "dynamicTableDefs": [],
+          "version": 6,
+          "filters": [
+            {
+              "id": -11989,
+              "operator": "and",
+              "children": [
+                {
+                  "id": -11990,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11991,
+                  "operator": "or",
+                  "children": [
+                    {
+                      "id": -11992,
+                      "filterQuery": "SE2321000131-E000000001234",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    },
+                    {
+                      "id": -11993,
+                      "filterQuery": "SE2321000131-E000000008791",
+                      "filterKey": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": -11994,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11995,
+                  "operator": "or",
+                  "children": []
+                },
+                {
+                  "id": -11996,
+                  "operator": "or",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": -11997,
+              "filterQuery": "SOFIA",
+              "filterKey": "dc.source.origin",
+              "operator": "matching",
+              "children": []
+            }
+          ],
+          "name": "Vårdhygien",
+          "description": "NU-gemensamma styrdokument om Vårdhygien",
+          "userId": "lifra1",
+          "ownerships": [],
+          "composites": [],
+          "sortDirection": "asc",
+          "linkNativeDocument": false
+        }
+      ],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 4529337,
+      "dynamicTableDefs": [],
+      "version": 2,
+      "filters": [
+        {
+          "id": 20487,
+          "filterQuery": "SE2321000131-E000000008791",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 20488,
+          "filterQuery": "SE2321000131-E000000001234",
+          "filterKey": "dc.publisher.forunit.id",
+          "children": []
+        },
+        {
+          "id": 20489,
+          "filterQuery": "vårdsamverkan",
+          "filterKey": "dc.type.file.process",
+          "children": []
+        }
+      ],
+      "name": "Vårdsamverkan -nugemensamma",
+      "description": "Nugemensamma dokument om vårdsamverkan",
+      "userId": "annwi81",
+      "ownerships": [
+        {
+          "id": 4529338,
+          "userId": "svami",
+          "ifeedId": 4529337
+        }
+      ],
+      "composites": [],
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    },
+    {
+      "id": 3806331,
+      "dynamicTableDefs": [],
+      "version": 899,
+      "filters": [
+        {
+          "id": 13618,
+          "filterQuery": "Regional medicinsk riktlinje*",
+          "filterKey": "dc.type.document.serie",
+          "children": []
+        },
+        {
+          "id": 13619,
+          "filterQuery": "Riktlinje koncern",
+          "filterKey": "dc.type.document.structure",
+          "children": []
+        }
+      ],
+      "name": "Alla riktlinjer",
+      "description": "Regionala medicinska riktlinjer",
+      "userId": "ulrjo7",
+      "ownerships": [
+        {
+          "id": 3806332,
+          "userId": "ulrjo7",
+          "ifeedId": 3806331
+        },
+        {
+          "id": 4577923,
+          "userId": "svami",
+          "ifeedId": 3806331
+        },
+        {
+          "id": 4331131,
+          "userId": "annpe159",
+          "ifeedId": 3806331
+        }
+      ],
+      "composites": [],
+      "sortField": "dc.title",
+      "sortDirection": "asc",
+      "linkNativeDocument": false
+    }
+  ],
   "sortDirection": "asc",
   "linkNativeDocument": false
 }

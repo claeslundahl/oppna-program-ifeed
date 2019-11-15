@@ -24,7 +24,9 @@
             "filter": true,
             "inHtmlView": true,
             "expanded": false,
-            "counterparts": ["title"]
+            "counterparts": [
+              "title"
+            ]
           },
           {
             "id": "dc.title.filename",
@@ -742,7 +744,9 @@
           },
           {
             "id": "dc.date.issued",
-            "counterparts": ["core:ArchivalObject.core:CreatedDateTime"],
+            "counterparts": [
+              "core:ArchivalObject.core:CreatedDateTime"
+            ],
             "name": "Publiceringsdatum",
             "help": "Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen.",
             "type": "d:date",
@@ -1065,7 +1069,9 @@
             "filter": true,
             "inHtmlView": true,
             "expanded": false,
-            "counterparts": ["vgr:VgrExtension.vgr:SourceSystem"]
+            "counterparts": [
+              "vgr:VgrExtension.vgr:SourceSystem"
+            ]
           }
         ],
         "filter": false,
@@ -1101,7 +1107,10 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false
+            "expanded": false,
+            "counterparts": [
+              "dc.title"
+            ]
           },
           {
             "id": "core:ArchivalObject.core:Producer",
@@ -1201,7 +1210,9 @@
             "filter": true,
             "inHtmlView": true,
             "expanded": false,
-            "counterparts": ["dc.source.origin"]
+            "counterparts": [
+              "dc.source.origin"
+            ]
           }
         ],
         "filter": false,
@@ -1251,14 +1262,16 @@
           },
           {
             "id": "core:ArchivalObject.core:CreatedDateTime",
-            "counterparts": ["dc.date.issued"],
+            "counterparts": [
+              "dc.date.issued"
+            ],
             "name": "Publiceringsdatum",
             "help": "Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen.",
             "type": "d:date",
             "apelonKey": "",
             "children": [],
-            "filter": false,
-            "inHtmlView": false,
+            "filter": true,
+            "inHtmlView": true,
             "expanded": false
           }
         ],

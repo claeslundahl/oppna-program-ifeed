@@ -9,6 +9,7 @@ import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,6 +122,18 @@ public class ApplicationTest {
                 names.add(item.getName());
             });
         });
+    }
+
+    @Test
+    public void checkProblemWithOnlyMixedFields() throws IOException {
+        List<FieldInf> fields = Application.getFieldSuitableForSorting(getAlfrescoFeed(), getFieldInfs());
+
+        for (IFeed iFeed : getAlfrescoFeed().getAllNestedFeedsFlattly()) {
+            for (IFeedFilter filter : iFeed.getFilters()) {
+                System.out.println(filter.getFilterKey() + " = " + filter.getFilterQuery());
+            }
+        }
+
     }
 
 }

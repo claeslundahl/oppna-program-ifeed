@@ -2,23 +2,20 @@ package se.vgregion.ifeed.backingbeans;
 
 import com.google.gson.GsonBuilder;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+import se.vgregion.common.utils.BeanMap;
 import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.FieldsInf;
 import se.vgregion.ifeed.types.IFeed;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 public class ApplicationTest {
@@ -73,7 +70,6 @@ public class ApplicationTest {
     }
 
 
-
     static IFeed getSofiaFeed() throws IOException {
         return getFeed("sofia-feed");
     }
@@ -107,6 +103,24 @@ public class ApplicationTest {
         Assert.assertTrue(Application.isBlendingMetadataSpecifications(sofia, getFieldInfs()));
         sofia.getComposites().clear();
         Assert.assertFalse(Application.isBlendingMetadataSpecifications(sofia, getFieldInfs()));
+    }
+
+    @Test
+    @Ignore
+    public void getFieldSuitableForSorting() throws IOException {
+        IFeed sofia = getAlfrescoFeed();
+        List<FieldInf> fields = Application.getFieldSuitableForSorting(sofia, getFieldInfs());
+
+        final Set<String> names = new HashSet<>();
+        fields.forEach(fieldInf -> {
+            fieldInf.visit(item -> {
+                System.out.println(item.getName() + " " + new BeanMap(item));
+                if (names.contains(item.getName())) {
+                    Assert.fail("Dublicate name " + item.getName());
+                }
+                names.add(item.getName());
+            });
+        });
     }
 
 }

@@ -31,9 +31,10 @@ public class Metadata extends AbstractEntity<Long>
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
+    @JoinColumn(name = "parent_id")
     private Collection<Metadata> children = new HashSet<Metadata>();
 
-    Metadata() {
+    public Metadata() {
         // To make JPA/Hibernate Happy
     }
 

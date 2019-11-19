@@ -54,16 +54,18 @@ public class SolrFacetUtil {
                 0,
                 10,
                 "asc",
-                fi
+                fi,
+                fi.getId()
         );
         if (result.getResponse() == null) {
-            result = client.query(
+            /*result = client.query(
                     question,
                     0,
                     10_000,
                     null,
                     null
-            );
+            );*/
+            throw new RuntimeException(); // Remove this later...
         }
         List<String> things = new ArrayList<>(SolrHttpClient.toFacetSet(result, field, starFilter));
         things = things.subList(0, Math.min(10, things.size()));

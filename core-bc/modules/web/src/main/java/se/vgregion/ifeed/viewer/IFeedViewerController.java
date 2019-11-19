@@ -446,7 +446,11 @@ public class IFeedViewerController {
         }
 
         FieldInf field = iFeedService.getFieldInf(sortField);
-        Result result = client.query(retrievedFeed.toQuery(), startBy, endBy, sortDirection, field);
+        if (fieldToSelect != null)
+            System.out.println("Fields to select: " + new ArrayList<>(Arrays.asList(fieldToSelect)));
+        else
+            System.out.println("Fields not set.");
+        Result result = client.query(retrievedFeed.toQuery(), startBy, endBy, sortDirection, field, fieldToSelect);
 
         if (result != null && result.getResponse() != null && result.getResponse().getDocs() != null
                 && fieldToSelect != null && fieldToSelect.length > 0) {
@@ -767,11 +771,22 @@ public class IFeedViewerController {
 
         FieldInf fieldInf = iFeedService.getFieldInf(defaultsortcolumn);
 
+        List<String> selectionPart = new ArrayList<>(columns.stream().map(c -> c.getKey()).collect(Collectors.toList()));
+        selectionPart.add("id");
+        selectionPart.add("dc.identifier.native");
+        selectionPart.add("originalDownloadLatestVersionUrl");
+        selectionPart.add("url");
+        selectionPart.add("dc.date.validto");
+        selectionPart.add("dc.date.validfrom");
+        selectionPart.add(defaultsortcolumn);
+        selectionPart.addAll(Arrays.asList(FieldInf.toIdsList(iFeedService.getFieldInfs(), selectionPart)));
+
         Result findings = client.query(
                 filter.toQuery(),
                 0,
                 (limit.intValue() > 0 ? limit : 1_000_000),
-                defaultsortorder, fieldInf
+                defaultsortorder, fieldInf,
+                selectionPart.toArray(new String[selectionPart.size()])
         );
 
         fillInCounterpartValues(findings.getResponse().getDocs(), iFeedService.getFieldInfs());
@@ -825,28 +840,6 @@ public class IFeedViewerController {
         return "display";
     }
 
-/*    static Object getFirstNotNullValue(Map<String, Object> fromThat, Collection<String> tryTheseKeys) {
-        for (String key : tryTheseKeys) {
-            Object value = fromThat.get(key);
-            if (value != null && !"".equals(value) && !"[]".equals(value.toString())) {
-                return value;
-            }
-        }
-        return null;
-    }*/
-
-/*    private boolean isBlank(Object s) {
-        if (s == null) {
-            return true;
-        }
-        if (s instanceof String) {
-            return "".equals(((String) s).trim());
-        }
-        return false;
-    }*/
-
-
-
     static void fillInCounterpartValues(List<Map<String, Object>> fromIntoItems, List<FieldInf> basedOnThose) {
         for (Map<String, Object> fromIntoItem : fromIntoItems) {
             fillInCounterpartValues(fromIntoItem, basedOnThose);
@@ -866,7 +859,7 @@ public class IFeedViewerController {
     }
 
     static boolean isBlank(Object value) {
-        if(value == null) return true;
+        if (value == null) return true;
         String asText = value.toString().trim();
         if (asText.equals("") || asText.equals("[]"))
             return true;

@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 public class IFeed extends AbstractEntity<Long> implements Serializable, Comparable<IFeed> {
 
     private static final long serialVersionUID = -2277251806545192506L;
-    // private static final Logger LOGGER = LoggerFactory.getLogger(IFeed.class);
 
     @Id
     @GeneratedValue
@@ -400,14 +399,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-
     public List<DynamicTableDef> getDynamicTableDefs() {
         return dynamicTableDefs;
     }
-
-    /*public void setDynamicTableDefs(List<DynamicTableDef> dynamicTableDefs) {
-        this.dynamicTableDefs = dynamicTableDefs;
-    }*/
 
     public List<IFeed> getComposites() {
         return composites;

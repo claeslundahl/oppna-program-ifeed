@@ -1,10 +1,12 @@
 package se.vgregion.ifeed.service.solr.client;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
+import se.vgregion.ifeed.service.solr.SolrQueryEscaper;
 import se.vgregion.ifeed.types.FieldInf;
 
 import javax.script.ScriptEngine;
@@ -48,9 +50,12 @@ public class SolrHttpClient {
 
     // public Result query(String qf, Integer start, Integer rows, String dir, String ... sort) {
 
-    public Result query(String qf, Integer start, Integer rows, String dir, FieldInf sortField) {
+    public Result query(String qf, Integer start, Integer rows, String dir, FieldInf sortField, String... fl) {
+        if (fl != null)
+            System.out.println("Query " + new ArrayList<>(Arrays.asList(fl)));
+        else System.out.println("fl is null");
         try {
-            Result result = queryImp(qf, start, rows, dir, sortField);
+            Result result = queryImp(qf, start, rows, dir, sortField, fl);
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -78,7 +83,11 @@ public class SolrHttpClient {
         return doc.get(key) == null || doc.get(key).toString().trim().isEmpty();
     }
 
-    public String toText(String fq, Integer start, Integer rows, String sort) {
+/*    public String toText(String fq, Integer start, Integer rows, String sort) {
+        throw new RuntimeException();
+    }*/
+
+    public String toText(String fq, Integer start, Integer rows, String sort, String fl) {
         try {
             if (fq == null || fq.trim().isEmpty()) fq = "";
             else fq = URLEncoder.encode(fq, "UTF-8");
@@ -104,6 +113,10 @@ public class SolrHttpClient {
 
             latestCallAsGet = baseUrl + "select?" + fq;
 
+            if (fl != null) {
+                fq += "&fl=" + URLEncoder.encode(fl, "UTF-8");
+            }
+
             String json = post(latestCall, fq);
 
             return json;
@@ -112,7 +125,7 @@ public class SolrHttpClient {
         }
     }
 
-    private Result queryImp(String fq, Integer start, Integer rows, String dir, FieldInf sortOn) {
+    private Result queryImp(String fq, Integer start, Integer rows, String dir, FieldInf sortOn, String... fl) {
         if (start == null) start = 0;
         if (rows == null) rows = 1_000_000;
 
@@ -126,7 +139,16 @@ public class SolrHttpClient {
             dir = "asc";
         }
 
-        String json = toText(fq, start, 1_000_000, null);
+        String fields = null;
+        if (fl != null && fl.length > 0) {
+            for (int i = 0; i < fl.length; i++) {
+                fl[i] = SolrQueryEscaper.escape(fl[i]).replace("\\:", "*");
+            }
+            fields = String.join(", ", fl);
+            System.out.println(fields);
+        }
+
+        String json = toText(fq, start, 1_000_000, null, fields);
         Result result = new GsonBuilder().create().fromJson(json, Result.class);
 
         if (result.getResponse() != null) {
@@ -137,55 +159,6 @@ public class SolrHttpClient {
             result.getResponse().setDocs(
                     result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size()))
             );
-        }
-
-        return result;
-    }
-
-    private Result queryImpOld(String fq, Integer start, Integer rows, String sort) throws IOException {
-        if (start == null) start = 0;
-        if (rows == null) rows = 1_000_000;
-        if (sort == null || sort.trim().equals("") || sort.trim().contains("dc.title")) {
-            sort = "title asc";
-        }
-
-        Map<String, Field> stringFieldMap = fields.get();
-        if (stringFieldMap == null) {
-            List<Field> temp = fetchFields();
-            Map<String, Field> map = new HashMap<>();
-            for (Field field : temp) {
-                map.put(field.getName(), field);
-            }
-
-            fields = new WeakReference<>(map);
-            stringFieldMap = map;
-        }
-
-        final String[] parts = sort.split(Pattern.quote(sort.contains("%20") ? "%20" : " "));
-        final String sortKey = parts[0];
-        final String dir = parts[1];
-        Field field = stringFieldMap.get(sortKey);
-
-        if ("text_basic_token".equals(field.getType())) {
-            String strNameVersionOfField = sortKey + "_string";
-            if (stringFieldMap.containsKey(strNameVersionOfField)) {
-                sort = strNameVersionOfField + " " + dir;
-            }
-        }
-
-        String json = toText(fq, start, "text_basic_token".equals(field.getType()) ? 1_000_000 : rows, sort);
-
-        Result result = new GsonBuilder().create().fromJson(json, Result.class);
-
-        if ("text_basic_token".equals(field.getType())) {
-            if (result.getResponse() != null) {
-                Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortKey));
-                if ("desc".equalsIgnoreCase(dir)) {
-                    Collections.reverse(result.getResponse().getDocs());
-                }
-
-                result.getResponse().setDocs(result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size())));
-            }
         }
 
         return result;
@@ -251,8 +224,11 @@ public class SolrHttpClient {
         return sb.toString();
     }
 
+    private final static Gson gson = new GsonBuilder().create();
+
     public String toJson(Object object) {
-        return (String) JSON.callMember("stringify", object);
+        return gson.toJson(object);
+        // return (String) JSON.callMember("stringify", object);
     }
 
     public Object toObjectGraph(String json) {
@@ -330,6 +306,7 @@ public class SolrHttpClient {
                 0,
                 1_000_000,
                 "asc",
+                null,
                 null
         ).getResponse().getDocs();
 
@@ -370,7 +347,7 @@ public class SolrHttpClient {
             }
         };
 
-        Result everything = query("", 0, 1_000_000, null, null);
+        Result everything = query("", 0, 1_000_000, null, null, null);
 
         for (Map<String, Object> item : everything.getResponse().getDocs()) {
             for (String key : item.keySet()) {

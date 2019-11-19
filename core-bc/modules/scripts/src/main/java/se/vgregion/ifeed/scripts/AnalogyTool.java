@@ -360,7 +360,7 @@ public class AnalogyTool {
             throw new RuntimeException();
         }
 
-        String textFeed = getSolrHttpClient().toText(feed.toQuery(), 0, 1_000_000, null);
+        String textFeed = getSolrHttpClient().toText(feed.toQuery(), 0, 1_000_000, null, null);
 
         if (textFeed.contains("arium")) {
             return textFeed.contains("Barium") || textFeed.contains("barium");

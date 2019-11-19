@@ -79,6 +79,10 @@ public class ApplicationTest {
         return getFeed("alfresco-feed");
     }
 
+    static IFeed getSomeFeed() throws IOException {
+        return getFeed("some-feed");
+    }
+
     static IFeed getFeed(String fileName) throws IOException {
         Path toProject = Paths.get(new File(".").getAbsolutePath()).getParent().getParent().getParent().getParent();
         String path = String.format("core-bc\\composites\\types\\src\\test\\resources\\%s.json", fileName)
@@ -107,12 +111,18 @@ public class ApplicationTest {
     }
 
     @Test
-    @Ignore
+
     public void getFieldSuitableForSorting() throws IOException {
         IFeed sofia = getAlfrescoFeed();
         List<FieldInf> fields = Application.getFieldSuitableForSorting(sofia, getFieldInfs());
 
-        final Set<String> names = new HashSet<>();
+        System.out.println("Hej: " + Arrays.asList(FieldInf.toIdsList(
+                fields,
+                "title", "dc.date.issued",
+                "core:ArchivalObject.core:CreatedDateTime", "id", "url", "dc.date.issued"
+        )));
+
+        /*final Set<String> names = new HashSet<>();
         fields.forEach(fieldInf -> {
             fieldInf.visit(item -> {
                 System.out.println(item.getName() + " " + new BeanMap(item));
@@ -121,7 +131,7 @@ public class ApplicationTest {
                 }
                 names.add(item.getName());
             });
-        });
+        });*/
     }
 
     @Test
@@ -134,6 +144,13 @@ public class ApplicationTest {
             }
         }
 
+    }
+
+    @Ignore
+    @Test
+    public void findResultToUpdateSearchResults() throws IOException {
+        List<Map<String, Object>> result = Application.findResultToUpdateSearchResults(getSomeFeed(), getFieldInfs());
+        System.out.println(result.size());
     }
 
 }

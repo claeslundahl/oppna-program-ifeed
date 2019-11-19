@@ -89,7 +89,7 @@ public class HtmlToJsonpFilter implements Filter {
     }
 
 
-    static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    static final Gson gson = new GsonBuilder().create();
 
     private String putResultIntoJson(String json) throws IOException {
         return gson.toJson(new Jso(json));

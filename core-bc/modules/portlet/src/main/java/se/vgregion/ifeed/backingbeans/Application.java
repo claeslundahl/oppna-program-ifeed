@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.backingbeans;
 
+import com.google.gson.GsonBuilder;
 import com.sun.faces.component.visit.FullVisitContext;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.solr.client.solrj.SolrServer;
@@ -24,6 +25,7 @@ import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.service.solr.client.Response;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.shared.ColumnDef;
@@ -404,20 +406,8 @@ public class Application {
     }
 
     public void viewIFeed(Long id) {
-        // long now = System.currentTimeMillis();
         viewIFeedImp(id);
-        /*long executionTime = System.currentTimeMillis() - now;
-        System.out.println("Time for viewIFeedImp " + executionTime);
-
-        long executionTimeSum = executionTime;*/
-
-        // now = System.currentTimeMillis();
         initFieldsInsideModel();
-        // executionTime = System.currentTimeMillis() - now;
-        // System.out.println("Time for initFieldsInsideModel " + executionTime);
-        // executionTimeSum += executionTime;
-        /*MemoryTool memoryTool = new MemoryTool();
-        memoryTool.measure(this);*/
     }
 
     private void viewIFeedImp(Long id) {
@@ -596,14 +586,6 @@ public class Application {
                 return result;
             }
         };
-        /*for (FieldInf parent : filters) {
-            fieldsByNameIndex.put(parent.getId(), parent);
-            if (!parent.getChildren().isEmpty()) {
-                for (FieldInf child : parent.getChildren()) {
-                    fieldsByNameIndex.put(child.getId(), child);
-                }
-            }
-        }*/
         initFieldsByNameIndex(filters);
     }
 
@@ -748,7 +730,8 @@ public class Application {
 
     public void findResultsByCurrentFeedConditions() {
         try {
-            this.currentResult = iFeedSolrQuery.getIFeedResults(getIFeedModelBean(), null);
+            // this.currentResult = iFeedSolrQuery.getIFeedResults(getIFeedModelBean(), null);
+            this.updateSearchResults();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1201,16 +1184,6 @@ public class Application {
         return "";
     }
 
-/*
-    public String getWebScriptUrl() {
-        return webScriptUrl;
-    }
-
-    public void setWebScriptUrl(String webScriptUrl) {
-        this.webScriptUrl = webScriptUrl;
-    }
-*/
-
     public String traverse() {
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot root = context.getViewRoot();
@@ -1525,18 +1498,37 @@ public class Application {
         }
     }
 
+    static List<Map<String, Object>> findResultToUpdateSearchResults(IFeed retrievedFeed, List<FieldInf> fields) {
+        List<Map<String, Object>> result = null;
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        Result fromSolr = client.query(
+                retrievedFeed.toQuery(), 0, 501, null, null,
+                FieldInf.toIdsList(
+                        fields,
+                        "title", "dc.date.issued",
+                        "core:ArchivalObject.core:CreatedDateTime", "id", "url", "dc.date.issued"
+                )
+        );
+        if (fromSolr != null && fromSolr.getResponse() != null && fromSolr.getResponse().getDocs() != null) {
+            Response response = fromSolr.getResponse();
+            result = response.getDocs();
+        } else {
+            System.out.println("No response from solr: " +
+                    new GsonBuilder().setPrettyPrinting().create().toJson(fromSolr)
+            );
+        }
+
+        return result;
+    }
+
+
     public void updateSearchResults(IFeed retrievedFeed) {
         if (retrievedFeed.toQuery().trim().equals("")) {
             this.searchResults = new ArrayList<>();
             return;
         }
 
-        List<Map<String, Object>> result = null;
-        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
-        Result fromSolr = client.query(retrievedFeed.toQuery(), 0, 501, null, null);
-        if (fromSolr != null && fromSolr.getResponse() != null && fromSolr.getResponse().getDocs() != null)
-            result = client.query(retrievedFeed.toQuery(), 0, 501, null, null).getResponse().getDocs();
-        this.searchResults = result;
+        this.searchResults = findResultToUpdateSearchResults(retrievedFeed, getFilters());
     }
 
     private void formatDate(String withThatKey, Map<String, Object> insideHere) {

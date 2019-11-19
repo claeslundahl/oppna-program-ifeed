@@ -6,6 +6,8 @@ import se.vgregion.common.utils.BeanMap;
 import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class FieldInf implements Serializable {
 
@@ -414,11 +416,47 @@ public class FieldInf implements Serializable {
             if (fi.id == id) {
                 return true;
             }
-            if (fi.id == null || id == null){
+            if (fi.id == null || id == null) {
                 return false;
             }
             return fi.id.equals(id);
         }
         return false;
     }
+
+/*    public static String[] toIdsList(Collection<FieldInf> fromThese) {
+        Set<String> result = new HashSet<>();
+        for (FieldInf fi : fromThese) {
+            fi.visit(item -> {
+                result.add(item.getId());
+                result.addAll(item.getCounterparts());
+            });
+        }
+        return result.toArray(new String[result.size()]);
+    }*/
+
+    public static String[] toIdsList(Collection<FieldInf> fromThese, String... withKeys) {
+        return toIdsList(fromThese, Arrays.asList(withKeys));
+    }
+
+    public static String[] toIdsList(Collection<FieldInf> fromThese, Iterable<String> withKeys) {
+        final Set<String> result = new HashSet<>();
+
+        final List<String> asList = StreamSupport.stream(withKeys.spliterator(), false)
+                .collect(Collectors.toList());
+
+        for (FieldInf fi : fromThese) {
+            fi.visit(item -> {
+                if (asList.contains(item.getId()) || result.contains(item.getId())) {
+                    result.add(item.getId());
+                    result.addAll(item.getCounterparts());
+                }
+            });
+        }
+
+        result.addAll(asList);
+
+        return result.toArray(new String[result.size()]);
+    }
+
 }

@@ -105,6 +105,7 @@ function renderFeed(div) {
     jsonp(url, 'callback', function (result) {
         div.innerHTML = result.content;
     });
+    // div.innerHTML = get(url);
 }
 
 function startIfeedRend() {
@@ -147,10 +148,10 @@ var currentTooltip = null;
 
 function fillDocumentDetailTooltip(id, here) {
     currentTooltip = here;
-    jsonp(getDataHostUrl() + "/iFeed-web/documents/" + id + "/metadata?type=tooltip", "callback",
+    jsonp(getDataHostUrl() + "/iFeed-web/documents/" + id + "/metadata?type=tooltip", "kallback",
         function (response) {
             if (currentTooltip != here) return;
-            here.innerHTML = response.content;
+            here.innerHTML = response; // response.content;
             here.style.position = 'absolute';
             here.style.backgroundColor = 'white';
             here.style.width = '500px';
@@ -340,3 +341,18 @@ function addCss(css) {
 }*/
 
 setTimeout(startIfeedRend, 500);
+
+
+function get(url) {
+    console.log('Try to get this one', url)
+    var xhr = new XMLHttpRequest();
+    var result = {};
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4){
+            result['text'] = xhr.responseText;
+        }
+    };
+    xhr.open('GET', url, false);
+    xhr.send();
+    return result['text'];
+}

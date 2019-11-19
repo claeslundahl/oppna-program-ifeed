@@ -1,11 +1,11 @@
 package se.vgregion.ifeed.service.solr.client;
 
-import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.service.ifeed.DocumentPopupConf;
 import se.vgregion.ifeed.service.solr.Csvs;
+import se.vgregion.ifeed.service.solr.SolrQueryEscaper;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
@@ -28,17 +28,9 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        // client = new SolrHttpClient("http://i3-stage-index.vgregion.se:9090/solr/ifeed/");
-        System.out.println(client.getBaseUrl());
-        // Map<String, Set<Object>> everything = client.findAllValues();
-
-        //List<Field> fields = client.fetchFields();
-        // System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(fields));
-
-        /*Map<String, Object> doc = fetchDocumentByName("*Regionportal*");
-        System.out.println(
-                new GsonBuilder().setPrettyPrinting().create().toJson(doc)
-        );*/
+        String arg = SolrQueryEscaper.escape("core*ArchivalObject.core*AccessRight");
+        System.out.println(arg);
+        System.out.println(client.toText("", 0, 1, null, "dc.language, " + arg));
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {

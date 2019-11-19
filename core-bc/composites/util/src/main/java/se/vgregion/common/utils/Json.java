@@ -13,8 +13,6 @@ import java.util.List;
 
 public class Json {
 
-    // private static LdapSupportService ldapSupportService;
-
     private static Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
         @Override
         public boolean shouldSkipField(FieldAttributes f) {
@@ -56,47 +54,4 @@ public class Json {
         return gson.fromJson(json, tt);
     }
 
-/*
-    public static String vgrHsaIdToJson(String id, Integer maxHits) throws JsonGenerationException,
-            JsonMappingException, IOException {
-
-        List<VgrOrganization> findings = ldapSupportService.find(new BaseVgrOrganization("Ou=Org", id),
-                VgrOrganization.class);
-
-        if (maxHits != null && findings.size() > maxHits.intValue()) {
-            VgrOrganization vo = new VgrOrganization();
-            vo.setOu("Hsa-id strängen matchade " + findings.size() + " träffar.");
-            findings = new ArrayList<VgrOrganization>();
-            findings.add(vo);
-        }
-
-        return toJson(findings);
-    }
-
-    public static String dnToJson(String id, Integer maxHits) throws JsonGenerationException,
-            JsonMappingException, IOException {
-
-        BaseVgrOrganization sample = new BaseVgrOrganization();
-        sample.setDn(id);
-
-        List<VgrOrganization> findings = ldapSupportService.find(sample, VgrOrganization.class);
-
-        if (maxHits != null && findings.size() > maxHits.intValue()) {
-            VgrOrganization vo = new VgrOrganization();
-            vo.setOu("Hsa-id strängen matchade " + findings.size() + " träffar.");
-            findings = new ArrayList<VgrOrganization>();
-            findings.add(vo);
-        }
-
-        return toJson(findings);
-    }
-
-    public LdapSupportService getLdapSupportService() {
-        return ldapSupportService;
-    }
-
-    @Autowired(required = true)
-    public void setLdapSupportService(LdapSupportService ldapSupportService) {
-        Json.ldapSupportService = ldapSupportService;
-    }*/
 }

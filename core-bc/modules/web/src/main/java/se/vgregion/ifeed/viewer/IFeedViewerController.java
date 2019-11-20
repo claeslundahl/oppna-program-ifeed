@@ -906,14 +906,21 @@ public class IFeedViewerController {
                 return DateFormatter.formatTextToDateOnly((String) value);
             }
             return DateFormatter.format((Date) value);
-            // return DateFormatter.toUtcDateIfPossible(value.toString()).replace(" ", "&nbsp;");
         }
         return value;
     }
 
     static Object format(Collection value) {
         Collection collection = (Collection) value;
-        List result = new ArrayList();
+        List result = new ArrayList() {
+            @Override
+            public String toString() {
+                return String.join(
+                        ", ",
+                        (List) stream().map(i -> String.valueOf(i)).collect(Collectors.toList())
+                );
+            }
+        };
         for (Object v : collection) {
             result.add(format(v));
         }

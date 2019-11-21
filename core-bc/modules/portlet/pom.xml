@@ -32,7 +32,6 @@
   </repositories>
 
   <properties>
-    <gwtVersion>2.8.1</gwtVersion>
     <liferay.version>2.50.0</liferay.version>
   </properties>
 
@@ -125,12 +124,6 @@
 
   <dependencies>
 
-<!--    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <version>${gwtVersion}</version>
-      <scope>compile</scope>
-    </dependency>-->
     <dependency>
       <groupId>se.vgregion.iFeed</groupId>
       <artifactId>iFeed-core-bc-composite-ldap</artifactId>

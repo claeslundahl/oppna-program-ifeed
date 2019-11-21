@@ -45,6 +45,8 @@
             <artifactId>hibernate-validator</artifactId>
             <version>5.1.3.Final</version>
         </dependency>
+
+<!--
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
@@ -56,6 +58,7 @@
             <version>${gwtVersion}</version>
             <scope>provided</scope>
         </dependency>
+-->
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
         <dependency>
@@ -64,13 +67,6 @@
             <version>4.4</version>
         </dependency>
 
-
-        <!--        <dependency>
-                    <groupId>commons-beanutils</groupId>
-                    <artifactId>commons-beanutils-bean-collections</artifactId>
-                    <version>1.8.3</version>
-                    <scope>compile</scope>
-                </dependency>-->
         <dependency>
             <groupId>se.vgregion.iFeed</groupId>
             <artifactId>iFeed-core-bc-composite-util</artifactId>

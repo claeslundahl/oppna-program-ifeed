@@ -5,7 +5,6 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
-import com.google.gwt.core.shared.GwtIncompatible;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 import se.vgregion.ifeed.shared.DynamicTableDef;
@@ -19,7 +18,6 @@ import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "vgr_ifeed")
-@GwtIncompatible
 public class IFeed extends AbstractEntity<Long> implements Serializable, Comparable<IFeed> {
 
     private static final long serialVersionUID = -2277251806545192506L;
@@ -262,8 +260,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     public void setGroup(VgrGroup group) {
         this.group = group;
     }
-
-    @GwtIncompatible
+    
     private String toJson() {
         try {
             return toJsonImpl();
@@ -274,7 +271,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     }
 
-    @GwtIncompatible
+    
     private void gatherAllNestedFeeds(Set<IFeed> intoThis) {
         if (!intoThis.contains(this)) {
             intoThis.add(this);
@@ -290,7 +287,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return result;
     }
 
-    @GwtIncompatible
+    
     static private <T> T copy(T instance) {
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
@@ -315,7 +312,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-    @GwtIncompatible
+    
     private String toJsonImpl() throws IOException, ClassNotFoundException {
         final Set<String> excludeFields = new HashSet<String>(Arrays.asList("iFeed", "ifeed", "ownerships",
                 "department", "group", "ifeedDynamicTableDefs", "tableDef", "partOf"));
@@ -346,7 +343,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return gson.toJson(this);
     }
 
-    @GwtIncompatible
+    
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         FileInputStream fin = new
                 FileInputStream("C:\\Users\\clalu4\\Downloads\\iFeed.obj.1");
@@ -358,7 +355,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         findCirkular(iFeed);
     }
 
-    @GwtIncompatible
+    
     static void findCirkular(Object currentNode) {
         try {
             findCirkular(currentNode, new ArrayList<String>(), new IdentityHashMap());
@@ -367,7 +364,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-    @GwtIncompatible
+    
     static void findCirkular(Object currentNode, List<String> stack, IdentityHashMap passed) throws IllegalAccessException {
         if (currentNode instanceof Collection) for (Object o : ((Collection) currentNode)) {
             findCirkular(o, stack, passed);
@@ -389,7 +386,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-    @GwtIncompatible
+    
     public static IFeed fromJson(String ifeed) {
         try {
             Gson gson = new GsonBuilder().create();

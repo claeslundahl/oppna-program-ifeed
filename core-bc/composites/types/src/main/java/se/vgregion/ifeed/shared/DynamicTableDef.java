@@ -1,7 +1,6 @@
 package se.vgregion.ifeed.shared;
 
 import com.google.gson.annotations.Expose;
-import com.google.gwt.core.shared.GwtIncompatible;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ public class DynamicTableDef extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "fk_ifeed_id")
-    @GwtIncompatible
     @Expose(serialize = false, deserialize = false)
     private se.vgregion.ifeed.types.IFeed ifeed;
 
@@ -194,12 +192,10 @@ public class DynamicTableDef extends AbstractEntity {
         this.name = name;
     }
 
-    @GwtIncompatible
     public se.vgregion.ifeed.types.IFeed getIfeed() {
         return ifeed;
     }
 
-    @GwtIncompatible
     public void setIfeed(se.vgregion.ifeed.types.IFeed ifeed) {
         this.ifeed = ifeed;
     }

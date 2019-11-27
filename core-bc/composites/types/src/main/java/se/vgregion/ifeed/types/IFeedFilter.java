@@ -262,6 +262,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public static String escapeValue(String withKey, String forSolr, String andPurpose) {
+        if (forSolr == null) return "";
         if (isSomeKindOfDate(withKey)) {
             if (forSolr.startsWith("+") || forSolr.startsWith("-") && forSolr.length() > 1 && isDigit(forSolr.substring(1))) {
                 Date now = new Date();

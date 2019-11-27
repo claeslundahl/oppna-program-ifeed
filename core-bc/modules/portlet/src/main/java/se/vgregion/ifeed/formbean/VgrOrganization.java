@@ -1,6 +1,5 @@
 package se.vgregion.ifeed.formbean;
 
-import se.vgregion.common.utils.Json;
 import se.vgregion.ldap.BaseVgrOrganization;
 
 import java.util.ArrayList;
@@ -19,14 +18,14 @@ public class VgrOrganization extends BaseVgrOrganization {
 
     public VgrOrganization() {
         super();
-        id = new Id(this);
+        /*id = new Id(this);*/
     }
 
     public VgrOrganization(String dn, String hsaIdentity) {
         super(dn, hsaIdentity);
     }
 
-    private Id id;
+    /*private Id id;*/
 
     public String getLabel() {
         if (getOu() != null) {
@@ -85,9 +84,9 @@ public class VgrOrganization extends BaseVgrOrganization {
         return getHsaIdentity(); // + "|" + getLabel();
     }
 
-    public String getId() {
+    /*public String getId() {
         return Json.toJson(id);
-    }
+    }*/
 
     public List<VgrOrganization> getChildren() {
         return children;
@@ -125,7 +124,7 @@ public class VgrOrganization extends BaseVgrOrganization {
         this.parent = parent;
     }
 
-    public static class Id extends BaseVgrOrganization {
+/*    public static class Id extends BaseVgrOrganization {
 
         private VgrOrganization parent;
 
@@ -142,6 +141,14 @@ public class VgrOrganization extends BaseVgrOrganization {
             return parent.getHsaIdentity();
         }
 
+    }*/
+
+    public void init() {
+        setLeaf(children.isEmpty());
+        children.forEach(c -> {
+            c.setParent(VgrOrganization.this);
+            c.init();
+        });
     }
 
 }

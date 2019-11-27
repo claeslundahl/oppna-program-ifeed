@@ -1491,7 +1491,7 @@ public class Application {
         if (searchResults == null) {
             searchResults = new ArrayList<>();
         }
-        if (iFeedModelBean.getFilters().isEmpty()) {
+        if (iFeedModelBean.toQuery().isEmpty()) {
             searchResults.clear();
         } else {
             updateSearchResults(iFeedModelBean);

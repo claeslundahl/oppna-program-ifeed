@@ -73,22 +73,33 @@ public class LdapApi {
         return result;
     }
 
-    private List<Map<String, Object>> toMaps(NamingEnumeration results) {
+    public List<Map<String, Object>> toMaps(NamingEnumeration results) {
         try {
-            return toMapsImpl(results);
+            return toMapsImpl(results, resultLimit);
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private List<Map<String, Object>> toMapsImpl(NamingEnumeration results) throws NamingException {
+    public static List<Map<String, Object>> toMaps(NamingEnumeration results, Integer resultLimit) {
+        try {
+            return toMapsImpl(results, resultLimit);
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static List<Map<String, Object>> toMapsImpl(NamingEnumeration results, Integer resultLimit) throws NamingException {
         List<Map<String, Object>> result = new ArrayList<>();
         int count = 0;
         while (results.hasMore()) {
             SearchResult sr = (SearchResult) results.next();
-            result.add(toMap(sr.getAttributes()));
+            Map<String, Object> map = toMap(sr.getAttributes());
+            result.add(map);
+            if (map.containsKey("dn")) throw new RuntimeException();
+            map.put("dn", sr.getNameInNamespace());
             count++;
-            if (count > resultLimit)
+            if (resultLimit != null && count > resultLimit)
                 break;
         }
         return result;

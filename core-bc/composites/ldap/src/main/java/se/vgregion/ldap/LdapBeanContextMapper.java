@@ -1,13 +1,15 @@
 package se.vgregion.ldap;
 
+import org.springframework.ldap.core.ContextMapper;
+import org.springframework.ldap.core.DirContextAdapter;
+import se.vgregion.common.utils.BeanMap;
+
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-
-import se.vgregion.common.utils.BeanMap;
-import org.springframework.ldap.core.ContextMapper;
-import org.springframework.ldap.core.DirContextAdapter;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class LdapBeanContextMapper<T extends Object> implements ContextMapper {
@@ -35,18 +37,17 @@ public class LdapBeanContextMapper<T extends Object> implements ContextMapper {
 
             NamingEnumeration<String> names = attributes.getIDs();
 
+            Map<String, Object> fromLdap = new HashMap<>();
+
             while (names.hasMore()) {
                 String name = names.next();
                 Attribute attribute = attributes.get(name);
                 Object value = attribute.get();
-                // System.out.println(name + ": " + value);
                 if (bm.containsKey(name)) {
                     bm.put(name, value);
                 }
+                fromLdap.put(name, value);
             }
-
-            // System.out.println(new HashMap(bm) + "\n");
-
             return bean;
         } catch (InstantiationException e) {
             e.printStackTrace();

@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BeanMap implements Map<String, Object> {
 
@@ -41,7 +42,7 @@ public class BeanMap implements Map<String, Object> {
 
     @Override
     public void clear() {
-        for (PropertyDescriptor pd : getWriteableDescs()) {
+        for (PropertyDescriptor pd : getWriteable()) {
             Class<?> type = pd.getPropertyType();
             if (type.isPrimitive()) {
                 put(pd.getName(), defaultPrimitiveValues.get(type));
@@ -49,16 +50,35 @@ public class BeanMap implements Map<String, Object> {
                 put(pd.getName(), null);
             }
         }
+        for (PropertyDescriptor pd : getUnWriteable()) {
+            Object v = get(pd.getName());
+            if (v instanceof Collection)
+                ((Collection) v).clear();
+        }
     }
 
-    public Set<PropertyDescriptor> getWriteableDescs() {
-        Set<PropertyDescriptor> result = new HashSet<PropertyDescriptor>();
+    public Set<PropertyDescriptor> getWriteable() {
+        return properties.values().stream()
+                .filter(p -> p.getWriteMethod() != null).collect(Collectors.toSet());
+        /*Set<PropertyDescriptor> result = new HashSet<PropertyDescriptor>();
         for (PropertyDescriptor pd : properties.values()) {
             if (pd.getWriteMethod() != null) {
                 result.add(pd);
             }
         }
-        return result;
+        return result;*/
+    }
+
+    public Set<PropertyDescriptor> getUnWriteable() {
+        return properties.values()
+                .stream().filter(p -> p.getWriteMethod() == null).collect(Collectors.toSet());
+        /*Set<PropertyDescriptor> result = new HashSet<PropertyDescriptor>();
+        for (PropertyDescriptor pd : properties.values()) {
+            if (pd.getWriteMethod() == null) {
+                result.add(pd);
+            }
+        }
+        return result;*/
     }
 
     public PropertyDescriptor getPropertyDesc(String key) {

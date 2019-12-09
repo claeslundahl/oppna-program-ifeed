@@ -148,7 +148,7 @@ var currentTooltip = null;
 
 function fillDocumentDetailTooltip(id, here) {
     currentTooltip = here;
-    jsonp(getDataHostUrl() + "/iFeed-web/documents/" + id + "/metadata?type=tooltip", "kallback",
+    getAsynchronous(getDataHostUrl() + "/iFeed-web/documents/" + id + "/metadata?type=tooltip",
         function (response) {
             if (currentTooltip != here) return;
             here.innerHTML = response; // response.content;
@@ -350,6 +350,20 @@ function get(url) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4){
             result['text'] = xhr.responseText;
+        }
+    };
+    xhr.open('GET', url, false);
+    xhr.send();
+    return result['text'];
+}
+
+function getAsynchronous(url, callback) {
+    var xhr = new XMLHttpRequest();
+    var result = {};
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4){
+            // result['text'] = xhr.responseText;
+            callback(xhr.responseText);
         }
     };
     xhr.open('GET', url, false);

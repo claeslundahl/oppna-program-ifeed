@@ -28,9 +28,10 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        String arg = SolrQueryEscaper.escape("core*ArchivalObject.core*AccessRight");
+        /*String arg = SolrQueryEscaper.escape("core*ArchivalObject.core*AccessRight");
         System.out.println(arg);
-        System.out.println(client.toText("", 0, 1, null, "dc.language, " + arg));
+        System.out.println(client.toText("", 0, 1, null, "dc.language, " + arg));*/
+        client.fetchFields();
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {

@@ -51,9 +51,9 @@ public class SolrHttpClient {
     // public Result query(String qf, Integer start, Integer rows, String dir, String ... sort) {
 
     public Result query(String qf, Integer start, Integer rows, String dir, FieldInf sortField, String... fl) {
-        if (fl != null)
+        /*if (fl != null)
             System.out.println("Query " + new ArrayList<>(Arrays.asList(fl)));
-        else System.out.println("fl is null");
+        else System.out.println("fl is null");*/
         try {
             Result result = queryImp(qf, start, rows, dir, sortField, fl);
             return result;
@@ -87,9 +87,38 @@ public class SolrHttpClient {
         throw new RuntimeException();
     }*/
 
+    public static String toTextQuery(String fq, Integer start, Integer rows, String sort, String fl)
+            throws UnsupportedEncodingException {
+        if (fq == null || fq.trim().isEmpty()) fq = "";
+        else fq = URLEncoder.encode(fq, "UTF-8");
+        if (!fq.isEmpty()) {
+            fq = "fq=" + fq;
+        }
+        if (start != null) {
+            fq = fq + "&start=" + start;
+        }
+        if (rows != null) {
+            fq = fq + "&rows=" + rows;
+        }
+        if (sort != null && !sort.trim().isEmpty()) {
+            String tempSort = sort;
+            if (tempSort.contains(" ")) {
+                tempSort = URLEncoder.encode(tempSort, "UTF-8");
+            }
+            fq = fq + "&sort=" + tempSort;
+        }
+        fq = fq + "&wt=json&q=*%3A*";
+
+        if (fl != null) {
+            fq += "&fl=" + URLEncoder.encode(fl, "UTF-8");
+        }
+
+        return fq;
+    }
+
     public String toText(String fq, Integer start, Integer rows, String sort, String fl) {
         try {
-            if (fq == null || fq.trim().isEmpty()) fq = "";
+            /*if (fq == null || fq.trim().isEmpty()) fq = "";
             else fq = URLEncoder.encode(fq, "UTF-8");
             if (!fq.isEmpty()) {
                 fq = "fq=" + fq;
@@ -107,15 +136,17 @@ public class SolrHttpClient {
                 }
                 fq = fq + "&sort=" + tempSort;
             }
-            fq = fq + "&wt=json&q=*%3A*";
+            fq = fq + "&wt=json&q=*%3A*";*/
+
+            fq = toTextQuery(fq, start, rows, sort, fl);
 
             latestCall = baseUrl + "select";
 
             latestCallAsGet = baseUrl + "select?" + fq;
 
-            if (fl != null) {
+            /*if (fl != null) {
                 fq += "&fl=" + URLEncoder.encode(fl, "UTF-8");
-            }
+            }*/
 
             String json = post(latestCall, fq);
 
@@ -124,6 +155,7 @@ public class SolrHttpClient {
             throw new RuntimeException(e);
         }
     }
+
 
     private Result queryImp(String fq, Integer start, Integer rows, String dir, FieldInf sortOn, String... fl) {
         if (start == null) start = 0;

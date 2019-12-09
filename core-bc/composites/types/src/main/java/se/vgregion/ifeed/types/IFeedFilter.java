@@ -131,7 +131,6 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
         return id;
     }
 
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -322,5 +321,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
             return false;
         return (operator.equalsIgnoreCase("and") || operator.equalsIgnoreCase("or"));
     }
+
+
 
 }

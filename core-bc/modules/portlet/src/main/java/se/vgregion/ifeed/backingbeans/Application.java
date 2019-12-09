@@ -953,7 +953,7 @@ public class Application {
                 List<FieldInf> items = new ArrayList<>();
 
                 for (FieldInf grandChild : child.getChildren()) {
-                    if (grandChild.isInHtmlView()) {
+                    if (grandChild.isFilter()) {
                         items.add(grandChild.toDetachedCopy());
                         if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
                             found = true;

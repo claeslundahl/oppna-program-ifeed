@@ -234,6 +234,9 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     static boolean isSomeKindOfDate(String withKey) {
+        if (withKey == null) {
+            return false;
+        }
         return withKey.contains("date");
     }
 

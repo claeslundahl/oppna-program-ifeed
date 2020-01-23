@@ -23,10 +23,7 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false,
-            "counterparts": [
-              "title"
-            ]
+            "expanded": false
           },
           {
             "id": "dc.title.filename",
@@ -189,7 +186,7 @@
             "type": "d:text",
             "apelonKey": "",
             "children": [],
-            "filter": true,
+            "filter": false,
             "inHtmlView": true,
             "expanded": false
           },
@@ -744,9 +741,6 @@
           },
           {
             "id": "dc.date.issued",
-            "counterparts": [
-              "core:ArchivalObject.core:CreatedDateTime"
-            ],
             "name": "Publiceringsdatum",
             "help": "Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen.",
             "type": "d:date",
@@ -754,7 +748,10 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false
+            "expanded": false,
+            "corresponding": [
+              "core:ArchivalObject.core:CreatedDateTime"
+            ]
           },
           {
             "id": "dc.identifier.documentid",
@@ -956,7 +953,7 @@
             "type": "d:text",
             "apelonKey": "",
             "children": [],
-            "filter": true,
+            "filter": false,
             "inHtmlView": true,
             "expanded": false
           },
@@ -1068,8 +1065,7 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false,
-            "counterparts": []
+            "expanded": false
           }
         ],
         "filter": false,
@@ -1105,10 +1101,7 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false,
-            "counterparts": [
-              "dc.title"
-            ]
+            "expanded": false
           },
           {
             "id": "core:ArchivalObject.core:Producer",
@@ -1207,8 +1200,7 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false,
-            "counterparts": []
+            "expanded": false
           }
         ],
         "filter": false,
@@ -1258,9 +1250,6 @@
           },
           {
             "id": "core:ArchivalObject.core:CreatedDateTime",
-            "counterparts": [
-              "dc.date.issued"
-            ],
             "name": "Publiceringsdatum",
             "help": "Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen.",
             "type": "d:date",
@@ -1268,7 +1257,10 @@
             "children": [],
             "filter": true,
             "inHtmlView": true,
-            "expanded": false
+            "expanded": false,
+            "corresponding": [
+              "dc.date.issued"
+            ]
           }
         ],
         "filter": true,

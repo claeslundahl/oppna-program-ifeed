@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diff Stage och Prodd</title>
+</head>
+<body>
+
+<table>
+    <tbody>
+    <tr>
+        <td>
+            <H1>Stage</H1>
+            <select id="ifeed_view:defaultSortColumn1" name="ifeed_view:defaultSortColumn1" size="100"
+                    style="text-align:left;" multiple="">
+                <optgroup label="Dokumentbeskrivning (Alfresco, Barium)">
+                    <option value="dc.title" selected="selected">Titel (autokomplettering)</option>
+                    <option value="dc.title.alternative">Alternativ titel</option>
+                    <option value="dc.type.document">Gruppering av handlingstyper</option>
+                    <option value="dc.type.document.structure">Dokumentstruktur VGR</option>
+                    <option value="dc.type.document.structure.id">Dokumentstruktur VGR ID</option>
+                    <option value="dc.type.record">Handlingstyp (autokomplettering)</option>
+                    <option value="dc.coverage.hsacode">Verksamhetskod enligt HSA</option>
+                    <option value="dcterms.audience">Målgrupp HoS (autokomplettering)</option>
+                    <option value="dc.identifier.version">Version</option>
+                    <option value="dc.contributor.savedby.id">Sparat av ID</option>
+                    <option value="vgregion.status.document">Dokumentstatus</option>
+                    <option value="dc.source.documentid">Dokumentid källa</option>
+                </optgroup>
+                <optgroup label="Skapat av och för (Alfresco, Barium)">
+                    <option value="dc.creator.id">Skapat av ID</option>
+                    <option value="dc.creator.freetext">Skapat av (Fritext)</option>
+                    <option value="dc.creator.forunit.id">Skapat av enhet ID (VGR:s organisationsträd)</option>
+                    <option value="dc.creator.project-assignment">Skapat av Projekt/Uppdrag/Grupp</option>
+                </optgroup>
+                <optgroup label="Ansvariga (Alfresco, Barium)">
+                    <option value="dc.creator.document.id">Innehållsansvarig/Dokumentansvarig ID</option>
+                    <option value="dc.creator.function">Funktionsansvar</option>
+                    <option value="dc.creator.recordscreator">Arkivbildare (autokomplettering)</option>
+                    <option value="dc.creator.recordscreator.id">Arkivbildare ID (VGR:s organisationsträd)</option>
+                </optgroup>
+                <optgroup label="Giltighet och tillgänglighet (Alfresco, Barium)">
+                    <option value="dc.date.validfrom">Giltighetsdatum from</option>
+                    <option value="dc.date.validto">Giltighetsdatum tom</option>
+                    <option value="dc.date.availablefrom">Tillgänglighetsdatum from</option>
+                    <option value="dc.date.availableto">Tillgänglighetsdatum tom</option>
+                </optgroup>
+                <optgroup label="Granskat/Godkänt (Alfresco, Barium)">
+                    <option value="dc.contributor.acceptedby.id">Godkänt av ID</option>
+                    <option value="dc.contributor.acceptedby.freetext">Godkänt av (Fritext)</option>
+                    <option value="dc.contributor.acceptedby.role">Godkänt av Egenskap/Roll</option>
+                    <option value="dc.contributor.controlledby.id">Granskat av ID</option>
+                    <option value="dc.contributor.controlledby.freetext">Granskat av (Fritext)</option>
+                    <option value="dc.contributor.controlledby.role">Granskat av Egenskap/Roll</option>
+                </optgroup>
+                <optgroup label="Publicerat (Alfresco, Barium)">
+                    <option value="dc.publisher.forunit.id">Publicerat för enhet ID (VGR:s organisationsträd)</option>
+                    <option value="dc.publisher.project-assignment">Publicerat för Projekt/Uppdrag/Grupp</option>
+                    <option value="dc.rights.accessrights">Publik åtkomsträtt</option>
+                    <option value="dc.publisher.id">Publicerat av ID</option>
+                    <option value="dc.date.issued">Publiceringsdatum</option>
+                    <option value="dc.identifier">Länk till publicerat/utgivet dokument</option>
+                </optgroup>
+                <optgroup label="Sammanhang (Alfresco, Barium)">
+                    <option value="dc.type.process.name">Processnamn</option>
+                    <option value="dc.type.file.process">Ärendetyp</option>
+                    <option value="dc.type.file">Ärende</option>
+                    <option value="dc.identifier.diarie.id">Diarienummer</option>
+                    <option value="dc.type.document.serie">Dokumentserie</option>
+                    <option value="dc.type.document.id">Referensnummer i dokumentserie</option>
+                </optgroup>
+                <optgroup label="Nyckelord (Alfresco, Barium)">
+                    <option value="dc.subject.keywords">Nyckelord (autokomplettering)</option>
+                    <option value="dc.subject.authorkeywords">Författarens nyckelord</option>
+                </optgroup>
+                <optgroup label="Övrigt (Alfresco, Barium)">
+                    <option value="language">Språk</option>
+                    <option value="dc.relation.replaces">Ersätter</option>
+                    <option value="dc.identifier.location">Fysisk placering</option>
+                    <option value="dc.format.extension">Filändelse, utgivet/publicerat</option>
+                    <option value="dc.source.origin">Källsystem</option>
+                </optgroup>
+            </select>
+        </td>
+        <td>
+            <h1>Prodd</h1>
+            <select id="ifeed_view:defaultSortColumn1" name="ifeed_view:defaultSortColumn1" size="100"
+                    style="text-align:left;" multiple="">
+                <optgroup label="Dokumentbeskrivning (Alfresco, Barium)">
+                    <option value="dc.title" selected="selected">Titel (autokomplettering)</option>
+                    <option value="dc.title.filename">Filnamn, utgivet/publicerat</option>
+                    <option value="dc.title.filename.native">Filnamn, original</option>
+                    <option value="dc.title.alternative">Alternativ titel</option>
+                    <option value="dc.description">Beskrivning</option>
+                    <option value="dc.type.document">Gruppering av handlingstyper</option>
+                    <option value="dc.type.document.structure">Dokumentstruktur VGR</option>
+                    <option value="dc.type.document.structure.id">Dokumentstruktur VGR ID</option>
+                    <option value="dc.type.record">Handlingstyp (autokomplettering)</option>
+                    <option value="dc.coverage.hsacode">Verksamhetskod enligt HSA</option>
+                    <option value="dcterms.audience">Målgrupp HoS (autokomplettering)</option>
+                    <option value="dc.audience">Målgrupp HoS (autokomplettering)</option>
+                    <option value="dc.identifier.version">Version</option>
+                    <option value="dc.contributor.savedby">Sparat av</option>
+                    <option value="dc.contributor.savedby.id">Sparat av ID</option>
+                    <option value="dc.date.saved">Sparat datum</option>
+                    <option value="vgregion.status.document">Dokumentstatus</option>
+                    <option value="vgr.status.document">Dokumentstatus</option>
+                    <option value="vgr.status.document.id">Dokumentstatus</option>
+                    <option value="dc.source.documentid">Dokumentid källa</option>
+                    <option value="dc.source">Länk till dokumentets källa</option>
+                </optgroup>
+                <optgroup label="Skapat av och för (Alfresco, Barium)">
+                    <option value="dc.creator">Skapat av</option>
+                    <option value="dc.creator.id">Skapat av ID</option>
+                    <option value="dc.creator.freetext">Skapat av (Fritext)</option>
+                    <option value="dc.creator.forunit">Skapat av enhet (autokomplettering)</option>
+                    <option value="dc.creator.project-assignment">Skapat av Projekt/Uppdrag/Grupp</option>
+                </optgroup>
+                <optgroup label="Ansvariga (Alfresco, Barium)">
+                    <option value="dc.creator.document">Innehållsansvarig/Dokumentansvarig</option>
+                    <option value="dc.creator.document.id">Innehållsansvarig/Dokumentansvarig ID</option>
+                    <option value="dc.creator.function">Funktionsansvar</option>
+                    <option value="dc.creator.recordscreator">Arkivbildare (autokomplettering)</option>
+                    <option value="dc.creator.recordscreator.id">Arkivbildare ID (VGR:s organisationsträd)</option>
+                </optgroup>
+                <optgroup label="Giltighet och tillgänglighet (Alfresco, Barium)">
+                    <option value="dc.date.validfrom">Giltighetsdatum from</option>
+                    <option value="dc.date.validto">Giltighetsdatum tom</option>
+                    <option value="dc.date.availablefrom">Tillgänglighetsdatum from</option>
+                    <option value="dc.date.availableto">Tillgänglighetsdatum tom</option>
+                    <option value="dc.date.copyrighted">Copyrightdatum</option>
+                </optgroup>
+                <optgroup label="Granskat/Godkänt (Alfresco, Barium)">
+                    <option value="dc.contributor.acceptedby">Godkänt av</option>
+                    <option value="dc.contributor.acceptedby.id">Godkänt av ID</option>
+                    <option value="dc.contributor.acceptedby.freetext">Godkänt av (Fritext)</option>
+                    <option value="dc.date.accepted">Godkänt datum</option>
+                    <option value="dc.contributor.acceptedby.role">Godkänt av Egenskap/Roll</option>
+                    <option value="dc.contributor.acceptedby.unit.freetext">Enhet (Fritext)</option>
+                    <option value="dc.contributor.controlledby">Granskat av</option>
+                    <option value="dc.contributor.controlledby.id">Granskat av ID</option>
+                    <option value="dc.contributor.controlledby.freetext">Granskat av (Fritext)</option>
+                    <option value="dc.date.controlled">Granskningsdatum</option>
+                    <option value="dc.contributor.controlledby.role">Granskat av Egenskap/Roll</option>
+                    <option value="dc.contributor.controlledby.unit.freetext">Enhet (Fritext)</option>
+                </optgroup>
+                <optgroup label="Publicerat (Alfresco, Barium)">
+                    <option value="dc.publisher.forunit">Publicerat för enhet (autokomplettering)</option>
+                    <option value="dc.publisher.forunit.flat">Publicerat för enhet (för sortering)</option>
+                    <option value="dc.publisher.forunit.id">Publicerat för enhet ID (VGR:s organisationsträd)</option>
+                    <option value="dc.publisher.project-assignment">Publicerat för Projekt/Uppdrag/Grupp</option>
+                    <option value="dc.rights.accessrights">Publik åtkomsträtt</option>
+                    <option value="dc.publisher">Publicerat av</option>
+                    <option value="dc.publisher.id">Publicerat av ID</option>
+                    <option value="dc.date.issued">Publiceringsdatum</option>
+                    <option value="dc.identifier">Länk till publicerat/utgivet dokument</option>
+                    <option value="dc.identifier.native">Länk till utgivet orginaldokument</option>
+                </optgroup>
+                <optgroup label="Sammanhang (Alfresco, Barium)">
+                    <option value="dc.type.process.name">Processnamn</option>
+                    <option value="dc.type.file.process">Ärendetyp</option>
+                    <option value="dc.type.file">Ärende</option>
+                    <option value="dc.identifier.diarie.id">Diarienummer</option>
+                    <option value="dc.type.document.serie">Dokumentserie</option>
+                    <option value="dc.type.document.id">Referensnummer i dokumentserie</option>
+                </optgroup>
+                <optgroup label="Nyckelord (Alfresco, Barium)">
+                    <option value="dc.subject.keywords">Nyckelord (autokomplettering)</option>
+                    <option value="dc.subject.authorkeywords">Författarens nyckelord</option>
+                </optgroup>
+                <optgroup label="Övrigt (Alfresco, Barium)">
+                    <option value="dc.relation.isversionof">Alternativ variant av</option>
+                    <option value="dc.relation.replaces">Ersätter</option>
+                    <option value="dc.format.extent">Omfattning</option>
+                    <option value="dc.identifier.location">Fysisk placering</option>
+                    <option value="dc.type.templatename">Mallnamn</option>
+                    <option value="dc.format.extent.mimetype">Mimetyp, utgivet/publicerat</option>
+                    <option value="dc.format.extent.mimetype.native">Mimetyp, original</option>
+                    <option value="dc.format.extension">Filändelse, utgivet/publicerat</option>
+                    <option value="dc.format.extension.native">Filändelse, original</option>
+                    <option value="dc.identifier.checksum">Kontrollsumma dokument, utgivet/publicerat</option>
+                    <option value="dc.identifier.checksum.native">Kontrollsumma dokument, original</option>
+                    <option value="dc.source.origin">Källsystem</option>
+                </optgroup>
+                <optgroup label="Populära filter (SOFIA)">
+                    <option value="core:ArchivalObject.core:Producer">Myndighet</option>
+                    <option value="core:ArchivalObject.core:Classification.core:Classification.name">
+                        Klassificeringsstrukturen (process)
+                    </option>
+                    <option value="core:ArchivalObject.core:ObjectType">Handlingstyp</option>
+                    <option value="vgr:VgrExtension.vgr:Source.id">Dokumentid källa</option>
+                    <option value="vgr:VgrExtension.vgr:SourceSystem">Källsystem</option>
+                </optgroup>
+                <optgroup label="Ytterligare filter (SOFIA)">
+                    <option value="vgr:VgrExtension.vgr:CreatedByUnit.id">Upprättat av enhet</option>
+                    <option value="vgr:VgrExtension.vgr:CreatedBy">Upprättat av (person)</option>
+                    <option value="vgr:VgrExtension.vgr:SecurityClass">Åtkomsträtt</option>
+                </optgroup>
+            </select>
+        </td>
+        <td valign="top">
+            <h1>Filter (Prod)</h1>
+            <table class="ifeed-filters">
+                <tbody>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:0:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Dokumentbeskrivning
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:0:j_idt339" href="#"
+                           title="Namn på dokument, handling eller annan typ av resurs. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Titel
+                        (autokomplettering)
+                        <span title="Namn på dokument, handling eller annan typ av resurs. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.title</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:3:j_idt339" href="#"
+                           title="Alternativ till den formella titeln. Kan tex vara en förkortning eller översättning av titeln. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Alternativ
+                        titel
+                        <span title="Alternativ till den formella titeln. Kan tex vara en förkortning eller översättning av titeln. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.title.alternative</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:5:j_idt339" href="#"
+                           title="Grupp av handlingstyper, används för att enklare hitta handlingstyp"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Gruppering
+                        av handlingstyper
+                        <span title="Grupp av handlingstyper, används för att enklare hitta handlingstyp"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:6:j_idt339" href="#"
+                           title="Gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentstruktur
+                        VGR
+                        <span title="Gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document.structure</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:7:j_idt339" href="#"
+                           title="ID för gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentstruktur
+                        VGR ID
+                        <span title="ID för gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document.structure.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:8:j_idt339" href="#"
+                           title="Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Handlingstyp
+                        (autokomplettering)
+                        <span title="Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.record</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:10:j_idt339" href="#"
+                           title="Kod och klartext för den/de verksamheter dokumentet, handlingen eller resursens innehåll beskriver (HSA-Nationell katalogtjänst)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Verksamhetskod
+                        enligt HSA
+                        <span title="Kod och klartext för den/de verksamheter dokumentet, handlingen eller resursens innehåll beskriver (HSA-Nationell katalogtjänst)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.coverage.hsacode</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:12:j_idt339" href="#"
+                           title="Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Målgrupp
+                        HoS (autokomplettering)
+                        <span title="Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dcterms.audience</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:17:j_idt339" href="#"
+                           title="Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Sparat
+                        av ID
+                        <span title="Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.savedby.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:19:j_idt339" href="#"
+                           title="Statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentstatus
+                        <span title="Statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">vgregion.status.document</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:23:j_idt339" href="#"
+                           title="För systemet unikt id för dokumentet. (Systemstyrt)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentid
+                        källa
+                        <span title="För systemet unikt id för dokumentet. (Systemstyrt)" class="ifeed-filter-add">
+                                                <span style="display: none;">dc.source.documentid</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:1:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Skapat av och för
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:1:j_idt336:1:j_idt339" href="#"
+                           title="Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Skapat
+                        av ID
+                        <span title="Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:1:j_idt336:2:j_idt339" href="#"
+                           title="Den eller de personer som skapat eller uppdaterat innehållet och inte finns upplagda i katalogen."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Skapat
+                        av (Fritext)
+                        <span title="Den eller de personer som skapat eller uppdaterat innehållet och inte finns upplagda i katalogen."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.freetext</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:1:j_idt336:4:j_idt339" href="#"
+                           title="Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Skapat
+                        av enhet ID (VGR:s organisationsträd)
+                        <span title="Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.forunit.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:1:j_idt336:5:j_idt339" href="#"
+                           title="Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är skapad av"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Skapat
+                        av Projekt/Uppdrag/Grupp
+                        <span title="Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är skapad av"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.project-assignment</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:2:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Ansvariga
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:2:j_idt336:1:j_idt339" href="#"
+                           title="Id för den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.  Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Innehållsansvarig/Dokumentansvarig
+                        ID
+                        <span title="Id för den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.  Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.document.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:2:j_idt336:2:j_idt339" href="#"
+                           title="Den funktion eller roll som ansvarar för innehållet i dokumentet. Funktionen eller rollen skrivs in som fritext t.ex: Lex Maria-ansvarig, Tjänsteman i beredskap eller Reception."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Funktionsansvar
+                        <span title="Den funktion eller roll som ansvarar för innehållet i dokumentet. Funktionen eller rollen skrivs in som fritext t.ex: Lex Maria-ansvarig, Tjänsteman i beredskap eller Reception."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.function</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:2:j_idt336:3:j_idt339" href="#"
+                           title="Ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Arkivbildare
+                        (autokomplettering)
+                        <span title="Ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.recordscreator</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:2:j_idt336:4:j_idt339" href="#"
+                           title="ID för ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Arkivbildare
+                        ID (VGR:s organisationsträd)
+                        <span title="ID för ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.recordscreator.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:3:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Giltighet och tillgänglighet
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:3:j_idt336:0:j_idt339" href="#"
+                           title="Startdatum för giltigheten för innehållet i dokumentet, handlingen eller resursen. Skilj från ”Tillgänglighetsdatum”"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Giltighetsdatum
+                        from
+                        <span title="Startdatum för giltigheten för innehållet i dokumentet, handlingen eller resursen. Skilj från ”Tillgänglighetsdatum”"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.validfrom</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:3:j_idt336:1:j_idt339" href="#"
+                           title="Slutdatum för giltigheten för innehållet i dokumentet, handlingen eller resursens. Skilj från ”Tillgänglighetsdatum”"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Giltighetsdatum
+                        tom
+                        <span title="Slutdatum för giltigheten för innehållet i dokumentet, handlingen eller resursens. Skilj från ”Tillgänglighetsdatum”"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.validto</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:3:j_idt336:2:j_idt339" href="#"
+                           title="Startdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Tillgänglighetsdatum
+                        from
+                        <span title="Startdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.availablefrom</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:3:j_idt336:3:j_idt339" href="#"
+                           title="Slutdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Tillgänglighetsdatum
+                        tom
+                        <span title="Slutdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.availableto</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:4:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Granskat/Godkänt
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:1:j_idt339" href="#"
+                           title="Id för den eller de personer som godkänner innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Godkänt
+                        av ID
+                        <span title="Id för den eller de personer som godkänner innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.acceptedby.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:2:j_idt339" href="#"
+                           title="Den eller de personer som godkänner innehållet och inte finns upplagda i katalogen"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Godkänt
+                        av (Fritext)
+                        <span title="Den eller de personer som godkänner innehållet och inte finns upplagda i katalogen"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.acceptedby.freetext</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:4:j_idt339" href="#"
+                           title="I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Godkänt
+                        av Egenskap/Roll
+                        <span title="I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.acceptedby.role</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:7:j_idt339" href="#"
+                           title="Id för den eller de personer som granskar innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Granskat
+                        av ID
+                        <span title="Id för den eller de personer som granskar innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.controlledby.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:8:j_idt339" href="#"
+                           title="Den eller de personer som granskar innehållet och inte finns upplagda i katalogen"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Granskat
+                        av (Fritext)
+                        <span title="Den eller de personer som granskar innehållet och inte finns upplagda i katalogen"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.controlledby.freetext</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:10:j_idt339" href="#"
+                           title="I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Granskat
+                        av Egenskap/Roll
+                        <span title="I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.controlledby.role</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:5:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Publicerat
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:2:j_idt339" href="#"
+                           title="ID för den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publicerat
+                        för enhet ID (VGR:s organisationsträd)
+                        <span title="ID för den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.publisher.forunit.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:3:j_idt339" href="#"
+                           title="Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är publicerad för. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publicerat
+                        för Projekt/Uppdrag/Grupp
+                        <span title="Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är publicerad för. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.publisher.project-assignment</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:4:j_idt339" href="#"
+                           title="Hur den publicerade informationen blir tillgänglig: Internet och/eller Intranät"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publik
+                        åtkomsträtt
+                        <span title="Hur den publicerade informationen blir tillgänglig: Internet och/eller Intranät"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.rights.accessrights</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:6:j_idt339" href="#"
+                           title="Id för inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publicerat
+                        av ID
+                        <span title="Id för inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.publisher.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:7:j_idt339" href="#"
+                           title="Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publiceringsdatum
+                        <span title="Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.issued</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:9:j_idt339" href="#"
+                           title="Länk till det publicerade dokumentet, handlingen eller resursen, pdf/a-utgåva. Se filnamn (Systemstyrt)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Länk
+                        till publicerat/utgivet dokument
+                        <span title="Länk till det publicerade dokumentet, handlingen eller resursen, pdf/a-utgåva. Se filnamn (Systemstyrt)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.identifier</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:6:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Sammanhang
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:0:j_idt339" href="#"
+                           title="Sammanhållen hantering som avgränsas och namnges av verksamheten. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Processnamn
+                        <span title="Sammanhållen hantering som avgränsas och namnges av verksamheten. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.process.name</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:1:j_idt339" href="#"
+                           title="Beskrivning av en serie/följd av åtgärder. (Fritext). Ex supportärende, bidragsansökan"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Ärendetyp
+                        <span title="Beskrivning av en serie/följd av åtgärder. (Fritext). Ex supportärende, bidragsansökan"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.file.process</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:2:j_idt339" href="#"
+                           title="Enskild åtgärd. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Ärende
+                        <span title="Enskild åtgärd. (Fritext)" class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.file</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:3:j_idt339" href="#"
+                           title="Diarienummer, skrivs in när man vet vilket nummer dokumentet, handlingen eller resursen fått"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Diarienummer
+                        <span title="Diarienummer, skrivs in när man vet vilket nummer dokumentet, handlingen eller resursen fått"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.identifier.diarie.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:4:j_idt339" href="#"
+                           title="Beskrivning av en serie/följd av dokument. För att kunna använda dokumentserie vid utsökning måste exakt samma värde sättas på alla dokument, handlingar eller resurser som ingår i dokumentserien. (Fritext). Ex: återkommande protokoll för viss nämnd"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentserie
+                        <span title="Beskrivning av en serie/följd av dokument. För att kunna använda dokumentserie vid utsökning måste exakt samma värde sättas på alla dokument, handlingar eller resurser som ingår i dokumentserien. (Fritext). Ex: återkommande protokoll för viss nämnd"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document.serie</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:5:j_idt339" href="#"
+                           title="Ett värde som anger det enskilda dokumentet i dokumentserien. Kan uttryckas som nummer, datum osv. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Referensnummer
+                        i dokumentserie
+                        <span title="Ett värde som anger det enskilda dokumentet i dokumentserien. Kan uttryckas som nummer, datum osv. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:7:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Nyckelord
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:7:j_idt336:0:j_idt339" href="#"
+                           title="Det eller de enstaka ord som kan beskriva innehållet. Hämtas från kodverk."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Nyckelord
+                        (autokomplettering)
+                        <span title="Det eller de enstaka ord som kan beskriva innehållet. Hämtas från kodverk."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.subject.keywords</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:7:j_idt336:1:j_idt339" href="#"
+                           title="Det eller de enstaka ord som kan beskriva innehållet. Sätts av den som skapar eller uppdaterar dokumentet, handlingen eller resursen. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Författarens
+                        nyckelord
+                        <span title="Det eller de enstaka ord som kan beskriva innehållet. Sätts av den som skapar eller uppdaterar dokumentet, handlingen eller resursen. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.subject.authorkeywords</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:8:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Övrigt
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:0:j_idt339" href="#"
+                           title="Det/de språk som innehållet är skrivet på"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Språk
+                        <span title="Det/de språk som innehållet är skrivet på" class="ifeed-filter-add">
+                                                <span style="display: none;">language</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:5:j_idt339" href="#"
+                           title="Vart man fysiskt kan hitta dokumentet, handlingen eller resursen. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Fysisk
+                        placering
+                        <span title="Vart man fysiskt kan hitta dokumentet, handlingen eller resursen. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.identifier.location</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:9:j_idt339" href="#"
+                           title="Format på utgiven/publicerad fil, kan användas för att bestämma vilken mjukvara som är nödvändig för att kunna visa eller använda resursen. (Systemstyrt). Ex doc, png"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Filändelse,
+                        utgivet/publicerat
+                        <span title="Format på utgiven/publicerad fil, kan användas för att bestämma vilken mjukvara som är nödvändig för att kunna visa eller använda resursen. (Systemstyrt). Ex doc, png"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.format.extension</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:13:j_idt339" href="#"
+                           title="Källsystem till dokumentet, handlingen eller resursen. (Systemstyrt)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Källsystem
+                        <span title="Källsystem till dokumentet, handlingen eller resursen. (Systemstyrt)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.source.origin</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+        <td valign="top">
+            <h1>Filter (Stage)</h1>
+            <table class="ifeed-filters">
+                <tbody>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:0:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Dokumentbeskrivning
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:0:j_idt339" href="#"
+                           title="Namn på dokument, handling eller annan typ av resurs. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Titel
+                        (autokomplettering)
+                        <span title="Namn på dokument, handling eller annan typ av resurs. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.title</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:3:j_idt339" href="#"
+                           title="Alternativ till den formella titeln. Kan tex vara en förkortning eller översättning av titeln. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Alternativ
+                        titel
+                        <span title="Alternativ till den formella titeln. Kan tex vara en förkortning eller översättning av titeln. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.title.alternative</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:5:j_idt339" href="#"
+                           title="Grupp av handlingstyper, används för att enklare hitta handlingstyp"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Gruppering
+                        av handlingstyper
+                        <span title="Grupp av handlingstyper, används för att enklare hitta handlingstyp"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:6:j_idt339" href="#"
+                           title="Gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentstruktur
+                        VGR
+                        <span title="Gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document.structure</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:7:j_idt339" href="#"
+                           title="ID för gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentstruktur
+                        VGR ID
+                        <span title="ID för gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document.structure.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:8:j_idt339" href="#"
+                           title="Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Handlingstyp
+                        (autokomplettering)
+                        <span title="Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.record</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:10:j_idt339" href="#"
+                           title="Kod och klartext för den/de verksamheter dokumentet, handlingen eller resursens innehåll beskriver (HSA-Nationell katalogtjänst)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Verksamhetskod
+                        enligt HSA
+                        <span title="Kod och klartext för den/de verksamheter dokumentet, handlingen eller resursens innehåll beskriver (HSA-Nationell katalogtjänst)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.coverage.hsacode</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:12:j_idt339" href="#"
+                           title="Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Målgrupp
+                        HoS (autokomplettering)
+                        <span title="Den/de målgrupper som dokumentet, handlingen eller resursen riktas till. Gäller Hälso- och Sjukvårdspersonal"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dcterms.audience</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:15:j_idt339" href="#"
+                           title="Den version dokumentet, handlingen eller resursen har. (Systemstyrt). Mindre ändringar får vanligen version 0.1, 0.2 osv och större ändringar 1.0, 2.0 osv"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Version
+                        <span title="Den version dokumentet, handlingen eller resursen har. (Systemstyrt). Mindre ändringar får vanligen version 0.1, 0.2 osv och större ändringar 1.0, 2.0 osv"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.identifier.version</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:17:j_idt339" href="#"
+                           title="Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Sparat
+                        av ID
+                        <span title="Id för inloggad person som sparat dokumentet, handlingen eller resursen i systemet där namn och organisationstillhörighet hämtas från katalogen. (Systemstyrt). Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.savedby.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:19:j_idt339" href="#"
+                           title="Statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentstatus
+                        <span title="Statusmärkning för dokumentet, handlingen eller resursen som beskriver var i processen dokumentet finns. Ex: Arbetsmaterial, remissversion, beslutad, arkiverad"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">vgregion.status.document</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:0:j_idt336:23:j_idt339" href="#"
+                           title="För systemet unikt id för dokumentet. (Systemstyrt)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentid
+                        källa
+                        <span title="För systemet unikt id för dokumentet. (Systemstyrt)" class="ifeed-filter-add">
+                                                <span style="display: none;">dc.source.documentid</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:1:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Skapat av och för
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:1:j_idt336:1:j_idt339" href="#"
+                           title="Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Skapat
+                        av ID
+                        <span title="Id för den eller de personer som skapat eller uppdaterat innehållet, där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:1:j_idt336:2:j_idt339" href="#"
+                           title="Den eller de personer som skapat eller uppdaterat innehållet och inte finns upplagda i katalogen."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Skapat
+                        av (Fritext)
+                        <span title="Den eller de personer som skapat eller uppdaterat innehållet och inte finns upplagda i katalogen."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.freetext</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:1:j_idt336:4:j_idt339" href="#"
+                           title="Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Skapat
+                        av enhet ID (VGR:s organisationsträd)
+                        <span title="Id för den eller de enheter som dokumentet, handlingen eller resursen är skapad av. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Skapat av” (kan ändras)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.forunit.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:1:j_idt336:5:j_idt339" href="#"
+                           title="Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är skapad av"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Skapat
+                        av Projekt/Uppdrag/Grupp
+                        <span title="Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är skapad av"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.project-assignment</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:2:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Ansvariga
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:2:j_idt336:1:j_idt339" href="#"
+                           title="Id för den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.  Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Innehållsansvarig/Dokumentansvarig
+                        ID
+                        <span title="Id för den eller de personer som tar ansvar för dokumentets innehåll. Namn och organisationstillhörighet hämtas från katalogen. Kan t. ex vara medicinskt ansvarig, ansvarig linjechef eller uppdragsgivare.  Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.document.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:2:j_idt336:2:j_idt339" href="#"
+                           title="Den funktion eller roll som ansvarar för innehållet i dokumentet. Funktionen eller rollen skrivs in som fritext t.ex: Lex Maria-ansvarig, Tjänsteman i beredskap eller Reception."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Funktionsansvar
+                        <span title="Den funktion eller roll som ansvarar för innehållet i dokumentet. Funktionen eller rollen skrivs in som fritext t.ex: Lex Maria-ansvarig, Tjänsteman i beredskap eller Reception."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.function</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:2:j_idt336:3:j_idt339" href="#"
+                           title="Ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Arkivbildare
+                        (autokomplettering)
+                        <span title="Ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.recordscreator</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:2:j_idt336:4:j_idt339" href="#"
+                           title="ID för ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Arkivbildare
+                        ID (VGR:s organisationsträd)
+                        <span title="ID för ansvarig myndighet (t.ex förvaltning) för dokumentet, handlingen eller resursen sätts enligt KIV. Är systemsatt från den eller de enheter som anges under ”Skapat för enhet"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.creator.recordscreator.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:3:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Giltighet och tillgänglighet
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:3:j_idt336:0:j_idt339" href="#"
+                           title="Startdatum för giltigheten för innehållet i dokumentet, handlingen eller resursen. Skilj från ”Tillgänglighetsdatum”"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Giltighetsdatum
+                        from
+                        <span title="Startdatum för giltigheten för innehållet i dokumentet, handlingen eller resursen. Skilj från ”Tillgänglighetsdatum”"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.validfrom</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:3:j_idt336:1:j_idt339" href="#"
+                           title="Slutdatum för giltigheten för innehållet i dokumentet, handlingen eller resursens. Skilj från ”Tillgänglighetsdatum”"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Giltighetsdatum
+                        tom
+                        <span title="Slutdatum för giltigheten för innehållet i dokumentet, handlingen eller resursens. Skilj från ”Tillgänglighetsdatum”"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.validto</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:3:j_idt336:2:j_idt339" href="#"
+                           title="Startdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Tillgänglighetsdatum
+                        from
+                        <span title="Startdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.availablefrom</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:3:j_idt336:3:j_idt339" href="#"
+                           title="Slutdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Tillgänglighetsdatum
+                        tom
+                        <span title="Slutdatum för tillgängligheten för dokumentet, handlingen eller resursen. Kan vara avgränsad till viss behörighetsgrupp. Skilj från ”Giltighetsdatum”."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.availableto</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:4:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Granskat/Godkänt
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:1:j_idt339" href="#"
+                           title="Id för den eller de personer som godkänner innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Godkänt
+                        av ID
+                        <span title="Id för den eller de personer som godkänner innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.acceptedby.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:2:j_idt339" href="#"
+                           title="Den eller de personer som godkänner innehållet och inte finns upplagda i katalogen"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Godkänt
+                        av (Fritext)
+                        <span title="Den eller de personer som godkänner innehållet och inte finns upplagda i katalogen"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.acceptedby.freetext</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:4:j_idt339" href="#"
+                           title="I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Godkänt
+                        av Egenskap/Roll
+                        <span title="I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.acceptedby.role</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:7:j_idt339" href="#"
+                           title="Id för den eller de personer som granskar innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Granskat
+                        av ID
+                        <span title="Id för den eller de personer som granskar innehållet där namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.controlledby.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:8:j_idt339" href="#"
+                           title="Den eller de personer som granskar innehållet och inte finns upplagda i katalogen"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Granskat
+                        av (Fritext)
+                        <span title="Den eller de personer som granskar innehållet och inte finns upplagda i katalogen"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.controlledby.freetext</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:4:j_idt336:10:j_idt339" href="#"
+                           title="I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Granskat
+                        av Egenskap/Roll
+                        <span title="I den egenskap/roll som man godkänt, granskat eller lagt upp dokumentet, handlingen eller resursen. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.contributor.controlledby.role</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:5:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Publicerat
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:2:j_idt339" href="#"
+                           title="ID för den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publicerat
+                        för enhet ID (VGR:s organisationsträd)
+                        <span title="ID för den eller de enheter som dokumentet, handlingen eller resursen är publicerad för. Förvalt sätts enheten i organisationsstrukturen för den person som angivits i ”Publicerat av” (kan ändras)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.publisher.forunit.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:3:j_idt339" href="#"
+                           title="Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är publicerad för. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publicerat
+                        för Projekt/Uppdrag/Grupp
+                        <span title="Det projekt eller annan gruppering som dokumentet, handlingen eller resursen är publicerad för. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.publisher.project-assignment</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:4:j_idt339" href="#"
+                           title="Hur den publicerade informationen blir tillgänglig: Internet och/eller Intranät"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publik
+                        åtkomsträtt
+                        <span title="Hur den publicerade informationen blir tillgänglig: Internet och/eller Intranät"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.rights.accessrights</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:6:j_idt339" href="#"
+                           title="Id för inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publicerat
+                        av ID
+                        <span title="Id för inloggad person som gjort dokumentet tillgängligt och sökbart på t.ex intranät, internet eller riktat i portal. Namn och organisationstillhörighet hämtas från katalogen. Sätts i Alfresco Lager"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.publisher.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:7:j_idt339" href="#"
+                           title="Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Publiceringsdatum
+                        <span title="Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.date.issued</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:5:j_idt336:9:j_idt339" href="#"
+                           title="Länk till det publicerade dokumentet, handlingen eller resursen, pdf/a-utgåva. Se filnamn (Systemstyrt)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Länk
+                        till publicerat/utgivet dokument
+                        <span title="Länk till det publicerade dokumentet, handlingen eller resursen, pdf/a-utgåva. Se filnamn (Systemstyrt)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.identifier</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:6:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Sammanhang
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:0:j_idt339" href="#"
+                           title="Sammanhållen hantering som avgränsas och namnges av verksamheten. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Processnamn
+                        <span title="Sammanhållen hantering som avgränsas och namnges av verksamheten. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.process.name</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:1:j_idt339" href="#"
+                           title="Beskrivning av en serie/följd av åtgärder. (Fritext). Ex supportärende, bidragsansökan"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Ärendetyp
+                        <span title="Beskrivning av en serie/följd av åtgärder. (Fritext). Ex supportärende, bidragsansökan"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.file.process</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:2:j_idt339" href="#"
+                           title="Enskild åtgärd. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Ärende
+                        <span title="Enskild åtgärd. (Fritext)" class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.file</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:3:j_idt339" href="#"
+                           title="Diarienummer, skrivs in när man vet vilket nummer dokumentet, handlingen eller resursen fått"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Diarienummer
+                        <span title="Diarienummer, skrivs in när man vet vilket nummer dokumentet, handlingen eller resursen fått"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.identifier.diarie.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:4:j_idt339" href="#"
+                           title="Beskrivning av en serie/följd av dokument. För att kunna använda dokumentserie vid utsökning måste exakt samma värde sättas på alla dokument, handlingar eller resurser som ingår i dokumentserien. (Fritext). Ex: återkommande protokoll för viss nämnd"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Dokumentserie
+                        <span title="Beskrivning av en serie/följd av dokument. För att kunna använda dokumentserie vid utsökning måste exakt samma värde sättas på alla dokument, handlingar eller resurser som ingår i dokumentserien. (Fritext). Ex: återkommande protokoll för viss nämnd"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document.serie</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:6:j_idt336:5:j_idt339" href="#"
+                           title="Ett värde som anger det enskilda dokumentet i dokumentserien. Kan uttryckas som nummer, datum osv. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Referensnummer
+                        i dokumentserie
+                        <span title="Ett värde som anger det enskilda dokumentet i dokumentserien. Kan uttryckas som nummer, datum osv. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.type.document.id</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:7:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Nyckelord
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:7:j_idt336:0:j_idt339" href="#"
+                           title="Det eller de enstaka ord som kan beskriva innehållet. Hämtas från kodverk."
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Nyckelord
+                        (autokomplettering)
+                        <span title="Det eller de enstaka ord som kan beskriva innehållet. Hämtas från kodverk."
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.subject.keywords</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:7:j_idt336:1:j_idt339" href="#"
+                           title="Det eller de enstaka ord som kan beskriva innehållet. Sätts av den som skapar eller uppdaterar dokumentet, handlingen eller resursen. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Författarens
+                        nyckelord
+                        <span title="Det eller de enstaka ord som kan beskriva innehållet. Sätts av den som skapar eller uppdaterar dokumentet, handlingen eller resursen. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.subject.authorkeywords</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a id="ifeed_view:getFiltersLoop:8:j_idt332" href="#" title=""
+                                       onclick="mojarra.ab(this,event,'action',0,'@form',{'onevent':refreshResults()});return false">
+                        <div class="fa fa-chevron-down"></div>
+                        Övrigt
+                    </a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:0:j_idt339" href="#"
+                           title="Det/de språk som innehållet är skrivet på"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Språk
+                        <span title="Det/de språk som innehållet är skrivet på" class="ifeed-filter-add">
+                                                <span style="display: none;">language</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:3:j_idt339" href="#"
+                           title="Länk (URI) till det dokument, handling eller resurs som ersatts"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Ersätter
+                        <span title="Länk (URI) till det dokument, handling eller resurs som ersatts"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.relation.replaces</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:5:j_idt339" href="#"
+                           title="Vart man fysiskt kan hitta dokumentet, handlingen eller resursen. (Fritext)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Fysisk
+                        placering
+                        <span title="Vart man fysiskt kan hitta dokumentet, handlingen eller resursen. (Fritext)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.identifier.location</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:9:j_idt339" href="#"
+                           title="Format på utgiven/publicerad fil, kan användas för att bestämma vilken mjukvara som är nödvändig för att kunna visa eller använda resursen. (Systemstyrt). Ex doc, png"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Filändelse,
+                        utgivet/publicerat
+                        <span title="Format på utgiven/publicerad fil, kan användas för att bestämma vilken mjukvara som är nödvändig för att kunna visa eller använda resursen. (Systemstyrt). Ex doc, png"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.format.extension</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td></td>
+
+                    <td><a id="ifeed_view:getFiltersLoop:8:j_idt336:13:j_idt339" href="#"
+                           title="Källsystem till dokumentet, handlingen eller resursen. (Systemstyrt)"
+                           onclick="jsf.util.chain(this,event,'refreshResults()','mojarra.ab(this,event,\'action\',0,\'@form\',{\'onevent\':refreshResults()})');return false">Källsystem
+                        <span title="Källsystem till dokumentet, handlingen eller resursen. (Systemstyrt)"
+                              class="ifeed-filter-add">
+                                                <span style="display: none;">dc.source.origin</span>
+                                            </span></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

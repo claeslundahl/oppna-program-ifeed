@@ -778,6 +778,7 @@ public class IFeedViewerController {
         selectionPart.add("url");
         selectionPart.add("dc.date.validto");
         selectionPart.add("dc.date.validfrom");
+        selectionPart.add("title");
         selectionPart.add(defaultsortcolumn);
         selectionPart.addAll(Arrays.asList(FieldInf.toIdsList(iFeedService.getFieldInfs(), selectionPart)));
 

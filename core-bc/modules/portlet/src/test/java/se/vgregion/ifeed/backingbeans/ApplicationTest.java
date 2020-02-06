@@ -22,6 +22,13 @@ import java.util.*;
 public class ApplicationTest {
 
     @Test
+    public void hasAnyCounterpartsValues() throws IOException {
+        List<FieldInf> fields = getFieldInfs();
+
+        System.out.println(Application.hasAnyCounterpartsValues(fields));
+    }
+
+    @Test
     public void getMaxPageCountImp() {
         Collection list = new ArrayList();
         for (int i = 0; i < 30; i++) {

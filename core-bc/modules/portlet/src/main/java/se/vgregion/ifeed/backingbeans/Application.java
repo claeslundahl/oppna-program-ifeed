@@ -771,16 +771,9 @@ public class Application {
 
     public List<String> newFilterSuggestion(String value) {
         try {
-            System.out.println("newFilterSuggestion");
             final Set<IFeedFilter> presentFilters = new HashSet<IFeedFilter>(iFeedModelBean.getFilters());
             IFeedFilter currentDraft = new IFeedFilter(value + "*", newFilter.getId());
             presentFilters.add(currentDraft);
-        /*IFeed feed = new IFeed() {
-            @Override
-            public Set<IFeedFilter> getFilters() {
-                return presentFilters;
-            }
-        };*/
             IFeed feed = new IFeed();
             feed.getFilters().addAll(presentFilters);
 
@@ -920,8 +913,20 @@ public class Application {
         return hits > 1;
     }
 
+    static boolean hasAnyCounterpartsValues(List<FieldInf> fromThese) {
+        MutableBoolean result = new MutableBoolean(false);
+        for (FieldInf item : fromThese) {
+            item.visit(i -> {
+                if (!i.getCounterparts().isEmpty()) {
+                    result.setValue(true);
+                }
+            });
+        }
+        return (boolean) result.getValue();
+    }
+
     static List<FieldInf> getFieldSuitableForSorting(IFeed forThat, List<FieldInf> fromThese) {
-        if (isBlendingMetadataSpecifications(forThat, fromThese)) {
+        if (isBlendingMetadataSpecifications(forThat, fromThese) && hasAnyCounterpartsValues(fromThese)) {
             FieldInf oneWithBlendedFields = new FieldInf();
             oneWithBlendedFields.setName("Fält");
             oneWithBlendedFields.getChildren().addAll(getFilterFieldsForBothMetadataSets(fromThese));

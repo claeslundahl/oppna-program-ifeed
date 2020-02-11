@@ -31,10 +31,6 @@
     <!--End  - Added for jsf-->
   </repositories>
 
-  <properties>
-    <liferay.version>2.50.0</liferay.version>
-  </properties>
-
   <build>
     <finalName>iFeed-webapp</finalName>
 

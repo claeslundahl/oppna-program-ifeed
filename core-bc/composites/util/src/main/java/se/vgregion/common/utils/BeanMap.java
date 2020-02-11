@@ -60,13 +60,6 @@ public class BeanMap implements Map<String, Object> {
     public Set<PropertyDescriptor> getWriteable() {
         return properties.values().stream()
                 .filter(p -> p.getWriteMethod() != null).collect(Collectors.toSet());
-        /*Set<PropertyDescriptor> result = new HashSet<PropertyDescriptor>();
-        for (PropertyDescriptor pd : properties.values()) {
-            if (pd.getWriteMethod() != null) {
-                result.add(pd);
-            }
-        }
-        return result;*/
     }
 
     public Set<PropertyDescriptor> getUnWriteable() {

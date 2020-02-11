@@ -17,7 +17,7 @@ import se.vgregion.common.utils.BeanMap;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.Note;
-import se.vgregion.ifeed.formbean.VgrOrganization;
+import se.vgregion.ldap.VgrOrganization;
 import se.vgregion.ifeed.repository.UserRepository;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;

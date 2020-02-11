@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static se.vgregion.common.utils.Props.fetchProperties;
+
 public class LdapApi {
 
     private String initialContextFactoryClassName = "com.sun.jndi.ldap.LdapCtxFactory";
@@ -199,7 +201,7 @@ public class LdapApi {
         }
     }
 
-    static Properties fetchProperties() {
+/*    static Properties fetchProperties() {
         try {
             return fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties"));
         } catch (IOException e) {
@@ -212,6 +214,6 @@ public class LdapApi {
         InputStream src = Files.newInputStream(path);
         properties.load(new InputStreamReader(src));
         return properties;
-    }
+    }*/
 
 }

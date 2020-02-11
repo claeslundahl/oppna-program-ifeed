@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import se.vgregion.common.utils.BeanMap;
-import se.vgregion.ifeed.formbean.VgrOrganization;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ldap.LdapApi;
+import se.vgregion.ldap.OrganizationsService;
+import se.vgregion.ldap.VgrOrganization;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -19,8 +19,11 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static se.vgregion.ldap.OrganizationsService.loadAllOrganizationsRoot;
 
 @Component(value = "vgrOrganizationsHome")
 @Scope("session")
@@ -34,6 +37,10 @@ public class VgrOrganizationsHome implements Serializable {
     private TreeNode root = new DefaultTreeNode("Root", null);
 
     private List<VgrOrganization> organizations;
+
+    public static List<VgrOrganization> fetchOrganizationsFromKivLdap() {
+        return OrganizationsService.fetchOrganizationsFromKivLdap();
+    }
 
     /*@Autowired
     private LdapSupportService ldapOrganizationService;*/
@@ -69,16 +76,16 @@ public class VgrOrganizationsHome implements Serializable {
     }
 
 
-    static VgrOrganization getVgrOrganization() {
+/*    static VgrOrganization getVgrOrganization() {
         VgrOrganization vgr = new VgrOrganization("Ou=org", "SE2321000131-E000000000001");
         vgr.setOu("Västra Götalandsregionen");
         vgr.setOpen(true);
         vgr.setLevel(0);
         return vgr;
-    }
+    }*/
 
 
-    static List<VgrOrganization> fetchOrganizationsFromKivLdap() {
+/*    static List<VgrOrganization> fetchOrganizationsFromKivLdap() {
         LdapApi kiv = LdapApi.newInstanceFromConfig();
         kiv.setResultLimit(1_000_000);
         List<Map<String, Object>> items = kiv.query("objectClass=organizationalUnit");
@@ -89,9 +96,9 @@ public class VgrOrganizationsHome implements Serializable {
         List<VgrOrganization> result = toVgrOrganizations((List<Map<String, Object>>) top.get("children"));
         result.forEach(c -> c.init());
         return result;
-    }
+    }*/
 
-    private static List<VgrOrganization> toVgrOrganizations(List<Map<String, Object>> fromThese) {
+/*    private static List<VgrOrganization> toVgrOrganizations(List<Map<String, Object>> fromThese) {
         if (fromThese == null || fromThese.isEmpty()) return new ArrayList<>();
         List<VgrOrganization> result = new ArrayList<>();
         for (Map<String, Object> item : fromThese) {
@@ -104,9 +111,9 @@ public class VgrOrganizationsHome implements Serializable {
             result.add(vo);
         }
         return result;
-    }
+    }*/
 
-    private static class ComparableArrayList extends ArrayList<String> implements Comparable {
+/*    private static class ComparableArrayList extends ArrayList<String> implements Comparable {
         public ComparableArrayList(List<String> id) {
             super(id);
         }
@@ -119,9 +126,9 @@ public class VgrOrganizationsHome implements Serializable {
         public int compareTo(Object o) {
             return toString().compareTo(String.valueOf(o));
         }
-    }
+    }*/
 
-    public static Map<String, Object> putEntriesInOrder(List<Map<String, Object>> items, String returnReversedDn) {
+    /*public static Map<String, Object> putEntriesInOrder(List<Map<String, Object>> items, String returnReversedDn) {
         NavigableMap<ComparableArrayList, Map<String, Object>> index = new TreeMap<>();
         items.forEach(i -> index.put(toIdList(i), i));
         Map<String, Object> top = null;
@@ -144,15 +151,15 @@ public class VgrOrganizationsHome implements Serializable {
             children.add(current);
         }
         return top;
-    }
+    }*/
 
-    static ComparableArrayList toIdList(Map<String, Object> item) {
+/*    static ComparableArrayList toIdList(Map<String, Object> item) {
         ComparableArrayList result = new ComparableArrayList();
         String[] parts = item.get("dn").toString().split(Pattern.quote(","));
         result.addAll(Arrays.asList(parts));
         Collections.reverse(result);
         return result;
-    }
+    }*/
 
 
     public static List<VgrOrganization> getRootOrganizations() {
@@ -270,10 +277,6 @@ public class VgrOrganizationsHome implements Serializable {
     public static VgrOrganization getAllOrganizationsRootFromDiscCache() {
         try {
             String f = getPathToAllOrganizationsRootCacheFile();
-            /*FileInputStream fin = new FileInputStream(f);
-            ObjectInputStream ois = new ObjectInputStream(fin);
-            Object obj = ois.readObject();
-            return (VgrOrganization) obj;*/
             return new GsonBuilder().create().fromJson(
                     new String(Files.readAllBytes(Paths.get(f))),
                     VgrOrganization.class
@@ -300,15 +303,12 @@ public class VgrOrganizationsHome implements Serializable {
         }
     }
 
-    private VgrOrganization loadAllOrganizationsRoot() {
+    /*private VgrOrganization loadAllOrganizationsRoot() {
         final VgrOrganization result = getVgrOrganization();
-        /*result.setDn("Ou=org");
-        result.setOpen(true);*/
-        // loadAllOrganizations(result);
         result.getChildren().addAll(fetchOrganizationsFromKivLdap());
         result.init();
         return result;
-    }
+    }*/
 
     private VgrOrganization findOrganizationByHsaId(String hsaId) {
         try {

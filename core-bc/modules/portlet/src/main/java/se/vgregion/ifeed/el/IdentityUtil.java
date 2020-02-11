@@ -4,7 +4,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import se.vgregion.ldap.BaseVgrOrganization;
-import se.vgregion.ifeed.formbean.VgrOrganization;
+import se.vgregion.ldap.VgrOrganization;
 import se.vgregion.ldap.LdapSupportService;
 
 import java.io.IOException;

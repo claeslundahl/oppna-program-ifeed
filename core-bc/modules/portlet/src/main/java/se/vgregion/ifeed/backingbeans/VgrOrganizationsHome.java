@@ -190,6 +190,7 @@ public class VgrOrganizationsHome implements Serializable {
         if (application != null) {
             initAddedValue(application, organizations);
         }
+        ofThisOrg.setOpen(true);
     }
 
 

@@ -9,24 +9,24 @@ import com.google.gson.annotations.SerializedName;
 public class Unit {
 
     @SerializedName("attributes")
-    private Attributes mAttributes;
+    private Attributes attributes;
     @SerializedName("dn")
-    private String mDn;
+    private String dn;
 
     public Attributes getAttributes() {
-        return mAttributes;
+        return attributes;
     }
 
     public void setAttributes(Attributes attributes) {
-        mAttributes = attributes;
+        this.attributes = attributes;
     }
 
     public String getDn() {
-        return mDn;
+        return dn;
     }
 
     public void setDn(String dn) {
-        mDn = dn;
+        this.dn = dn;
     }
 
 }

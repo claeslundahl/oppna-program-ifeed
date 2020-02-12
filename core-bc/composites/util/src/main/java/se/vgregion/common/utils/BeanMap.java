@@ -333,6 +333,12 @@ public class BeanMap implements Map<String, Object> {
             array = result.toArray(array);
             return array;
         });
+        converters.put(String.class, s -> {
+            if (s instanceof Collection) {
+                return String.join(", ", (Collection) s);
+            }
+            return s + "";
+        });
     }
 
     public Class<?> getType(String name) {

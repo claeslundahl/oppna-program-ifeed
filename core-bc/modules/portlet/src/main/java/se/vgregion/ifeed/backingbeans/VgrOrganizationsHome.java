@@ -7,10 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import se.vgregion.common.utils.DistinctArrayList;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ldap.LdapApi;
-import se.vgregion.ldap.OrganizationsService;
+import se.vgregion.ifeed.service.kiv.OrganizationsService;
 import se.vgregion.ldap.VgrOrganization;
 
 import javax.annotation.PostConstruct;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static se.vgregion.ldap.OrganizationsService.loadAllOrganizationsRoot;
+import static se.vgregion.ifeed.service.kiv.OrganizationsService.loadAllOrganizationsRoot;
 
 @Component(value = "vgrOrganizationsHome")
 @Scope("session")
@@ -38,8 +39,8 @@ public class VgrOrganizationsHome implements Serializable {
 
     private List<VgrOrganization> organizations;
 
-    public static List<VgrOrganization> fetchOrganizationsFromKivLdap() {
-        return OrganizationsService.fetchOrganizationsFromKivLdap();
+    public static List<VgrOrganization> fetchOrganizations() {
+        return new DistinctArrayList<>(OrganizationsService.fetchOrganizations());
     }
 
     /*@Autowired
@@ -175,7 +176,7 @@ public class VgrOrganizationsHome implements Serializable {
         List<VgrOrganization> result = new ArrayList<VgrOrganization>();
         result.add(vgr);
         return result;*/
-        return fetchOrganizationsFromKivLdap();
+        return fetchOrganizations();
     }
 
     public void loadChildrenFlat(Application application, VgrOrganization ofThisOrg) {

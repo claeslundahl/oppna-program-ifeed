@@ -126,16 +126,7 @@ public class UnitSearchService {
         T value;
         try (InputStream inputStream = urlConnection.getInputStream()) {
             String text = toText(inputStream);
-            /*String[] parts = url.toString().split(Pattern.quote("/"));
-
-            Files.write(Paths.get("C:\\test", parts[parts.length - 1]), text.getBytes());*/
-
             value = gson.fromJson(text, clazz);
-
-            // if (true) return null;
-            /*ObjectMapper mapper = new ObjectMapper();
-            ObjectReader objectReader = mapper.readerFor(clazz);
-            value = objectReader.readValue(inputStream);*/
         }
         return value;
     }

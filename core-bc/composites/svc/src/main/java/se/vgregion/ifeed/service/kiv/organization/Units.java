@@ -10,24 +10,24 @@ import com.google.gson.annotations.SerializedName;
 public class Units {
 
     @SerializedName("meta")
-    private Meta mMeta;
+    private Meta meta;
     @SerializedName("units")
-    private List<Unit> mUnits;
+    private List<Unit> units;
 
     public Meta getMeta() {
-        return mMeta;
+        return meta;
     }
 
     public void setMeta(Meta meta) {
-        mMeta = meta;
+        this.meta = meta;
     }
 
     public List<Unit> getUnits() {
-        return mUnits;
+        return units;
     }
 
     public void setUnits(List<Unit> units) {
-        mUnits = units;
+        this.units = units;
     }
 
 }

@@ -1,5 +1,7 @@
 package se.vgregion.ldap;
 
+import se.vgregion.common.utils.DistinctArrayList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +37,7 @@ public class VgrOrganization extends BaseVgrOrganization {
 
     private final VgrOrganization me = this;
 
-    private final List<VgrOrganization> children = new ArrayList<VgrOrganization>() {
+    private final List<VgrOrganization> children = new DistinctArrayList<VgrOrganization>() {
 
         @Override
         public boolean add(VgrOrganization organization) {
@@ -161,4 +163,12 @@ public class VgrOrganization extends BaseVgrOrganization {
     public String toString() {
         return getHsaIdentity();
     }
+
+    public boolean equals(Object o) {
+        if (o instanceof VgrOrganization) {
+            return ((VgrOrganization) o).getHsaIdentity().equals(getHsaIdentity());
+        }
+        return false;
+    }
+
 }

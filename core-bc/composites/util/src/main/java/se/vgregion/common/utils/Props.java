@@ -18,7 +18,7 @@ public class Props {
         }
     }
 
-    static Properties fetchProperties(Path path) throws IOException {
+    public  static Properties fetchProperties(Path path) throws IOException {
         Properties properties = new Properties();
         InputStream src = Files.newInputStream(path);
         properties.load(new InputStreamReader(src));

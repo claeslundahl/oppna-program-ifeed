@@ -166,9 +166,15 @@ public class VgrOrganization extends BaseVgrOrganization {
 
     public boolean equals(Object o) {
         if (o instanceof VgrOrganization) {
-            return ((VgrOrganization) o).getHsaIdentity().equals(getHsaIdentity());
+            return like(((VgrOrganization) o).getHsaIdentity(), getHsaIdentity());
         }
         return false;
+    }
+
+    private static boolean like(Object o1, Object o2) {
+        if (o1 == o2) return true;
+        if (o1 == null || o2 == null) return false;
+        return o1.equals(o2);
     }
 
 }

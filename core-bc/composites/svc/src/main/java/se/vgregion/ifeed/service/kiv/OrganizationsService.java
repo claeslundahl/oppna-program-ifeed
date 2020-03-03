@@ -37,11 +37,14 @@ public class OrganizationsService {
         // This is the top of the tree. Is not present in the service, strangely enough.
         VgrOrganization vgr = new VgrOrganization();
         vgr.setDn("ou=Org,o=VGR");
-        vgr.setOu("VGR");
+        vgr.setOu("Västra Götalandsregionen");
+        vgr.setHsaIdentity("SE2321000131-E000000000001");
         result.add(vgr);
 
         VgrOrganization top = putEntriesInOrder(result, "[o=VGR, ou=Org]");
-        result = top.getChildren();
+        //result = top.getChildren();
+        vgr.getChildren().addAll(top.getChildren());
+        result = Arrays.asList(vgr);
         result.forEach(c -> c.init());
         return result;
     }

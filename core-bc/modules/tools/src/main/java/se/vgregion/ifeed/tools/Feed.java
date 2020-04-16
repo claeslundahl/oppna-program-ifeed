@@ -2,12 +2,16 @@ package se.vgregion.ifeed.tools;
 
 import se.vgregion.common.utils.DistinctArrayList;
 import se.vgregion.common.utils.Json;
+import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import static se.vgregion.ifeed.tools.SofiaFlowCompletion.getRemoteTestDatabaseApi;
 
 public class Feed extends Tuple {
 
@@ -99,6 +103,15 @@ public class Feed extends Tuple {
         for (Filter filter : filters) {
             filter.visit(withThat);
         }
+    }
+
+    public IFeed toIFeed() {
+        IFeed result = new IFeed();
+        result.setName((String) get("name"));
+        for (Filter filter : getFilters()) {
+            result.addFilter(filter.toIFeedFilter());
+        }
+        return result;
     }
 
 }

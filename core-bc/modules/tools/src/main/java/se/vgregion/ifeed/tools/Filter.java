@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.tools;
 
+import se.vgregion.ifeed.types.IFeedFilter;
+
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Consumer;
@@ -95,6 +97,19 @@ public class Filter extends Tuple {
         for (Filter child : children) {
             child.visit(that);
         }
+    }
+
+    public IFeedFilter toIFeedFilter() {
+        IFeedFilter result = new IFeedFilter();
+
+        result.setFilterKey((String) get("filterkey"));
+        result.setFilterQuery((String) get("filterquery"));
+
+        for (Filter child : getChildren()) {
+            result.getChildren().add(child.toIFeedFilter());
+        }
+
+        return result;
     }
 
 }

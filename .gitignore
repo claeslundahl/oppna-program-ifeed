@@ -10,3 +10,5 @@
 *.iml
 
 target
+
+deploy-consumer-part.sh

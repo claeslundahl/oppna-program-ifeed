@@ -1,11 +1,16 @@
 package se.vgregion.ifeed.tools;
 
 import se.vgregion.common.utils.MultiMap;
-import se.vgregion.common.utils.Props;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
+import se.vgregion.ifeed.types.IFeed;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static java.lang.String.format;
+import static se.vgregion.common.utils.Props.fetchProperties;
 
 /**
  * <p> There are two sets of metadata in the document handling systems - SOFIA (S) and Alfresco/Barium (AB).
@@ -22,9 +27,11 @@ import static java.lang.String.format;
  */
 public class SofiaFlowCompletion {
 
-    static DatabaseApi database = getDatabaseApi();
+    DatabaseApi database;
 
     static Map<String, String> old2newFilterNames = new HashMap<>();
+
+    static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     static {
         for (CorrespondingKeys correspondingKey : MetadataSwap.CORRESPONDING_KEYS) {
@@ -34,8 +41,14 @@ public class SofiaFlowCompletion {
         }
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
+        new SofiaFlowCompletion().start();
+    }*/
+
+    public void start() {
+        database = getDatabaseApi();
         System.out.println("Flödeskopmplettering för databasen " + database.getUrl());
+        if (true) return;
         long startTime = System.currentTimeMillis();
         main();
         long endTime = System.currentTimeMillis();
@@ -43,7 +56,7 @@ public class SofiaFlowCompletion {
         System.out.println("Tid för utförande var " + duration + "ms. Eller " + ((duration / 1000) + "s."));
     }
 
-    public static void main() {
+    public void main() {
         deleteAllGeneratedFlows();
         generateFlows();
         checkAndOrFixHibernateIndex();
@@ -51,7 +64,7 @@ public class SofiaFlowCompletion {
     }
 
 
-    public static List<Feed> findMoreComplexFeeds() {
+    public List<Feed> findMoreComplexFeeds() {
         List<Feed> result = fetchAllApplicable();
         for (Feed feed : new ArrayList<>(result)) {
             if (feed.getFilters().size() > 2) {
@@ -63,16 +76,35 @@ public class SofiaFlowCompletion {
         return result;
     }
 
-    public static void generateFlows() {
-        generateFlows("");
+    public void generateFlows() {
+        generateFlows(" and id = 437584535hejknekt ");
     }
 
-    public static void generateFlows(String extraSqlCondition) {
+    public static boolean hasBariumStuff(Feed feed) {
+        IFeed iFeed = feed.toIFeed();
+        Result result = client.query(iFeed.toQuery(), 0, 1_000_000, null, null);
+        if (result.getResponse() != null) {
+            for (Map<String, Object> doc : result.getResponse().getDocs()) {
+                if (doc.containsKey("SourceSystem") && "Barium".equals(doc.get("SourceSystem"))) {
+                    return true;
+                }
+            }
+        }
+        // System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(result));
+        return false;
+    }
+
+    public void generateFlows(String extraSqlCondition) {
         List<Feed> feeds = fetchAllApplicable(extraSqlCondition);
         System.out.println("Bearbetar " + feeds.size() + " flöden.");
         int c = 1;
         List<Long> feedIds = new ArrayList<>();
         for (Feed feed : feeds) {
+            if (hasBariumStuff(feed)) {
+                System.out.println("Feed had Barium stuff: " + feed);
+                System.out.println("Skips it!");
+                continue;
+            }
             Feed sofia = toSofiaEquivalent(feed);
             sofia.insert(database);
             long id = (long) feed.get("id");
@@ -83,7 +115,7 @@ public class SofiaFlowCompletion {
         System.out.println("Skapade flödeskomplettering för dessa: " + feedIds);
     }
 
-    static void deleteAllGeneratedFlows() {
+    void deleteAllGeneratedFlows() {
         List<Feed> feeds = Feed.toFeeds(database.query("select * from vgr_ifeed where id < 0"));
         System.out.println("Hittade " + feeds.size() + " att ta bort.");
         for (Feed feed : feeds) {
@@ -93,7 +125,7 @@ public class SofiaFlowCompletion {
     }
 
     static DatabaseApi getDatabaseApi() {
-        Properties props = Props.fetchProperties();
+        Properties props = fetchProperties();
 
         DatabaseApi result = new DatabaseApi(
                 props.getProperty("datasource.connector.direct.url"),
@@ -104,6 +136,41 @@ public class SofiaFlowCompletion {
 
         return result;
     }
+
+    static DatabaseApi getRemoteTestDatabaseApi() {
+        Properties props = null;
+        try {
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.test"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        DatabaseApi result = new DatabaseApi(
+                props.getProperty("datasource.connector.direct.url"),
+                props.getProperty("datasource.connector.direct.username"),
+                props.getProperty("datasource.connector.direct.password"),
+                props.getProperty("datasource.connector.direct.driverClassName")
+        );
+
+        return result;
+    }
+
+    static DatabaseApi getRemoteProdDatabaseApi() {
+        Properties props = null;
+        try {
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.prod"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        DatabaseApi result = new DatabaseApi(
+                props.getProperty("datasource.connector.direct.url"),
+                props.getProperty("datasource.connector.direct.username"),
+                props.getProperty("datasource.connector.direct.password"),
+                props.getProperty("datasource.connector.direct.driverClassName")
+        );
+
+        return result;
+    }
+
 
     static Feed toSofiaEquivalent(Feed feed) {
         Feed compensation = new Feed(feed);
@@ -158,17 +225,18 @@ public class SofiaFlowCompletion {
         return compensation;
     }
 
-    static List<Feed> fetchAllApplicable() {
+    List<Feed> fetchAllApplicable() {
         return fetchAllApplicable("");
     }
 
     /**
      * Selects all of the feeds from the db that does not already have an included/nested feed with minus id.
+     *
      * @param withExtraCondition Extra condition where the caller can add conditions to the call. Example of this
      *                           could be "f.id = 123" where the feed with id 123 is being fetched.
      * @return A lis of objects as a result of the db query.
      */
-    static List<Feed> fetchAllApplicable(String withExtraCondition) {
+    List<Feed> fetchAllApplicable(String withExtraCondition) {
         String sql =
                 "select f.* from vgr_ifeed f \n" +
                         "where f.id in (\n" +
@@ -202,7 +270,7 @@ public class SofiaFlowCompletion {
     /**
      * Turn up the hibernate index if the primary keys in vgr_ifeed_filter exceeds the current value.
      */
-    static void checkAndOrFixHibernateIndex() {
+    void checkAndOrFixHibernateIndex() {
         long lastSequenceValue = (long) database.oneFieldSingleValueQuery("SELECT last_value FROM hibernate_sequence");
         long maxFilterId = (long) database.oneFieldSingleValueQuery("SELECT max(id) FROM vgr_ifeed_filter");
         if (maxFilterId >= lastSequenceValue) {

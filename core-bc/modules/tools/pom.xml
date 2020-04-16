@@ -43,5 +43,16 @@
             <version>1.13-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>se.vgregion.iFeed</groupId>
+            <artifactId>iFeed-core-bc-composite-svc</artifactId>
+            <version>1.13-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>se.vgregion.iFeed</groupId>
+            <artifactId>iFeed-core-bc-composite-svc</artifactId>
+            <version>1.13-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

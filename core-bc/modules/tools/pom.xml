@@ -9,6 +9,7 @@
         <version>1.13-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
+
     <groupId>se.vgregion.iFeed</groupId>
     <artifactId>iFeed-core-bc-module-tools</artifactId>
     <packaging>jar</packaging>
@@ -50,9 +51,14 @@
         </dependency>
         <dependency>
             <groupId>se.vgregion.iFeed</groupId>
+            <artifactId>iFeed-core-bc-composite-types</artifactId>
+            <version>1.13-SNAPSHOT</version>
+        </dependency>
+<!--        <dependency>
+            <groupId>se.vgregion.iFeed</groupId>
             <artifactId>iFeed-core-bc-composite-svc</artifactId>
             <version>1.13-SNAPSHOT</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
     </dependencies>
 </project>

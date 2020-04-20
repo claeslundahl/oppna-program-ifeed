@@ -3,15 +3,12 @@ package se.vgregion.ifeed.tools;
 import se.vgregion.common.utils.DistinctArrayList;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
-import static se.vgregion.ifeed.tools.SofiaFlowCompletion.getRemoteTestDatabaseApi;
 
 public class Feed extends Tuple {
 

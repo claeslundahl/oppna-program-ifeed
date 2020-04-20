@@ -2,10 +2,15 @@ package se.vgregion.ifeed.tools;
 
 import se.vgregion.arbetsplatskoder.db.migration.sql.*;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import static se.vgregion.common.utils.Props.fetchProperties;
 
 public class DatabaseApi extends ConnectionExt {
 
@@ -45,6 +50,72 @@ public class DatabaseApi extends ConnectionExt {
 
     public Object oneFieldSingleValueQuery(String sql) {
         return query(sql).get(0).values().iterator().next();
+    }
+
+
+
+    static DatabaseApi getDatabaseApi() {
+        Properties props = fetchProperties();
+
+        DatabaseApi result = new DatabaseApi(
+                props.getProperty("datasource.connector.direct.url"),
+                props.getProperty("datasource.connector.direct.username"),
+                props.getProperty("datasource.connector.direct.password"),
+                props.getProperty("datasource.connector.direct.driverClassName")
+        );
+
+        return result;
+    }
+
+    static DatabaseApi getRemoteTestDatabaseApi() {
+        Properties props = null;
+        try {
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.test"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        DatabaseApi result = new DatabaseApi(
+                props.getProperty("datasource.connector.direct.url"),
+                props.getProperty("datasource.connector.direct.username"),
+                props.getProperty("datasource.connector.direct.password"),
+                props.getProperty("datasource.connector.direct.driverClassName")
+        );
+
+        return result;
+    }
+
+    static DatabaseApi getLocalBackupApi() {
+        Properties props = null;
+        try {
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.backup"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        DatabaseApi result = new DatabaseApi(
+                props.getProperty("datasource.connector.direct.url"),
+                props.getProperty("datasource.connector.direct.username"),
+                props.getProperty("datasource.connector.direct.password"),
+                props.getProperty("datasource.connector.direct.driverClassName")
+        );
+
+        return result;
+    }
+
+    static DatabaseApi getRemoteProdDatabaseApi() {
+        Properties props = null;
+        try {
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.prod"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        DatabaseApi result = new DatabaseApi(
+                props.getProperty("datasource.connector.direct.url"),
+                props.getProperty("datasource.connector.direct.username"),
+                props.getProperty("datasource.connector.direct.password"),
+                props.getProperty("datasource.connector.direct.driverClassName")
+        );
+
+        return result;
     }
 
 }

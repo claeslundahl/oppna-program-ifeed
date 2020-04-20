@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.tools;
 
+import static se.vgregion.ifeed.tools.DatabaseApi.getDatabaseApi;
+
 public class StartCompletionForExplicitFlows extends SofiaFlowCompletion {
 
     {

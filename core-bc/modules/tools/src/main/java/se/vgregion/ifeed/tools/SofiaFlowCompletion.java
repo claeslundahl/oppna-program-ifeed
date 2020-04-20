@@ -11,6 +11,7 @@ import java.util.*;
 
 import static java.lang.String.format;
 import static se.vgregion.common.utils.Props.fetchProperties;
+import static se.vgregion.ifeed.tools.DatabaseApi.getDatabaseApi;
 
 /**
  * <p> There are two sets of metadata in the document handling systems - SOFIA (S) and Alfresco/Barium (AB).
@@ -123,54 +124,6 @@ public class SofiaFlowCompletion {
             feed.delete(database);
         }
     }
-
-    static DatabaseApi getDatabaseApi() {
-        Properties props = fetchProperties();
-
-        DatabaseApi result = new DatabaseApi(
-                props.getProperty("datasource.connector.direct.url"),
-                props.getProperty("datasource.connector.direct.username"),
-                props.getProperty("datasource.connector.direct.password"),
-                props.getProperty("datasource.connector.direct.driverClassName")
-        );
-
-        return result;
-    }
-
-    static DatabaseApi getRemoteTestDatabaseApi() {
-        Properties props = null;
-        try {
-            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.test"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        DatabaseApi result = new DatabaseApi(
-                props.getProperty("datasource.connector.direct.url"),
-                props.getProperty("datasource.connector.direct.username"),
-                props.getProperty("datasource.connector.direct.password"),
-                props.getProperty("datasource.connector.direct.driverClassName")
-        );
-
-        return result;
-    }
-
-    static DatabaseApi getRemoteProdDatabaseApi() {
-        Properties props = null;
-        try {
-            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.prod"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        DatabaseApi result = new DatabaseApi(
-                props.getProperty("datasource.connector.direct.url"),
-                props.getProperty("datasource.connector.direct.username"),
-                props.getProperty("datasource.connector.direct.password"),
-                props.getProperty("datasource.connector.direct.driverClassName")
-        );
-
-        return result;
-    }
-
 
     static Feed toSofiaEquivalent(Feed feed) {
         Feed compensation = new Feed(feed);

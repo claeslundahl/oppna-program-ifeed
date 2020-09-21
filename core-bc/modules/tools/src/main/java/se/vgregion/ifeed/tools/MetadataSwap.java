@@ -1,5 +1,7 @@
 package se.vgregion.ifeed.tools;
 
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +26,8 @@ public class MetadataSwap {
     );*/
 
     public static final CorrespondingKeys forunitId = new CorrespondingKeys(
-            "vgr:VgrExtension.vgr:CreatedByUnit.id", "dc.creator.recordscreator.id"
+            // "vgr:VgrExtension.vgr:CreatedByUnit.id", "dc.creator.recordscreator.id"
+            "vgr:VgrExtension.vgr:CreatedByUnit.id", "dc.creator.forunit.id"
     );
 
     public static final CorrespondingKeys recordscreatorId = new CorrespondingKeys(
@@ -36,8 +39,13 @@ public class MetadataSwap {
     );
 
     public static void main(String[] args) {
-        System.out.println(String.join("', '", subjectLocalClassification.fromThese));
+        // System.out.println(String.join("', '", subjectLocalClassification.fromThese));
+        /*for (CorrespondingKeys correspondingKey : CORRESPONDING_KEYS) {
+            System.out.println(correspondingKey.newKey + "\t"
+                    + correspondingKey.fromThese.toString().replaceAll("['\\[''\\]']",""));
+        }*/
 
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(CORRESPONDING_KEYS));
     }
 
 }

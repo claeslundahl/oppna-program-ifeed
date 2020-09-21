@@ -28,10 +28,14 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        /*String arg = SolrQueryEscaper.escape("core*ArchivalObject.core*AccessRight");
-        System.out.println(arg);
-        System.out.println(client.toText("", 0, 1, null, "dc.language, " + arg));*/
-        client.fetchFields();
+        IFeedFilter filter = new IFeedFilter("*test*", "title");
+
+        SolrHttpClient oldStage = new SolrHttpClient("http://vgas2192.vgregion.se:9090/solr/ifeed/");
+        Result r1 = oldStage.query(filter.toQuery(), 0, 100, "asc", null);
+        System.out.println(r1.getResponse().getDocs().size());
+        SolrHttpClient newStage = new SolrHttpClient("https://solr-stage.vgregion.se/solr/ifeed/");
+        Result r2 = newStage.query(filter.toQuery(), 0, 100, "asc", null);
+        System.out.println(r2.getResponse().getDocs().size());
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {

@@ -23,11 +23,12 @@ public class SmokeTest {
         // Run just for 1229, 130950, 437585745, 437586116
         DatabaseApi database = getLocalBackupApi();
         SmokeTest smokeTest = new SmokeTest(database);
-        for (Integer id : Arrays.asList(1229, 130950, 437585745, 437586116)) {
+        for (Integer id : Arrays.asList(1229, 828377)) {
             Feed item = new Feed();
             item.put("id", id);
             smokeTest.run(item);
         }
+        // start();
     }
 
     public static void start() {
@@ -61,7 +62,7 @@ public class SmokeTest {
     String atomUrl = "http://ifeed.vgregion.se/iFeed-intsvc/documentlists/%s/feed?by=&dir=asc";
     String jsonUrl = "http://ifeed.vgregion.se/iFeed-web/documentlists/130932/metadata.json?by=&dir=asc&f=title";
 
-    String ajaxListUrl = "https://ifeed.vgregion.se/iFeed-web/display?v=1&columnes=title%7CTitel%20(autokomplettering)%7Cleft%7C70&fontsize=20&defaultsortcolumn=title&defaultsortorder=asc&extrasortcolumns=%5B%5D&showtableheader=yes&linkoriginaldoc=no&limit=10&hiderightcolumn=no&usepost=no&feedid=[hej]&callback=q4";
+    String ajaxListUrl = "https://ifeed.vgregion.se/iFeed-web/display?v=1&columnes=title%7CTitel%20(autokomplettering)%7Cleft%7C70&fontsize=20&defaultsortcolumn=title&defaultsortorder=asc&extrasortcolumns=%5B%5D&showtableheader=yes&linkoriginaldoc=no&limit=10&hiderightcolumn=no&usepost=no&feedid=[id]&callback=q4";
 
 
     void run(Feed forThat) {
@@ -70,7 +71,7 @@ public class SmokeTest {
             //urlz.read(String.format(documentListUrl, forThat.get("id").toString()));
             // urlz.read(String.format(atomUrl, forThat.get("id").toString()));
             // urlz.read(String.format(jsonUrl, forThat.get("id").toString()));
-            urlz.read(ajaxListUrl.replace("[hej]", forThat.get("id").toString()));
+            urlz.read(ajaxListUrl.replace("[id]", forThat.get("id").toString()));
         } catch (Exception e) {
             /*System.out.println(e.getMessage());
             System.out.println(forThat);

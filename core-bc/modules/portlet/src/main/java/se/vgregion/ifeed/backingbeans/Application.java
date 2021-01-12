@@ -1496,18 +1496,20 @@ public class Application {
         if (searchResults == null) {
             searchResults = new ArrayList<>();
         }
-        if (iFeedModelBean.toQuery().isEmpty()) {
+        if (iFeedModelBean.toQuery(client.fetchFields()).isEmpty()) {
             searchResults.clear();
         } else {
             updateSearchResults(iFeedModelBean);
         }
     }
 
+    static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+
     static List<Map<String, Object>> findResultToUpdateSearchResults(IFeed retrievedFeed, List<FieldInf> fields) {
         List<Map<String, Object>> result = null;
-        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+
         Result fromSolr = client.query(
-                retrievedFeed.toQuery(), 0, 501, null, null,
+                retrievedFeed.toQuery(client.fetchFields()), 0, 501, null, null,
                 FieldInf.toIdsList(
                         fields,
                         "title", "dc.date.issued",
@@ -1528,7 +1530,7 @@ public class Application {
 
 
     public void updateSearchResults(IFeed retrievedFeed) {
-        if (retrievedFeed.toQuery().trim().equals("")) {
+        if (retrievedFeed.toQuery(client.fetchFields()).trim().equals("")) {
             this.searchResults = new ArrayList<>();
             return;
         }

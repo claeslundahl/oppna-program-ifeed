@@ -289,7 +289,7 @@ public class IFeedSolrQuery extends SolrQuery {
             //sortField = "dc.title";
             sortField = "title";
         }
-        Result someOtherResult = client.query(feed.toQuery(), 0, DEFAULT_SOLR_RESULT_SIZE, sortDirection.name(), fieldInf);
+        Result someOtherResult = client.query(feed.toQuery(client.fetchFields()), 0, DEFAULT_SOLR_RESULT_SIZE, sortDirection.name(), fieldInf);
         // if (sortField.equals("dc.title") || sortField.equals("title")) {
         SortingMap sortingMap = new SortingMap();
         for (Map<String, Object> item : someOtherResult.getResponse().getDocs()) {

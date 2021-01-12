@@ -53,7 +53,11 @@ public class BeanMap implements Map<String, Object> {
         for (PropertyDescriptor pd : getUnWriteable()) {
             Object v = get(pd.getName());
             if (v instanceof Collection)
-                ((Collection) v).clear();
+                try {
+                    ((Collection) v).clear();
+                } catch (Exception e) {
+                    throw new RuntimeException("Clearing field " + pd.getName() + " failed.", e);
+                }
         }
     }
 

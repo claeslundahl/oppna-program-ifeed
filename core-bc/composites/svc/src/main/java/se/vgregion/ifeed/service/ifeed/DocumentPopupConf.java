@@ -1,7 +1,7 @@
 package se.vgregion.ifeed.service.ifeed;
 
 
-import se.vgregion.ifeed.service.solr.client.Field;
+import se.vgregion.ifeed.types.Field;
 
 public class DocumentPopupConf extends Field {
 

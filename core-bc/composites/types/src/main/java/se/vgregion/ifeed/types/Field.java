@@ -1,4 +1,4 @@
-package se.vgregion.ifeed.service.solr.client;
+package se.vgregion.ifeed.types;
 
 public class Field {
 

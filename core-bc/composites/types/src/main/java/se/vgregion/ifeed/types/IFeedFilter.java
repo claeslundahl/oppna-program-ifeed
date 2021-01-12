@@ -1,11 +1,6 @@
 package se.vgregion.ifeed.types;
 
 import com.google.gson.annotations.Expose;
-import org.hibernate.annotations.ForeignKey;
-import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
-import se.vgregion.ifeed.types.util.Junctor;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,11 +8,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import org.hibernate.annotations.ForeignKey;
+import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+import se.vgregion.ifeed.types.util.Junctor;
 
 @Entity
 @Table(name = "vgr_ifeed_filter")
 public final class IFeedFilter extends AbstractEntity<Long> implements Serializable {
-
     @Id
     @GeneratedValue
     private Long id;
@@ -27,9 +36,11 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     @Column
     private String filterQuery;
 
+    @Column
     private String filterKey;
 
-    private String operator = "matching"; // matching | greater | lesser
+    @Column
+    private String operator = "matching";
 
     @Transient
     private FieldInf fieldInf;
@@ -54,11 +65,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     private IFeedFilter parent;
 
     @OneToMany(mappedBy = "parent", targetEntity = IFeedFilter.class, fetch = FetchType.LAZY)
-    private List<IFeedFilter> children = new ArrayList<IFeedFilter>();
-
-    public IFeedFilter() {
-        // To make Hibernate happy
-    }
+    private List<IFeedFilter> children = new ArrayList<>();
 
     public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
         this.filter = filter;
@@ -72,11 +79,11 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public FilterType.Filter getFilter() {
-        return filter;
+        return this.filter;
     }
 
     public String getFilterQuery() {
-        return filterQuery;
+        return this.filterQuery;
     }
 
     public void setFilterQuery(String filterQuery) {
@@ -84,7 +91,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public String getFilterKey() {
-        return filterKey;
+        return this.filterKey;
     }
 
     public void setFilterKey(String filterKey) {
@@ -92,7 +99,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public FieldInf getFieldInf() {
-        return fieldInf;
+        return this.fieldInf;
     }
 
     public void setFieldInf(FieldInf fieldInf) {
@@ -100,7 +107,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public Object getFilterQueryForDisplay() {
-        return filterQueryForDisplay;
+        return this.filterQueryForDisplay;
     }
 
     public void setFilterQueryForDisplay(Object filterQueryForDisplay) {
@@ -108,27 +115,19 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public String getOperator() {
-        return operator;
+        return this.operator;
     }
 
     public void setOperator(String operator) {
         this.operator = operator;
     }
 
-    @Override
     public String toString() {
-        return "IFeedFilter{" +
-                "filterQuery='" + filterQuery + '\'' +
-                ", filterKey='" + filterKey + '\'' +
-                ", operator='" + operator + '\'' +
-                ", fieldInf=" + fieldInf +
-                ", filterQueryForDisplay=" + filterQueryForDisplay +
-                ", filter=" + filter +
-                '}';
+        return "IFeedFilter{filterQuery='" + this.filterQuery + '\'' + ", filterKey='" + this.filterKey + '\'' + ", operator='" + this.operator + '\'' + ", fieldInf=" + this.fieldInf + ", filterQueryForDisplay=" + this.filterQueryForDisplay + ", filter=" + this.filter + '}';
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -136,7 +135,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public IFeed getFeed() {
-        return feed;
+        return this.feed;
     }
 
     public void setFeed(IFeed feed) {
@@ -144,7 +143,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public IFeedFilter getParent() {
-        return parent;
+        return this.parent;
     }
 
     public void setParent(IFeedFilter parent) {
@@ -152,7 +151,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public List<IFeedFilter> getChildren() {
-        return children;
+        return this.children;
     }
 
     public void setChildren(List<IFeedFilter> children) {
@@ -161,86 +160,98 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
 
     public void initFieldInfs(Collection<FieldInf> infs) {
         for (FieldInf inf : infs) {
-            if (inf.getId().equals(getFilterKey())) {
+            if (inf.getId().equals(getFilterKey()))
                 setFieldInf(inf);
-                continue;
-            }
         }
-        for (IFeedFilter child : children) {
+        for (IFeedFilter child : this.children)
             child.initFieldInfs(infs);
-        }
     }
 
     public String toText() {
-        String label = (getFieldInf() != null && getFieldInf().getName() != null) ? getFieldInf().getName() : filterKey;
-        if (children.isEmpty()) {
-            if (operator == null || operator.equals("matching") || operator.isEmpty()) {
-                return label + " = " + (filterQuery);
-            } else {
-                if (operator.equals("greater")) {
-                    return label + " > " + (filterQuery);
-                } else if (operator.equals("lesser")) {
-                    return label + " < " + (filterQuery);
-                }
-            }
+        String label = (getFieldInf() != null && getFieldInf().getName() != null) ? getFieldInf().getName() : this.filterKey;
+        if (this.children.isEmpty()) {
+            if (this.operator == null || this.operator.equals("matching") || this.operator.isEmpty())
+                return label + " = " + this.filterQuery;
+            if (this.operator.equals("greater"))
+                return label + " > " + this.filterQuery;
+            if (this.operator.equals("lesser"))
+                return label + " < " + this.filterQuery;
         } else {
-            String o = operator.equalsIgnoreCase("and") ? " OCH " : " ELLER ";
+            String o = this.operator.equalsIgnoreCase("and") ? " OCH " : " ELLER ";
             Junctor ls = new Junctor(o);
-            for (IFeedFilter child : children) {
+            for (IFeedFilter child : this.children)
                 ls.add(child.toText());
-            }
             return ls.toQuery();
         }
         return "";
     }
 
-    public String toQuery() {
-        if (children.isEmpty()) {
-            if (operator == null || operator.equals("matching") || operator.isEmpty()) {
-                return escapeFieldName(filterKey) + ":" + escapeValue(filterKey, filterQuery, operator);
-            } else {
-                if (operator.equals("greater")) {
-                    return escapeFieldName(filterKey) + ":[" + escapeValue(filterKey, filterQuery, operator) + " TO *]";
-                } else if (operator.equals("lesser")) {
-                    return escapeFieldName(filterKey) + ":[* TO " + escapeValue(filterKey, filterQuery, operator) + "]";
+    public String toQuery(List<Field> meta) {
+        if (this.children.isEmpty()) {
+            boolean isMatchingDate = false;
+            if (this.operator == null || this.operator.equals("matching") || this.operator.isEmpty()) {
+                if (meta != null) {
+                    Field field = meta.stream().filter(f -> f.getName().equals(this.filterKey)).findAny().orElse(null);
+                    if (field != null) {
+                        String type = ((Field)meta.stream().filter(f -> f.getName().equals(this.filterKey)).findAny().orElse(null)).getType();
+                        if (type != null && type.equals("tdate"))
+                            isMatchingDate = true;
+                    }
                 }
+                if (isMatchingDate) {
+                    String textDate = escapeValue(this.filterKey, this.filterQuery, this.operator);
+                    return escapeFieldName(this.filterKey) + ":[" + textDate + "T00:00:00Z TO " + textDate + "T23:59:59Z]";
+                }
+                return escapeFieldName(this.filterKey) + ":" + escapeValue(this.filterKey, this.filterQuery, this.operator);
             }
+            if (this.operator.equals("greater"))
+                return escapeFieldName(this.filterKey) + ":[" +
+                        addZeroTimeToDateWhenApplicable(meta, this.filterKey, escapeValue(this.filterKey, this.filterQuery, this.operator)) + " TO *]";
+            if (this.operator.equals("lesser"))
+                return escapeFieldName(this.filterKey) + ":[* TO " +
+                        addZeroTimeToDateWhenApplicable(meta, this.filterKey, escapeValue(this.filterKey, this.filterQuery, this.operator)) + "]";
         } else {
-            String o = operator.equalsIgnoreCase("and") ? " AND " : " OR ";
+            String o = this.operator.equalsIgnoreCase("and") ? " AND " : " OR ";
             Junctor ls = new Junctor(o);
-            for (IFeedFilter child : children) {
-                ls.add(child.toQuery());
-            }
+            for (IFeedFilter child : this.children)
+                ls.add(child.toQuery(meta));
             return ls.toQuery();
         }
         return "";
+    }
+
+    private String addZeroTimeToDateWhenApplicable(List<Field> meta, String key, String initialValue) {
+        if (initialValue == null || meta == null)
+            return initialValue;
+        Field field = meta.stream().filter(f -> f.getName().equals(key)).findFirst().orElse(null);
+        if (field.getType().equals("tdate") && !initialValue.endsWith("Z"))
+            initialValue = initialValue + "T00:00:00Z";
+        return initialValue;
     }
 
     static String keyRegex = "([+\\-!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
 
     static String valueRegex = "([+!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
 
-    @Deprecated // Move this to a general purpose lib.
+    @Deprecated
     public static String toUtcDateIfPossible(String dateStr) {
         SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        // Add other parsing formats to try as you like:
-        String[] dateFormats = {"yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z"};
+        String[] dateFormats = { "yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z" };
         for (String dateFormat : dateFormats) {
             try {
-                return out.format(new SimpleDateFormat(dateFormat).parse(dateStr));
-            } catch (ParseException ignore) { }
+                return out.format((new SimpleDateFormat(dateFormat)).parse(dateStr));
+            } catch (ParseException parseException) {}
         }
         return dateStr;
     }
 
     static boolean isSomeKindOfDate(String withKey) {
-        if (withKey == null) {
+        if (withKey == null)
             return false;
-        }
         return withKey.contains("date");
     }
 
-   static   boolean isDigit(String s) {
+    static boolean isDigit(String s) {
         try {
             Integer.parseInt(s);
             return true;
@@ -264,67 +275,54 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     }
 
     public static String escapeValue(String withKey, String forSolr, String andPurpose) {
-        if (forSolr == null) return "";
-        if (isSomeKindOfDate(withKey)) {
-            if (forSolr.startsWith("+") || forSolr.startsWith("-") && forSolr.length() > 1 && isDigit(forSolr.substring(1))) {
+        if (forSolr == null)
+            return "";
+        if (isSomeKindOfDate(withKey))
+            if (forSolr.startsWith("+") || (forSolr.startsWith("-") && forSolr.length() > 1 && isDigit(forSolr.substring(1)))) {
                 Date now = new Date();
                 long daysOff = Integer.parseInt(forSolr.substring(1));
-                if (forSolr.startsWith("-")) {
+                if (forSolr.startsWith("-"))
                     daysOff = -daysOff;
-                }
-                daysOff = daysOff * 86400000;
+                daysOff *= 86400000L;
                 Date otherDay = new Date(now.getTime() + daysOff);
                 forSolr = sdf.format(otherDay);
-            } else {
-                if (forSolr.matches("\\d{4}-\\d{2}-\\d{2}")) {
-                    if (andPurpose == null || andPurpose.equals("matching")) {
-                        forSolr = forSolr + "*";
-                    } else {
-                        if (andPurpose.equals("greater")) {
-                            // Minus one day
-                            Date date = toDate(forSolr);
-                            date.setTime(date.getTime() - (1000 * 60 * 60 * 24));
-                            forSolr = toYyyyMmDd(date);
-                        } else if (andPurpose.equals("lesser")) {
-                            // Plus one day
-                            Date date = toDate(forSolr);
-                            date.setTime(date.getTime() + (1000 * 60 * 60 * 24));
-                            forSolr = toYyyyMmDd(date);
-                        } else {
-                            forSolr = toUtcDateIfPossible(forSolr);
-                        }
-                    }
+            } else if (forSolr.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                if (andPurpose == null || andPurpose.equals("matching")) {
+                    forSolr = forSolr + "*";
+                } else if (andPurpose.equals("greater")) {
+                    Date date = toDate(forSolr);
+                    date.setTime(date.getTime() - 86400000L);
+                    forSolr = toYyyyMmDd(date) + "T00:00:00Z";
+                } else if (andPurpose.equals("lesser")) {
+                    Date date = toDate(forSolr);
+                    date.setTime(date.getTime() + 86400000L);
+                    forSolr = toYyyyMmDd(date) + "T00:00:00Z";
                 } else {
                     forSolr = toUtcDateIfPossible(forSolr);
                 }
+            } else {
+                forSolr = toUtcDateIfPossible(forSolr);
             }
-        }
-
         String escaped = forSolr.replaceAll(valueRegex, "\\\\$1");
         if (escaped.contains(" ")) {
             escaped = escaped.replace(" ", "\\ ");
             return escaped;
-        } else {
-            return escaped;
         }
-        // return escaped;
+        return escaped;
     }
 
     public static String escapeFieldName(String forSolr) {
-        if (forSolr == null) {
+        if (forSolr == null)
             return null;
-        }
-
         String escaped = forSolr.replaceAll(keyRegex, "\\\\$1");
         return escaped;
     }
 
     public boolean isContainer() {
-        if (operator == null || operator.isEmpty())
+        if (this.operator == null || this.operator.isEmpty())
             return false;
-        return (operator.equalsIgnoreCase("and") || operator.equalsIgnoreCase("or"));
+        return (this.operator.equalsIgnoreCase("and") || this.operator.equalsIgnoreCase("or"));
     }
 
-
-
+    public IFeedFilter() {}
 }

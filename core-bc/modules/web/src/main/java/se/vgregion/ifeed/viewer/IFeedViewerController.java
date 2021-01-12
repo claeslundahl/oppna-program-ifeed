@@ -446,11 +446,11 @@ public class IFeedViewerController {
         }
 
         FieldInf field = iFeedService.getFieldInf(sortField);
-        if (fieldToSelect != null)
+        /*if (fieldToSelect != null)
             System.out.println("Fields to select: " + new ArrayList<>(Arrays.asList(fieldToSelect)));
         else
-            System.out.println("Fields not set.");
-        Result result = client.query(retrievedFeed.toQuery(), startBy, endBy, sortDirection, field, fieldToSelect);
+            System.out.println("Fields not set.");*/
+        Result result = client.query(retrievedFeed.toQuery(client.fetchFields()), startBy, endBy, sortDirection, field, fieldToSelect);
 
         if (result != null && result.getResponse() != null && result.getResponse().getDocs() != null
                 && fieldToSelect != null && fieldToSelect.length > 0) {
@@ -783,7 +783,7 @@ public class IFeedViewerController {
         selectionPart.addAll(Arrays.asList(FieldInf.toIdsList(iFeedService.getFieldInfs(), selectionPart)));
 
         Result findings = client.query(
-                filter.toQuery(),
+                filter.toQuery(client.fetchFields()),
                 0,
                 (limit.intValue() > 0 ? limit : 1_000_000),
                 defaultsortorder, fieldInf,
@@ -958,10 +958,10 @@ public class IFeedViewerController {
         IFeedFilter filter = new IFeedFilter();
         filter.setFilterQuery(documentId);
         filter.setFilterKey("id");
-        Result findigs = client.query(filter.toQuery(), null, null, null, null);
+        Result findigs = client.query(filter.toQuery(client.fetchFields()), null, null, null, null);
         if (findigs.getResponse().getDocs().isEmpty()) {
             filter.setFilterQuery("workspace://SpacesStore/" + documentId);
-            findigs = client.query(filter.toQuery(), null, null, null, null);
+            findigs = client.query(filter.toQuery(client.fetchFields()), null, null, null, null);
         }
 
         if (findigs.getResponse().getDocs().isEmpty()) {

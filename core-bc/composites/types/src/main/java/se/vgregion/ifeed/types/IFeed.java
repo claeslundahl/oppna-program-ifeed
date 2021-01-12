@@ -12,7 +12,6 @@ import se.vgregion.ifeed.types.util.Junctor;
 
 import javax.persistence.*;
 import java.io.*;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -260,7 +259,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     public void setGroup(VgrGroup group) {
         this.group = group;
     }
-    
+
     private String toJson() {
         try {
             return toJsonImpl();
@@ -271,7 +270,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     }
 
-    
+
     private void gatherAllNestedFeeds(Set<IFeed> intoThis) {
         if (!intoThis.contains(this)) {
             intoThis.add(this);
@@ -287,7 +286,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return result;
     }
 
-    
+
     static private <T> T copy(T instance) {
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
@@ -312,7 +311,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-    
+
     private String toJsonImpl() throws IOException, ClassNotFoundException {
         final Set<String> excludeFields = new HashSet<String>(Arrays.asList("iFeed", "ifeed", "ownerships",
                 "department", "group", "ifeedDynamicTableDefs", "tableDef", "partOf"));
@@ -343,7 +342,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return gson.toJson(this);
     }
 
-    
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         FileInputStream fin = new
                 FileInputStream("C:\\Users\\clalu4\\Downloads\\iFeed.obj.1");
@@ -355,7 +354,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         findCirkular(iFeed);
     }
 
-    
+
     static void findCirkular(Object currentNode) {
         try {
             findCirkular(currentNode, new ArrayList<String>(), new IdentityHashMap());
@@ -364,7 +363,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-    
+
     static void findCirkular(Object currentNode, List<String> stack, IdentityHashMap passed) throws IllegalAccessException {
         if (currentNode instanceof Collection) for (Object o : ((Collection) currentNode)) {
             findCirkular(o, stack, passed);
@@ -374,8 +373,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             // Nothing
         } else {
             passed.put(currentNode, null);
-            Field[] fields = currentNode.getClass().getDeclaredFields();
-            for (Field field : fields) {
+            java.lang.reflect.Field[] fields = currentNode.getClass().getDeclaredFields();
+            for (java.lang.reflect.Field field : fields) {
                 field.setAccessible(true);
                 Object nextNode = field.get(currentNode);
                 stack.add(field.getName());
@@ -386,7 +385,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-    
+
     public static IFeed fromJson(String ifeed) {
         try {
             Gson gson = new GsonBuilder().create();
@@ -483,22 +482,22 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
     }
 
-    public String toQuery() {
+    public String toQuery(List<Field> meta) {
         Junctor or = new Junctor(" OR ");
         Set<IFeed> flat = getAllNestedFeedsFlattly();
         for (IFeed feed : flat) {
-            or.add(feed.toQueryImp());
+            or.add(feed.toQueryImp(meta));
         }
         return or.toQuery();
     }
 
-    private String toQueryImp() {
+    private String toQueryImp(List<Field> meta) {
         if (filters == null || filters.isEmpty()) {
             return "";
         }
 
         if (filters.size() == 1) {
-            return filters.iterator().next().toQuery();
+            return filters.iterator().next().toQuery(meta);
         }
 
         Junctor and = new Junctor(" AND ");
@@ -514,7 +513,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
         for (IFeedFilter filter : filters) {
             if (filter.isContainer()) {
-                and.add(filter.toQuery());
+                and.add(filter.toQuery(meta));
             } else {
                 keyToFilters.get(filter.getFilterKey()).add(filter);
             }
@@ -525,11 +524,11 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             if (values.size() > 1 && !values.get(0).isContainer()) {
                 Junctor or = new Junctor(" OR ");
                 for (IFeedFilter value : values) {
-                    or.add(value.toQuery());
+                    or.add(value.toQuery(meta));
                 }
                 and.add(or.toQuery());
             } else {
-                and.add(values.get(0).toQuery());
+                and.add(values.get(0).toQuery(meta));
             }
         }
 

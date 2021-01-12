@@ -48,7 +48,7 @@ public class SolrFacetUtil {
         if (feed == null) {
             throw new NullPointerException();
         }
-        final String question = feed.toQuery();
+        final String question = feed.toQuery(client.fetchFields());
         Result result = client.query(
                 question,
                 0,

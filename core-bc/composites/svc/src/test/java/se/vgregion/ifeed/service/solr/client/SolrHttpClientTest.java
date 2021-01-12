@@ -6,6 +6,7 @@ import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.service.ifeed.DocumentPopupConf;
 import se.vgregion.ifeed.service.solr.Csvs;
 import se.vgregion.ifeed.service.solr.SolrQueryEscaper;
+import se.vgregion.ifeed.types.Field;
 import se.vgregion.ifeed.types.FieldInf;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
@@ -31,10 +32,10 @@ public class SolrHttpClientTest {
         IFeedFilter filter = new IFeedFilter("*test*", "title");
 
         SolrHttpClient oldStage = new SolrHttpClient("http://vgas2192.vgregion.se:9090/solr/ifeed/");
-        Result r1 = oldStage.query(filter.toQuery(), 0, 100, "asc", null);
+        Result r1 = oldStage.query(filter.toQuery(client.fetchFields()), 0, 100, "asc", null);
         System.out.println(r1.getResponse().getDocs().size());
         SolrHttpClient newStage = new SolrHttpClient("https://solr-stage.vgregion.se/solr/ifeed/");
-        Result r2 = newStage.query(filter.toQuery(), 0, 100, "asc", null);
+        Result r2 = newStage.query(filter.toQuery(client.fetchFields()), 0, 100, "asc", null);
         System.out.println(r2.getResponse().getDocs().size());
     }
 
@@ -117,8 +118,8 @@ public class SolrHttpClientTest {
         IFeedFilter filter = new IFeedFilter();
         filter.setFilterKey("id");
         filter.setFilterQuery("14a94647-9364-491f-ba1c-8dc76963b0b7");
-        System.out.println(filter.toQuery());
-        Result result = client.query(filter.toQuery(), 0, 100_000, null, null);
+        System.out.println(filter.toQuery(client.fetchFields()));
+        Result result = client.query(filter.toQuery(client.fetchFields()), 0, 100_000, null, null);
         for (Map<String, Object> doc : result.getResponse().getDocs()) {
             for (String key : doc.keySet()) {
                 System.out.println(key + " = " + doc.get(key));
@@ -296,13 +297,13 @@ public class SolrHttpClientTest {
 
         IFeed feed = items.get(0);
 
-        System.out.println(feed.toQuery());
+        System.out.println(feed.toQuery(client.fetchFields()));
 
         SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
         // System.out.println(client.post("http://i3-dev.vgregion.se:9090/solr/ifeed/select", "&start=0&rows=10&sort=core_ArchivalObject_core_ObjectType%20asc&wt=json&q=*%3A*"));
 
-        Result result = client.query(feed.toQuery(), 0, 1_000_000, null, null);
+        Result result = client.query(feed.toQuery(client.fetchFields()), 0, 1_000_000, null, null);
 
         int i = 0;
         for (Map<String, Object> doc : result.getResponse().getDocs()) {

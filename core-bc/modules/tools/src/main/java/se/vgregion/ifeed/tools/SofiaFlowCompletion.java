@@ -83,7 +83,7 @@ public class SofiaFlowCompletion {
 
     public static boolean hasBariumStuff(Feed feed) {
         IFeed iFeed = feed.toIFeed();
-        Result result = client.query(iFeed.toQuery(), 0, 1_000_000, null, null);
+        Result result = client.query(iFeed.toQuery(client.fetchFields()), 0, 1_000_000, null, null);
         if (result.getResponse() != null) {
             for (Map<String, Object> doc : result.getResponse().getDocs()) {
                 if (doc.containsKey("SourceSystem") && "Barium".equals(doc.get("SourceSystem"))) {

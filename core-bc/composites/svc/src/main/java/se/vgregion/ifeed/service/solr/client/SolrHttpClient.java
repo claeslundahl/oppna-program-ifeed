@@ -3,10 +3,10 @@ package se.vgregion.ifeed.service.solr.client;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import se.vgregion.ifeed.service.solr.SolrQueryEscaper;
+import se.vgregion.ifeed.types.Field;
 import se.vgregion.ifeed.types.FieldInf;
 
 import javax.script.ScriptEngine;
@@ -25,9 +25,9 @@ import java.util.regex.Pattern;
 
 public class SolrHttpClient {
 
-    private final ScriptEngine engine;
-    private final ScriptEngineManager sem;
-    private final ScriptObjectMirror JSON; // = (ScriptObjectMirror) engine.eval("JSON");
+    /*private final ScriptEngine engine;
+    private final ScriptEngineManager sem;*/
+    // private final ScriptObjectMirror JSON; // = (ScriptObjectMirror) engine.eval("JSON");
 
     private final String baseUrl;
 
@@ -39,13 +39,13 @@ public class SolrHttpClient {
         super();
         this.baseUrl = baseUrl;
 
-        sem = new ScriptEngineManager();
-        engine = sem.getEngineByName("javascript");
-        try {
+        /*sem = new ScriptEngineManager();
+        engine = sem.getEngineByName("javascript");*/
+/*        try {
             JSON = (ScriptObjectMirror) engine.eval("JSON");
         } catch (ScriptException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     // public Result query(String qf, Integer start, Integer rows, String dir, String ... sort) {
@@ -264,13 +264,14 @@ public class SolrHttpClient {
     }
 
     public Object toObjectGraph(String json) {
-        String script = "foo = Java.asJSONCompatible(" + json + ")";
+        return gson.fromJson(json, Map.class);
+        /*String script = "foo = Java.asJSONCompatible(" + json + ")";
         try {
             Object result = engine.eval(script);
             return result;
         } catch (ScriptException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     public List<Field> fetchFields() {

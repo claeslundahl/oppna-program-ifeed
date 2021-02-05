@@ -198,14 +198,8 @@ public class SofiaFlowCompletion {
                         "  )\n" +
                         ") and f.id not in (select (id*-1) from vgr_ifeed where id < 0) \n" + withExtraCondition +
                         "\nexcept select * from vgr_ifeed where id < 0";
-
         sql = String.format(sql, String.join("', '", allOldFields()));
-
-        // System.out.println(sql);
-
-        List<Feed> result = Feed.toFeeds(
-                database.query(sql)
-        );
+        List<Feed> result = Feed.toFeeds(database.query(sql));
         for (Feed feed : result) {
             feed.fill(database);
         }

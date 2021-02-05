@@ -1248,7 +1248,7 @@
             "counterparts": [
               "dc.date.issued"
             ],
-            "name": "Publiceringsdatum",
+            "name": "Upprättat datum",
             "id": "core:ArchivalObject.core:CreatedDateTime",
             "apelonKey": "",
             "type": "d:date",

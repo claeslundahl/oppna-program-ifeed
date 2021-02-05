@@ -29,18 +29,23 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     private final List<DynamicTableDef> dynamicTableDefs = new ArrayList<DynamicTableDef>();
 
     @Version
+    @Column
     private Long version;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "feed")
     protected Set<IFeedFilter> filters = new HashSet<>();
 
+    @Column
     private String name;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column
     private Date timestamp = null;
 
+    @Column
     private String description;
 
+    @Column
     private String userId;
 
     @Transient
@@ -64,10 +69,13 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @ManyToMany(mappedBy = "composites"/*, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}*/)
     protected List<IFeed> partOf = new DistinctArrayList<>();
 
+    @Column
     private String sortField;
 
+    @Column
     private String sortDirection;
 
+    @Column
     private Boolean linkNativeDocument;
 
     public Set<IFeedFilter> getFilters() {

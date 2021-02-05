@@ -52,8 +52,6 @@ public class DatabaseApi extends ConnectionExt {
         return query(sql).get(0).values().iterator().next();
     }
 
-
-
     static DatabaseApi getDatabaseApi() {
         Properties props = fetchProperties();
 
@@ -84,10 +82,27 @@ public class DatabaseApi extends ConnectionExt {
         return result;
     }
 
+    static DatabaseApi getRemoteStageDatabaseApi() {
+        Properties props = null;
+        try {
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.stage.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        DatabaseApi result = new DatabaseApi(
+                props.getProperty("datasource.connector.direct.url"),
+                props.getProperty("datasource.connector.direct.username"),
+                props.getProperty("datasource.connector.direct.password"),
+                props.getProperty("datasource.connector.direct.driverClassName")
+        );
+
+        return result;
+    }
+
     static DatabaseApi getLocalBackupApi() {
         Properties props = null;
         try {
-            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.backup"));
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.local.backup.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -104,7 +119,7 @@ public class DatabaseApi extends ConnectionExt {
     static DatabaseApi getRemoteProdDatabaseApi() {
         Properties props = null;
         try {
-            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.prod"));
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.prod.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

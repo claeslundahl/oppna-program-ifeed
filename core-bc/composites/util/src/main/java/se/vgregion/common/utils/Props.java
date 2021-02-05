@@ -18,6 +18,14 @@ public class Props {
         }
     }
 
+    public static Properties fetchLocalBackupProperties() {
+        try {
+            return fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public  static Properties fetchProperties(Path path) throws IOException {
         Properties properties = new Properties();
         InputStream src = Files.newInputStream(path);

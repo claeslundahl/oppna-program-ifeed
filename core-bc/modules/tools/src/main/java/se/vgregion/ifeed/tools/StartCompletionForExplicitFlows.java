@@ -6,7 +6,7 @@ import static se.vgregion.ifeed.tools.DatabaseApi.getRemoteProdDatabaseApi;
 public class StartCompletionForExplicitFlows extends SofiaFlowCompletion {
 
     {
-        database = DatabaseApi.getRemoteStageDatabaseApi();
+        database = DatabaseApi.getRemoteProdDatabaseApi();
     }
 
     public static void main(String[] args) {
@@ -18,7 +18,7 @@ public class StartCompletionForExplicitFlows extends SofiaFlowCompletion {
 
     @Override
     public void generateFlows() {
-        generateFlows(" and f.id in (450776112) ");
+        generateFlows(" and f.id in (102875) ");
     }
 
     @Override

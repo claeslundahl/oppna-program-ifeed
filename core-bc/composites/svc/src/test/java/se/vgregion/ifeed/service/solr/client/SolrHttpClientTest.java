@@ -29,14 +29,25 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        IFeedFilter filter = new IFeedFilter("*test*", "title");
+        /*IFeedFilter filter = new IFeedFilter("*test*", "title");
 
         SolrHttpClient oldStage = new SolrHttpClient("http://vgas2192.vgregion.se:9090/solr/ifeed/");
         Result r1 = oldStage.query(filter.toQuery(client.fetchFields()), 0, 100, "asc", null);
         System.out.println(r1.getResponse().getDocs().size());
         SolrHttpClient newStage = new SolrHttpClient("https://solr-stage.vgregion.se/solr/ifeed/");
         Result r2 = newStage.query(filter.toQuery(client.fetchFields()), 0, 100, "asc", null);
-        System.out.println(r2.getResponse().getDocs().size());
+        System.out.println(r2.getResponse().getDocs().size());*/
+
+        Map<String, Set<Object>> allValues = client.findAllValues();
+        for (String key : allValues.keySet()) {
+            Set<Object> values = allValues.get(key);
+            for (Object value : values) {
+                if (value.toString().contains("Styrande dokument")) {
+                    System.out.println("Hittade: " + key);
+                    return;
+                }
+            }
+        }
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {

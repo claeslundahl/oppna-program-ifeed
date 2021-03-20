@@ -11,4 +11,4 @@
 
 target
 
-deploy-consumer-part.sh
+*.sh

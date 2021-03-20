@@ -989,16 +989,24 @@ public class IFeedViewerController {
         model.addAttribute("item", doc);
 
         if ("tooltip".equals(type)) {
-            if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
+            System.out.print("tooltip -> ");
+            if (isGoverning(doc)) {
+                System.out.println("tooltipGovDocs");
+                return "tooltipGovDocs";
+            } else if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
+                System.out.println("tooltipSofia");
                 return "tooltipSofia";
             } else if (true) {
+                System.out.println("tooltipAlfrescoBarium");
                 return "tooltipAlfrescoBarium";
             }
             root.initForMiniView(doc);
         } else {
             root.initForMaxView(doc);
-
-            if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
+            // dc.type.document.structure = [Styrande dokument]
+            if (isGoverning(doc)) {
+                return "documentDetailsGovDocs";
+            } else if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
                 // SOFIA thing.
                 return "documentDetailsSofia";
             } else {
@@ -1039,6 +1047,11 @@ public class IFeedViewerController {
             return "documentDetails";
         }
         // return "documentDetails";
+    }
+
+    private static boolean isGoverning(Map<String, Object> doc) {
+        System.out.println(" isGoverning '" + doc.get("vgrsd:DomainExtension.domain") + "'");
+        return "Styrande dokument".equals(doc.get("vgrsd:DomainExtension.domain"));
     }
 
     private FieldInf getApropriateFieldInf(String type, Map<String, Object> doc) {

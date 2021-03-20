@@ -13,7 +13,7 @@
                     Från källsystem:
                 </span>
                 <h:selectOneMenu value="#{app.selectedFieldInfRootName}" style="float: right;">
-                    <f:selectItems value="#{app.getFilters()}" var="c"
+                    <f:selectItems value="#{app.getFilters()}" var="c" valueChangeListener="#{app.onSelectedFieldInfRootNameChange}"
                                    itemLabel="#{c.name}" itemValue="#{c.name}"/>
                     <p:ajax update="add_ifeed_filters"/>
                 </h:selectOneMenu>

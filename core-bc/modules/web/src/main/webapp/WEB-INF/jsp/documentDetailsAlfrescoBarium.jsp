@@ -131,7 +131,7 @@
     <div>
 
         <table class="ifeed-metadata-table" style="text-decoration: none;">
-            <c:if test="${not empty item['dc.title'] or not empty item['dc.title.filename'] or not empty item['dc.title.filename.native'] or not empty item['dc.title.alternative'] or not empty item['dc.description'] or not empty item['dc.type.document'] or not empty item['dc.type.document.structure'] or not empty item['dc.type.document.structure.id'] or not empty item['dc.type.record'] or not empty item['dc.coverage.hsacode'] or not empty item['dcterms.audience'] or not empty item['dc.audience'] or not empty item['dc.identifier.version'] or not empty item['dc.contributor.savedby'] or not empty item['dc.contributor.savedby.id'] or not empty item['dc.date.saved'] or not empty item['vgregion.status.document'] or not empty item['vgr.status.document'] or not empty item['vgr.status.document.id'] or not empty item['dc.source.documentid'] or not empty item['dc.source']}">
+            <c:if test="${not empty item['dc.title'] or not empty item['dc.title.filename'] or not empty item['dc.title.filename.native'] or not empty item['dc.title.alternative'] or not empty item['dc.description'] or not empty item['dc.type.document'] or not empty item['dc.type.document.structure'] or not empty item['dc.type.record'] or not empty item['dc.coverage.hsacode'] or not empty item['dcterms.audience'] or not empty item['dc.audience'] or not empty item['dc.identifier.version'] or not empty item['dc.contributor.savedby'] or not empty item['dc.contributor.savedby.id'] or not empty item['dc.date.saved'] or not empty item['vgregion.status.document'] or not empty item['vgr.status.document'] or not empty item['vgr.status.document.id'] or not empty item['dc.source.documentid'] or not empty item['dc.source']}">
             <thead>
             <tr>
                 <td colspan="2">Dokumentbeskrivning</td>
@@ -174,24 +174,24 @@
                 <td class="value">${item['dc.type.document']}</td>
             </tr>
                 </c:if>
+            <c:if test="${not empty item['dc.type.record']}">
+            <tr>
+                <td class="key">Handlingstyp (autokomplettering)</td>
+                <td class="value">${item['dc.type.record']}</td>
+            </tr>
+            </c:if>
                 <c:if test="${not empty item['dc.type.document.structure']}">
             <tr>
                 <td class="key">Dokumentstruktur VGR</td>
                 <td class="value">${item['dc.type.document.structure']}</td>
             </tr>
                 </c:if>
-                <c:if test="${not empty item['dc.type.document.structure.id']}">
+                <%--<c:if test="${not empty item['dc.type.document.structure.id']}">
             <tr>
                 <td class="key">Dokumentstruktur VGR ID</td>
                 <td class="value">${item['dc.type.document.structure.id']}</td>
             </tr>
-                </c:if>
-                <c:if test="${not empty item['dc.type.record']}">
-            <tr>
-                <td class="key">Handlingstyp (autokomplettering)</td>
-                <td class="value">${item['dc.type.record']}</td>
-            </tr>
-                </c:if>
+                </c:if>--%>
                 <c:if test="${not empty item['dc.coverage.hsacode']}">
             <tr>
                 <td class="key">Verksamhetskod enligt HSA</td>

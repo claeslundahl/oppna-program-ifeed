@@ -165,7 +165,7 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
 
     FieldInf getInfByFilterKey(List<FieldInf> infs, String id) {
         for (FieldInf fi : infs) {
-            if (fi.getId().equalsIgnoreCase(id)) {
+            if (fi.getId() != null && fi.getId().equalsIgnoreCase(id)) {
                 return fi;
             }
             FieldInf result = getInfByFilterKey(fi.getChildren(), id);

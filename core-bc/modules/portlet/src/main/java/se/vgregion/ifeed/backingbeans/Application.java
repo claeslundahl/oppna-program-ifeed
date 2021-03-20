@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.backingbeans;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.faces.component.visit.FullVisitContext;
 import org.apache.commons.lang.mutable.MutableBoolean;
@@ -45,6 +46,7 @@ import javax.faces.component.visit.VisitContext;
 import javax.faces.component.visit.VisitResult;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import javax.servlet.http.HttpServletRequest;
@@ -791,6 +793,7 @@ public class Application {
     }
 
     public void setSelectableDepartments(List<VgrDepartment> selectableDepartments) {
+
         this.selectableDepartments = selectableDepartments;
     }
 
@@ -1569,6 +1572,21 @@ public class Application {
         this.selectedFieldInfRootName = selectedFieldInfRootName;
     }
 
+    static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    public void onSelectedFieldInfRootNameChange(ValueChangeEvent e) {
+        FieldInf item = getFiltersMap().get(e.getNewValue());
+        System.out.println("onSelectedFieldInfRootNameChange");
+        System.out.println(gson.toJson(e));
+        System.out.println(
+                gson.toJson(item.getDefaultFilters())
+        );
+        if (item != null && item.getDefaultFilters() != null) {
+            getIFeedModelBean().getFilters().addAll(item.getDefaultFilters());
+            //b FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(":filtersList");
+        }
+    }
+
     public Map<String, FieldInf> getFiltersMap() {
         return filtersMap;
     }
@@ -1579,6 +1597,13 @@ public class Application {
 
     public void setiFeedModelBean(IFeedModelBean iFeedModelBean) {
         this.iFeedModelBean = iFeedModelBean;
+    }
+
+    public static String toCssFriendlyFormat(String fromThat) {
+        if (fromThat == null || fromThat.trim().equals("")) {
+            return "";
+        }
+        return fromThat.replaceAll("[^a-ö0-9]", "-");
     }
 
 }

@@ -90,6 +90,17 @@
             "inHtmlView": true
           },
           {
+            "filter": false,
+            "help": "Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas.",
+            "expanded": false,
+            "children": [],
+            "name": "Handlingstyp ID",
+            "id": "dc.type.record.id",
+            "apelonKey": "Handlingstyp",
+            "type": "d:text_facet",
+            "inHtmlView": false
+          },
+          {
             "filter": true,
             "help": "Gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument.",
             "expanded": false,
@@ -102,12 +113,12 @@
           },
           {
             "filter": false,
-            "help": "Klassificering av dokumentets innehåll eller typ enligt de dokumenthanteringsplaner som finns inom VGR. ”Ospecificerad” används om handlingstyp saknas.",
+            "help": "ID för gemensam regional dokumentstruktur för styrande, redovisande och informerande dokument. Byggs successivt med start kring styrande dokument.",
             "expanded": false,
             "children": [],
-            "name": "Handlingstyp ID",
-            "id": "dc.type.record.id",
-            "apelonKey": "Handlingstyp",
+            "name": "Dokumentstruktur VGR ID",
+            "id": "dc.type.document.structure.id",
+            "apelonKey": "Dokumentstruktur VGR ID",
             "type": "d:text_facet",
             "inHtmlView": false
           },
@@ -1270,202 +1281,280 @@
     "inHtmlView": false
   },
   {
-    "filter": true,
-    "help": "",
-    "expanded": false,
+    "level": 0,
+    "name": "SOFIA Styrande dokument",
+    "apelonKey": "",
+    "counterparts": [],
     "children": [
       {
-        "filter": false,
-        "help": "",
-        "expanded": true,
+        "level": 0,
+        "name": "Populära filter",
+        "apelonKey": "",
+        "counterparts": [],
         "children": [
           {
-            "filter": true,
-            "help": "Titel",
-            "expanded": false,
-            "children": [],
-            "counterparts": [
-              "dc.title"
-            ],
+            "level": 0,
+            "id": "vgr:VgrExtension.vgr:Title",
             "name": "Titel",
-            "id": "title",
             "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Myndighet",
-            "expanded": false,
-            "children": [],
-            "name": "Myndighet",
-            "id": "core:ArchivalObject.core:Producer",
-            "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Klassificeringsstrukturen (process)",
-            "expanded": false,
-            "children": [],
-            "name": "Klassificeringsstrukturen (process)",
-            "id": "core:ArchivalObject.core:Classification.core:Classification.name",
-            "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Handlingstyp",
-            "expanded": false,
-            "children": [],
-            "name": "Handlingstyp",
-            "id": "core:ArchivalObject.core:ObjectType",
-            "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Upprättat för enhet",
-            "expanded": false,
-            "children": [],
-            "name": "Upprättat för enhet",
-            "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
-            "apelonKey": "",
-            "type": "d:ldap_org_value",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Regional ämnesindelning",
-            "expanded": false,
-            "children": [],
-            "name": "Regional ämnesindelning",
-            "id": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
-            "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Egen ämnesindelning",
-            "expanded": false,
-            "children": [],
-            "name": "Egen ämnesindelning",
-            "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
-            "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Företagsnyckelord",
-            "expanded": false,
-            "children": [],
-            "name": "Företagsnyckelord",
-            "id": "vgr:VgrExtension.vgr:Tag",
-            "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Dokumentets id som det finns lagrat i källsystemet.",
-            "expanded": false,
-            "children": [],
-            "name": "Dokumentid källa",
-            "id": "vgr:VgrExtension.vgr:Source.id",
-            "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Källsystem. Har bytt namn i indexet. Är oanvändbart, får flöden att inte träffa något. Upptäckte detta 8/11 2018.",
-            "expanded": false,
-            "children": [],
             "counterparts": [],
-            "name": "Källsystem",
-            "id": "vgr:VgrExtension.vgr:SourceSystem",
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": true
+          },
+          {
+            "level": 0,
+            "id": "core:ArchivalObject.core:Producer",
+            "name": "Myndighet",
             "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": true
+          },
+          {
+            "level": 0,
+            "name": "Klassificeringsstrukturen (process)",
+            "help": "Klassificeringsstrukturen (process)",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "core:ArchivalObject.core:ObjectType",
+            "name": "Handlingstyp",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "vgr:VgrExtension.vgr:PublishedForUnit",
+            "name": "Upprättat för enhet",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": true
+          },
+          {
+            "level": 0,
+            "name": "Giltighetsområde",
+            "help": "Giltighetsområde",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectClassification",
+            "name": "Regional ämnesindelning",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+            "name": "Egen ämnesindelning",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "vgr:VgrExtension.vgr:Tag",
+            "name": "Företagsnyckelord",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "name": "Dokumentets källa",
+            "help": "Dokumentets källa",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "vgr:VgrExtension.vgr:SourceSystem",
+            "name": "Källsystem",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": false
           }
         ],
-        "name": "Populära filter",
-        "inTooltip": false,
-        "id": "",
-        "apelonKey": "",
-        "type": "",
-        "inHtmlView": true
+        "filter": false,
+        "inHtmlView": false,
+        "expanded": false,
+        "inTooltip": false
       },
       {
-        "filter": true,
-        "help": "",
-        "expanded": false,
+        "level": 0,
+        "name": "Kodverk",
+        "apelonKey": "",
+        "counterparts": [],
         "children": [
           {
-            "filter": true,
-            "help": "Upprättat av enhet",
-            "expanded": false,
+            "level": 0,
+            "name": "Verksamhetskod enligt HSA",
+            "help": "Verksamhetskod enligt HSA",
+            "apelonKey": "Verksamhetskod",
+            "counterparts": [],
             "children": [],
-            "name": "Upprättat av enhet",
-            "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
-            "apelonKey": "",
-            "type": "d:ldap_org_value",
-            "inHtmlView": true
+            "filter": true,
+            "inHtmlView": false,
+            "expanded": false,
+            "type": "d:text_fix",
+            "inTooltip": false
           },
           {
-            "filter": true,
-            "help": "Upprättat av (person)",
-            "expanded": false,
-            "children": [],
-            "name": "Upprättat av (person)",
-            "id": "vgr:VgrExtension.vgr:CreatedBy",
+            "level": 0,
+            "id": "vgrsd:CodeGroup (code) + name \u003d SweMesh",
+            "name": "SweMesh",
             "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
-            "filter": true,
-            "help": "Åtkomsträtt",
-            "expanded": false,
+            "counterparts": [],
             "children": [],
-            "name": "Åtkomsträtt",
-            "id": "vgr:VgrExtension.vgr:SecurityClass",
-            "apelonKey": "",
-            "type": "d:text_facet",
-            "inHtmlView": true
-          },
-          {
             "filter": true,
-            "help": "Tidpunkt för publicering/utgivning av dokumentet, handlingen eller resursen på t ex internet, intranät eller portalen. (Systemstyrt). Tillgänglighetsintervallet styr om dokumentet, handlingen eller resursen kommer visas efter publiceringen.",
+            "inHtmlView": true,
             "expanded": false,
-            "children": [],
-            "counterparts": [
-              "dc.date.issued"
-            ],
-            "name": "Publiceringsdatum",
-            "id": "core:ArchivalObject.core:CreatedDateTime",
-            "apelonKey": "",
-            "type": "d:date",
-            "inHtmlView": true
+            "inTooltip": false
           }
         ],
+        "filter": false,
+        "inHtmlView": false,
+        "expanded": false,
+        "inTooltip": false
+      },
+      {
+        "level": 0,
         "name": "Ytterligare filter",
-        "inTooltip": false,
-        "id": "",
         "apelonKey": "",
-        "type": "",
-        "inHtmlView": true
+        "counterparts": [],
+        "children": [
+          {
+            "level": 0,
+            "id": "vgr:VgrExtension.vgr:CreatedByUnit",
+            "name": "Upprättat av enhet",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "vgr:VgrExtension.vgr:CreatedBy",
+            "name": "Upprättat av (person)",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "name": "Åtkomsträtt",
+            "help": "Åtkomsträtt",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": false,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "core:CreatedDateTime ??",
+            "name": "Upprättat datum",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": false
+          },
+          {
+            "level": 0,
+            "id": "vgrsd:ValidFrom",
+            "name": "Giltig från",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": true
+          },
+          {
+            "level": 0,
+            "id": "vgrsd:ValidTo",
+            "name": "Giltig till",
+            "apelonKey": "",
+            "counterparts": [],
+            "children": [],
+            "filter": true,
+            "inHtmlView": true,
+            "expanded": false,
+            "inTooltip": true
+          }
+        ],
+        "filter": false,
+        "inHtmlView": false,
+        "expanded": false,
+        "inTooltip": false
       }
     ],
-    "name": "SOFIA2",
-    "id": "",
-    "apelonKey": "",
-    "type": "",
-    "inHtmlView": false
+    "filter": true,
+    "inHtmlView": false,
+    "expanded": false,
+    "inTooltip": false
   }
 ]

@@ -35,6 +35,8 @@ public class FieldInf implements Serializable {
 
     private transient FieldInf parent;
 
+    private Set<IFeedFilter> defaultFilters;
+
     public String getId() {
         return id;
     }
@@ -387,6 +389,14 @@ public class FieldInf implements Serializable {
 
     public void setCounterparts(Set<String> counterparts) {
         this.counterparts = counterparts;
+    }
+
+    public Set<IFeedFilter> getDefaultFilters() {
+        return defaultFilters;
+    }
+
+    public void setDefaultFilters(Set<IFeedFilter> defaultFilters) {
+        this.defaultFilters = defaultFilters;
     }
 
     public interface Visitor {

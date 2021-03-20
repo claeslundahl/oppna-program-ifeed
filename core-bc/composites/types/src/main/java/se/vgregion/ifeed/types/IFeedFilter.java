@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.types;
 
 import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,18 +9,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+
 import org.hibernate.annotations.ForeignKey;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 import se.vgregion.ifeed.types.util.Junctor;
@@ -64,7 +55,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     @Expose(serialize = false, deserialize = true)
     private IFeedFilter parent;
 
-    @OneToMany(mappedBy = "parent", targetEntity = IFeedFilter.class, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parent", targetEntity = IFeedFilter.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<IFeedFilter> children = new ArrayList<>();
 
     public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
@@ -160,7 +151,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
 
     public void initFieldInfs(Collection<FieldInf> infs) {
         for (FieldInf inf : infs) {
-            if (inf.getId().equals(getFilterKey()))
+            if (inf.getId() != null && inf.getId().equals(getFilterKey()))
                 setFieldInf(inf);
         }
         for (IFeedFilter child : this.children)
@@ -193,7 +184,7 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
                 if (meta != null) {
                     Field field = meta.stream().filter(f -> f.getName().equals(this.filterKey)).findAny().orElse(null);
                     if (field != null) {
-                        String type = ((Field)meta.stream().filter(f -> f.getName().equals(this.filterKey)).findAny().orElse(null)).getType();
+                        String type = ((Field) meta.stream().filter(f -> f.getName().equals(this.filterKey)).findAny().orElse(null)).getType();
                         if (type != null && type.equals("tdate"))
                             isMatchingDate = true;
                     }
@@ -236,11 +227,12 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     @Deprecated
     public static String toUtcDateIfPossible(String dateStr) {
         SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String[] dateFormats = { "yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z" };
+        String[] dateFormats = {"yyyy-MM-dd", "MMM dd, yyyy hh:mm:ss Z"};
         for (String dateFormat : dateFormats) {
             try {
                 return out.format((new SimpleDateFormat(dateFormat)).parse(dateStr));
-            } catch (ParseException parseException) {}
+            } catch (ParseException parseException) {
+            }
         }
         return dateStr;
     }
@@ -324,5 +316,6 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
         return (this.operator.equalsIgnoreCase("and") || this.operator.equalsIgnoreCase("or"));
     }
 
-    public IFeedFilter() {}
+    public IFeedFilter() {
+    }
 }

@@ -253,7 +253,43 @@ public class IFeedModelBean extends IFeed implements Serializable {
 
     public List<IFeedFilter> getFiltersAsList() {
         if (filtersAsList == null) {
-            filtersAsList = new CollectionAsList<IFeedFilter>(getFilters());
+            filtersAsList = new CollectionAsList<IFeedFilter>(getFilters()) {
+                @Override
+                public boolean add(IFeedFilter iFeedFilter) {
+                    if (!contains(iFeedFilter))
+                        return super.add(iFeedFilter);
+                    return false;
+                }
+
+                @Override
+                public boolean addAll(Collection<? extends IFeedFilter> c) {
+                    boolean result = false;
+                    for (IFeedFilter iFeedFilter : c) {
+                        if (add(iFeedFilter)) {
+                            result = true;
+                        }
+                    }
+                    return result;
+                }
+
+/*
+                @Override
+                public boolean contains(Object o) {
+                    if (o instanceof IFeedFilter) {
+                        IFeedFilter filter = (IFeedFilter) o;
+                        for (IFeedFilter iFeedFilter : this) {
+                            if (iFeedFilter.getFilterKey().equals(filter.getFilterKey())) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    } else {
+                        return super.contains(o);
+                    }
+                }
+*/
+
+            };
             for (IFeedFilter item : filtersAsList) {
                 String that = item.getFilterQuery();
                 if (that == null) continue;

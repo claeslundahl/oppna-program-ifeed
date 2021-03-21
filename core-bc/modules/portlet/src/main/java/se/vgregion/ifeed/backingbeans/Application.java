@@ -1583,8 +1583,38 @@ public class Application {
         );
         if (item != null && item.getDefaultFilters() != null) {
             getIFeedModelBean().getFilters().addAll(item.getDefaultFilters());
+            /*getIFeedModelBean().setFilters(new HashSet<>(
+                    getIFeedModelBean().getFilters()
+            ));*/
+            getIFeedModelBean().getFiltersAsList().addAll(item.getDefaultFilters());
+            System.out.println("ListCount: " + getIFeedModelBean().getFiltersAsList().size());
+            System.out.println("SetCount: " + getIFeedModelBean().getFilters().size());
             //b FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(":filtersList");
         }
+        if (e.getOldValue() != null && !e.getOldValue().toString().trim().equals("")) {
+            item = getFiltersMap().get(e.getOldValue());
+            if (item != null && item.getDefaultFilters() != null)
+                for (IFeedFilter df : item.getDefaultFilters()) {
+                    for (IFeedFilter filterInBean : iFeedModelBean.getFilters()) {
+                        if (isKeyAndQueryEquals(df, filterInBean)) {
+                            iFeedModelBean.getFilters().remove(filterInBean);
+                            iFeedModelBean.getFiltersAsList().remove(filterInBean);
+                        }
+                    }
+                }
+
+            /*for (IFeedFilter filter : new ArrayList<IFeedFilter>(iFeedModelBean.getFilters())) {
+                if (filter.getFilterKey().equals(e.getOldValue()) && filter.getFilterKey().equals(e.getOldValue())) {
+                    System.out.println("Removes: " + filter);
+                    iFeedModelBean.getFiltersAsList().remove(filter);
+                    iFeedModelBean.getFilters().remove(filter);
+                }
+            }*/
+        }
+    }
+
+    private static boolean isKeyAndQueryEquals(IFeedFilter f1, IFeedFilter f2) {
+        return f1.getFilterKey().equals(f2.getFilterKey()) && f1.getFilterQuery().equals(f2.getFilterQuery());
     }
 
     public Map<String, FieldInf> getFiltersMap() {

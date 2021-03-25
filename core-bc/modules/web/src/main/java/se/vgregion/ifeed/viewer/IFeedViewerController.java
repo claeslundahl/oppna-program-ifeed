@@ -2,6 +2,7 @@ package se.vgregion.ifeed.viewer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import javassist.compiler.ast.Pair;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ldap.LdapApi;
 import se.vgregion.ldap.LdapSupportService;
+import se.vgregion.ldap.person.LdapPersonService;
+import se.vgregion.ldap.person.Person;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -271,8 +274,6 @@ public class IFeedViewerController {
             bos = new BufferedOutputStream(portletOutputStream);
 
             //List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
-
-            List<FieldInf> fields = iFeedService.getFieldInfs();
 
             bos.write(0xEF);
             bos.write(0xBB);
@@ -689,7 +690,11 @@ public class IFeedViewerController {
     private static LdapApi ldapApi = LdapApi.newInstanceFromConfig();
 
     @Autowired
+    @Deprecated
     private LdapSupportService ldapSupportService;
+
+    @Autowired
+    private LdapPersonService ldapPersonService;
 
     private String ifHsaThenFormat(String that) {
         if (that.equals("SE2321000131-E000000000001")) {
@@ -973,12 +978,22 @@ public class IFeedViewerController {
 
         for (String s : doc.keySet()) {
             Object value = ifHsaThenFormat(doc.get(s));
+            if (value == null || value.toString().trim().equals("") || value.toString().trim().equals("[]")) {
+                doc.remove(s);
+                continue;
+            }
             value = DateFormatter.formatTextDate(String.valueOf(value));
             if (value != null)
                 if (value.toString().startsWith("[")) {
                     value = value.toString().replace("[", "").replace("]", "");
                 }
             doc.put(s, value);
+        }
+
+        if ("1".equals(doc.get("vgr:VgrExtension.vgr:SecurityClass") + "")) {
+            doc.put("vgr:VgrExtension.vgr:SecurityClass", "Inom regionen");
+        } else if ("2".equals(doc.get("vgr:VgrExtension.vgr:SecurityClass") + "")) {
+            doc.put("vgr:VgrExtension.vgr:SecurityClass", "Internet");
         }
 
         formatAnyHyperLinks(doc);
@@ -1005,6 +1020,44 @@ public class IFeedViewerController {
             root.initForMaxView(doc);
             // dc.type.document.structure = [Styrande dokument]
             if (isGoverning(doc)) {
+                List<KeyLabel> pairs = new ArrayList<>();
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:Title", "Titel"));
+                pairs.add(new KeyLabel("core:ArchivalObject.core:Description", "Beskrivning"));
+                pairs.add(new KeyLabel("core:ArchivalObject.core:Producer", "Myndighet"));
+                pairs.add(new KeyLabel("core:ArchivalObject.core:Classification.core:Classification.name", "Klassificeringsstruktur (process)"));
+                pairs.add(new KeyLabel("core:ArchivalObject.core:ObjectType", "Handlingstyp"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:PublishedForUnit.id", "Upprättat för enhet"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidityArea", "Giltighetsområde"));
+                pairs.add(new KeyLabel("vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning"));
+                pairs.add(new KeyLabel("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:Source.id", "DokumentId källa"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:SourceSystem", "Källsystem"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:CreatedByUnit.id", "Upprättat av enhet"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:CreatedBy.id", "Upprättat av (person)"));
+                pairs.add(new KeyLabel("core:ArchivalObject.core:CreatedDateTime", "Upprättat datum"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidFrom", "Giltig från"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltig till"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:AvailableFrom", "Tillgänglig f o m"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig t o m"));
+                pairs.add(new KeyLabel("vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt"));
+                // pairs.add(new KeyLabel("vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code", "SweMesh")); // Specialare!
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code", "Verksamhetskod enligt HSA"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible.role", "Innehållsansvarig, roll"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:DocumentApproved.name", "Godkänt av"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:DocumentApproved.role", "Godkänt av, roll"));
+                pairs.add(new KeyLabel("version", "Version"));
+
+                pairs.add(new KeyLabel("url", "Länk för webben"));
+                pairs.add(new KeyLabel("originalDownloadLatestVersionUrl", "Länk för webben (orginalformat)"));
+
+                pairs.add(new KeyLabel("vgrsy:DomainExtension.vgrsy:SiteInfo.name", "Ursprunglig samarbetsyta"));
+
+
+                model.addAttribute("meta", pairs);
+
                 return "documentDetailsGovDocs";
             } else if (doc.containsKey("vgr:VgrExtension.vgr:SourceSystem.id")) {
                 // SOFIA thing.
@@ -1047,6 +1100,54 @@ public class IFeedViewerController {
             return "documentDetails";
         }
         // return "documentDetails";
+    }
+
+    public static class KeyLabel {
+        private String key, label;
+
+        public KeyLabel(String key, String label) {
+            this.key = key;
+            this.label = label;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+    }
+
+    void completeVgrId(Map<String, Object> doc) {
+        List<FieldInf> fields = iFeedService.getFieldInfs();
+        Map<String, FieldInf> mappedFields = new HashMap<>();
+        fields.forEach(f -> f.visit(item -> mappedFields.put(item.getId(), item)));
+        for (String key : doc.keySet()) {
+            String value = (String) doc.get(key);
+            if (value != null && !"".equals(value.trim()) && mappedFields.containsKey(key)) {
+                FieldInf field = mappedFields.get(key);
+                if (field != null) {
+                    if ("d:ldap_value".equals(field.getType())) {
+                        System.out.println("Hittade d:ldap_value");
+                        List<Person> result = ldapPersonService.getPeople(value, 1);
+                        if (result.size() == 1) {
+                            System.out.println("Hittade för " + key + " " + value);
+                            doc.put(key, result.get(0).getNiceName());
+                            System.out.println(" " + doc.get(key));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static boolean isGoverning(Map<String, Object> doc) {

@@ -38,6 +38,7 @@ import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
 import javax.annotation.PostConstruct;
+import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
@@ -52,6 +53,8 @@ import javax.faces.model.SelectItemGroup;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.lang.ref.WeakReference;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1634,6 +1637,26 @@ public class Application {
             return "";
         }
         return fromThat.replaceAll("[^a-ö0-9]", "-");
+    }
+
+    @Deprecated
+    public String getApplicationUri() {
+        try {
+            FacesContext ctxt = FacesContext.getCurrentInstance();
+            ExternalContext ext = ctxt.getExternalContext();
+            URI uri = new URI(ext.getRequestScheme(),
+                    null, ext.getRequestServerName(), ext.getRequestServerPort(),
+                    ext.getRequestContextPath(), null, null);
+            return uri.toASCIIString();
+        } catch (URISyntaxException e) {
+            throw new FacesException(e);
+        }
+    }
+
+    public String getHost() {
+        FacesContext ctxt = FacesContext.getCurrentInstance();
+        ExternalContext ext = ctxt.getExternalContext();
+        return ext.getRequestServerName();
     }
 
 }

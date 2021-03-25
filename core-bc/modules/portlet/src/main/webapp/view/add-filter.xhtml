@@ -12,12 +12,12 @@
                 <span style="font-weight: bold; top: 2px; position: relative;">
                     Från källsystem:
                 </span>
-                <h:selectOneMenu value="#{app.selectedFieldInfRootName}" style="float: right;" valueChangeListener="#{app.onSelectedFieldInfRootNameChange}">
+                <h:selectOneMenu value="#{app.selectedFieldInfRootName}" style="float: right;"
+                                 valueChangeListener="#{app.onSelectedFieldInfRootNameChange}">
                     <f:selectItems value="#{app.getFilters()}" var="c"
                                    itemLabel="#{c.name}" itemValue="#{c.name}"/>
                     <p:ajax update="add_ifeed_filters"/>
                     <f:ajax render="@form" onevent="refreshResults()"/>
-                    <!--<p:ajax update="getFiltersAsListRepeat" immediate="true" />-->
                 </h:selectOneMenu>
             </div>
             <hr></hr>
@@ -54,10 +54,14 @@
                                                        onclick="refreshResults()"
                                                        action="#{app.setNewFilter(child)}">
                                             <f:ajax render="@form" onevent="refreshResults()"/>
+
                                             <span title="#{child.help}" class="ifeed-filter-add">
-                                                <span style="display: none;">#{child.id}</span>
+
                                             </span>
                                         </h:commandLink>
+                                        <div style="#{app.getHost().equals('localhost') ? '' : 'display: none;'}">
+                                                (#{child.id})
+                                        </div>
                                     </td>
                                 </tr>
                             </ui:fragment>

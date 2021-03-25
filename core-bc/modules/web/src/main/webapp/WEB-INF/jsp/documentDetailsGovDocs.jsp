@@ -132,16 +132,34 @@
         <table class="ifeed-metadata-table" style="text-decoration: none;">
             <thead><tr><td colspan="2">Dokumentegenskaper</td></tr></thead>
             <tbody>
-                        <c:if test="${not empty item['vgr:VgrExtension.vgr:Title']}">
-                <tr><td class="key">Titel</td><td class="value">${item['vgr:VgrExtension.vgr:Title']}</td></tr>
-            </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:Description']}">
+
+            <c:forEach items="${meta}" var="m">
+                <c:if test="${item[m.key] != null}">
+                    <tr><td class="key">${m.label}</td><td class="value">${item[m.key]}</td></tr>
+                </c:if>
+            </c:forEach>
+
+            <%--
+                        <c:if test="${not empty item['core:ArchivalObject.core:Description']}">
                 <tr><td class="key">Beskrivning</td><td class="value">${item['core:ArchivalObject.core:Description']}</td></tr>
-            </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:Producer.idType']}">
-                <tr><td class="key">Myndighet</td><td class="value">${item['core:ArchivalObject.core:Producer.idType']}</td></tr>
-            </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:Classification.core:Classification.classCode']}">
-                <tr><td class="key">Klassificeringsstruktur (process)</td><td class="value">${item['core:ArchivalObject.core:Classification.core:Classification.classCode']}</td></tr>
-            </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:ObjectType.filePlan']}">
-                <tr><td class="key">Handlingstyp</td><td class="value">${item['core:ArchivalObject.core:ObjectType.filePlan']}</td></tr>
+            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:AvailableFrom']}">
+                <tr><td class="key">Tillgänglig f o m</td><td class="value">${item['vgr:VgrExtension.vgr:AvailableFrom']}</td></tr>
+            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:AvailableTo']}">
+                <tr><td class="key">Tillgänglig t o m</td><td class="value">${item['vgr:VgrExtension.vgr:AvailableTo']}</td></tr>
+            </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:CreatedDateTime']}">
+                <tr><td class="key">Upprättat datum</td><td class="value">${item['core:ArchivalObject.core:CreatedDateTime']}</td></tr>
+            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:SecurityClass']}">
+                <tr><td class="key">Åtkomsträtt</td><td class="value">${item['vgr:VgrExtension.vgr:SecurityClass']}</td></tr>
+            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:SourceSystem.id']}">
+                <tr><td class="key">DokumentId källa</td><td class="value">${item['vgr:VgrExtension.vgr:SourceSystem.id']}</td></tr>
+            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:Title']}">
+                <tr><td class="key">Titel</td><td class="value">${item['vgr:VgrExtension.vgr:Title']}</td></tr>
+            </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:Producer']}">
+                <tr><td class="key">Myndighet</td><td class="value">${item['core:ArchivalObject.core:Producer']}</td></tr>
+            </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:Classification.core:Classification.name']}">
+                <tr><td class="key">Klassificeringsstruktur (process)</td><td class="value">${item['core:ArchivalObject.core:Classification.core:Classification.name']}</td></tr>
+            </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:ObjectType']}">
+                <tr><td class="key">Handlingstyp</td><td class="value">${item['core:ArchivalObject.core:ObjectType']}</td></tr>
             </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:PublishedForUnit.id']}">
                 <tr><td class="key">Upprättat för enhet</td><td class="value">${item['vgr:VgrExtension.vgr:PublishedForUnit.id']}</td></tr>
             </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:ValidityArea']}">
@@ -153,45 +171,25 @@
             </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:Tag']}">
                 <tr><td class="key">Företagsnyckelord</td><td class="value">${item['vgr:VgrExtension.vgr:Tag']}</td></tr>
             </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:SourceSystem.id']}">
-                <tr><td class="key">DokumentId källa</td><td class="value">${item['vgr:VgrExtension.vgr:SourceSystem.id']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:SourceSystem.id']}">
                 <tr><td class="key">Källsystem</td><td class="value">${item['vgr:VgrExtension.vgr:SourceSystem.id']}</td></tr>
+            </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code']}">
+                <tr><td class="key">Verksamhetskod enligt HSA</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code']}</td></tr>
+            </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code']}">
+                <tr><td class="key">SweMesh</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code']}</td></tr>
             </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:CreatedByUnit.id']}">
                 <tr><td class="key">Upprättat av enhet</td><td class="value">${item['vgr:VgrExtension.vgr:CreatedByUnit.id']}</td></tr>
             </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:CreatedBy.id']}">
                 <tr><td class="key">Upprättat av (person)</td><td class="value">${item['vgr:VgrExtension.vgr:CreatedBy.id']}</td></tr>
+            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:SecurityClass']}">
+                <tr><td class="key">Åtkomsträtt</td><td class="value">${item['vgr:VgrExtension.vgr:SecurityClass']}</td></tr>
             </c:if>            <c:if test="${not empty item['core:ArchivalObject.core:CreatedDateTime']}">
                 <tr><td class="key">Upprättat datum</td><td class="value">${item['core:ArchivalObject.core:CreatedDateTime']}</td></tr>
             </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:ValidFrom']}">
                 <tr><td class="key">Giltig från</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:ValidFrom']}</td></tr>
             </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:ValidTo']}">
                 <tr><td class="key">Giltig till</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:ValidTo']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:AvailableFrom']}">
-                <tr><td class="key">Tillgänglig f o m</td><td class="value">${item['vgr:VgrExtension.vgr:AvailableFrom']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:AvailableTo']}">
-                <tr><td class="key">Tillgänglig t o m</td><td class="value">${item['vgr:VgrExtension.vgr:AvailableTo']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgr:VgrExtension.vgr:SecurityClass']}">
-                <tr><td class="key">Åtkomsträtt</td><td class="value">${item['vgr:VgrExtension.vgr:SecurityClass']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code']}">
-                <tr><td class="key">Verksamhetskod enligt HSA</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code']}">
-                <tr><td class="key">SweMesh</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:ContentResponsible.compRole']}">
-                <tr><td class="key">Innehållsansvarig</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:ContentResponsible.compRole']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:ContentResponsibleRole']}">
-                <tr><td class="key">Innehållsansvarig, roll</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:ContentResponsibleRole']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:DocumentApproved.id']}">
-                <tr><td class="key">Godkänt av</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:DocumentApproved.id']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgrsd:DomainExtension.vgrsd:DocumentApproved.id']}">
-                <tr><td class="key">Godkänt av, roll</td><td class="value">${item['vgrsd:DomainExtension.vgrsd:DocumentApproved.id']}</td></tr>
-            </c:if>            <c:if test="${not empty item['url']}">
-                <tr><td class="key">Länk för webben</td><td class="value">${item['url']}</td></tr>
-            </c:if>            <c:if test="${not empty item['originalDownloadLatestVersionUrl']}">
-                <tr><td class="key">Länk för webben (orginalformat)</td><td class="value">${item['originalDownloadLatestVersionUrl']}</td></tr>
-            </c:if>            <c:if test="${not empty item['vgrsy:SiteInfo']}">
-                <tr><td class="key">Ursprunglig samarbetsyta</td><td class="value">${item['vgrsy:SiteInfo']}</td></tr>
             </c:if>
-            </tbody>
+            --%></tbody>
         </table>
     </div>
 

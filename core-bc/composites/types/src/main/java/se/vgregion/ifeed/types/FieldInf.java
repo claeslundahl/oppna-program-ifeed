@@ -37,6 +37,8 @@ public class FieldInf implements Serializable {
 
     private Set<IFeedFilter> defaultFilters;
 
+    private String queryPrefix;
+
     public String getId() {
         return id;
     }
@@ -397,6 +399,14 @@ public class FieldInf implements Serializable {
 
     public void setDefaultFilters(Set<IFeedFilter> defaultFilters) {
         this.defaultFilters = defaultFilters;
+    }
+
+    public String getQueryPrefix() {
+        return queryPrefix;
+    }
+
+    public void setQueryPrefix(String queryPrefix) {
+        this.queryPrefix = queryPrefix;
     }
 
     public interface Visitor {

@@ -1616,6 +1616,20 @@ public class Application {
         }
     }
 
+    public boolean isFilter(IFeedFilter iff) {
+        final MutableBoolean result = new MutableBoolean(false);
+        for (FieldInf fi : filters) {
+            fi.visit(item -> {
+                if (iff.getFilterKey().equals(item.getId())) {
+                    if (item.isFilter()) {
+                        result.setValue(true);
+                    }
+                }
+            });
+        }
+        return result.isTrue();
+    }
+
     private static boolean isKeyAndQueryEquals(IFeedFilter f1, IFeedFilter f2) {
         return f1.getFilterKey().equals(f2.getFilterKey()) && f1.getFilterQuery().equals(f2.getFilterQuery());
     }

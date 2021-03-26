@@ -1024,7 +1024,13 @@ public class IFeedViewerController {
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:Title", "Titel"));
                 pairs.add(new KeyLabel("core:ArchivalObject.core:Description", "Beskrivning"));
                 pairs.add(new KeyLabel("core:ArchivalObject.core:Producer", "Myndighet"));
+
                 pairs.add(new KeyLabel("core:ArchivalObject.core:Classification.core:Classification.name", "Klassificeringsstruktur (process)"));
+
+                ifHavingValueChangeThat(doc, "core:ArchivalObject.core:Classification.core:Classification.name",
+                        doc.get("core:ArchivalObject.core:Classification.core:Classification.classCode"), " ",
+                        doc.get("core:ArchivalObject.core:Classification.core:Classification.name"));
+
                 pairs.add(new KeyLabel("core:ArchivalObject.core:ObjectType", "Handlingstyp"));
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:PublishedForUnit.id", "Upprättat för enhet"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidityArea", "Giltighetsområde"));
@@ -1034,7 +1040,12 @@ public class IFeedViewerController {
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:Source.id", "DokumentId källa"));
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:SourceSystem", "Källsystem"));
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:CreatedByUnit.id", "Upprättat av enhet"));
+
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:CreatedBy.id", "Upprättat av (person)"));
+                ifHavingValueChangeThat(doc, "vgr:VgrExtension.vgr:CreatedBy.id",
+                        doc.get("vgr:VgrExtension.vgr:CreatedBy"), " ",
+                        "(" + doc.get("vgr:VgrExtension.vgr:CreatedBy.id") + ")");
+
                 pairs.add(new KeyLabel("core:ArchivalObject.core:CreatedDateTime", "Upprättat datum"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidFrom", "Giltig från"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltig till"));
@@ -1047,6 +1058,11 @@ public class IFeedViewerController {
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible.role", "Innehållsansvarig, roll"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:DocumentApproved.name", "Godkänt av"));
+
+                ifHavingValueChangeThat(doc, "vgrsd:DomainExtension.vgrsd:DocumentApproved.name",
+                        doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.name"), " (",
+                        doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.id"), ")");
+
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:DocumentApproved.role", "Godkänt av, roll"));
                 pairs.add(new KeyLabel("version", "Version"));
 
@@ -1100,6 +1116,18 @@ public class IFeedViewerController {
             return "documentDetails";
         }
         // return "documentDetails";
+    }
+
+    private static void ifHavingValueChangeThat(Map<String, Object> valueInHere, String withKey, Object... toThese) {
+        if (!valueInHere.containsKey(withKey)) {
+            return;
+        }
+        Object oldValue = valueInHere.get(withKey);
+        if (oldValue == null || oldValue.toString().trim().equals("") || oldValue.toString().trim().equals("[]")) {
+            return;
+        }
+        String nv = String.join("", Arrays.stream(toThese).map(thing -> thing + "").collect(Collectors.toList()));
+        valueInHere.put(withKey, nv);
     }
 
     public static class KeyLabel {

@@ -142,7 +142,7 @@ public class FieldsInfTest {
             System.out.println(heading);
             for (FieldInf child : row.getChildren()) {
                 // result.add(new LabelledValue("core:ArchivalObject.idType", "N/A"));
-                if (child.isInHtmlView()) {
+                if (child.getInHtmlView()) {
                     String signature = String.format(template, child.getId(), child.getName());
                     System.out.println(signature);
                 }

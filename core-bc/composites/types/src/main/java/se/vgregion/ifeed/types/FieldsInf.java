@@ -137,7 +137,7 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
                 }
             }
 
-            if (fi.isLabel()) {
+            if (fi.getLabel()) {
                 nestedResult = fi.getChildren();
                 result.add(fi);
             } else {

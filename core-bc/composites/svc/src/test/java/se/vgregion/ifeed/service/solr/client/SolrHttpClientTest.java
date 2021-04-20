@@ -29,6 +29,17 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
+
+        Map<String, Set<Object>> all = client.findAllValues();
+        Set<Object> hmm = all.get("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path");
+        for (Object o : hmm) {
+            System.out.println(o);
+        }
+
+        for (String key : all.keySet()) {
+            System.out.println(key + " = " + all.get(key));
+        }
+
         /*IFeedFilter filter = new IFeedFilter("*test*", "title");
 
         SolrHttpClient oldStage = new SolrHttpClient("http://vgas2192.vgregion.se:9090/solr/ifeed/");
@@ -38,7 +49,7 @@ public class SolrHttpClientTest {
         Result r2 = newStage.query(filter.toQuery(client.fetchFields()), 0, 100, "asc", null);
         System.out.println(r2.getResponse().getDocs().size());*/
 
-        Map<String, Set<Object>> allValues = client.findAllValues();
+        /*Map<String, Set<Object>> allValues = client.findAllValues();
         for (String key : allValues.keySet()) {
             Set<Object> values = allValues.get(key);
             for (Object value : values) {
@@ -47,7 +58,7 @@ public class SolrHttpClientTest {
                     return;
                 }
             }
-        }
+        }*/
     }
 
     static String enc() throws MalformedURLException, URISyntaxException {

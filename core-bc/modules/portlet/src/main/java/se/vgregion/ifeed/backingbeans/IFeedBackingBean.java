@@ -8,14 +8,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
+import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.repository.UserRepository;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.types.CachedUser;
-import se.vgregion.ifeed.types.Config;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.FieldsInf;
-import se.vgregion.ifeed.types.IFeed;
+import se.vgregion.ifeed.service.ifeed.ObjectRepo;
+import se.vgregion.ifeed.types.*;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
@@ -25,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Monica on 2014-03-25.
@@ -311,9 +308,38 @@ public class IFeedBackingBean implements Serializable {
 //        return resourceLocalService;
 //    }
 
+    @Autowired
+    private ObjectRepo objectRepo;
+
+    @Transactional
     public void saveFieldInfString() {
         FieldsInf inf = new FieldsInf();
         inf.setText(fieldInfString);
+        List<FieldInf> fields = inf.getFieldInfs();
+        for (FieldInf field : fields) {
+            if (field.getDefaultFilters() != null)
+                for (DefaultFilter df : field.getDefaultFilters()) {
+                    if (df.getId() != null && objectRepo.findByPrimaryKey(DefaultFilter.class, df.getId()) == null)
+                        df.setId(null);
+                    if (df.getId() == null) {
+                        objectRepo.persist(df);
+                    } else {
+                        objectRepo.merge(df);
+                    }
+                }
+
+            if (field.getPk() != null && objectRepo.findByPrimaryKey(FieldInf.class, field.getPk()) == null)
+                field.setPk(null);
+            if (field.getPk() != null) {
+                objectRepo.merge(field);
+            } else {
+                objectRepo.persist(field);
+            }
+        }
+
+        fieldInfString = Json.toJson(fields);
+        inf.setText(fieldInfString);
+
         FieldsInf latest = getLatestFieldInf();
         if (latest != null) {
             inf.setVersion(getLatestFieldInf().getVersion() + 1);
@@ -347,7 +373,7 @@ public class IFeedBackingBean implements Serializable {
         if (f == null) {
             fieldInfString = "";
         } else {
-            fieldInfString = f.getText();
+            fieldInfString = Json.toJson(f.getFieldInfs()); /*f.getText();*/
         }
         return fieldInfString;
     }

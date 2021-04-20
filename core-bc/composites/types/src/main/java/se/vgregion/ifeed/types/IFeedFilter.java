@@ -1,7 +1,10 @@
 package se.vgregion.ifeed.types;
 
 import com.google.gson.annotations.Expose;
+import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+import se.vgregion.ifeed.types.util.Junctor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,15 +12,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
-
-import org.hibernate.annotations.ForeignKey;
-import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
-import se.vgregion.ifeed.types.util.Junctor;
 
 @Entity
 @Table(name = "vgr_ifeed_filter")
-public final class IFeedFilter extends AbstractEntity<Long> implements Serializable {
+public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -33,7 +32,8 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
     @Column
     private String operator = "matching";
 
-    @Transient
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "field_inf_pk")
     private FieldInf fieldInf;
 
     @Transient
@@ -45,13 +45,13 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ifeed_id")
-    @ForeignKey(name = "fk_ifeed_filter_ifeed")
+    /*@ForeignKey(name = "fk_ifeed_filter_ifeed")*/
     @Expose(serialize = false, deserialize = true)
     private IFeed feed;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    @ForeignKey(name = "fk_ifeed_filter_parent")
+    /*@ForeignKey(name = "fk_ifeed_filter_parent")*/
     @Expose(serialize = false, deserialize = true)
     private IFeedFilter parent;
 
@@ -177,41 +177,53 @@ public final class IFeedFilter extends AbstractEntity<Long> implements Serializa
         return "";
     }
 
+    static String toEmptyIfNull(String s) {
+        if (s == null) {
+            return "";
+        }
+        return s;
+    }
+
     public String toQuery(List<Field> meta) {
-        if (this.children.isEmpty()) {
+        String valueToLookFor = toEmptyIfNull((getFieldInf() != null) ? getFieldInf().getQueryPrefix() : "") + filterQuery;
+        return toQueryImp(meta, children, operator, filterKey, valueToLookFor);
+    }
+
+    public static String toQueryImp(List<Field> meta, List<IFeedFilter> children, String operator, String filterKey, String filterQuery) {
+        if (children.isEmpty()) {
             boolean isMatchingDate = false;
-            if (this.operator == null || this.operator.equals("matching") || this.operator.isEmpty()) {
+            if (operator == null || operator.equals("matching") || operator.isEmpty()) {
                 if (meta != null) {
-                    Field field = meta.stream().filter(f -> f.getName().equals(this.filterKey)).findAny().orElse(null);
+                    Field field = meta.stream().filter(f -> f.getName().equals(filterKey)).findAny().orElse(null);
                     if (field != null) {
-                        String type = ((Field) meta.stream().filter(f -> f.getName().equals(this.filterKey)).findAny().orElse(null)).getType();
+                        String type = ((Field) meta.stream().filter(f -> f.getName().equals(filterKey)).findAny().orElse(null)).getType();
                         if (type != null && type.equals("tdate"))
                             isMatchingDate = true;
                     }
                 }
                 if (isMatchingDate) {
-                    String textDate = escapeValue(this.filterKey, this.filterQuery, this.operator);
-                    return escapeFieldName(this.filterKey) + ":[" + textDate + "T00:00:00Z TO " + textDate + "T23:59:59Z]";
+                    String textDate = escapeValue(filterKey, filterQuery, operator);
+                    return escapeFieldName(filterKey) + ":[" + textDate + "T00:00:00Z TO " + textDate + "T23:59:59Z]";
                 }
-                return escapeFieldName(this.filterKey) + ":" + escapeValue(this.filterKey, this.filterQuery, this.operator);
+                return escapeFieldName(filterKey) + ":" + escapeValue(filterKey, filterQuery, operator);
             }
-            if (this.operator.equals("greater"))
-                return escapeFieldName(this.filterKey) + ":[" +
-                        addZeroTimeToDateWhenApplicable(meta, this.filterKey, escapeValue(this.filterKey, this.filterQuery, this.operator)) + " TO *]";
-            if (this.operator.equals("lesser"))
-                return escapeFieldName(this.filterKey) + ":[* TO " +
-                        addZeroTimeToDateWhenApplicable(meta, this.filterKey, escapeValue(this.filterKey, this.filterQuery, this.operator)) + "]";
+            if (operator.equals("greater"))
+                return escapeFieldName(filterKey) + ":[" +
+                        addZeroTimeToDateWhenApplicable(meta, filterKey, escapeValue(filterKey, filterQuery, operator)) + " TO *]";
+            if (operator.equals("lesser"))
+                return escapeFieldName(filterKey) + ":[* TO " +
+                        addZeroTimeToDateWhenApplicable(meta, filterKey, escapeValue(filterKey, filterQuery, operator)) + "]";
         } else {
-            String o = this.operator.equalsIgnoreCase("and") ? " AND " : " OR ";
+            String o = operator.equalsIgnoreCase("and") ? " AND " : " OR ";
             Junctor ls = new Junctor(o);
-            for (IFeedFilter child : this.children)
+            for (IFeedFilter child : children)
                 ls.add(child.toQuery(meta));
             return ls.toQuery();
         }
         return "";
     }
 
-    private String addZeroTimeToDateWhenApplicable(List<Field> meta, String key, String initialValue) {
+    private static String addZeroTimeToDateWhenApplicable(List<Field> meta, String key, String initialValue) {
         if (initialValue == null || meta == null)
             return initialValue;
         Field field = meta.stream().filter(f -> f.getName().equals(key)).findFirst().orElse(null);

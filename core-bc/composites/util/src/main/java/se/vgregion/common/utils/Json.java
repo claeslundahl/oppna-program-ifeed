@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Json {
 
-    private static Gson gson = new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
+    private static Gson gson = new GsonBuilder().setPrettyPrinting().addSerializationExclusionStrategy(new ExclusionStrategy() {
         @Override
         public boolean shouldSkipField(FieldAttributes f) {
             Expose expose = f.getAnnotation(Expose.class);
@@ -42,7 +42,21 @@ public class Json {
     }).setDateFormat("yyyy-MM-dd HH:mm:ss SSS").create();
 
     public static String toJson(Object obj) {
-        return gson.toJson(obj);
+        try {
+            return gson.toJson(obj);
+        } catch (Exception e) {
+            System.out.println("Trubble with " + obj.getClass().getName());
+            e.printStackTrace();
+            System.out.println();
+            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+            for (StackTraceElement stackTraceElement : stackTraceElements) {
+                System.out.println(stackTraceElement.getClassName());
+                System.out.println(stackTraceElement.getMethodName());
+                System.out.println(stackTraceElement.getLineNumber());
+            }
+            System.out.println("Tjoho");
+            return "error-in-to-json";
+        }
     }
 
     public static <T> T toObject(Class<T> clazz, String json) {

@@ -151,7 +151,7 @@ public class TableDefModel extends DynamicTableDef {
     }
 
     private static boolean isOkToUseInWebScript(FieldInf fi) {
-        return fi.isInHtmlView() && fi.getId() != null && !fi.getId().trim().equals("");
+        return fi.getInHtmlView() && fi.getId() != null && !fi.getId().trim().equals("");
     }
 
     public void createExtraSortColumn() {

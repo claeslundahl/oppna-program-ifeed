@@ -18,7 +18,6 @@ import se.vgregion.common.utils.BeanMap;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.Note;
-import se.vgregion.ldap.VgrOrganization;
 import se.vgregion.ifeed.repository.UserRepository;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
@@ -34,6 +33,7 @@ import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.shared.DynamicTableSortingDef;
 import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapSupportService;
+import se.vgregion.ldap.VgrOrganization;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
@@ -162,7 +162,7 @@ public class Application {
     }
 
     private static void cleanFieldsNotFilters(List<FieldInf> filters) {
-        filters.removeIf(next -> !next.isFilter());
+        filters.removeIf(next -> next.getFilter() == null || !next.getFilter());
     }
 
     public static String urlToPostForm(String url, String id) {
@@ -777,12 +777,18 @@ public class Application {
     public List<String> newFilterSuggestion(String value) {
         try {
             final Set<IFeedFilter> presentFilters = new HashSet<IFeedFilter>(iFeedModelBean.getFilters());
-            IFeedFilter currentDraft = new IFeedFilter(value + "*", newFilter.getId());
+            IFeedFilter currentDraft = new IFeedFilter(
+                    (newFilter.getQueryPrefix() != null ? newFilter.getQueryPrefix() : "") + value + "*",
+                    newFilter.getId()
+            );
             presentFilters.add(currentDraft);
             IFeed feed = new IFeed();
             feed.getFilters().addAll(presentFilters);
 
             List<String> result = iFeedService.fetchFilterSuggestion(feed, newFilter.getId(), value + "*");
+            if (newFilter.getQueryPrefix() != null) {
+                result = result.stream().map(r -> r.substring(newFilter.getQueryPrefix().length())).collect(Collectors.toList());
+            }
             System.out.println(result);
             return result;
         } catch (Exception e) {
@@ -886,7 +892,7 @@ public class Application {
     public List<SelectItem> getRootFieldInfs() {
         List<SelectItem> result = new ArrayList<>();
         for (FieldInf fi : getFilters()) {
-            if (fi.getParent() != null && fi.getParent().isFilter()) {
+            if (fi.getParent() != null && fi.getParent().getFilter()) {
                 result.add(new SelectItem(fi.getId(), fi.getName()));
             }
 
@@ -903,7 +909,7 @@ public class Application {
 
         int hits = 0;
         for (FieldInf field : fields) {
-            if (field.isFilter()) {
+            if (field.getFilter()) {
                 final MutableBoolean hit = new MutableBoolean(false);
                 field.visit(item -> {
                     if (allFilterKeys.contains(item.getId())) {
@@ -964,7 +970,7 @@ public class Application {
                 List<FieldInf> items = new ArrayList<>();
 
                 for (FieldInf grandChild : child.getChildren()) {
-                    if (grandChild.isFilter()) {
+                    if (grandChild.getFilter()) {
                         items.add(grandChild.toDetachedCopy());
                         if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
                             found = true;
@@ -1015,7 +1021,7 @@ public class Application {
                 List<FieldInf> items = new ArrayList<>();
 
                 for (FieldInf grandChild : child.getChildren()) {
-                    if (grandChild.isInHtmlView()) {
+                    if (grandChild.getInHtmlView()) {
                         items.add(grandChild.toDetachedCopy());
                         if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
                             found = true;
@@ -1058,7 +1064,7 @@ public class Application {
         };
 
         for (FieldInf fieldInf : fromThese) {
-            if (fieldInf.isFilter()) {
+            if (fieldInf.getFilter()) {
                 fieldInf.visit(item -> {
                     if (item.getId() != null && !item.getId().trim().isEmpty() && !item.getCounterparts().isEmpty()) {
                         id2fields.get(toAllFieldsSet(item)).add(item);
@@ -1117,7 +1123,7 @@ public class Application {
                 List<SelectItem> items = new ArrayList<SelectItem>();
 
                 for (FieldInf grandChild : child.getChildren()) {
-                    if (grandChild.isInHtmlView()) {
+                    if (grandChild.getInHtmlView()) {
                         if (!blackList.contains(grandChild.getId())) {
                             items.add(new SelectItem(grandChild.getId(), grandChild.getName()));
                         }
@@ -1145,7 +1151,7 @@ public class Application {
             List<FieldInf> children = new ArrayList<FieldInf>(baseItem.getChildren());
             for (int i = children.size() - 1; i >= 0; i--) {
                 FieldInf childItem = children.get(i);
-                if (!childItem.isInHtmlView()) {
+                if (!childItem.getInHtmlView()) {
                     baseItem.getChildren().remove(i);
                 }
             }
@@ -1579,32 +1585,35 @@ public class Application {
 
     public void onSelectedFieldInfRootNameChange(ValueChangeEvent e) {
         FieldInf item = getFiltersMap().get(e.getNewValue());
-        System.out.println("onSelectedFieldInfRootNameChange");
+        /*System.out.println("onSelectedFieldInfRootNameChange");
         System.out.println(gson.toJson(e));
         System.out.println(
                 gson.toJson(item.getDefaultFilters())
-        );
+        );*/
         if (item != null && item.getDefaultFilters() != null) {
-            getIFeedModelBean().getFilters().addAll(item.getDefaultFilters());
+            List<IFeedFilter> dfs = item.getDefaultFilters().stream().map(i -> i.toFilter()).collect(Collectors.toList());
+            getIFeedModelBean().getFilters().addAll(dfs);
             /*getIFeedModelBean().setFilters(new HashSet<>(
                     getIFeedModelBean().getFilters()
             ));*/
-            getIFeedModelBean().getFiltersAsList().addAll(item.getDefaultFilters());
+            getIFeedModelBean().getFiltersAsList().addAll(dfs);
             System.out.println("ListCount: " + getIFeedModelBean().getFiltersAsList().size());
             System.out.println("SetCount: " + getIFeedModelBean().getFilters().size());
             //b FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(":filtersList");
         }
         if (e.getOldValue() != null && !e.getOldValue().toString().trim().equals("")) {
             item = getFiltersMap().get(e.getOldValue());
-            if (item != null && item.getDefaultFilters() != null)
-                for (IFeedFilter df : item.getDefaultFilters()) {
-                    for (IFeedFilter filterInBean : iFeedModelBean.getFilters()) {
+            if (item != null && item.getDefaultFilters() != null) {
+                List<IFeedFilter> dfs = item.getDefaultFilters().stream().map(i -> i.toFilter()).collect(Collectors.toList());
+                for (IFeedFilter df : dfs) {
+                    for (IFeedFilter filterInBean : new ArrayList<>(iFeedModelBean.getFilters())) {
                         if (isKeyAndQueryEquals(df, filterInBean)) {
                             iFeedModelBean.getFilters().remove(filterInBean);
                             iFeedModelBean.getFiltersAsList().remove(filterInBean);
                         }
                     }
                 }
+            }
 
             /*for (IFeedFilter filter : new ArrayList<IFeedFilter>(iFeedModelBean.getFilters())) {
                 if (filter.getFilterKey().equals(e.getOldValue()) && filter.getFilterKey().equals(e.getOldValue())) {
@@ -1621,7 +1630,7 @@ public class Application {
         for (FieldInf fi : filters) {
             fi.visit(item -> {
                 if (iff.getFilterKey().equals(item.getId())) {
-                    if (item.isFilter()) {
+                    if (item.getFilter()) {
                         result.setValue(true);
                     }
                 }

@@ -2,7 +2,6 @@ package se.vgregion.ifeed.viewer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javassist.compiler.ast.Pair;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,6 +192,7 @@ public class IFeedViewerController {
             getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, null/*, f*/);
         }
 
+        System.out.println("toJson 123");
         jsonResult.set(gson.toJson(model.asMap().get("result")));
         // return gson.toJson(model.asMap().get("result"));
         return "thisDoesNotMatherItSeems";
@@ -973,10 +973,29 @@ public class IFeedViewerController {
             throw new ResourceNotFoundException();
         }
 
-        Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
-        FieldInf root = new FieldInf(iFeedService.getFieldInfs());
+        final Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
+        List<FieldInf> infs = iFeedService.getFieldInfs();
+        FieldInf root = new FieldInf(infs);
 
-        for (String s : doc.keySet()) {
+        for (FieldInf inf : infs) {
+            inf.visit(item -> {
+                String qp = item.getQueryPrefix();
+                if (qp != null && doc.containsKey(item.getId())) {
+                    Object allValue = doc.get(item.getId());
+                    System.out.println("allValue = " + allValue);
+                    if (allValue instanceof Collection) {
+                        Collection values = (Collection) allValue;
+                        List<String> formatted = (List<String>) values.stream().filter(o -> o.toString().startsWith(qp))
+                                .map(v -> v.toString().substring(qp.length())).collect(Collectors.toList());
+                        String key = item.getId() + " " + item.getQueryPrefix();
+                        doc.put(key, formatted);
+                        System.out.println(key + " = " + formatted);
+                    }
+                }
+            });
+        }
+
+        for (String s : new HashSet<>(doc.keySet())) {
             Object value = ifHsaThenFormat(doc.get(s));
             if (value == null || value.toString().trim().equals("") || value.toString().trim().equals("[]")) {
                 doc.remove(s);
@@ -990,9 +1009,9 @@ public class IFeedViewerController {
             doc.put(s, value);
         }
 
-        if ("1".equals(doc.get("vgr:VgrExtension.vgr:SecurityClass") + "")) {
+        if ("2".equals(doc.get("vgr:VgrExtension.vgr:SecurityClass") + "")) {
             doc.put("vgr:VgrExtension.vgr:SecurityClass", "Inom regionen");
-        } else if ("2".equals(doc.get("vgr:VgrExtension.vgr:SecurityClass") + "")) {
+        } else if ("1".equals(doc.get("vgr:VgrExtension.vgr:SecurityClass") + "")) {
             doc.put("vgr:VgrExtension.vgr:SecurityClass", "Internet");
         }
 
@@ -1053,8 +1072,8 @@ public class IFeedViewerController {
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig t o m"));
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt"));
                 // pairs.add(new KeyLabel("vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt"));
-                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code", "SweMesh")); // Specialare!
-                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code", "Verksamhetskod enligt HSA"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path SweMeSH/", "SweMesh")); // Specialare!
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path Verksamhetskod/", "Verksamhetskod enligt HSA"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible.role", "Innehållsansvarig, roll"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:DocumentApproved.name", "Godkänt av"));
@@ -1153,6 +1172,7 @@ public class IFeedViewerController {
         public void setLabel(String label) {
             this.label = label;
         }
+
     }
 
     void completeVgrId(Map<String, Object> doc) {

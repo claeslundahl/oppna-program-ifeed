@@ -1,14 +1,18 @@
 package se.vgregion.ifeed.types;
 
+import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.StringUtils;
 import se.vgregion.common.utils.BeanMap;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Entity
+@Table(name = "field_inf")
 public class FieldInf implements Serializable {
 
     public FieldInf() {
@@ -21,23 +25,69 @@ public class FieldInf implements Serializable {
         init();
     }
 
-    private int level;
-
-    private String id, name, help, type, apelonKey = "", value;
-
-    private Set<String> counterparts = new HashSet<>();
-
-    private final List<FieldInf> children = new ArrayList<FieldInf>();
-
-    private boolean filter, inHtmlView, expanded, inTooltip;
-
-    private String operator;
-
-    private transient FieldInf parent;
-
-    private Set<IFeedFilter> defaultFilters;
-
+    @Id
+    @GeneratedValue
+    private Long pk;
+    @Column(name = "level")
+    Integer level;
+    @Column(name = "in_tooltip")
+    Boolean inTooltip = false;
+    @Column(name = "apelon_key")
+    String apelonKey;
+    @Column(name = "type")
+    String type;
+    @Column(name = "operator")
+    String operator;
+    @Column(name = "query_prefix")
     private String queryPrefix;
+    @Column(name = "filter")
+    Boolean filter = false;
+    @Column(name = "help")
+    String help;
+    @Column(name = "expanded")
+    Boolean expanded = false;
+    @Column(name = "name")
+    String name;
+    @Column(name = "id")
+    String id;
+    @Column(name = "in_html_view")
+    Boolean inHtmlView = false;
+    @Column(name = "value")
+    String value;
+    @Column(name = "position")
+    private Integer position;
+    @Column(name = "parent_pk", insertable = false, updatable = false)
+    private Long parentPk;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_pk")
+    @Expose(serialize = false, deserialize = true)
+    private FieldInf parent;
+
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OrderBy("position")
+    private List<FieldInf> children = new ArrayList<>();
+
+    @CollectionTable(name = "field_counterpart", joinColumns = @JoinColumn(name = "field_inf_pk"))
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> counterparts;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "field_inf_pk")
+    private Set<DefaultFilter> defaultFilters;
+
+    @OneToMany(mappedBy = "fieldInf", orphanRemoval = false)
+    @Expose(serialize = false)
+    private Set<IFeedFilter> filters;
+
+    @Override
+    public String toString() {
+
+        return FieldInf.class.getSimpleName() + "(" + getId() + ")";
+        /*BeanMap bm = new BeanMap(this);
+        Map<?, ?> outer = new HashMap<Object, Object>(bm);
+        return outer.toString();*/
+    }
 
     public String getId() {
         return id;
@@ -47,47 +97,7 @@ public class FieldInf implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getHelp() {
-        return help;
-    }
-
-    public void setHelp(String help) {
-        this.help = help;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public boolean isFilter() {
-        return filter;
-    }
-
-    public void setFilter(boolean filter) {
-        this.filter = filter;
-    }
-
-    @Override
-    public String toString() {
-        return FieldInf.class.getSimpleName() + "(" + getId() + ")";
-        /*BeanMap bm = new BeanMap(this);
-        Map<?, ?> outer = new HashMap<Object, Object>(bm);
-        return outer.toString();*/
-    }
-
-    public boolean isLabel() {
+    public Boolean getLabel() {
         return (isBlanc(id) && !isBlanc(name));
     }
 
@@ -107,7 +117,8 @@ public class FieldInf implements Serializable {
         this.apelonKey = apelonKey;
     }
 
-    public boolean isInHtmlView() {
+    public Boolean getInHtmlView() {
+        if (inHtmlView == null) return false;
         return inHtmlView;
     }
 
@@ -115,8 +126,12 @@ public class FieldInf implements Serializable {
         this.inHtmlView = inHtmlView;
     }
 
-    public boolean isExpanded() {
+    public Boolean getExpanded() {
         return expanded;
+    }
+
+    public boolean isExpanded() {
+        return expanded != null && expanded;
     }
 
     public void setExpanded(boolean expanded) {
@@ -154,7 +169,7 @@ public class FieldInf implements Serializable {
         }
     }
 
-    public boolean isInTooltip() {
+    public Boolean getInTooltip() {
         return inTooltip;
     }
 
@@ -325,7 +340,7 @@ public class FieldInf implements Serializable {
     }
 
     public void removeChildrenHavingNoHtmlValue() {
-        if (parent != null && children.isEmpty() && !inHtmlView) {
+        if (parent != null && children.isEmpty() && !getInHtmlView()) {
             parent.getChildren().remove(this);
             return;
         }
@@ -361,7 +376,7 @@ public class FieldInf implements Serializable {
     public void initForMaxView(Map<String, Object> doc) {
         removeChildrenHavingNoHtmlValue();
         for (FieldInf child : new ArrayList<>(children)) {
-            if (!child.isInHtmlView()) {
+            if (!child.getInHtmlView()) {
                 children.remove(child);
             }
         }
@@ -393,13 +408,10 @@ public class FieldInf implements Serializable {
         this.counterparts = counterparts;
     }
 
-    public Set<IFeedFilter> getDefaultFilters() {
+    public Set<DefaultFilter> getDefaultFilters() {
         return defaultFilters;
     }
 
-    public void setDefaultFilters(Set<IFeedFilter> defaultFilters) {
-        this.defaultFilters = defaultFilters;
-    }
 
     public String getQueryPrefix() {
         return queryPrefix;
@@ -407,6 +419,38 @@ public class FieldInf implements Serializable {
 
     public void setQueryPrefix(String queryPrefix) {
         this.queryPrefix = queryPrefix;
+    }
+
+    public Long getPk() {
+        return pk;
+    }
+
+    public void setPk(Long pk) {
+        this.pk = pk;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer order) {
+        this.position = order;
+    }
+
+    public Long getParentPk() {
+        return parentPk;
+    }
+
+    public void setParentPk(Long parentPk) {
+        this.parentPk = parentPk;
+    }
+
+    public Set<IFeedFilter> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(Set<IFeedFilter> filters) {
+        this.filters = filters;
     }
 
     public interface Visitor {
@@ -433,18 +477,23 @@ public class FieldInf implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof FieldInf) {
             FieldInf fi = (FieldInf) obj;
-            if (fi.id == id) {
+            if (fi.pk == pk) {
                 return true;
             }
-            if (fi.id == null || id == null) {
+            if (fi.pk == null || pk == null) {
                 return false;
             }
-            return fi.id.equals(id);
+            return fi.pk.equals(pk);
         }
         return false;
     }
 
-/*    public static String[] toIdsList(Collection<FieldInf> fromThese) {
+    @Override
+    public int hashCode() {
+        return pk != null ? pk.hashCode() : -1;
+    }
+
+    /*    public static String[] toIdsList(Collection<FieldInf> fromThese) {
         Set<String> result = new HashSet<>();
         for (FieldInf fi : fromThese) {
             fi.visit(item -> {
@@ -479,4 +528,43 @@ public class FieldInf implements Serializable {
         return result.toArray(new String[result.size()]);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Boolean getFilter() {
+        return filter;
+    }
+
+    public void setFilter(boolean filter) {
+        this.filter = filter;
+    }
+
+    public String getHelp() {
+        return help;
+    }
+
+    public void setHelp(String help) {
+        this.help = help;
+    }
+
+    public void setChildren(List<FieldInf> children) {
+        this.children = children;
+    }
+
+    public void setDefaultFilters(Set<DefaultFilter> defaultFilters) {
+        this.defaultFilters = defaultFilters;
+    }
 }

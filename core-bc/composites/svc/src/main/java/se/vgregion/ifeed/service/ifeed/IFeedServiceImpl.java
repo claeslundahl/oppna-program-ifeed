@@ -20,9 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
 import java.util.*;
 
 @Service
@@ -571,11 +568,17 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Transactional
     @Override
     public List<FieldInf> getFieldInfs() {
-        List<FieldsInf> fieldsInfs = getFieldsInfs();
+        Collection<FieldInf> result = objectRepo.findByQuery(FieldInf.class, "select fi from FieldInf fi where fi.parentPk is null order by position");
+        for (FieldInf fieldInf : result) {
+            fieldInf.init();
+        }
+        return new ArrayList<>(result);
+
+        /*List<FieldsInf> fieldsInfs = getFieldsInfs();
         if (fieldsInfs.isEmpty()) {
             return new ArrayList<FieldInf>();
         }
-        return fieldsInfs.get(fieldsInfs.size() - 1).getFieldInfs();
+        return fieldsInfs.get(fieldsInfs.size() - 1).getFieldInfs();*/
     }
 
     @Transactional
@@ -600,7 +603,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     public static void mapFieldInfToId(List<FieldInf> fields, Map<String, FieldInf> result) {
         for (FieldInf fi : fields) {
-            if (fi.isLabel()) {
+            if (fi.getLabel()) {
                 mapFieldInfToId(fi.getChildren(), result);
             } else {
                 result.put(fi.getId(), fi);

@@ -55,6 +55,11 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
     @Expose(serialize = false, deserialize = true)
     private IFeedFilter parent;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "apelon_id")
+    @Expose(serialize = false, deserialize = false)
+    private Metadata metadata;
+
     @OneToMany(mappedBy = "parent", targetEntity = IFeedFilter.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<IFeedFilter> children = new ArrayList<>();
 
@@ -186,6 +191,13 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
 
     public String toQuery(List<Field> meta) {
         String valueToLookFor = toEmptyIfNull((getFieldInf() != null) ? getFieldInf().getQueryPrefix() : "") + filterQuery;
+        FieldInf fi = getFieldInf();
+        if (fi != null && "d:text_fix".equals(fi.getType())) {
+            Metadata md = getMetadata();
+            if (md != null && md.getFilterQuery() != null && !"".equals(md.getFilterQuery().trim())) {
+                valueToLookFor = md.getFilterQuery();
+            }
+        }
         return toQueryImp(meta, children, operator, filterKey, valueToLookFor);
     }
 
@@ -227,7 +239,7 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
         if (initialValue == null || meta == null)
             return initialValue;
         Field field = meta.stream().filter(f -> f.getName().equals(key)).findFirst().orElse(null);
-        if (field.getType().equals("tdate") && !initialValue.endsWith("Z"))
+        if ("d:date".equals(field.getType()) && !initialValue.endsWith("Z"))
             initialValue = initialValue + "T00:00:00Z";
         return initialValue;
     }
@@ -329,5 +341,13 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
     }
 
     public IFeedFilter() {
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 }

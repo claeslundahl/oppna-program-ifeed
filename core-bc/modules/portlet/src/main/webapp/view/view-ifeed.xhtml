@@ -254,7 +254,7 @@
         <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="getFiltersAsListItem" varStatus="status"
                    id="getFiltersAsListRepeat">
     <span class="ltr-flowing-item ifeed-border" style="#{(getFiltersAsListItem.isContainer() || !app.isFilter(getFiltersAsListItem)) ?'display:none;':''}">
-      <span class="name">#{app.getFieldsByNameIndex().get(getFiltersAsListItem.filterKey).name}</span>
+      <span class="name">#{app.getFilterName(getFiltersAsListItem)}</span>
 
       <span class="name-value-delimiter">
         <h:outputText value="="

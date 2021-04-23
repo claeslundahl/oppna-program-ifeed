@@ -70,7 +70,7 @@ public class FieldsInfTest {
 
         IFeedFilter filter = new IFeedFilter();
         filter.setFilterKey("DC.title");
-        fi.putFieldInfInto(filter);
+        // fi.putFieldInfInto(filter);
         System.out.println(filter.getFieldInf().getName());
     }
 

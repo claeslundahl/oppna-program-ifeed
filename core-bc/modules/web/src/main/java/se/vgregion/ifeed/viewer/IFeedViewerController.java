@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -22,10 +23,7 @@ import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.OldIndexData;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.FieldsInf;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapApi;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
@@ -50,6 +48,7 @@ import static se.vgregion.ifeed.viewer.Column.toColumns;
  */
 
 @Controller
+@Transactional
 public class IFeedViewerController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedViewerController.class);
@@ -393,6 +392,7 @@ public class IFeedViewerController {
         //String[] f = toStringArray(allRequestParams, "f");
         // IFeed retrievedFeed = iFeedService.getIFeed(listId);
         IFeed retrievedFeed = iFeedService.getFeedForSolrQuery(listId);
+        retrievedFeed.getFilters().forEach(fo -> fo.getMetadata());
         if (retrievedFeed == null) {
             LOGGER.error("Did not find feed with id " + listId + " on page " + fromPage);
             throw new ResourceNotFoundException();
@@ -843,6 +843,15 @@ public class IFeedViewerController {
             }
         }
 
+        for (IFeedFilter iff : filter.getFilters()) {
+            Metadata md = iff.getMetadata();
+            if (md != null && md.getFilterQuery() != null) {
+                for (Map<String, Object> item : findings.getResponse().getDocs()) {
+
+                }
+            }
+        }
+
         return "display";
     }
 
@@ -1082,6 +1091,14 @@ public class IFeedViewerController {
                         doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.name"), " (",
                         doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.id"), ")");
 
+                ifHavingValueChangeThat(doc, "vgrsd:DomainExtension.vgrsd:DocumentApproved.name",
+                        doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.name"), " (",
+                        doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved"), ")");
+
+                ifHavingValueChangeThat(doc, "vgrsd:DomainExtension.vgrsd:ContentResponsible",
+                        doc.get("vgrsd:DomainExtension.vgrsd:ContentResponsible"), " (",
+                        doc.get("vgrsd:DomainExtension.vgrsd:ContentResponsible.id"), ")");
+
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:DocumentApproved.role", "Godkänt av, roll"));
                 pairs.add(new KeyLabel("version", "Version"));
 
@@ -1135,6 +1152,11 @@ public class IFeedViewerController {
             return "documentDetails";
         }
         // return "documentDetails";
+    }
+
+    private void swapInApelonValues(List<KeyLabel> keyLabels) {
+        List<FieldInf> fields = iFeedService.getFieldInfs();
+
     }
 
     private static void ifHavingValueChangeThat(Map<String, Object> valueInHere, String withKey, Object... toThese) {

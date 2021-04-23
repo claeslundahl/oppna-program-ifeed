@@ -2,6 +2,7 @@ package se.vgregion.ifeed.backingbeans;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.sun.faces.component.visit.FullVisitContext;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.solr.client.solrj.SolrServer;
@@ -15,9 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.InvocerUtil;
 import se.vgregion.common.utils.BeanMap;
+import se.vgregion.common.utils.DistinctArrayList;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.formbean.Note;
+import se.vgregion.ifeed.repository.MetadataRepository;
 import se.vgregion.ifeed.repository.UserRepository;
 import se.vgregion.ifeed.service.ifeed.Filter;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
@@ -53,6 +56,7 @@ import javax.faces.model.SelectItemGroup;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -347,6 +351,7 @@ public class Application {
             int end = (getCurrentSpanEnd());
 
             long now = System.currentTimeMillis();
+            // System.out.println(filter.toJpqlQuery(Arrays.asList(filters.toArray())));
             List<IFeed> result = new ArrayList<>(iFeedService.getIFeedsByFilter(filter, start, end));
 
             return page = result;
@@ -415,17 +420,19 @@ public class Application {
         initFieldsInsideModel();
     }
 
+    // @Transactional
     private void viewIFeedImp(Long id) {
 
         final IFeed feed = iFeedService.getIFeed(id);
         newFilter = null;
         iFeedModelBean.copyValuesFromIFeed(feed);
+        iFeedModelBean.setFilters(feed.getFilters());
 
-        List<FieldsInf> fieldsInfs = iFeedService.getFieldsInfs();
+        /*List<FieldsInf> fieldsInfs = iFeedService.getFieldsInfs();
         if (!fieldsInfs.isEmpty()) {
             this.fieldsInf = fieldsInfs.get(fieldsInfs.size() - 1);
             fieldsInf.putFieldInfInto(iFeedModelBean.getFilters());
-        }
+        }*/
 
         this.filters = iFeedService.getFieldInfs();
         cleanFieldsNotFilters(filters);
@@ -444,6 +451,9 @@ public class Application {
 
         setFilters(filters);
 
+        for (IFeedFilter filter : iFeedModelBean.getFilters()) {
+            System.out.println("M: " + filter.getMetadata());
+        }
     }
 
     private void initFieldsInsideModel() {
@@ -457,6 +467,7 @@ public class Application {
                 }
             }
             filter.initFieldInfs(getFieldsByNameIndex().values());
+            filter.getMetadata();
         }
 
         /*try {
@@ -620,12 +631,21 @@ public class Application {
         findResultsByCurrentFeedConditions();
     }
 
+    @Autowired
+    private MetadataRepository metadataRepository;
+
     public void addNewFilter(FieldInf fieldInf) {
         if (fieldInf == null || "".equals(fieldInf.getValue())) {
             fieldInf.setExpanded(false);
             return;
         }
         IFeedFilter newFilter = new IFeedFilter(null, fieldInf.getValue(), fieldInf.getId());
+        if ("d:text_fix".equals(fieldInf.getType())) {
+            Metadata domain = metadataRepository.getByName(fieldInf.getApelonKey());
+            newFilter.setMetadata(domain.getChildren().stream().filter(m -> m.getName().equals(fieldInf.getValue()))
+                    .findFirst().get()
+            );
+        }
         newFilter.setOperator(fieldInf.getOperator());
         newFilter.setFieldInf(fieldInf);
         fieldInf.setExpanded(false);
@@ -938,7 +958,40 @@ public class Application {
     }
 
     static List<FieldInf> getFieldSuitableForSorting(IFeed forThat, List<FieldInf> fromThese) {
-        if (isBlendingMetadataSpecifications(forThat, fromThese) && hasAnyCounterpartsValues(fromThese)) {
+        DistinctArrayList<FieldInf> result = new DistinctArrayList<>();
+
+        Type fieldInfsType = new TypeToken<ArrayList<FieldInf>>() {
+        }.getType();
+        Gson gson = new Gson();
+        fromThese = gson.fromJson(Json.toJson(fromThese), fieldInfsType);
+
+        Set<Long> fieldIds = forThat.getFilters().stream().map(f -> f.getFieldInf().getPk()).collect(Collectors.toSet());
+
+        for (FieldInf root : new ArrayList<>(fromThese)) {
+            if (root.getChildren().isEmpty()) {
+                fromThese.remove(root);
+                continue;
+            }
+            for (FieldInf branch : new ArrayList<>(root.getChildren())) {
+                for (FieldInf leaf : new ArrayList<>(branch.getChildren())) {
+                    if (leaf.getFilter() == null || !leaf.getFilter()) {
+                        root.getChildren().remove(leaf);
+                        continue;
+                    }
+                    if (fieldIds.contains(leaf)) {
+                        result.add(root);
+                    }
+                }
+            }
+        }
+
+        if (result.isEmpty()) {
+            return fromThese;
+        }
+
+        return result;
+
+        /*if (isBlendingMetadataSpecifications(forThat, fromThese) && hasAnyCounterpartsValues(fromThese)) {
             FieldInf oneWithBlendedFields = new FieldInf();
             oneWithBlendedFields.setName("Fält");
             oneWithBlendedFields.getChildren().addAll(getFilterFieldsForBothMetadataSets(fromThese));
@@ -948,7 +1001,7 @@ public class Application {
             return Arrays.asList(oneWithBlendedFieldsRoot);
         }
 
-        return getMetadataSetAlreadyInFeed(forThat, fromThese);
+        return getMetadataSetAlreadyInFeed(forThat, fromThese);*/
     }
 
     static List<FieldInf> getMetadataSetAlreadyInFeed(IFeed forThat, List<FieldInf> fromThese) {
@@ -964,12 +1017,12 @@ public class Application {
         boolean found = false;
         for (FieldInf parent : fromThese) {
             FieldInf root = parent.toDetachedCopy();
-            for (FieldInf child : parent.getChildren()) {
+            for (FieldInf child : new ArrayList<>(parent.getChildren())) {
                 FieldInf group = child.toDetachedCopy();
 
                 List<FieldInf> items = new ArrayList<>();
 
-                for (FieldInf grandChild : child.getChildren()) {
+                for (FieldInf grandChild : new ArrayList<>(child.getChildren())) {
                     if (grandChild.getFilter()) {
                         items.add(grandChild.toDetachedCopy());
                         if (ifeedFilterNames.isEmpty() || ifeedFilterNames.contains(grandChild.getId())) {
@@ -1504,6 +1557,7 @@ public class Application {
         setInEditMode(true);
     }
 
+    @Transactional
     public void updateSearchResults() {
         if (searchResults == null) {
             searchResults = new ArrayList<>();
@@ -1511,6 +1565,7 @@ public class Application {
         if (iFeedModelBean.toQuery(client.fetchFields()).isEmpty()) {
             searchResults.clear();
         } else {
+            System.out.println("Query in admin results: " + iFeedModelBean.toQuery(client.fetchFields()));
             updateSearchResults(iFeedModelBean);
         }
     }
@@ -1680,6 +1735,15 @@ public class Application {
         FacesContext ctxt = FacesContext.getCurrentInstance();
         ExternalContext ext = ctxt.getExternalContext();
         return ext.getRequestServerName();
+    }
+
+    public String getFilterName(IFeedFilter forThat) {
+        // app.getFieldsByNameIndex().get(getFiltersAsListItem.filterKey).name
+        FieldInf fi = forThat.getFieldInf();
+        if (fi != null) {
+            return fi.getName();
+        }
+        return getFieldsByNameIndex().get(forThat.getFilterKey()).getName();
     }
 
 }

@@ -183,7 +183,7 @@ public class IFeedBackingBean implements Serializable {
         //FacesContext facesContext = FacesContext.getCurrentInstance();
         //ExternalContext externalContext = facesContext.getExternalContext();
         //PortletRequest request = (PortletRequest) externalContext.getRequest();
-        IFeed feed = iFeedService.getIFeed(id);
+        IFeed feed = iFeedService.getFeedForSolrQuery(id);
         iFeedModelBean.copyValuesFromIFeed(feed);
         navigationModelBean.setUiNavigation("VIEW_IFEED");
     }

@@ -1,9 +1,11 @@
 package se.vgregion.ifeed.backingbeans;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.common.utils.BeanMap;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.shared.DynamicTableSortingDef;
@@ -12,6 +14,7 @@ import se.vgregion.ifeed.types.FieldInf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 /**
@@ -126,7 +129,30 @@ public class TableDefModel extends DynamicTableDef {
         getColumnDefs().add(column);
     }
 
+    @Autowired
+    private IFeedService iFeedService;
+
     private FieldInf getFirstBestFieldInf() {
+        final String rootName = app.getSelectedFieldInfRootName();
+
+        final AtomicReference<FieldInf> result = new AtomicReference<>();
+        for (FieldInf fi : iFeedService.getFieldInfs()) {
+            if (rootName.equals(fi.getName())) {
+                fi.visit(child -> {
+                    if (child.getFilter() != null && child.getFilter() && child.getId() != null && !"".equals(child.getId().trim())) {
+                        if (result.get() == null) {
+                            result.set(fi);
+                            System.out.println("Found " + fi.getName());
+                        }
+                    }
+                });
+            }
+        }
+
+        if (result.get() != null) {
+            return result.get();
+        }
+
         for (FieldInf fieldInf : app.getFieldSuitableForSorting()) {
             for (FieldInf child : fieldInf.getChildren()) {
                 for (FieldInf grandChild : child.getChildren()) {

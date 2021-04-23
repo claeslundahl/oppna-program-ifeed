@@ -80,6 +80,11 @@ public class FieldInf implements Serializable {
     @Expose(serialize = false)
     private Set<IFeedFilter> filters;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "apelon_id")
+    // @Expose(serialize = false, deserialize = false)
+    private Metadata metadata;
+
     @Override
     public String toString() {
 
@@ -242,11 +247,11 @@ public class FieldInf implements Serializable {
         return result;
     }
 
-    public int getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 
@@ -451,6 +456,14 @@ public class FieldInf implements Serializable {
 
     public void setFilters(Set<IFeedFilter> filters) {
         this.filters = filters;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 
     public interface Visitor {

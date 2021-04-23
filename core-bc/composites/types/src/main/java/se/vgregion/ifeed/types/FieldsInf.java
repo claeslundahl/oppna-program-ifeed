@@ -149,7 +149,7 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
         return result;
     }
 
-    public void putFieldInfInto(IFeedFilter item) {
+    /*public void putFieldInfInto(IFeedFilter item) {
         item.setFieldInf(getInfByFilterKey(item.getFilterKey()));
     }
 
@@ -157,7 +157,7 @@ public class FieldsInf extends AbstractEntity<Long> implements Serializable, Com
         for (IFeedFilter item : items) {
             putFieldInfInto(item);
         }
-    }
+    }*/
 
     FieldInf getInfByFilterKey(String id) {
         return getInfByFilterKey(getFieldInfs(), id);

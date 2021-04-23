@@ -1,11 +1,11 @@
 package se.vgregion.ifeed.service.ifeed;
 
-import se.vgregion.common.utils.BeanMap;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.vgregion.common.utils.BeanMap;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
@@ -56,7 +56,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     public final List<IFeed> getIFeeds() {
         return new ArrayList<>(iFeedRepo.findByQuery("select distinct i from IFeed i left join fetch i.ownerships " +
-            "left join fetch i.filters left join fetch i.department left join fetch i.group"));
+                "left join fetch i.filters left join fetch i.department left join fetch i.group"));
     }
 
     @Override
@@ -116,13 +116,13 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Transactional
     public List<IFeed> getUserIFeeds(final String userId) {
         ArrayList<IFeed> result = new ArrayList<IFeed>(
-            iFeedRepo
-                .findByQuery(
-                    "SELECT distinct ifeed FROM IFeed ifeed "
-                        + "left join fetch ifeed.ownerships "
-                        + " left join fetch ifeed.filters left join fetch ifeed.department left join fetch ifeed.group "
-                        + "WHERE ifeed.userId=?1 or ifeed.id in (select o.ifeedId from Ownership o where o.userId=?2)",
-                    new Object[]{userId, userId}));
+                iFeedRepo
+                        .findByQuery(
+                                "SELECT distinct ifeed FROM IFeed ifeed "
+                                        + "left join fetch ifeed.ownerships "
+                                        + " left join fetch ifeed.filters left join fetch ifeed.department left join fetch ifeed.group "
+                                        + "WHERE ifeed.userId=?1 or ifeed.id in (select o.ifeedId from Ownership o where o.userId=?2)",
+                                new Object[]{userId, userId}));
 
         initializedFeeds.set(null);
         // init(result);
@@ -142,14 +142,14 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         traversal.add(id);
         // long now = System.currentTimeMillis();
         ArrayList<IFeed> result = new ArrayList<IFeed>(
-            iFeedRepo
-                .findByQuery(
-                    "SELECT distinct ifeed " +
-                        "FROM IFeed ifeed " +
-                        "left join fetch ifeed.filters f "
-                        + "left join fetch ifeed.composites c "
-                        + "WHERE ifeed.id = ?1",
-                    new Object[]{id}));
+                iFeedRepo
+                        .findByQuery(
+                                "SELECT distinct ifeed " +
+                                        "FROM IFeed ifeed " +
+                                        "left join fetch ifeed.filters f "
+                                        + "left join fetch ifeed.composites c "
+                                        + "WHERE ifeed.id = ?1",
+                                new Object[]{id}));
 
         if (result.isEmpty()) {
             return null;
@@ -160,6 +160,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
         }
         Json.toJson(ifeed);
+        ifeed.toQuery(null);
+        ifeed.getFilters().forEach(f -> f.getMetadata());
         entityManager.detach(ifeed);
 
         if (!ifeed.getComposites().isEmpty()) {
@@ -261,6 +263,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         for (DynamicTableDef dtd : result.getDynamicTableDefs()) {
             dtd.getExtraSorting();
         }
+        result.getFilters().forEach(f -> System.out.println(f.getMetadata()));
         init(result);
 
         initializedFeeds.set(null);
@@ -317,6 +320,14 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
                         dynamicTableSortingDef.toString();
                     }
                 }
+            }
+        }
+
+        for (IFeedFilter filter : result.getFilters()) {
+            BeanMap bm = new BeanMap(filter);
+            for (String key : bm.keySet()) {
+                bm.get(key);
+                filter.getMetadata();
             }
         }
 
@@ -387,7 +398,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
     public void remove(IFeed feed) {
         EntityManager em = objectRepo.getEntityManager();
-        Session session = (Session)em.getDelegate();
+        Session session = (Session) em.getDelegate();
         //Connection con = session.connection();
     }
 
@@ -531,8 +542,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         Collection<IFeedFilter> oldFilters = oldIFeed.getFilters();
         Collection<IFeedFilter> newFilters = iFeed.getFilters();
         if (!(equals(oldIFeed.getName(), iFeed.getName())
-            && equals(oldIFeed.getLinkNativeDocument(), iFeed.getLinkNativeDocument()) && equals(
-            oldIFeed.getDescription(), iFeed.getDescription()))) {
+                && equals(oldIFeed.getLinkNativeDocument(), iFeed.getLinkNativeDocument()) && equals(
+                oldIFeed.getDescription(), iFeed.getDescription()))) {
             return true;
         }
 
@@ -646,7 +657,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     public List<String> fetchFilterSuggestion(IFeed feed, String fieldId, String starFilter) {
         FieldInf field = getFieldInf(fieldId);
-        return SolrFacetUtil.fetchFacets(getSolrServiceUrl(), feed,  field, starFilter);
+        return SolrFacetUtil.fetchFacets(getSolrServiceUrl(), feed, field, starFilter);
     }
 
     public ObjectRepo getObjectRepo() {

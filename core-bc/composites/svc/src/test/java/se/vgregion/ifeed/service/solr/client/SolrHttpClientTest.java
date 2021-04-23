@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.service.solr.client;
 
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
@@ -30,14 +31,25 @@ public class SolrHttpClientTest {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
+        /*IFeedFilter f = new IFeedFilter();
+        f.setFilterKey("title");
+        f.setFilterQuery("Nyhetsbrev blue A");
+
+        Result r2 = client.query(f.toQuery(client.fetchFields()), 0, 100, "asc", null);
+
+        System.out.println(
+                new GsonBuilder().setPrettyPrinting().create().toJson(r2)
+        );*/
+
         Map<String, Set<Object>> all = client.findAllValues();
-        Set<Object> hmm = all.get("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path");
+        Set<Object> hmm = all.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.name");
         for (Object o : hmm) {
             System.out.println(o);
         }
 
         for (String key : all.keySet()) {
-            System.out.println(key + " = " + all.get(key));
+            if (key.startsWith("vgrsd:DomainExtension.vgrsd:DocumentApproved"))
+               System.out.println(key + " = " + all.get(key));
         }
 
         /*IFeedFilter filter = new IFeedFilter("*test*", "title");

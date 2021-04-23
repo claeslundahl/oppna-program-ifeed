@@ -40,6 +40,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
     public void copyValuesFromIFeed(IFeed iFeed) {
         ownershipsAsList = null;
         filtersAsList = null;
+        iFeed.getFilters().forEach(f -> f.getMetadata());
         copy(iFeed, this);
         getOwnerships().clear();
         getOwnerships().addAll(iFeed.getOwnerships());

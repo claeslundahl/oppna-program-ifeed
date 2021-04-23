@@ -25,9 +25,14 @@ public class Metadata extends AbstractEntity<Long>
     @GeneratedValue
     private Long id;
 
+    @Column
     private String key;
 
+    @Column
     private String name;
+
+    @Column(name = "filter_query")
+    private String filterQuery;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
@@ -80,5 +85,13 @@ public class Metadata extends AbstractEntity<Long>
     @Override
     public String toString() {
         return name;
+    }
+
+    public String getFilterQuery() {
+        return filterQuery;
+    }
+
+    public void setFilterQuery(String filterQuery) {
+        this.filterQuery = filterQuery;
     }
 }

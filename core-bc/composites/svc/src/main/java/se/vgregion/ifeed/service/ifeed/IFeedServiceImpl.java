@@ -161,7 +161,21 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
         Json.toJson(ifeed);
         ifeed.toQuery(null);
-        ifeed.getFilters().forEach(f -> f.getMetadata());
+        System.out.println("Här körs specialfilter!");
+        ifeed.getFilters().forEach(f -> {
+            f.getMetadata();
+            IFeedFilter p = f.getParent();
+            if (p != null) {
+                IFeedFilter pp = p.getParent();
+                FieldInf fi = pp.getFieldInf();
+                Set<DefaultFilter> dfs = fi.getDefaultFilters();
+                if (dfs != null) {
+                    for (DefaultFilter df : dfs) {
+                        System.out.println(df);
+                    }
+                }
+            }
+        });
         entityManager.detach(ifeed);
 
         if (!ifeed.getComposites().isEmpty()) {
@@ -256,6 +270,11 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         // IFeed result = iFeedRepo.find(id);
 
         IFeed result = objectRepo.findByPrimaryKey(IFeed.class, id);
+        String s = result.toQuery(null);
+        System.out.println(s);
+        for (IFeedFilter filter : result.getFilters()) {
+            init(filter);
+        }
         if (result == null) {
             throw new RuntimeException();
         }
@@ -268,7 +287,22 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
 
         initializedFeeds.set(null);
 
+        result.toQuery(null);
+
         return result;
+    }
+
+    private void init(IFeedFilter filter) {
+        init(filter.getFieldInf());
+        for (IFeedFilter child : filter.getChildren()) {
+            init(child);
+        }
+    }
+
+    private void init(FieldInf fieldInf) {
+        if (fieldInf != null) {
+            init(fieldInf.getParent());
+        }
     }
 
     @Transactional

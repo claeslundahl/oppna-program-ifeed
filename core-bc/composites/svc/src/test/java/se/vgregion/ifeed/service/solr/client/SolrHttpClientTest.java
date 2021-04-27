@@ -42,15 +42,15 @@ public class SolrHttpClientTest {
         );*/
 
         Map<String, Set<Object>> all = client.findAllValues();
-        Set<Object> hmm = all.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.name");
+        Set<Object> hmm = all.get("vgrsd:DomainExtension.domain");
         for (Object o : hmm) {
             System.out.println(o);
         }
 
-        for (String key : all.keySet()) {
+        /*for (String key : all.keySet()) {
             if (key.startsWith("vgrsd:DomainExtension.vgrsd:DocumentApproved"))
                System.out.println(key + " = " + all.get(key));
-        }
+        }*/
 
         /*IFeedFilter filter = new IFeedFilter("*test*", "title");
 

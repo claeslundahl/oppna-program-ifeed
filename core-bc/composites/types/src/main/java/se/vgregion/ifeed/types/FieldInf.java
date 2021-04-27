@@ -59,7 +59,7 @@ public class FieldInf implements Serializable {
     @Column(name = "parent_pk", insertable = false, updatable = false)
     private Long parentPk;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_pk")
     @Expose(serialize = false, deserialize = true)
     private FieldInf parent;

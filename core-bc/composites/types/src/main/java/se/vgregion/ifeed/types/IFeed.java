@@ -14,6 +14,7 @@ import javax.persistence.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "vgr_ifeed")
@@ -499,13 +500,37 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return or.toQuery();
     }
 
+
+    private List<DefaultFilter> getDefaultFilters(FieldInf that) {
+        List<DefaultFilter> result = new ArrayList<>();
+        if (that == null) {
+            return result;
+        }
+        if (that.getDefaultFilters() != null) {
+            result.addAll(that.getDefaultFilters());
+        }
+        result.addAll(getDefaultFilters(that.getParent()));
+        return result;
+    }
+
     private String toQueryImp(List<Field> meta) {
-        if (filters == null || filters.isEmpty()) {
+        ArrayList<IFeedFilter> filterz = new ArrayList<>(this.filters);
+
+        for (IFeedFilter filter : new ArrayList<>(filterz)) {
+            filterz.addAll(getDefaultFilters(filter.getFieldInf()).stream().map(df -> {
+                IFeedFilter iff = new IFeedFilter();
+                iff.setFilterKey(df.getFilterKey());
+                iff.setFilterQuery(df.getFilterQuery());
+                return iff;
+            }).collect(Collectors.toList()));
+        }
+
+        if (filterz == null || filterz.isEmpty()) {
             return "";
         }
 
-        if (filters.size() == 1) {
-            return filters.iterator().next().toQuery(meta);
+        if (filterz.size() == 1) {
+            return filterz.iterator().next().toQuery(meta);
         }
 
         Junctor and = new Junctor(" AND ");
@@ -519,11 +544,15 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
             }
         };
 
-        for (IFeedFilter filter : filters) {
+        for (IFeedFilter filter : filterz) {
             if (filter.isContainer()) {
                 and.add(filter.toQuery(meta));
             } else {
-                keyToFilters.get(filter.getFilterKey()).add(filter);
+                String key = filter.getFilterKey();
+                if (filter.getFieldInf() != null && filter.getFieldInf().getQueryPrefix() != null) {
+                    key = key + filter.getFieldInf().getQueryPrefix();
+                }
+                keyToFilters.get(key).add(filter);
             }
         }
 

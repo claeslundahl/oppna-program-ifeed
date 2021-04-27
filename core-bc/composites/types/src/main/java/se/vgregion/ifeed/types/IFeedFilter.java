@@ -49,7 +49,7 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
     @Expose(serialize = false, deserialize = true)
     private IFeed feed;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     /*@ForeignKey(name = "fk_ifeed_filter_parent")*/
     @Expose(serialize = false, deserialize = true)

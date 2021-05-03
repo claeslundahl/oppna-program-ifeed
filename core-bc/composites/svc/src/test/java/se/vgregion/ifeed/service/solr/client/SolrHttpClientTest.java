@@ -31,24 +31,37 @@ public class SolrHttpClientTest {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
-        /*IFeedFilter f = new IFeedFilter();
-        f.setFilterKey("title");
-        f.setFilterQuery("Nyhetsbrev blue A");
+        IFeedFilter f = new IFeedFilter();
+        f.setFilterKey("vgrsd:DomainExtension.vgrsd:ValidFrom");
+        f.setFilterQuery("2021-04-23");
+        f.setOperator("greater");
+
+        // vgrsd\:DomainExtension.vgrsd\:ValidFrom:[2021-04-24 TO *]
 
         Result r2 = client.query(f.toQuery(client.fetchFields()), 0, 100, "asc", null);
 
         System.out.println(
                 new GsonBuilder().setPrettyPrinting().create().toJson(r2)
-        );*/
+        );
 
-        Map<String, Set<Object>> all = client.findAllValues();
-        Set<Object> hmm = all.get("vgrsd:DomainExtension.domain");
+        /*Map<String, Set<Object>> all = client.findAllValues();
+
+
+        List<Field> fields = client.fetchFields();
+        for (Field field : fields) {
+            System.out.println(field);
+        }*/
+
+        /*Set<Object> hmm = all.get("vgrsd:DomainExtension.domain");
         for (Object o : hmm) {
             System.out.println(o);
-        }
+        }*/
 
-        /*for (String key : all.keySet()) {
-            if (key.startsWith("vgrsd:DomainExtension.vgrsd:DocumentApproved"))
+
+
+
+      /*  for (String key : all.keySet()) {
+            // if (key.startsWith("vgrsd:DomainExtension.vgrsd:DocumentApproved"))
                System.out.println(key + " = " + all.get(key));
         }*/
 

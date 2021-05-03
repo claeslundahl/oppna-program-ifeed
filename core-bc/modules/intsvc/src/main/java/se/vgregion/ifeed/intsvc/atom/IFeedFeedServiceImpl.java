@@ -25,10 +25,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static se.vgregion.common.utils.CommonUtils.getEnum;
 
@@ -37,7 +34,17 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedFeedServiceImpl.class);
 
-    private Map<String, String> namespaces = new HashMap<String, String>();
+    private Map<String, String> namespaces = new HashMap<String, String>(getInitialNamespaces());
+
+    private Map<String, String> getInitialNamespaces() {
+        Map<String, String> result = new HashMap<>();
+        result.put("core:ArchivalObject", "http://vgregion.se");
+        result.put("vgr:VgrExtension", "http://vgregion.se");
+        result.put("vgrsd:DomainExtension", "http://vgregion.se");
+        result.put("vgrsy:DomainExtension", "http://vgregion.se");
+        return result;
+    }
+
     private String pushServerEndpoint = null;
 
     private IFeedService iFeedService;
@@ -221,12 +228,14 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return dateStr;
     }
 
+    TreeSet<String> accDomainExts = new TreeSet<>();
+
     void addElement(final Entry e, final String prefix, final String fieldName, final Object fieldValue) {
 
         // TODO Should handle the collection properly
         // rather than just doing toString
-
-        if (namespaces.containsKey(prefix)) {
+        accDomainExts.add(prefix);
+        if (namespaces.containsKey(prefix) || true) {
             Element element = e.addExtension(new QName(namespaces.get(prefix),
                     fieldName.substring(prefix.length() + 1), prefix));
 

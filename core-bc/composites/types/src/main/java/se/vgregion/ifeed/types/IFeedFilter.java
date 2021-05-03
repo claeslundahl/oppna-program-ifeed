@@ -239,8 +239,9 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
         if (initialValue == null || meta == null)
             return initialValue;
         Field field = meta.stream().filter(f -> f.getName().equals(key)).findFirst().orElse(null);
-        if ("d:date".equals(field.getType()) && !initialValue.endsWith("Z"))
+        if (("d:date".equals(field.getType()) || "tdate".equals(field.getType()) && !initialValue.endsWith("Z"))) {
             initialValue = initialValue + "T00:00:00Z";
+        }
         return initialValue;
     }
 

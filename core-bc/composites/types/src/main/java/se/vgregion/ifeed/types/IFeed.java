@@ -501,8 +501,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
 
-    private List<DefaultFilter> getDefaultFilters(FieldInf that) {
-        List<DefaultFilter> result = new ArrayList<>();
+    private Set<DefaultFilter> getDefaultFilters(FieldInf that) {
+        Set<DefaultFilter> result = new HashSet<>();
         if (that == null) {
             return result;
         }

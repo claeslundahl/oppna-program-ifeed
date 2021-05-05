@@ -245,6 +245,7 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
         return initialValue;
     }
 
+    // static String keyRegex = "([+!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
     static String keyRegex = "([+\\-!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
 
     static String valueRegex = "([+!\\(\\){}\\[\\]^\"~?:\\\\]|[&\\|]{2})";
@@ -332,6 +333,9 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
         if (forSolr == null)
             return null;
         String escaped = forSolr.replaceAll(keyRegex, "\\\\$1");
+        if (escaped.startsWith("\\-")) {
+            escaped = "-" + escaped.substring(2);
+        }
         return escaped;
     }
 

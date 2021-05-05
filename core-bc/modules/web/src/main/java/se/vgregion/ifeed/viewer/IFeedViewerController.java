@@ -1063,7 +1063,6 @@ public class IFeedViewerController {
                 pairs.add(new KeyLabel("core:ArchivalObject.core:ObjectType", "Handlingstyp"));
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:PublishedForUnit.id", "Upprättat för enhet"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidityArea", "Giltighetsområde"));
-                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
                 pairs.add(new KeyLabel("vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning"));
                 pairs.add(new KeyLabel("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning"));
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord"));

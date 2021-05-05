@@ -1043,8 +1043,35 @@ public class Application {
         return result;
     }
 
-
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
+        if (iFeedModelBean.getFilters().isEmpty()) {
+            return allFieldInfsAsSelectItemGroups();
+        }
+
+        List<SelectItemGroup> result = new ArrayList<>();
+
+        DistinctArrayList<FieldInf> tops = new DistinctArrayList<>();
+
+        for (IFeedFilter filter : iFeedModelBean.getFilters()) {
+            tops.add(filter.getFieldInf().getParent().getParent());
+        }
+
+        for (FieldInf top : tops) {
+            for (FieldInf field : top.getChildren()) {
+                List<SelectItem> items = new ArrayList<>();
+                SelectItemGroup g = new SelectItemGroup(field.getName() + " (" + top.getName() + ")");
+                for (FieldInf leaf : field.getChildren()) {
+                    items.add(new SelectItem(leaf.getId(), leaf.getName()));
+                }
+                g.setSelectItems(items.toArray(new SelectItem[items.size()]));
+                result.add(g);
+            }
+        }
+
+        return result;
+    }
+
+    public List<SelectItemGroup> allFieldInfsAsSelectItemGroups() {
         List<SelectItemGroup> result = new ArrayList<>();
 
         for (FieldInf top : getFieldSuitableForSorting()) {

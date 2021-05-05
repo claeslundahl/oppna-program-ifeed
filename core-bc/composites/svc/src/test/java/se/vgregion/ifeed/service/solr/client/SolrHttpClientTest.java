@@ -1,16 +1,11 @@
 package se.vgregion.ifeed.service.solr.client;
 
-import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.service.ifeed.DocumentPopupConf;
 import se.vgregion.ifeed.service.solr.Csvs;
-import se.vgregion.ifeed.service.solr.SolrQueryEscaper;
-import se.vgregion.ifeed.types.Field;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.IFeed;
-import se.vgregion.ifeed.types.IFeedFilter;
+import se.vgregion.ifeed.types.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,18 +26,21 @@ public class SolrHttpClientTest {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
-        IFeedFilter f = new IFeedFilter();
-        f.setFilterKey("vgrsd:DomainExtension.vgrsd:ValidFrom");
-        f.setFilterQuery("2021-04-23");
-        f.setOperator("greater");
+        /*IFeedFilter f = new IFeedFilter();
+        f.setFilterKey("vgrsd:DomainExtension.domain");
+        f.setFilterQuery("Styrande dokument");
+        f.setOperator("matching");
+        IFeed feed = new IFeed();
+        feed.addFilter(f);
+        Result r2 = client.query(feed.toQuery(client.fetchFields()), 0, 100_000, "asc", null);
 
-        // vgrsd\:DomainExtension.vgrsd\:ValidFrom:[2021-04-24 TO *]
-
-        Result r2 = client.query(f.toQuery(client.fetchFields()), 0, 100, "asc", null);
-
-        System.out.println(
-                new GsonBuilder().setPrettyPrinting().create().toJson(r2)
-        );
+        int i = 1;
+        for (Map<String, Object> doc : r2.getResponse().getDocs()) {
+            System.out.println(i + " " + doc.get("vgrsd:DomainExtension.domain"));
+            i++;
+        }
+        System.out.println(feed.toQuery(client.fetchFields()));*/
+        noResultOnComplexFilterError();
 
         /*Map<String, Set<Object>> all = client.findAllValues();
 
@@ -85,6 +83,40 @@ public class SolrHttpClientTest {
             }
         }*/
     }
+
+    static void noResultOnComplexFilterError() {
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        SolrHttpClient newStage = new SolrHttpClient("https://solr-stage.vgregion.se/solr/ifeed/");
+
+        /*String question = "(vgr\\:VgrExtension.vgr\\:SourceSystem:SOFIA AND title:Demo*" +
+                " AND ( -vgrsd\\:DomainExtension.domain:Styrande\\ dokument OR -vgrsd\\:DomainExtension.domain:Styrande\\ dokument))";
+        ask(client, question);*/
+
+        IFeed iFeed = new IFeed();
+        iFeed.getFilters().add(new IFeedFilter(null, "SOFIA", "vgr:VgrExtension.vgr:SourceSystem"));
+        iFeed.getFilters().add(new IFeedFilter(null, "*", "title"));
+        for (IFeedFilter filter : iFeed.getFilters()) {
+            FieldInf fi = new FieldInf();
+            DefaultFilter df = new DefaultFilter();
+            df.setFilterKey("-vgrsd:DomainExtension.domain");
+            df.setFilterQuery("Styrande dokument");
+            fi.setDefaultFilters(new HashSet<>());
+            fi.getDefaultFilters().add(df);
+            filter.setFieldInf(fi);
+        }
+        // iFeed.getFilters().add(new IFeedFilter(null, "Styrande dokument", "-vgrsd:DomainExtension.domain"));
+        String q = iFeed.toQuery(null);
+        System.out.println(q);
+        ask(client, q);
+    }
+
+    static void ask(SolrHttpClient client, String rawQuery) {
+        Result result = client.query(rawQuery, 0, 1_000_000, "asc", null, "title");
+        for (Map<String, Object> doc : result.getResponse().getDocs()) {
+            System.out.println(doc);
+        }
+    }
+
 
     static String enc() throws MalformedURLException, URISyntaxException {
         String urlStr = "http://localhost:8081/iFeed-web/documents/workspace://SpacesStore/216ba47f-2f19-4339-8567-b712e9838673/metadata";

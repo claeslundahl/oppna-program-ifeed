@@ -14,7 +14,6 @@ import javax.persistence.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "vgr_ifeed")
@@ -501,7 +500,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
 
-    private Set<DefaultFilter> getDefaultFilters(FieldInf that) {
+/*    private Set<DefaultFilter> getDefaultFilters(FieldInf that) {
         Set<DefaultFilter> result = new HashSet<>();
         if (that == null) {
             return result;
@@ -511,18 +510,20 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
         result.addAll(getDefaultFilters(that.getParent()));
         return result;
-    }
+    }*/
 
     private String toQueryImp(List<Field> meta) {
-        ArrayList<IFeedFilter> filterz = new ArrayList<>(this.filters);
+        Set<IFeedFilter> filterz = new HashSet<>(this.filters);
 
         for (IFeedFilter filter : new ArrayList<>(filterz)) {
-            filterz.addAll(getDefaultFilters(filter.getFieldInf()).stream().map(df -> {
+            /*filterz.addAll(getDefaultFilters(filter.getFieldInf()).stream().map(df -> {
                 IFeedFilter iff = new IFeedFilter();
                 iff.setFilterKey(df.getFilterKey());
                 iff.setFilterQuery(df.getFilterQuery());
                 return iff;
-            }).collect(Collectors.toList()));
+            }).collect(Collectors.toList()));*/
+            if (filter.getFieldInf() != null)
+                filterz.addAll(filter.getFieldInf().getEntireDefaultCondition());
         }
 
         if (filterz == null || filterz.isEmpty()) {

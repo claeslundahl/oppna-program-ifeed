@@ -48,6 +48,7 @@ public class SolrFacetUtil {
         if (feed == null) {
             throw new NullPointerException();
         }
+        feed.getFilters().addAll(fi.getEntireDefaultCondition());
         final String question = feed.toQuery(client.fetchFields());
         System.out.println("Type ahead: " + question);
         Result result = client.query(

@@ -141,11 +141,12 @@ public class TableDefModel extends DynamicTableDef {
                 fi.visit(child -> {
                     if (child.getFilter() != null && child.getFilter() && child.getId() != null && !"".equals(child.getId().trim())) {
                         if (result.get() == null) {
-                            result.set(fi);
-                            System.out.println("Found " + fi.getName());
+                            result.set(child);
+                            System.out.println("Found " + child.getName());
                         }
                     }
                 });
+                continue;
             }
         }
 

@@ -70,6 +70,7 @@ public class FieldInf implements Serializable {
 
     @CollectionTable(name = "field_counterpart", joinColumns = @JoinColumn(name = "field_inf_pk"))
     @ElementCollection(fetch = FetchType.EAGER) // TODO: How to set the name of the column?
+    @Column(name = "field_inf_id")
     private Set<String> counterparts;
 
     @OneToMany(fetch = FetchType.EAGER)

@@ -689,8 +689,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     }
 
     @Override
-    public List<String> fetchFilterSuggestion(IFeed feed, String fieldId, String starFilter) {
-        FieldInf field = getFieldInf(fieldId);
+    public List<String> fetchFilterSuggestion(IFeed feed, FieldInf field, String starFilter) {
+        // FieldInf field = getFieldInf(fieldId);
         return SolrFacetUtil.fetchFacets(getSolrServiceUrl(), feed, field, starFilter);
     }
 

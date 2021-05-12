@@ -1,10 +1,14 @@
 package se.vgregion.ifeed.types;
 
+import se.vgregion.common.utils.BeanMap;
+import se.vgregion.ifeed.shared.AbstractEntity;
+
 import javax.persistence.*;
+import java.util.TreeMap;
 
 @Entity
 @Table(name = "default_filter")
-public class DefaultFilter {
+public class DefaultFilter extends AbstractEntity {
 
     private static final long serialVersionUID = 8141707337621433678L;
 
@@ -14,6 +18,11 @@ public class DefaultFilter {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    protected String toStringImpl() {
+        return new TreeMap(new BeanMap(this)).toString();
     }
 
     public Long getId() {
@@ -44,9 +53,10 @@ public class DefaultFilter {
 
     public IFeedFilter toFilter() {
         IFeedFilter result = new IFeedFilter();
+        result.setId(id * -1);
         result.setFilterKey(filterKey);
         result.setFilterQuery(filterQuery);
-        result.setId(new Long(filterKey != null ? filterKey.hashCode() : 0 + filterQuery != null ? filterQuery.hashCode() : 0));
+        // result.setId(new Long(filterKey != null ? filterKey.hashCode() : 0 + filterQuery != null ? filterQuery.hashCode() : 0));
         return result;
     }
 

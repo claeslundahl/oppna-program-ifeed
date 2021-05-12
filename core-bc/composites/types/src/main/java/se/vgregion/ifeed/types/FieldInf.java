@@ -69,7 +69,7 @@ public class FieldInf implements Serializable {
     private List<FieldInf> children = new ArrayList<>();
 
     @CollectionTable(name = "field_counterpart", joinColumns = @JoinColumn(name = "field_inf_pk"))
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER) // TODO: How to set the name of the column?
     private Set<String> counterparts;
 
     @OneToMany(fetch = FetchType.EAGER)

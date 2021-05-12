@@ -3,14 +3,14 @@
  */
 package se.vgregion.ifeed.types;
 
-import java.util.Collection;
-import java.util.HashSet;
+import com.google.gson.annotations.Expose;
+import org.apache.commons.lang.builder.CompareToBuilder;
+import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 
 import javax.persistence.*;
-
-import org.apache.commons.lang.builder.CompareToBuilder;
-
-import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Anders Asplund - Callista Enterprise
@@ -38,6 +38,10 @@ public class Metadata extends AbstractEntity<Long>
             fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     private Collection<Metadata> children = new HashSet<Metadata>();
+
+    @OneToMany(mappedBy = "metadata", fetch = FetchType.LAZY, orphanRemoval = false)
+    @Expose(serialize = false, deserialize = false)
+    private Set<FieldInf> fieldInfs = new HashSet<>();
 
     public Metadata() {
         // To make JPA/Hibernate Happy
@@ -79,7 +83,7 @@ public class Metadata extends AbstractEntity<Long>
     @Override
     public int compareTo(Metadata other) {
         return new CompareToBuilder().
-            append(this.name, other.name).toComparison();
+                append(this.name, other.name).toComparison();
     }
 
     @Override
@@ -93,5 +97,13 @@ public class Metadata extends AbstractEntity<Long>
 
     public void setFilterQuery(String filterQuery) {
         this.filterQuery = filterQuery;
+    }
+
+    public Set<FieldInf> getFieldInfs() {
+        return fieldInfs;
+    }
+
+    public void setFieldInfs(Set<FieldInf> fieldInfs) {
+        this.fieldInfs = fieldInfs;
     }
 }

@@ -60,7 +60,8 @@
                                             </span>
                                         </h:commandLink>
                                         <div style="#{app.getHost().equals('localhost') ? '' : 'display: none;'}">
-                                                (#{child.id})
+                                            (#{child.id}) <br/>
+                                            [#{child.parent.parent.name}]
                                         </div>
                                     </td>
                                 </tr>

@@ -67,7 +67,7 @@ public interface IFeedService {
 
     Map<String, FieldInf> mapFieldInfToId();
 
-    List<String> fetchFilterSuggestion(IFeed feed, String fieldId, String starFilter);
+    List<String> fetchFilterSuggestion(IFeed feed, FieldInf fieldId, String starFilter);
 
     <T> T findByPrimaryKey(Class<T> clazz, Object id);
 

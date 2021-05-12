@@ -1,6 +1,7 @@
 package se.vgregion.ifeed.service.solr.client;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.service.ifeed.DocumentPopupConf;
@@ -25,6 +26,8 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
+        SolrHttpClient newStage = new SolrHttpClient("https://solr-stage.vgregion.se/solr/ifeed/");
+        listAllFieldsAndValues(newStage);
 
         /*IFeedFilter f = new IFeedFilter();
         f.setFilterKey("vgrsd:DomainExtension.domain");
@@ -40,7 +43,7 @@ public class SolrHttpClientTest {
             i++;
         }
         System.out.println(feed.toQuery(client.fetchFields()));*/
-        noResultOnComplexFilterError();
+        // noResultOnComplexFilterError();
 
         /*Map<String, Set<Object>> all = client.findAllValues();
 
@@ -83,6 +86,8 @@ public class SolrHttpClientTest {
             }
         }*/
     }
+
+
 
     static void noResultOnComplexFilterError() {
         SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
@@ -256,6 +261,18 @@ public class SolrHttpClientTest {
         for (String name : names) {
             System.out.println(name);
         }
+    }
+
+    static void listAllFieldsAndValues() {
+        listAllFieldsAndValues(client);
+    }
+
+    static void listAllFieldsAndValues(SolrHttpClient client) {
+        Map<String, Set<Object>> all = client.findAllValues();
+        for (String s : all.keySet()) {
+            // System.out.println(s + " = " + all.get(s));
+        }
+        System.out.println(all.get("dc.source.origin"));
     }
 
     static void generateCode() {

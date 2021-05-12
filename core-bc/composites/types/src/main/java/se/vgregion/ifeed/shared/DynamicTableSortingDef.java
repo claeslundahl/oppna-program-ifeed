@@ -28,7 +28,7 @@ public class DynamicTableSortingDef extends AbstractEntity {
   private String direction;
 
   @Override
-  String toStringImpl() {
+  protected String toStringImpl() {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
     sb.append(quoute("name") + ":" + quoute(getName()) + ", ");
@@ -46,12 +46,12 @@ public class DynamicTableSortingDef extends AbstractEntity {
   }
 
   @Override
-  Long getId() {
+  public Long getId() {
     return id;
   }
 
   @Override
-  void setId(Long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

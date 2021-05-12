@@ -370,11 +370,15 @@ public class Application {
 
         // Tro to find what list of filters to display initially.
         for (IFeedFilter filter : iFeedModelBean.getFilters()) {
-            FieldInf field = getFieldInfByPk(filter.getFieldInf().getPk());
-            if (field != null && field.getParent() != null && field.getParent().getParent() != null) {
-                selectedFieldInfRootName = field.getParent().getParent().getName();
-                System.out.println("selectedFieldInfRootName: " + selectedFieldInfRootName);
-                break;
+            FieldInf fi = filter.getFieldInf();
+            if (fi == null) fi = iFeedService.getFieldInf(filter.getFilterKey());
+            if (fi != null) {
+                FieldInf field = getFieldInfByPk(fi.getPk());
+                if (field != null && field.getParent() != null && field.getParent().getParent() != null) {
+                    selectedFieldInfRootName = field.getParent().getParent().getName();
+                    System.out.println("selectedFieldInfRootName: " + selectedFieldInfRootName);
+                    break;
+                }
             }
         }
 
@@ -547,6 +551,8 @@ public class Application {
             fieldInf.setExpanded(false);
             return;
         }
+        System.out.println("Metadata-group for new filter: " + fieldInf.getParent().getParent().getName());
+
         IFeedFilter newFilter = new IFeedFilter(null, fieldInf.getValue(), fieldInf.getId());
         if ("d:text_fix".equals(fieldInf.getType())) {
             Metadata domain = metadataRepository.getByName(fieldInf.getApelonKey());
@@ -714,7 +720,7 @@ public class Application {
             IFeed feed = new IFeed();
             feed.getFilters().addAll(presentFilters);
 
-            List<String> result = iFeedService.fetchFilterSuggestion(feed, newFilter.getId(), value + "*");
+            List<String> result = iFeedService.fetchFilterSuggestion(feed, newFilter, value + "*");
             if (newFilter.getQueryPrefix() != null) {
                 result = result.stream().map(r -> r.substring(newFilter.getQueryPrefix().length())).collect(Collectors.toList());
             }
@@ -1052,10 +1058,52 @@ public class Application {
 
         DistinctArrayList<FieldInf> tops = new DistinctArrayList<>();
 
-        for (IFeedFilter filter : iFeedModelBean.getFilters()) {
-            tops.add(filter.getFieldInf().getParent().getParent());
+        for (IFeed iFeed : iFeedModelBean.getAllNestedFeedsFlattly()) {
+            for (IFeedFilter filter : iFeed.getFilters()) {
+                if (filter.getFieldInf() != null && filter.getFieldInf().getParent() != null
+                        && filter.getFieldInf().getParent().getParent() != null)
+                    tops.add(filter.getFieldInf().getParent().getParent());
+            }
         }
 
+        if (tops.size() > 1) {
+            SelectItemGroup sig = new SelectItemGroup("Fält");
+            result.add(sig);
+            List<SelectItem> items = new ArrayList<>();
+            items.add(new SelectItem("title", "Titel"));
+            items.add(new SelectItem("dc.date.issued", "Publiceringsdatum"));
+            items.add(new SelectItem("core:ArchivalObject.core:CreatedDateTime", "Upprättat datum"));
+            sig.setSelectItems(items.toArray(new SelectItem[items.size()]));
+            return result;
+            // Titel title
+            // "Publiceringsdatum"	"dc.date.issued"
+            // Upprättat datum //(core:ArchivalObject.core:CreatedDateTime)
+
+        } else {
+            Set<String> names = new HashSet<>();
+
+            FieldInf top = tops.get(0);
+            for (FieldInf field : top.getChildren()) {
+                List<SelectItem> items = new ArrayList<>();
+                String name = field.getName() + " (" + top.getName() + ")";
+                if (names.contains(name)) {
+                    continue;
+                }
+                names.add(name);
+                SelectItemGroup g = new SelectItemGroup(name);
+                Set<String> subNames = new HashSet<>();
+                for (FieldInf leaf : field.getChildren()) {
+                    if (subNames.contains(leaf.getName()) || (leaf.getFilter() == null || !leaf.getFilter()))
+                        continue;
+                    subNames.add(leaf.getName());
+                    items.add(new SelectItem(leaf.getId(), leaf.getName()));
+                }
+                g.setSelectItems(items.toArray(new SelectItem[items.size()]));
+                result.add(g);
+            }
+        }
+
+/*
         for (FieldInf top : tops) {
             for (FieldInf field : top.getChildren()) {
                 List<SelectItem> items = new ArrayList<>();
@@ -1066,6 +1114,11 @@ public class Application {
                 g.setSelectItems(items.toArray(new SelectItem[items.size()]));
                 result.add(g);
             }
+        }
+*/
+
+        if (result.isEmpty()) {
+            return allFieldInfsAsSelectItemGroups();
         }
 
         return result;
@@ -1533,7 +1586,7 @@ public class Application {
 
 
     public void updateSearchResults(IFeed retrievedFeed) {
-        if (retrievedFeed.toQuery(client.fetchFields()).trim().equals("")) {
+        if (retrievedFeed.hasNoFilters()) {
             this.searchResults = new ArrayList<>();
             return;
         }

@@ -499,6 +499,14 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         return or.toQuery();
     }
 
+    public boolean hasNoFilters() {
+        int i = 0;
+        for (IFeed iFeed : getAllNestedFeedsFlattly()) {
+            i += iFeed.getFilters().size();
+        }
+        return i == 0;
+    }
+
 
 /*    private Set<DefaultFilter> getDefaultFilters(FieldInf that) {
         Set<DefaultFilter> result = new HashSet<>();
@@ -516,12 +524,6 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         Set<IFeedFilter> filterz = new HashSet<>(this.filters);
 
         for (IFeedFilter filter : new ArrayList<>(filterz)) {
-            /*filterz.addAll(getDefaultFilters(filter.getFieldInf()).stream().map(df -> {
-                IFeedFilter iff = new IFeedFilter();
-                iff.setFilterKey(df.getFilterKey());
-                iff.setFilterQuery(df.getFilterQuery());
-                return iff;
-            }).collect(Collectors.toList()));*/
             if (filter.getFieldInf() != null)
                 filterz.addAll(filter.getFieldInf().getEntireDefaultCondition());
         }

@@ -151,7 +151,7 @@ public class DynamicTableDef extends AbstractEntity {
     }
 
     @Override
-    String toStringImpl() {
+    protected String toStringImpl() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("defaultSortOrder", defaultSortOrder);
         map.put("showTableHeader", showTableHeader);

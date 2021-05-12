@@ -31,11 +31,11 @@ public abstract class AbstractEntity implements Serializable {
         }
     }
 
-    abstract String toStringImpl();
+    protected abstract String toStringImpl();
 
-    abstract Long getId();
+    public abstract Long getId();
 
-    abstract void setId(Long id);
+    public abstract void setId(Long id);
 
     @Override
     public int hashCode() {

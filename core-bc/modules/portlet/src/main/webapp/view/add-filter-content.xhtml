@@ -36,15 +36,6 @@
               <ui:include src="organization-tree.xhtml"/>
             </p:panel>
 
-            <!--<p:calendar rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
-                        navigator="false"
-                        readOnlyInput="false"
-                        value="#{app.newFilter.value}"
-                        lang="sv_SE"
-                        pattern="yyyy-MM-dd">
-              <f:converter converterId="textDateConverter"/>
-            </p:calendar>-->
-
             <p:inputText rendered="#{app.newFilter.type == 'd:date' or app.newFilter.type == 'd:datetime'}"
                          navigator="false"
                          readOnlyInput="false"

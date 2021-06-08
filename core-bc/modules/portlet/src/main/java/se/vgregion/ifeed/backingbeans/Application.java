@@ -1050,9 +1050,9 @@ public class Application {
     }
 
     public List<SelectItemGroup> fieldInfsAsSelectItemGroups() {
-        if (iFeedModelBean.getFilters().isEmpty()) {
+        /*if (iFeedModelBean.getFilters().isEmpty()) {
             return allFieldInfsAsSelectItemGroups();
-        }
+        }*/
 
         List<SelectItemGroup> result = new ArrayList<>();
 
@@ -1072,7 +1072,7 @@ public class Application {
             List<SelectItem> items = new ArrayList<>();
             items.add(new SelectItem("title", "Titel"));
             items.add(new SelectItem("dc.date.issued", "Publiceringsdatum"));
-            items.add(new SelectItem("core:ArchivalObject.core:CreatedDateTime", "Upprättat datum"));
+            // items.add(new SelectItem("core:ArchivalObject.core:CreatedDateTime", "Upprättat datum"));
             sig.setSelectItems(items.toArray(new SelectItem[items.size()]));
             return result;
             // Titel title
@@ -1554,6 +1554,9 @@ public class Application {
         if (iFeedModelBean.toQuery(client.fetchFields()).isEmpty()) {
             searchResults.clear();
         } else {
+            for (IFeedFilter iFeedModelBeanFilter : iFeedModelBean.getFilters()) {
+                System.out.println("foo: " + iFeedModelBeanFilter.getMetadata());
+            }
             System.out.println("Query in admin results: " + iFeedModelBean.toQuery(client.fetchFields()));
             updateSearchResults(iFeedModelBean);
         }

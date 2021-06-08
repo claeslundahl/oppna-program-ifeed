@@ -1,5 +1,8 @@
 package se.vgregion.ifeed.service.solr.client;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import se.vgregion.common.utils.CommonUtils;
@@ -10,6 +13,7 @@ import se.vgregion.ifeed.types.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,68 +30,93 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        SolrHttpClient newStage = new SolrHttpClient("https://solr-stage.vgregion.se/solr/ifeed/");
-        listAllFieldsAndValues(newStage);
-
-        /*IFeedFilter f = new IFeedFilter();
-        f.setFilterKey("vgrsd:DomainExtension.domain");
-        f.setFilterQuery("Styrande dokument");
-        f.setOperator("matching");
-        IFeed feed = new IFeed();
-        feed.addFilter(f);
-        Result r2 = client.query(feed.toQuery(client.fetchFields()), 0, 100_000, "asc", null);
-
-        int i = 1;
-        for (Map<String, Object> doc : r2.getResponse().getDocs()) {
-            System.out.println(i + " " + doc.get("vgrsd:DomainExtension.domain"));
-            i++;
-        }
-        System.out.println(feed.toQuery(client.fetchFields()));*/
-        // noResultOnComplexFilterError();
-
-        /*Map<String, Set<Object>> all = client.findAllValues();
-
-
-        List<Field> fields = client.fetchFields();
-        for (Field field : fields) {
-            System.out.println(field);
-        }*/
-
-        /*Set<Object> hmm = all.get("vgrsd:DomainExtension.domain");
-        for (Object o : hmm) {
-            System.out.println(o);
-        }*/
-
-
-
-
-      /*  for (String key : all.keySet()) {
-            // if (key.startsWith("vgrsd:DomainExtension.vgrsd:DocumentApproved"))
-               System.out.println(key + " = " + all.get(key));
-        }*/
-
-        /*IFeedFilter filter = new IFeedFilter("*test*", "title");
-
-        SolrHttpClient oldStage = new SolrHttpClient("http://vgas2192.vgregion.se:9090/solr/ifeed/");
-        Result r1 = oldStage.query(filter.toQuery(client.fetchFields()), 0, 100, "asc", null);
-        System.out.println(r1.getResponse().getDocs().size());
-        SolrHttpClient newStage = new SolrHttpClient("https://solr-stage.vgregion.se/solr/ifeed/");
-        Result r2 = newStage.query(filter.toQuery(client.fetchFields()), 0, 100, "asc", null);
-        System.out.println(r2.getResponse().getDocs().size());*/
-
-        /*Map<String, Set<Object>> allValues = client.findAllValues();
-        for (String key : allValues.keySet()) {
-            Set<Object> values = allValues.get(key);
-            for (Object value : values) {
-                if (value.toString().contains("Styrande dokument")) {
-                    System.out.println("Hittade: " + key);
-                    return;
-                }
-            }
-        }*/
+        datePlusMinusDoesNotWork();
     }
 
+    static void atkomstkod() throws IOException {
+        // vgr:VgrExtension.vgr:SecurityClass
 
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        Path path = Paths.get("C:\\Users\\clalu4\\.hotell\\ifeed\\config.json");
+        Type type = new TypeToken<ArrayList<FieldInf>>() {
+        }.getType();
+        List<FieldInf> fis = gson.fromJson(Files.readString(path), type);
+        final IFeedFilter iff = new IFeedFilter();
+        iff.setFilterKey("vgr:VgrExtension.vgr:SecurityClass");
+        iff.setOperator("matching");
+        //iff.setFilterQuery("2021-01-04");
+        iff.setFilterQuery("*");
+
+        for (FieldInf fi : fis) {
+            fi.visit(c -> {
+                c.init();
+                if (iff.getFilterKey().equals(c.getId())) {
+                    iff.setFieldInf(c);
+                }
+            });
+        }
+
+        System.out.println(iff.toQuery(client.fetchFields()));
+        System.out.println(client.query(iff.toQuery(client.fetchFields()),0, 1_000_000, "asc", null).getResponse().getDocs().size());
+    }
+
+    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    static void datePlusMinusDoesNotWork() throws IOException {
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        Path path = Paths.get("C:\\Users\\clalu4\\.hotell\\ifeed\\config.json");
+        Type type = new TypeToken<ArrayList<FieldInf>>() {
+        }.getType();
+        List<FieldInf> fis = gson.fromJson(Files.readString(path), type);
+        final IFeedFilter iff = new IFeedFilter();
+        iff.setFilterKey("vgrsd:DomainExtension.vgrsd:ValidTo");
+        iff.setOperator("matching");
+        iff.setFilterQuery("-300");
+
+        for (FieldInf fi : fis) {
+            fi.visit(c -> {
+                c.init();
+                if (iff.getFilterKey().equals(c.getId())) {
+                    iff.setFieldInf(c);
+                }
+            });
+        }
+
+        System.out.println(iff.toQuery(client.fetchFields()));
+        System.out.println(client.query(iff.toQuery(client.fetchFields()),0, 1_000_000, "asc", null).getResponse().getDocs().size());
+
+        String q = "vgrsd\\:DomainExtension.vgrsd\\:ValidTo:*";
+        System.out.println(client.query(q,0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        // vgrsd\:DomainExtension.vgrsd\:ValidTo:[2020-08-12T00:00:00Z TO 2020-08-12T23:59:59Z]
+        // 2023-06-07T13:15:00Z
+    }
+
+    // dc.date.issued
+
+    static void matchingDatesDoesNotWork() throws IOException {
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        Path path = Paths.get("C:\\Users\\clalu4\\.hotell\\ifeed\\config.json");
+        Type type = new TypeToken<ArrayList<FieldInf>>() {
+        }.getType();
+        List<FieldInf> fis = gson.fromJson(Files.readString(path), type);
+        final IFeedFilter iff = new IFeedFilter();
+        iff.setFilterKey("dc.date.issued");
+        iff.setOperator("lesser");
+        //iff.setFilterQuery("2021-01-04");
+        iff.setFilterQuery("2021-01-04");
+
+        for (FieldInf fi : fis) {
+            fi.visit(c -> {
+                c.init();
+                if (iff.getFilterKey().equals(c.getId())) {
+                    iff.setFieldInf(c);
+                }
+            });
+        }
+
+        System.out.println(iff.toQuery(client.fetchFields()));
+        System.out.println(client.query(iff.toQuery(client.fetchFields()),0, 1_000_000, "asc", null).getResponse().getDocs().size());
+    }
 
     static void noResultOnComplexFilterError() {
         SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();

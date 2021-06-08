@@ -1058,7 +1058,7 @@ public class IFeedViewerController {
 
                 ifHavingValueChangeThat(doc, "core:ArchivalObject.core:Classification.core:Classification.name",
                         doc.get("core:ArchivalObject.core:Classification.core:Classification.name"),
-                        "(", doc.get("core:ArchivalObject.core:Classification.core:Classification.classCode"), ")");
+                        " (", doc.get("core:ArchivalObject.core:Classification.core:Classification.classCode"), ")");
 
                 pairs.add(new KeyLabel("core:ArchivalObject.core:ObjectType", "Handlingstyp"));
                 pairs.add(new KeyLabel("vgr:VgrExtension.vgr:PublishedForUnit.id", "Upprättat för enhet"));

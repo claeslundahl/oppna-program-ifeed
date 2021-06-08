@@ -190,41 +190,49 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
     }
 
     public String toQuery(List<Field> meta) {
-        String valueToLookFor = toEmptyIfNull((getFieldInf() != null) ? getFieldInf().getQueryPrefix() : "") + filterQuery;
-        FieldInf fi = getFieldInf();
-        if (fi != null && "d:text_fix".equals(fi.getType())) {
-            Metadata md = getMetadata();
-            if (md != null && md.getFilterQuery() != null && !"".equals(md.getFilterQuery().trim())) {
-                valueToLookFor = md.getFilterQuery();
-            }
-        }
-        return toQueryImp(meta, children, operator, filterKey, valueToLookFor);
+        return toQueryImp(meta, this);
     }
 
-    public static String toQueryImp(List<Field> meta, List<IFeedFilter> children, String operator, String filterKey, String filterQuery) {
+    public static String toQueryImp(List<Field> meta, IFeedFilter iff) {
+        String valueToLookFor = toEmptyIfNull((iff.getFieldInf() != null) ? iff.getFieldInf().getQueryPrefix() : "") + iff.getFilterQuery();
+        FieldInf fi = iff.getFieldInf();
+        if (fi != null && "d:text_fix".equals(fi.getType())) {
+            Metadata md = iff.getMetadata();
+            if (md != null && md.getFilterQuery() != null && !"".equals(md.getFilterQuery().trim())) {
+                valueToLookFor = md.getFilterQuery();
+
+                return escapeFieldName(iff.filterKey) + ":" + escapeValue(valueToLookFor, iff.filterQuery, iff.operator, fi);
+            }
+        }
+
+        List<IFeedFilter> children = iff.getChildren();
+        String operator = iff.getOperator();
+        String filterKey = iff.getFilterKey();
+        String filterQuery = iff.getFilterQuery();
         if (children.isEmpty()) {
             boolean isMatchingDate = false;
             if (operator == null || operator.equals("matching") || operator.isEmpty()) {
                 if (meta != null) {
                     Field field = meta.stream().filter(f -> f.getName().equals(filterKey)).findAny().orElse(null);
                     if (field != null) {
-                        String type = ((Field) meta.stream().filter(f -> f.getName().equals(filterKey)).findAny().orElse(null)).getType();
-                        if (type != null && type.equals("tdate"))
+                        Field f1 = ((Field) meta.stream().filter(f -> f.getName().equals(filterKey)).findAny().orElse(null));
+                        String type = f1.getType();
+                        if (type != null && type.equals("tdate") || iff.getFieldInf() != null && iff.getFieldInf().getType().equals("d:date"))
                             isMatchingDate = true;
                     }
                 }
                 if (isMatchingDate) {
-                    String textDate = escapeValue(filterKey, filterQuery, operator);
+                    String textDate = escapeValue(filterKey, filterQuery, operator, iff.getFieldInf());
                     return escapeFieldName(filterKey) + ":[" + textDate + "T00:00:00Z TO " + textDate + "T23:59:59Z]";
                 }
-                return escapeFieldName(filterKey) + ":" + escapeValue(filterKey, filterQuery, operator);
+                return escapeFieldName(filterKey) + ":" + escapeValue(filterKey, filterQuery, operator, iff.getFieldInf());
             }
             if (operator.equals("greater"))
                 return escapeFieldName(filterKey) + ":[" +
-                        addZeroTimeToDateWhenApplicable(meta, filterKey, escapeValue(filterKey, filterQuery, operator)) + " TO *]";
+                        addZeroTimeToDateWhenApplicable(meta, filterKey, escapeValue(filterKey, filterQuery, operator, iff.getFieldInf())) + " TO *]";
             if (operator.equals("lesser"))
                 return escapeFieldName(filterKey) + ":[* TO " +
-                        addZeroTimeToDateWhenApplicable(meta, filterKey, escapeValue(filterKey, filterQuery, operator)) + "]";
+                        addZeroTimeToDateWhenApplicable(meta, filterKey, escapeValue(filterKey, filterQuery, operator, iff.getFieldInf())) + "]";
         } else {
             String o = operator.equalsIgnoreCase("and") ? " AND " : " OR ";
             Junctor ls = new Junctor(o);
@@ -239,7 +247,10 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
         if (initialValue == null || meta == null)
             return initialValue;
         Field field = meta.stream().filter(f -> f.getName().equals(key)).findFirst().orElse(null);
-        if (("d:date".equals(field.getType()) || "tdate".equals(field.getType()) && !initialValue.endsWith("Z"))) {
+        if (field == null) {
+            throw new RuntimeException("Field with k/v " + key + " / " + initialValue + " is null!");
+        }
+        if ((field != null && "d:date".equals(field.getType()) || "tdate".equals(field.getType()) && !initialValue.endsWith("Z"))) {
             initialValue = initialValue + "T00:00:00Z";
         }
         return initialValue;
@@ -292,10 +303,10 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
         return sdf.format(date);
     }
 
-    public static String escapeValue(String withKey, String forSolr, String andPurpose) {
+    public static String escapeValue(String withKey, String forSolr, String andPurpose, FieldInf fieldInf) {
         if (forSolr == null)
             return "";
-        if (isSomeKindOfDate(withKey))
+        if (isSomeKindOfDate(withKey) || fieldInf != null && fieldInf.getType() != null && fieldInf.getType().contains("date"))
             if (forSolr.startsWith("+") || (forSolr.startsWith("-") && forSolr.length() > 1 && isDigit(forSolr.substring(1)))) {
                 Date now = new Date();
                 long daysOff = Integer.parseInt(forSolr.substring(1));
@@ -306,7 +317,7 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
                 forSolr = sdf.format(otherDay);
             } else if (forSolr.matches("\\d{4}-\\d{2}-\\d{2}")) {
                 if (andPurpose == null || andPurpose.equals("matching")) {
-                    forSolr = forSolr + "*";
+                    //forSolr = forSolr + "*";
                 } else if (andPurpose.equals("greater")) {
                     Date date = toDate(forSolr);
                     date.setTime(date.getTime() - 86400000L);

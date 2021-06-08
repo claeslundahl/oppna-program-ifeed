@@ -24,7 +24,7 @@
             <table class="ifeed-filters">
                 <ui:repeat value="#{app.getFiltersMap().get(app.selectedFieldInfRootName).children}" var="ifeedFilter"
                            varStatus="status" id="getFiltersLoop">
-                    <tr>
+                    <tr style="#{ifeedFilter.filter ? '':'display:none'}">
                         <td colspan="2">
                             <h:commandLink
                                     value=""
@@ -36,6 +36,10 @@
                                      class="#{ifeedFilter.isExpanded() ? 'fa fa-chevron-down' : 'fa fa-chevron-right'}"></div>
                                 #{ifeedFilter.name}
                             </h:commandLink>
+                            <!--<div style="#{app.getHost().equals('localhost') ? '' : 'display: none;'}">
+                                (#{ifeedFilter.id}) <br/>
+                                [#{ifeedFilter.filter}]
+                            </div>-->
                         </td>
                     </tr>
 

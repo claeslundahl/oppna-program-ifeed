@@ -196,12 +196,20 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
     public static String toQueryImp(List<Field> meta, IFeedFilter iff) {
         String valueToLookFor = toEmptyIfNull((iff.getFieldInf() != null) ? iff.getFieldInf().getQueryPrefix() : "") + iff.getFilterQuery();
         FieldInf fi = iff.getFieldInf();
-        if (fi != null && "d:text_fix".equals(fi.getType())) {
-            Metadata md = iff.getMetadata();
-            if (md != null && md.getFilterQuery() != null && !"".equals(md.getFilterQuery().trim())) {
-                valueToLookFor = md.getFilterQuery();
+        if (fi != null) {
+            if (fi.getQueryPrefix() != null && !"".equals(fi.getQueryPrefix())) {
+                valueToLookFor = fi.getQueryPrefix() + iff.getFilterQuery();
+                String result = escapeFieldName(iff.filterKey) + ":" + escapeValue(iff.getFilterKey(), valueToLookFor, iff.operator, fi);
+                return result;
+            }
+            if ("d:text_fix".equals(fi.getType())) {
+                Metadata md = iff.getMetadata();
+                if (md != null && md.getFilterQuery() != null && !"".equals(md.getFilterQuery().trim())) {
+                    valueToLookFor = md.getFilterQuery();
 
-                return escapeFieldName(iff.filterKey) + ":" + escapeValue(valueToLookFor, iff.filterQuery, iff.operator, fi);
+                    String result = escapeFieldName(iff.filterKey) + ":" + escapeValue(iff.getFilterKey(), valueToLookFor, iff.operator, fi);
+                    return result;
+                }
             }
         }
 
@@ -332,7 +340,7 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
             } else {
                 forSolr = toUtcDateIfPossible(forSolr);
             }
-        String escaped = forSolr.replaceAll(valueRegex, "\\\\$1");
+        String escaped = forSolr.replaceAll(valueRegex, "\\\\$1").replace("/", "\\/");
         if (escaped.contains(" ")) {
             escaped = escaped.replace(" ", "\\ ");
             return escaped;

@@ -28,6 +28,7 @@ import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.service.solr.SolrFacetUtil;
 import se.vgregion.ifeed.service.solr.client.Response;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
@@ -722,7 +723,8 @@ public class Application {
 
             List<String> result = iFeedService.fetchFilterSuggestion(feed, newFilter, value + "*");
             if (newFilter.getQueryPrefix() != null) {
-                result = result.stream().map(r -> r.substring(newFilter.getQueryPrefix().length())).collect(Collectors.toList());
+                result = result.stream().filter(r -> SolrFacetUtil.hasLeadingStarPattern(r, newFilter.getQueryPrefix() + "*"))
+                        .map(r -> SolrFacetUtil.removeLeadingStarPatternFromText(r, newFilter.getQueryPrefix())).collect(Collectors.toList());
             }
             System.out.println(result);
             return result;

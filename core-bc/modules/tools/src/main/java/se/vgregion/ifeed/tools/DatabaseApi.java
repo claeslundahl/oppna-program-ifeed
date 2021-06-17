@@ -112,7 +112,22 @@ public class DatabaseApi extends ConnectionExt {
                 props.getProperty("datasource.connector.direct.password"),
                 props.getProperty("datasource.connector.direct.driverClassName")
         );
+        return result;
+    }
 
+    static DatabaseApi getLocalApi() {
+        Properties props = null;
+        try {
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        DatabaseApi result = new DatabaseApi(
+                props.getProperty("datasource.connector.direct.url"),
+                props.getProperty("datasource.connector.direct.username"),
+                props.getProperty("datasource.connector.direct.password"),
+                props.getProperty("datasource.connector.direct.driverClassName")
+        );
         return result;
     }
 

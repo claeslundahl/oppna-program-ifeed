@@ -10,6 +10,7 @@ import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.service.solr.SolrFacetUtil;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.shared.ColumnDef;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.shared.DynamicTableSortingDef;
@@ -246,6 +247,8 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         return latestFilterQueryTotalCount;
     }
 
+    private SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+
     @Override
     @Transactional
     public IFeed getIFeed(final Long id) {
@@ -270,7 +273,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         // IFeed result = iFeedRepo.find(id);
 
         IFeed result = objectRepo.findByPrimaryKey(IFeed.class, id);
-        String s = result.toQuery(null);
+        String s = result.toQuery(client.fetchFields());
         System.out.println(s);
         for (IFeedFilter filter : result.getFilters()) {
             init(filter);

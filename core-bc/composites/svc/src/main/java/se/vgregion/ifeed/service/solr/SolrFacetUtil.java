@@ -10,7 +10,9 @@ import se.vgregion.ifeed.types.IFeedFilter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -72,6 +74,75 @@ public class SolrFacetUtil {
         List<String> things = new ArrayList<>(SolrHttpClient.toFacetSet(result, field, starFilter));
         things = things.subList(0, Math.min(10, things.size()));
         return things;
+    }
+
+/*    public static void main(String[] args) {
+        String p = "SweMeSH/Sjukdomar";
+        String t = "SweMeSH/Sjukdomar/Hjärt-kärlsjukdomar";
+        System.out.println(
+                removeLeadingStarPatternFromText(t, p)
+        );
+    }*/
+
+/*    public static String toWildCardRegExp(String wildcardStr) {
+        Pattern regex = Pattern.compile("[^*?\\\\]+|(\\*)|(\\?)|(\\\\)");
+        Matcher m = regex.matcher(wildcardStr);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            if (m.group(1) != null) m.appendReplacement(sb, ".*");
+            else if (m.group(2) != null) m.appendReplacement(sb, ".");
+            else if (m.group(3) != null) m.appendReplacement(sb, "\\\\\\\\");
+            else m.appendReplacement(sb, "\\\\Q" + m.group(0) + "\\\\E");
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }*/
+
+    public static boolean hasLeadingStarPattern(String input, String pattern) {
+        if (pattern == null || pattern.trim().equals("")) {
+            return true;
+        }
+        List<String> parts = new ArrayList<>(Arrays.asList(pattern.split(Pattern.quote("*"))));
+        if (!input.startsWith("*") && !input.startsWith(parts.get(0))) {
+            return false;
+        }
+
+        while (!parts.isEmpty()) {
+            String head = parts.remove(0);
+            if (head.equals(""))
+                continue;
+            String[] two = input.split(Pattern.quote(head), 2);
+            /*System.out.println("Head: " + head);
+            System.out.println("Two: " + Arrays.asList(two));*/
+            if (two.length != 2) {
+                return false;
+            }
+            input = two[1];
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Ska vara t: "+hasLeadingStarPattern("Hej jag heter foo", "*Hej jag*foo"));
+        System.out.println("Ska vara t: "+hasLeadingStarPattern("Hej jag heter foo", "Hej jag*foo"));
+        System.out.println("Ska vara t: "+hasLeadingStarPattern("Hej jag heter foo", "***Hej jag**foo*"));
+        System.out.println("Ska vara f: "+hasLeadingStarPattern("Hej jag heter foo", "XHej jag*foo"));
+        System.out.println("Ska vara f: "+hasLeadingStarPattern("Hej jag heter foo", "*XHej jag*foo"));
+    }
+
+
+    public static String removeLeadingStarPatternFromText(String s, String p) {
+        String[] parts = p.split(Pattern.quote("*"));
+        return splitAndGetLastBitOnly(s, new ArrayList<>(Arrays.asList(parts)));
+    }
+
+    static String splitAndGetLastBitOnly(String input, List<String> partsToRemoveFromStart) {
+        if (partsToRemoveFromStart.isEmpty()) {
+            return input;
+        }
+        String first = partsToRemoveFromStart.remove(0);
+        String[] parts = input.split(Pattern.quote(first), 2);
+        return splitAndGetLastBitOnly(parts[parts.length - 1], partsToRemoveFromStart);
     }
 
     private static String facetUrl(String solrBaseUrl, IFeed feed, String field) {

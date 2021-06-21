@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.CompareToBuilder;
-import se.vgregion.common.utils.BeanMap;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.util.Junctor;
@@ -15,6 +14,7 @@ import javax.persistence.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "vgr_ifeed")
@@ -534,9 +534,14 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     private String toQueryImp(List<Field> meta) {
         Set<IFeedFilter> filterz = new HashSet<>(this.filters);
 
+        Set<String> filterKeys = filterz.stream().map(f -> f.getFilterKey()).collect(Collectors.toSet());
+
         for (IFeedFilter filter : new ArrayList<>(filterz)) {
             if (filter.getFieldInf() != null)
-                filterz.addAll(filter.getFieldInf().getEntireDefaultCondition());
+                filterz.addAll(
+                        filter.getFieldInf().getEntireDefaultCondition().stream()
+                                .filter(dc -> !filterKeys.contains(dc.getFilterKey())).collect(Collectors.toSet())
+                );
         }
 
         if (filterz == null || filterz.isEmpty()) {

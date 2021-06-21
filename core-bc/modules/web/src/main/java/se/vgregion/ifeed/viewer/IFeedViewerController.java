@@ -233,8 +233,8 @@ public class IFeedViewerController {
         //String[] f = toStringArray(allRequestParams, "f");
         //public void exportCsv(@PathVariable String listIdOrSerializedInstance, HttpServletRequest request, HttpServletResponse  response) {
         String url;
-        List<Map<String, Object>> resultAccumulator = new ArrayList<Map<String, Object>>();
-        List<Map<String, Object>> oneIterationResult = new ArrayList<Map<String, Object>>();
+        Set<Map<String, Object>> resultAccumulator = new HashSet<>();
+        Set<Map<String, Object>> oneIterationResult = new HashSet<>();
 
         if (endBy != null) {
             throw new RuntimeException("Did´nt think this would happen!");
@@ -244,26 +244,27 @@ public class IFeedViewerController {
             startBy = 0;
         }
         endBy = startBy + 500;
-        do {
-            oneIterationResult.clear();
-            if (isNumeric(instance)) {
-                Long id = Long.parseLong(instance);
-                url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
-            } else {
-                try {
-                    instance = URLDecoder.decode(instance, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                IFeed ifeed = IFeed.fromJson(instance);
-                url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, f*/);
+        endBy = 1_000_000;
+        //do {
+        oneIterationResult.clear();
+        if (isNumeric(instance)) {
+            Long id = Long.parseLong(instance);
+            url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
+        } else {
+            try {
+                instance = URLDecoder.decode(instance, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
-            oneIterationResult.addAll(result);
-            resultAccumulator.addAll(result);
-            startBy += 500;
-            endBy = startBy + 500;
-        } while (!oneIterationResult.isEmpty());
+            IFeed ifeed = IFeed.fromJson(instance);
+            url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, f*/);
+        }
+        List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
+        oneIterationResult.addAll(result);
+        resultAccumulator.addAll(result);
+        startBy += 500;
+        endBy = startBy + 500;
+        //} while (!oneIterationResult.isEmpty());
 
         BufferedOutputStream bos = null;
         OutputStream portletOutputStream = null;

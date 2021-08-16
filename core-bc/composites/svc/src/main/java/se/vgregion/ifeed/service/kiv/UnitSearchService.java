@@ -81,7 +81,9 @@ public class UnitSearchService {
             updateUnits();
             LOGGER.info("Updated units.");
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            /*e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);*/
+            throw new RuntimeException(e);
         }
     }
 

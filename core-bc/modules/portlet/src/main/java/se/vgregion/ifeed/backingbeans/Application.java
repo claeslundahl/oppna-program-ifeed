@@ -1671,6 +1671,9 @@ public class Application {
     }
 
     public boolean isFilter(IFeedFilter iff) {
+        if (iff.getFieldInf() != null) {
+            return iff.getFieldInf().getFilter();
+        }
         final MutableBoolean result = new MutableBoolean(false);
         for (FieldInf fi : filters) {
             fi.visit(item -> {

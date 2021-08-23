@@ -194,11 +194,11 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
     }
 
     public static String toQueryImp(List<Field> meta, IFeedFilter iff) {
-        String valueToLookFor = toEmptyIfNull((iff.getFieldInf() != null) ? iff.getFieldInf().getQueryPrefix() : "") + iff.getFilterQuery();
+        String valueToLookFor; // = toEmptyIfNull((iff.getFieldInf() != null) ? iff.getFieldInf().getQueryPrefix() : "") + iff.getFilterQuery();
         FieldInf fi = iff.getFieldInf();
         if (fi != null) {
             if (fi.getQueryPrefix() != null && !"".equals(fi.getQueryPrefix())) {
-                valueToLookFor = fi.getQueryPrefix() + iff.getFilterQuery();
+                valueToLookFor = fi.getQueryPrefix() + "*" + iff.getFilterQuery();
                 String result = escapeFieldName(iff.filterKey) + ":" + escapeValue(iff.getFilterKey(), valueToLookFor, iff.operator, fi);
                 return result;
             }

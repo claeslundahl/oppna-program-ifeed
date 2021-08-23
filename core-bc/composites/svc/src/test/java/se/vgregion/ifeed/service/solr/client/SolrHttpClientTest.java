@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import se.vgregion.common.utils.CommonUtils;
 import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.service.ifeed.DocumentPopupConf;
@@ -24,13 +23,23 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class SolrHttpClientTest {
 
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        datePlusMinusDoesNotWork();
+        String q = "(vgrsd\\:DomainExtension.vgrsd\\:CodeGroup.vgrsd\\:Code.path:SweMeSH\\/*Boksamlande AND vgrsd\\:DomainExtension.domain:Styrande\\ dokument)";
+        Result result = client.query(q,
+                null, null, null, null);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        for (Map<String, Object> doc : result.getResponse().getDocs()) {
+            System.out.println(((Collection) doc.get("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path")).stream().filter(p -> p.toString().startsWith("SweMeSH/")).collect(Collectors.toList()));
+            // System.out.println(gson.toJson(doc));
+        }
+        System.out.println(result.getResponse().getDocs().size());
+        // datePlusMinusDoesNotWork();
     }
 
     static void atkomstkod() throws IOException {
@@ -57,7 +66,7 @@ public class SolrHttpClientTest {
         }
 
         System.out.println(iff.toQuery(client.fetchFields()));
-        System.out.println(client.query(iff.toQuery(client.fetchFields()),0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getResponse().getDocs().size());
     }
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -83,10 +92,10 @@ public class SolrHttpClientTest {
         }
 
         System.out.println(iff.toQuery(client.fetchFields()));
-        System.out.println(client.query(iff.toQuery(client.fetchFields()),0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getResponse().getDocs().size());
 
         String q = "vgrsd\\:DomainExtension.vgrsd\\:ValidTo:*";
-        System.out.println(client.query(q,0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        System.out.println(client.query(q, 0, 1_000_000, "asc", null).getResponse().getDocs().size());
         // vgrsd\:DomainExtension.vgrsd\:ValidTo:[2020-08-12T00:00:00Z TO 2020-08-12T23:59:59Z]
         // 2023-06-07T13:15:00Z
     }
@@ -115,7 +124,7 @@ public class SolrHttpClientTest {
         }
 
         System.out.println(iff.toQuery(client.fetchFields()));
-        System.out.println(client.query(iff.toQuery(client.fetchFields()),0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getResponse().getDocs().size());
     }
 
     static void noResultOnComplexFilterError() {

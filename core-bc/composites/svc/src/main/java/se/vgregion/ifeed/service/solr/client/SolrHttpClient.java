@@ -320,7 +320,7 @@ public class SolrHttpClient {
         return result;
     }
 
-    static boolean stellarMatch(String[] stars, String value) {
+    public static boolean stellarMatch(String[] stars, String value) {
         for (String star : stars) {
             int index = value.indexOf(star);
             if (index == -1) {

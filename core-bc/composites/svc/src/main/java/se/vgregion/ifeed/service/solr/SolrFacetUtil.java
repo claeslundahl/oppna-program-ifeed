@@ -9,11 +9,9 @@ import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 /**
@@ -72,7 +70,27 @@ public class SolrFacetUtil {
             throw new RuntimeException(); // Remove this later...
         }
         List<String> things = new ArrayList<>(SolrHttpClient.toFacetSet(result, field, starFilter));
+        if (fi.getQueryPrefix() != null) {
+            Set<String> moddedThings = new TreeSet<>();
+            for (String thing : things) {
+                if (thing.startsWith(fi.getQueryPrefix())) {
+                    /*moddedThings.addAll(
+                            Arrays.asList(thing.split(Pattern.quote("/"))).stream().filter(s -> {
+                                        // System.out.println(s + " == " + starFilter + " -> " + hasLeadingStarPattern(s, starFilter));
+                                        return hasLeadingStarPattern(s, starFilter);
+                                    }
+                            ).collect(Collectors.toSet())
+                    );*/
+                    ArrayList<String> parts = new ArrayList<>(Arrays.asList(thing.split(Pattern.quote("/"))));
+                    moddedThings.add(parts.get(parts.size() - 1));
+                }
+            }
+            moddedThings.remove("");
+            moddedThings.remove(fi.getQueryPrefix());
+            things = new ArrayList<>(moddedThings);
+        }
         things = things.subList(0, Math.min(10, things.size()));
+        // System.out.println(things);
         return things;
     }
 
@@ -99,10 +117,11 @@ public class SolrFacetUtil {
     }*/
 
     public static boolean hasLeadingStarPattern(String input, String pattern) {
-        if (pattern == null || pattern.trim().equals("")) {
+        if (pattern == null || pattern.trim().equals("") || pattern.trim().equals("[*]+")) {
             return true;
         }
         List<String> parts = new ArrayList<>(Arrays.asList(pattern.split(Pattern.quote("*"))));
+        if (parts.isEmpty()) return true;
         if (!input.startsWith("*") && !input.startsWith(parts.get(0))) {
             return false;
         }
@@ -123,11 +142,18 @@ public class SolrFacetUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println("Ska vara t: "+hasLeadingStarPattern("Hej jag heter foo", "*Hej jag*foo"));
-        System.out.println("Ska vara t: "+hasLeadingStarPattern("Hej jag heter foo", "Hej jag*foo"));
-        System.out.println("Ska vara t: "+hasLeadingStarPattern("Hej jag heter foo", "***Hej jag**foo*"));
-        System.out.println("Ska vara f: "+hasLeadingStarPattern("Hej jag heter foo", "XHej jag*foo"));
-        System.out.println("Ska vara f: "+hasLeadingStarPattern("Hej jag heter foo", "*XHej jag*foo"));
+        String foo = "SweMeSH/Sjukdomar/Bakterie- och svampinfektioner";
+        for (String s : foo.split(Pattern.quote("/"))) {
+            System.out.println(hasLeadingStarPattern(s, "*Bak*"));
+        }
+        System.out.println("hej " + "***".matches("[*]+"));
+        System.out.println(hasLeadingStarPattern(foo, "****"));
+
+        System.out.println("Ska vara t: " + hasLeadingStarPattern("Hej jag heter foo", "*Hej jag*foo"));
+        System.out.println("Ska vara t: " + hasLeadingStarPattern("Hej jag heter foo", "Hej jag*foo"));
+        System.out.println("Ska vara t: " + hasLeadingStarPattern("Hej jag heter foo", "***Hej jag**foo*"));
+        System.out.println("Ska vara f: " + hasLeadingStarPattern("Hej jag heter foo", "XHej jag*foo"));
+        System.out.println("Ska vara f: " + hasLeadingStarPattern("Hej jag heter foo", "*XHej jag*foo"));
     }
 
 

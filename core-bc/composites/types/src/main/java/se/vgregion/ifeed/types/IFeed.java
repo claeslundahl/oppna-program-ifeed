@@ -492,19 +492,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     }
 
     public String toQuery(List<Field> meta) {
-        if (meta == null) {
-            System.out.println("Meta passed toQuery is null!");
-        } else {
-            System.out.println("Meta passed to Query has size " + meta.size());
-        }
         Junctor or = new Junctor(" OR ");
         Set<IFeed> flat = getAllNestedFeedsFlattly();
         for (IFeed feed : flat) {
-            /*feed.getFilters().forEach(iff-> {
-                Metadata md = iff.getMetadata();
-                BeanMap bm = new BeanMap(md);
-                System.out.println("Baa: " + bm);
-            });*/
             or.add(feed.toQueryImp(meta));
         }
         return or.toQuery();
@@ -533,7 +523,6 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     private String toQueryImp(List<Field> meta) {
         Set<IFeedFilter> filterz = new HashSet<>(this.filters);
-
         Set<String> filterKeys = filterz.stream().map(f -> f.getFilterKey()).collect(Collectors.toSet());
 
         for (IFeedFilter filter : new ArrayList<>(filterz)) {

@@ -714,7 +714,7 @@ public class Application {
         try {
             final Set<IFeedFilter> presentFilters = new HashSet<IFeedFilter>(iFeedModelBean.getFilters());
             IFeedFilter currentDraft = new IFeedFilter(
-                    (newFilter.getQueryPrefix() != null ? newFilter.getQueryPrefix() : "") + value + "*",
+                    (newFilter.getQueryPrefix() != null ? newFilter.getQueryPrefix() + "*" : "") + value + "*",
                     newFilter.getId()
             );
             presentFilters.add(currentDraft);
@@ -722,10 +722,10 @@ public class Application {
             feed.getFilters().addAll(presentFilters);
 
             List<String> result = iFeedService.fetchFilterSuggestion(feed, newFilter, value + "*");
-            if (newFilter.getQueryPrefix() != null) {
+            /*if (newFilter.getQueryPrefix() != null) {
                 result = result.stream().filter(r -> SolrFacetUtil.hasLeadingStarPattern(r, newFilter.getQueryPrefix() + "*"))
                         .map(r -> SolrFacetUtil.removeLeadingStarPatternFromText(r, newFilter.getQueryPrefix())).collect(Collectors.toList());
-            }
+            }*/
             System.out.println(result);
             return result;
         } catch (Exception e) {

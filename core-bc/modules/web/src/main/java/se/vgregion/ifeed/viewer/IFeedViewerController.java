@@ -191,9 +191,7 @@ public class IFeedViewerController {
             getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, null/*, f*/);
         }
 
-        System.out.println("toJson 123");
         jsonResult.set(gson.toJson(model.asMap().get("result")));
-        // return gson.toJson(model.asMap().get("result"));
         return "thisDoesNotMatherItSeems";
     }
 
@@ -995,8 +993,13 @@ public class IFeedViewerController {
                     System.out.println("allValue = " + allValue);
                     if (allValue instanceof Collection) {
                         Collection values = (Collection) allValue;
-                        List<String> formatted = (List<String>) values.stream().filter(o -> o.toString().startsWith(qp))
-                                .map(v -> v.toString().substring(qp.length())).collect(Collectors.toList());
+                        List<String> formatted = (List<String>) values.stream()
+                                .filter(o -> o.toString().startsWith(qp))
+                                .map(v -> {
+                                    String[] parts = v.toString().split(Pattern.quote("/"));
+                                    return parts[parts.length - 1];
+                                })
+                                .collect(Collectors.toList());
                         String key = item.getId() + " " + item.getQueryPrefix();
                         doc.put(key, formatted);
                         System.out.println(key + " = " + formatted);
@@ -1223,7 +1226,6 @@ public class IFeedViewerController {
     }
 
     private static boolean isGoverning(Map<String, Object> doc) {
-        System.out.println(" isGoverning '" + doc.get("vgrsd:DomainExtension.domain") + "'");
         return "Styrande dokument".equals(doc.get("vgrsd:DomainExtension.domain"));
     }
 

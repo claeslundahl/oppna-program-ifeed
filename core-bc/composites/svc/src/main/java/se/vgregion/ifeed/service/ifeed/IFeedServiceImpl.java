@@ -162,7 +162,6 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         }
         Json.toJson(ifeed);
         ifeed.toQuery(null);
-        System.out.println("Här körs specialfilter!");
         ifeed.getFilters().forEach(f -> {
             f.getMetadata();
             IFeedFilter p = f.getParent();

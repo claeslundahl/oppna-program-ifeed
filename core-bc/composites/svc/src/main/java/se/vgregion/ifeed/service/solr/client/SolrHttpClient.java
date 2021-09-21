@@ -177,7 +177,7 @@ public class SolrHttpClient {
                 fl[i] = SolrQueryEscaper.escape(fl[i]).replace("\\:", "*");
             }
             fields = String.join(", ", fl);
-            System.out.println(fields);
+            // System.out.println(fields);
         }
 
         String json = toText(fq, start, 1_000_000, null, fields);

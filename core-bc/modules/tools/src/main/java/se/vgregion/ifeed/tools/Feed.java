@@ -1,7 +1,6 @@
 package se.vgregion.ifeed.tools;
 
 import se.vgregion.common.utils.DistinctArrayList;
-import se.vgregion.common.utils.Json;
 import se.vgregion.ifeed.types.IFeed;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class Feed extends Tuple {
         return filters;
     }
 
-    static Feed toFeed(Map<String, Object> fromThat) {
+    public static Feed toFeed(Map<String, Object> fromThat) {
         Feed result = new Feed();
         result.putAll(fromThat);
         return result;
@@ -79,13 +78,22 @@ public class Feed extends Tuple {
         fromHere.update("delete from vgr_ifeed where id = ?", get("id"));
     }
 
+    private boolean toStringRuns = false;
+
     @Override
     public String toString() {
-        Map result = new HashMap(this);
-        List<Map<String, Object>> list = new ArrayList<>();
-        for (Filter filter : filters) list.add(filter.toMap());
-        result.put("filters", list);
-        return Json.toJson(result);
+        try {
+            if (toStringRuns) return "[rec-ref]";
+            toStringRuns = true;
+            Map result = new HashMap(this);
+            List<Map<String, Object>> list = new ArrayList<>();
+            for (Filter filter : filters) list.add(filter.toMap());
+            result.put("filters", list);
+            return result.toString();
+        } finally {
+            toStringRuns = false;
+        }
+        //return Json.toJson(result);
     }
 
     public List<CompositeLink> getComposites() {

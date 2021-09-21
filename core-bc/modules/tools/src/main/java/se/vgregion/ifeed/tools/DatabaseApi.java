@@ -5,6 +5,9 @@ import se.vgregion.arbetsplatskoder.db.migration.sql.*;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,26 @@ public class DatabaseApi extends ConnectionExt {
 
     public List<Tuple> query(String question, Object... withParameters) {
         return toTuples(super.query(question, 0, 1_000_000, withParameters));
+    }
+
+    public List<Tuple> query(String table, Map<String, Object> matching) {
+        if (matching == null || matching.isEmpty()) {
+            return query("select * from " + table);
+        }
+        String sql = "select * from " + table + " where ";
+        List<Object> values = new ArrayList<>();
+        List<String> where = new ArrayList<>();
+        for (String key : matching.keySet()) {
+            Object v = matching.get(key);
+            if (v != null) {
+                where.add(key + " = ?");
+                values.add(matching.get(key));
+            } else {
+                where.add(key + " is null");
+            }
+        }
+        sql = sql + String.join(" and ", where);
+        return query(sql, values.toArray());
     }
 
     static Tuple toTuple(Map<String, Object> item) {
@@ -115,7 +138,7 @@ public class DatabaseApi extends ConnectionExt {
         return result;
     }
 
-    static DatabaseApi getLocalApi() {
+    public static DatabaseApi getLocalApi() {
         Properties props = null;
         try {
             props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties"));
@@ -146,6 +169,18 @@ public class DatabaseApi extends ConnectionExt {
         );
 
         return result;
+    }
+
+    public List<Tuple> getPrims(String forTable) {
+        try {
+            DatabaseMetaData meta = getConnection().getMetaData();
+            try (ResultSet rs = meta.getPrimaryKeys(null, null, forTable)) {
+                return toTuples(JdbcUtil.toMaps(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

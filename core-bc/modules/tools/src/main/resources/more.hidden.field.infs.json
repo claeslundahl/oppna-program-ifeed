@@ -1,0 +1,179 @@
+{
+  "vgr:VgrExtension.vgr:Tag": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "type": "d:text_facet",
+      "leaf_search": false,
+      "filter": false,
+      "help": "Företagsnyckelord",
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597433,
+      "name": "Företagsnyckelord",
+      "id": "vgr:VgrExtension.vgr:Tag",
+      "position": 106
+    }
+  ],
+  "core:ArchivalObject.core:Producer": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "in_tooltip": true,
+      "type": "d:text_facet",
+      "leaf_search": false,
+      "filter": false,
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597450,
+      "name": "Myndighet",
+      "id": "core:ArchivalObject.core:Producer",
+      "position": 123
+    }
+  ],
+  "DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "in_tooltip": true,
+      "type": "d:text_facet",
+      "leaf_search": false,
+      "filter": false,
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597471,
+      "name": "Domän Styrande dokument",
+      "id": "DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension",
+      "position": 143
+    }
+  ],
+  "vgrsd:DomainExtension.vgrsd:ValidTo": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "in_tooltip": true,
+      "type": "d:date",
+      "leaf_search": false,
+      "filter": false,
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597471,
+      "name": "Giltig till",
+      "id": "vgrsd:DomainExtension.vgrsd:ValidTo",
+      "position": 143
+    }
+  ],
+  "vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "apelon_id": 113048,
+      "in_tooltip": false,
+      "type": "d:text_fix",
+      "leaf_search": false,
+      "filter": false,
+      "expanded": false,
+      "parent_pk": 437597468,
+      "name": "Kodverk (SweMeSH)",
+      "id": "vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path",
+      "position": 135,
+      "query_prefix": "SweMeSH/"
+    },
+    {
+      "in_html_view": false,
+      "level": 2,
+      "apelon_id": 113048,
+      "in_tooltip": false,
+      "type": "d:text_fix",
+      "leaf_search": false,
+      "filter": false,
+      "expanded": false,
+      "apelon_key": "Verksamhetskod",
+      "parent_pk": 437597468,
+      "name": "Kodverk (Verksamhetskod)",
+      "id": "vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path",
+      "position": 135,
+      "query_prefix": "Verksamhetskod/"
+    }
+  ],
+  "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "in_tooltip": false,
+      "type": "d:text_facet",
+      "leaf_search": false,
+      "filter": false,
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597450,
+      "name": "Egen ämnesindelning",
+      "id": "vgrsy:DomainExtension.vgrsy:SubjectLocalClassification",
+      "position": 129
+    }
+  ],
+  "vgr:VgrExtension.vgr:Title": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "in_tooltip": true,
+      "type": "d:text_facet",
+      "leaf_search": false,
+      "filter": false,
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597450,
+      "name": "Titel",
+      "id": "vgr:VgrExtension.vgr:Title",
+      "position": 122
+    }
+  ],
+  "vgr:VgrExtension.vgr:PublishedForUnit.id": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "in_tooltip": true,
+      "type": "d:ldap_org_value",
+      "leaf_search": false,
+      "filter": false,
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597450,
+      "name": "Upprättat för enhet",
+      "id": "vgr:VgrExtension.vgr:PublishedForUnit.id",
+      "position": 126
+    }
+  ],
+  "vgr:VgrExtension.vgr:CreatedByUnit.id": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "type": "d:ldap_org_value",
+      "leaf_search": false,
+      "filter": false,
+      "help": "Upprättat av enhet",
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597444,
+      "name": "Upprättat av enhet",
+      "id": "vgr:VgrExtension.vgr:CreatedByUnit.id",
+      "position": 110
+    }
+  ],
+  "vgr:VgrExtension.vgr:Source.id": [
+    {
+      "in_html_view": false,
+      "level": 2,
+      "type": "d:text_facet",
+      "leaf_search": false,
+      "filter": false,
+      "help": "Dokumentets id som det finns lagrat i källsystemet.",
+      "expanded": false,
+      "apelon_key": "",
+      "parent_pk": 437597433,
+      "name": "Dokumentid källa",
+      "id": "vgr:VgrExtension.vgr:Source.id",
+      "position": 107
+    }
+  ]
+}

@@ -28,15 +28,11 @@ public class NoCacheHeaderFilter implements javax.servlet.Filter {
         ServletRequestWrapper httpReq = new ServletRequestWrapper((HttpServletRequest) req);
         HttpServletResponse httpRes = (HttpServletResponse) res;
 
-        // HttpSession session = httpReq.getSession();
-
         /*
             Cache-Control: no-cache, no-store, must-revalidate
             Pragma: no-cache
             Expires: 0
          */
-
-        System.out.println("Runs header filter");
 
         httpReq.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         httpReq.addHeader("Pragma", "no-cache");

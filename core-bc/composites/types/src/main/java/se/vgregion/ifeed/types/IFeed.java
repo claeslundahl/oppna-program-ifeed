@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.util.Junctor;
@@ -78,6 +79,10 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     @Column
     private Boolean linkNativeDocument;
+
+    @Column(name = "creation_time", updatable = false)
+    @CreationTimestamp
+    private Date creationTime;
 
     public Set<IFeedFilter> getFilters() {
 /*        if (filters == null) {
@@ -410,6 +415,14 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     public List<IFeed> getComposites() {
         return composites;
+    }
+
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
     }
 
     private static class DistinctArrayList<E> extends ArrayList<E> {

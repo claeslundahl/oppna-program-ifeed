@@ -27,7 +27,7 @@ public class Filter extends Tuple {
         return result;
     }
 
-    static Filter toFilter(Tuple tuple) {
+    public static Filter toFilter(Tuple tuple) {
         Filter result = new Filter();
         result.putAll(tuple);
         return result;
@@ -112,4 +112,10 @@ public class Filter extends Tuple {
         return result;
     }
 
+    /*@Override
+    public Object put(String key, Object value) {
+        if ("filterkey".equals(key) && value == null)
+            throw new NullPointerException();
+        return super.put(key, value);
+    }*/
 }

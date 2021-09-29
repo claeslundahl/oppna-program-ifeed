@@ -3,6 +3,7 @@ package se.vgregion.ifeed.tools;
 import se.vgregion.common.utils.MultiMap;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
+import se.vgregion.ifeed.tools.complement.HiddenFieldsUtil;
 import se.vgregion.ifeed.types.IFeed;
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class SofiaFlowCompletion {
 
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
+    private HiddenFieldsUtil hiddenFieldsUtil;
+
     static {
         for (CorrespondingKeys correspondingKey : MetadataSwap.CORRESPONDING_KEYS) {
             for (String fromThat : correspondingKey.fromThese) {
@@ -41,10 +44,6 @@ public class SofiaFlowCompletion {
             }
         }
     }
-
-    /*public static void main(String[] args) {
-        new SofiaFlowCompletion().start();
-    }*/
 
 
     public void start() {
@@ -109,6 +108,8 @@ public class SofiaFlowCompletion {
             }
             Feed sofia = toSofiaEquivalent(feed);
             sofia.insert(database);
+            // TODO: Check if this will work next time.
+            getHiddenFieldsUtil().fixHiddenFieldsConnection(sofia);
             long id = (long) feed.get("id");
             feedIds.add(id);
             new CompositeLink(id, id * -1).insert(database);
@@ -225,58 +226,6 @@ public class SofiaFlowCompletion {
             database.update(format("alter sequence hibernate_sequence restart with %d", lastSequenceValue + 1l));
         }
     }
-/*
-    void fixHiddenFieldsConnection() {
-        String sql = "select vif1.* from vgr_ifeed_filter vif1\n" +
-                "join vgr_ifeed_filter vif2 on vif2.parent_id = vif1.id\n" +
-                "join vgr_ifeed_filter vif3 on vif3.parent_id = vif2.id\n" +
-                "left outer join field_inf fi on fi.pk = vif3.field_inf_pk\n" +
-                "where vif1.ifeed_id < 0 \n" +
-                "and vif3.field_inf_pk is null or vif3.filterkey != fi.id\n" +
-                "union all\n" +
-                "select vif1.* from vgr_ifeed_filter vif1\n" +
-                "join vgr_ifeed_filter vif2 on vif2.parent_id = vif1.id\n" +
-                "left outer join field_inf fi on fi.pk = vif2.field_inf_pk\n" +
-                "where vif1.ifeed_id < 0 \n" +
-                "and vif2.field_inf_pk is null or vif2.filterkey != fi.id\n" +
-                "union all\n" +
-                "select vif1.* from vgr_ifeed_filter vif1\n" +
-                "left outer join field_inf fi on fi.pk = vif1.field_inf_pk\n" +
-                "where vif1.ifeed_id < 0 \n" +
-                "and vif1.field_inf_pk is null or vif1.filterkey != fi.id\n" +
-                "and vif1.operator not in ('or', 'and')";
-        for (Tuple tuple : database.query(sql)) {
-            fixHiddenFieldsConnection(Filter.toFilter(tuple));
-        }
-    }
-
-    void fixHiddenFieldsConnection(Filter item) {
-        Map<String, Tuple> map = new HashMap<>();
-        getHiddenFields().stream().forEach(f -> map.put((String) f.get("id"), f));
-        Object newFieldInfPk = map.get(item.get("filterkey")).get("pk");
-        int result = database.update(
-                "update vgr_ifeed_filter set field_inf_pk = ? where id = ?",
-                newFieldInfPk, item.get("id")
-        );
-        System.out.println(result);
-        if (result != 1) {
-            throw new RuntimeException();
-        }
-    }
-
-    private List<Tuple> hiddenFields;
-
-    public List<Tuple> getHiddenFields() {
-        if (hiddenFields == null) {
-            String hiddenSql = "select leaf.*\n" +
-                    "from field_inf trunk\n" +
-                    "join field_inf branch on trunk.pk = branch.parent_pk \n" +
-                    "join field_inf leaf on branch.pk = leaf.parent_pk\n" +
-                    "where trunk.name = 'Gömda'";
-            this.hiddenFields = database.query(hiddenSql);
-        }
-        return hiddenFields;
-    }*/
 
     public DatabaseApi getDatabase() {
         return database;
@@ -286,4 +235,10 @@ public class SofiaFlowCompletion {
         this.database = database;
     }
 
+    public HiddenFieldsUtil getHiddenFieldsUtil() {
+        if (hiddenFieldsUtil == null) {
+            hiddenFieldsUtil = new HiddenFieldsUtil(database);
+        }
+        return hiddenFieldsUtil;
+    }
 }

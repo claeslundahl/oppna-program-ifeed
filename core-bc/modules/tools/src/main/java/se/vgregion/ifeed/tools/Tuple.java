@@ -5,7 +5,7 @@ import se.vgregion.common.utils.Json;
 
 import java.util.HashMap;
 
-public class Tuple extends HashMap<String, Object> {
+public class Tuple extends HashMap<String, Object> implements Comparable {
 
     private Table table;
 
@@ -18,4 +18,8 @@ public class Tuple extends HashMap<String, Object> {
         super();
     }
 
+    @Override
+    public int compareTo(Object o) {
+        return hashCode() - o.hashCode();
+    }
 }

@@ -15,7 +15,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GoverningDocComplementation {
+public class GoverningDocComplettion {
 
     private final String stuffWithManyFiltersSql = "select ifeed_id, count(distinct filterkey) from vgr_ifeed_filter where \n" +
             "ifeed_id > 0 and\n" +
@@ -37,24 +37,30 @@ public class GoverningDocComplementation {
 
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public GoverningDocComplementation(DatabaseApi database) {
+    private HiddenFieldsUtil hiddenFieldsUtil;
+
+    private Map<String, FieldInf> codeMapping = Map.of("dc.subject.keywords", new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path",
+            "Kodverk (Verksamhetskod)", "Verksamhetskod/"),
+            "dc.coverage.hsacode", new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path",
+                    "Kodverk (Verksamhetskod)", "Verksamhetskod/"));
+
+    public GoverningDocComplettion(DatabaseApi database) {
         this.database = database;
+        hiddenFieldsUtil = new HiddenFieldsUtil(database);
     }
 
     public static void main(String[] args) {
         DatabaseApi database = DatabaseApi.getLocalApi();
+        System.out.println(database.getUrl());
+        // if(true) return;
         try {
-            GoverningDocComplementation governingDocComplementation = new GoverningDocComplementation(database);
-
-            /*Feed result = governingDocComplementation.one(116975);
-            Feed old = governingDocComplementation.getFeed(116975);
-            print(old);
-            System.out.println();
-            print(result);*/
-            // governingDocComplementation.runWithTopFiltersFeeds(10);
-            print(governingDocComplementation.one(437595301));
-        } finally {
+            GoverningDocComplettion gdc = new GoverningDocComplettion(database);
+            // print(gdc.one(437595301));
+            gdc.main();
             database.rollback();
+        } catch (Exception e) {
+            database.rollback();
+            throw new RuntimeException(e);
         }
     }
 
@@ -125,13 +131,9 @@ public class GoverningDocComplementation {
         System.out.println(items.size());
         System.out.println("Antal barium " + feedsWithBariumDocs.size());
 
-        // if(true) return;
-
         for (Number feedsWithBariumDoc : feedsWithBariumDocs) {
             one(feedsWithBariumDoc);
         }
-
-        database.rollback();
     }
 
     Feed one(Number forThatFeed) {
@@ -157,8 +159,8 @@ public class GoverningDocComplementation {
         filters = changeKeys(filters,
                 Map.of("dc.publisher.forunit.id", "vgr:VgrExtension.vgr:PublishedForUnit.id",
                         "dc.creator.forunit.id", "vgr:VgrExtension.vgr:CreatedByUnit.id",
-                        "dc.creator.recordscreator.id", "core:ArchivalObject.core:Producer",
-                        "dc.source.origin", "DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension")
+                        "dc.creator.recordscreator.id", "core:ArchivalObject.core:Producer"/*,
+                        "dc.source.origin", "DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension"*/)
         );
 
         putNewIds(filters.values().stream()
@@ -177,9 +179,10 @@ public class GoverningDocComplementation {
         for (Filter filter : newFeed.getFilters())
             filter.put("ifeed_id", newId);
 
-
-
         newFeed.insert(database);
+
+        CompositeLink cl = new CompositeLink(newId * -1, newId);
+        cl.insert(database);
 
         return newFeed;
     }
@@ -343,61 +346,6 @@ public class GoverningDocComplementation {
         return result;
     }
 
-    /*void create(Number forThatFeed) {
-        List<Tuple> items = database.query("select * from vgr_ifeed where id = ?", forThatFeed);
-        for (Tuple item : items) {
-            Feed feed = Feed.toFeed(item);
-            feed.fill(database);
-            if (feed.getComposites().isEmpty()) {
-                Long newId = (Long) feed.get("id");
-                newId = newId * -1;
-                Feed newFeed = new Feed(feed);
-                newFeed.put("name", newFeed.get("name") + "(komplettering för styrande dokument)");
-                newFeed.put("id", newId);
-                newFeed.put("userid", "lifra1");
-
-                Filter and = new Filter();
-                and.put("id", SequenceUtil.getNextHibernateSequeceValue(database));
-                and.put("operator", "and");
-                and.put("ifeed_id", newId);
-
-                MultiMap<String, Filter> filters = new MultiMap<>();
-                for (Filter filter : feed.getFilters()) {
-                    filters.get(filter.get("filterkey")).add(filter);
-                    filter.put("ifeed_id", newId);
-                    Long filterId = (Long) filter.get("id");
-                    filter.put("id", filterId * -1);
-                }
-                for (String key : filters.keySet()) {
-                    List<Filter> forOneKey = filters.get(key);
-                    if (forOneKey.size() == 1) {
-                        Filter one = forOneKey.get(0);
-                        newFeed.getFilters().add(one);
-                        one.put("ifeed_id", newId);
-                        one.put("id", SequenceUtil.getNextHibernateSequeceValue(database));
-                    } else {
-                        Filter or = new Filter();
-                        or.put("operator", "or");
-                        or.put("id", SequenceUtil.getNextHibernateSequeceValue(database));
-                        or.put("ifeed_id", newId);
-                        or.getChildren().addAll(forOneKey);
-                        for (Filter filter : forOneKey) {
-                            filter.remove("ifeed_id");
-                        }
-                    }
-                }
-                newFeed.insert(database);
-            } else {
-
-            }
-            *//*System.out.println(gson.toJson(feed));
-            System.out.println();
-            System.out.println(gson.toJson(feed.getFilters()));*//*
-
-        }
-    }*/
-
-
     static boolean hasBariumDocs(Object id) {
         try {
             return hasBariumDocsImpl(id);
@@ -409,7 +357,6 @@ public class GoverningDocComplementation {
     static HttpClient client = HttpClient.newHttpClient();
 
     static boolean hasBariumDocsImpl(Object id) throws IOException, InterruptedException {
-
 
         final String serviceUrl = String.format("http://localhost:7070/iFeed-web/documentlists/%s/metadata.json?by=&dir=asc&f=SourceSystem", id.toString());
 

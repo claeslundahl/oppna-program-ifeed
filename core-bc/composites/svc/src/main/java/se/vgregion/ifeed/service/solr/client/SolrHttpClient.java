@@ -368,6 +368,23 @@ public class SolrHttpClient {
         return baseUrl;
     }
 
+    public NavigableSet<Object> findAllValues(String forField) {
+        final NavigableSet<Object> result = new TreeSet<>();
+
+        Result everything = query("", 0, 1_000_000, null, null, forField);
+
+        for (Map<String, Object> item : everything.getResponse().getDocs()) {
+            for (String key : item.keySet()) {
+                Object value = item.get(key);
+                if (value instanceof Collection) {
+                    result.addAll((Collection<Object>) item.get(key));
+                } else {
+                    result.add(item.get(key));
+                }
+            }
+        }
+        return result;
+    }
 
     public Map<String, Set<Object>> findAllValues() {
         final Map<String, Set<Object>> result = new TreeMap<String, Set<Object>>() {

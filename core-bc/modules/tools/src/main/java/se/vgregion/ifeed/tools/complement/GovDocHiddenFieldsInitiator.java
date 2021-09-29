@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import se.vgregion.common.utils.MultiMap;
 import se.vgregion.ifeed.tools.DatabaseApi;
 import se.vgregion.ifeed.tools.Tuple;
-import se.vgregion.ifeed.types.IFeed;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,10 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+@Deprecated // Is this needed? It is also done in the HiddenFieldsUtil/Starter.
 public class GovDocHiddenFieldsInitiator {
 
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -40,8 +38,8 @@ public class GovDocHiddenFieldsInitiator {
 
     public static void main(String[] args) throws IOException {
         database = DatabaseApi.getLocalApi();
-        GoverningDocComplementation governingDocComplementation = new GoverningDocComplementation(database);
-        final List<Tuple> alreadyThere = governingDocComplementation.getHiddenFields();
+        GoverningDocComplettion governingDocComplettion = new GoverningDocComplettion(database);
+        final List<Tuple> alreadyThere = governingDocComplettion.getHiddenFields();
         Set<Map> rta = getRecordsToAdd().values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
         System.out.println("rta count " + rta.size());
         List<Map> notAlreadyThere = rta.stream()

@@ -2,6 +2,8 @@ package se.vgregion.ifeed.tools.complement;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang.mutable.MutableBoolean;
+import org.apache.commons.lang.mutable.MutableInt;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.tools.*;
 
@@ -12,7 +14,7 @@ public class HiddenFieldsUtil extends FieldInfUtil {
 
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    private Tuple hiddenTemplate = gson.fromJson("{\n" +
+    public final Tuple hiddenTemplate = gson.fromJson("{\n" +
             "      \"in_html_view\": false,\n" +
             "      \"level\": 2,\n" +
             "      \"apelon_id\": 113048,\n" +
@@ -88,7 +90,6 @@ public class HiddenFieldsUtil extends FieldInfUtil {
                 "Verksamhetskod/",
                 "Kodverk (Verksamhetskod)");
 
-
         /*addIfNotThereWithFeedback("DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension",
                 null,
                 "Domän Styrande dokument");
@@ -141,30 +142,59 @@ public class HiddenFieldsUtil extends FieldInfUtil {
     }
 
     void fixHiddenFieldsConnection() {
-        String sql = "select vif1.* from vgr_ifeed_filter vif1\n" +
-                "join vgr_ifeed_filter vif2 on vif2.parent_id = vif1.id\n" +
-                "join vgr_ifeed_filter vif3 on vif3.parent_id = vif2.id\n" +
-                "left outer join field_inf fi on fi.pk = vif3.field_inf_pk\n" +
-                "where vif1.ifeed_id < 0 \n" +
-                "and vif3.field_inf_pk is null or vif3.filterkey != fi.id\n" +
-                "union all\n" +
-                "select vif1.* from vgr_ifeed_filter vif1\n" +
-                "join vgr_ifeed_filter vif2 on vif2.parent_id = vif1.id\n" +
-                "left outer join field_inf fi on fi.pk = vif2.field_inf_pk\n" +
-                "where vif1.ifeed_id < 0 \n" +
-                "and vif2.field_inf_pk is null or vif2.filterkey != fi.id\n" +
-                "union all\n" +
-                "select vif1.* from vgr_ifeed_filter vif1\n" +
-                "left outer join field_inf fi on fi.pk = vif1.field_inf_pk\n" +
-                "where vif1.ifeed_id < 0 \n" +
-                "and vif1.field_inf_pk is null or vif1.filterkey != fi.id\n" +
-                "and vif1.operator not in ('or', 'and')";
-        for (Tuple tuple : database.query(sql)) {
-            fixHiddenFieldsConnection(Filter.toFilter(tuple));
+        String sql = "select * from vgr_ifeed where id < 0";
+        System.out.println(sql);
+        List<Tuple> items = database.query(sql);
+
+        final List<Feed> toFix = new ArrayList<>();
+        for (Tuple item : items) {
+            Feed feed = Feed.toFeed(item);
+            feed.fill(database);
+            MutableBoolean needsFix = new MutableBoolean(false);
+            for (Filter filter : feed.getFilters()) {
+                filter.visit(f -> {
+                    String fk = (String) f.get("filterkey");
+                    if (fk != null && !"".equals(fk.trim())) {
+                        FieldInf fi = f.getFieldInf();
+                        fi.load(database);
+                        if (fi == null || !fi.get("id").equals(f.get("filterkey"))) {
+                            needsFix.setValue(true);
+                        }
+                    }
+                });
+                if (needsFix.booleanValue()) {
+                    toFix.add(feed);
+                }
+            }
         }
+
+        System.out.println("Hittade " + toFix.size() + " saker att fixa.");
+        int i = 0;
+        for (Feed feed : toFix) {
+            i++;
+            //System.out.println(i + " " + feed);
+            System.out.println(i + " Ändrade " + fixHiddenFieldsConnection(feed) + " antal i " + feed);
+        }
+
+
+        /*int i = 0;
+        for (Tuple tuple : items) {
+            // System.out.println(tuple.get("ifeed_id"));
+            Filter filter = Filter.toFilter(tuple);
+            filter.fill(database);
+            filter.visit(f -> {
+                String filterKey = (String) f.get("filterkey");
+                if (filterKey != null && !"".equals(filterKey.trim()))
+                    fixHiddenFieldsConnection(f);
+            });
+            i++;
+            if (i % 5 == 0) System.out.print(String.format("%1$4s", i) + " ");
+            if (i % 20 == 0) System.out.println();
+        }*/
     }
 
-    public void fixHiddenFieldsConnection(Feed feed) {
+    public int fixHiddenFieldsConnection(Feed feed) {
+        MutableInt result = new MutableInt(0);
         if (feed.getFilters() == null) {
             feed.fill(database);
         }
@@ -172,25 +202,36 @@ public class HiddenFieldsUtil extends FieldInfUtil {
             filter.visit(f -> {
                 String key = (String) f.get("filterkey");
                 if (key != null && !"".equals(key.trim())) {
-                    fixHiddenFieldsConnection(f);
+                    result.add(fixHiddenFieldsConnection(f));
                 }
             });
         }
+        return result.intValue();
     }
 
-    void fixHiddenFieldsConnection(Filter item) {
-        System.out.println(item);
+    int fixHiddenFieldsConnection(Filter item) {
+        // if (item.get("ifeed_id") != null) System.out.println(item.get("ifeed_id"));
+        // System.out.println(item);
         Map<String, Tuple> map = new HashMap<>();
         getHiddenFields().stream().forEach(f -> map.put((String) f.get("id"), f));
+        /*String filterKey = (String) item.get("filterkey");
+        Tuple correctFilterKeyRecord = map.get(filterKey);
+        if (newKey == null) {
+            throw new RuntimeException("The old key ")
+        }*/
+        if (map.get(item.get("filterkey")) == null) {
+            throw new RuntimeException("Does not have substitute for key " + item.get("filterkey"));
+        }
         Object newFieldInfPk = map.get(item.get("filterkey")).get("pk");
         int result = database.update(
                 "update vgr_ifeed_filter set field_inf_pk = ? where id = ?",
                 newFieldInfPk, item.get("id")
         );
-        System.out.println(result);
+        // System.out.println(result);
         if (result != 1) {
             throw new RuntimeException();
         }
+        return result;
     }
 
     private List<Tuple> hiddenFields;

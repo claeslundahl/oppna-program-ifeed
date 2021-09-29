@@ -41,7 +41,7 @@ public class Preproc {
                 .filter(s -> !"".equals(s.trim())).collect(Collectors.toSet());
 
         DatabaseApi database = DatabaseApi.getLocalApi();
-        GoverningDocComplementation gdc = new GoverningDocComplementation(database);
+        GoverningDocComplettion gdc = new GoverningDocComplettion(database);
 
         MultiMap r = new MultiMap();
         System.out.println("Antal idn: " + ids.size());

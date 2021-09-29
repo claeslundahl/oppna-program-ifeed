@@ -9,6 +9,8 @@ import java.util.function.Consumer;
 public class Filter extends Tuple {
 
     private final List<Filter> children = new ArrayList<>();
+    private DatabaseApi database;
+    private FieldInf fieldInf;
 
     public Filter() {
         super();
@@ -34,6 +36,7 @@ public class Filter extends Tuple {
     }
 
     public void fill(DatabaseApi database) {
+        this.database = database;
         if (get("id") != null) {
             List<Tuple> findings = database.query("select * from vgr_ifeed_filter where parent_id = ?", get("id"));
             children.addAll(toFilters(findings));
@@ -41,6 +44,23 @@ public class Filter extends Tuple {
                 child.fill(database);
             }
         }
+    }
+
+    public FieldInf getFieldInf() {
+        if (fieldInf != null) {
+            return fieldInf;
+        }
+        Long fieldInfPk = (Long) get("field_inf_pk");
+        if (fieldInfPk == null) {
+            throw new RuntimeException("Missing field_inf_pk!");
+        }
+        List<Tuple> items = database.query("select * from field_inf where pk = ?", fieldInfPk);
+        for (Tuple item : items) {
+            fieldInf = FieldInf.toFieldInf(item);
+            fieldInf.load(database);
+            break;
+        }
+        return fieldInf;
     }
 
     public List<Filter> getChildren() {

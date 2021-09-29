@@ -30,16 +30,26 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        String q = "(vgrsd\\:DomainExtension.vgrsd\\:CodeGroup.vgrsd\\:Code.path:SweMeSH\\/*Boksamlande AND vgrsd\\:DomainExtension.domain:Styrande\\ dokument)";
-        Result result = client.query(q,
-                null, null, null, null);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        for (Map<String, Object> doc : result.getResponse().getDocs()) {
-            System.out.println(((Collection) doc.get("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path")).stream().filter(p -> p.toString().startsWith("SweMeSH/")).collect(Collectors.toList()));
-            // System.out.println(gson.toJson(doc));
+
+        Path path = Paths.get("C:\\workspace", "all-ifeed.values.txt");
+        StringBuilder sb = new StringBuilder();
+        /*
+            Nyckelord
+            Verksamhetskod  HSA
+            Målgrupp HOS
+            Dokumentstruktur VGR
+         */
+
+        Set<String> whiteList = new HashSet<>(Arrays.asList("dc.subject.keywords", "dc.coverage.hsacode",
+                "dcterms.audience", "dc.type.document.structure"));
+        NavigableSet<Object> all;
+        for (String wl : whiteList) {
+            all = client.findAllValues(wl);
+            sb.append(wl + "\t" + all.stream().map(o -> o.toString()).collect(Collectors.joining("\t")));
+            sb.append("\n");
         }
-        System.out.println(result.getResponse().getDocs().size());
-        // datePlusMinusDoesNotWork();
+
+        Files.writeString(path, sb.toString());
     }
 
     static void atkomstkod() throws IOException {

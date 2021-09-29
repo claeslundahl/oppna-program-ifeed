@@ -75,7 +75,7 @@ public class DatabaseApi extends ConnectionExt {
         return query(sql).get(0).values().iterator().next();
     }
 
-    static DatabaseApi getDatabaseApi() {
+    public static DatabaseApi getDatabaseApi() {
         Properties props = fetchProperties();
 
         DatabaseApi result = new DatabaseApi(
@@ -88,7 +88,7 @@ public class DatabaseApi extends ConnectionExt {
         return result;
     }
 
-    static DatabaseApi getRemoteTestDatabaseApi() {
+    public static DatabaseApi getRemoteTestDatabaseApi() {
         Properties props = null;
         try {
             props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.test"));
@@ -105,7 +105,7 @@ public class DatabaseApi extends ConnectionExt {
         return result;
     }
 
-    static DatabaseApi getRemoteStageDatabaseApi() {
+    public static DatabaseApi getRemoteStageDatabaseApi() {
         Properties props = null;
         try {
             props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.stage.properties"));
@@ -122,7 +122,7 @@ public class DatabaseApi extends ConnectionExt {
         return result;
     }
 
-    static DatabaseApi getLocalBackupApi() {
+    public static DatabaseApi getLocalBackupApi() {
         Properties props = null;
         try {
             props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.local.backup.properties"));
@@ -154,7 +154,7 @@ public class DatabaseApi extends ConnectionExt {
         return result;
     }
 
-    static DatabaseApi getRemoteProdDatabaseApi() {
+    public static DatabaseApi getRemoteProdDatabaseApi() {
         Properties props = null;
         try {
             props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.prod.properties"));

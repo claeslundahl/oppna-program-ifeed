@@ -10,8 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Map;
 
 public class AtomToRssFilter implements Filter {
@@ -27,8 +30,15 @@ public class AtomToRssFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
             ServletException {
+        System.out.println("Start " + AtomToRssFilter.class.getName() + "doFilter");
+        System.out.println("Attributes is: ");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        Enumeration names = request.getAttributeNames();
+        while (names.hasMoreElements()) {
+            String key = (String) names.nextElement();
+            System.out.println(key + " = " + httpRequest.getAttribute(key));
+        }
 
         @SuppressWarnings("unchecked")
         Map<String, String[]> parms = httpRequest.getParameterMap();

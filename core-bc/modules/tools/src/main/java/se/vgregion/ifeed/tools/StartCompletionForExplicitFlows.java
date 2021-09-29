@@ -16,8 +16,7 @@ public class StartCompletionForExplicitFlows extends SofiaFlowCompletion {
     public static void main(String[] args) {
         StartCompletionForExplicitFlows sofia = new StartCompletionForExplicitFlows();
         System.out.println(sofia.database.getUrl());
-        // if (true) throw new RuntimeException("Are you certain you want to run this?");
-        // if (true) return;
+        if (true) return;
         sofia.main();
         sofia.database.commit();
     }

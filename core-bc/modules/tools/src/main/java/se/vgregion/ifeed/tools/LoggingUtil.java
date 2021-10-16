@@ -17,17 +17,21 @@ public class LoggingUtil {
     static SimpleDateFormat sdf = new SimpleDateFormat("dd/MMMM/yyyy:HH:mm:ss");
 
     public static void main(String[] args) throws IOException {
+        String textualNowDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         DatabaseApi database = DatabaseApi.getLocalApi();
+
+        makeTableIfMissing(database);
+
         Path path = Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "access-logs");
-        NavigableSet<Tuple> toAdd = new TreeSet<>();
-        NavigableSet<String> previouslyAdded = new TreeSet(database.query("select id from access_log").stream().map(m -> m.get("id")).collect(Collectors.toSet()));
+        final NavigableSet<String> previouslyAdded = new TreeSet(database.query("select id from access_log").stream().map(m -> m.get("id")).collect(Collectors.toSet()));
         NavigableSet<String> allFeedIds = new TreeSet<>(database.query("select id from vgr_ifeed").stream().map(m -> m.get("id").toString()).collect(Collectors.toSet()));
         Files.list(path).forEach(c -> {
+            final NavigableSet<Tuple> toAdd = new TreeSet<>();
             System.out.println(c);
             try {
-                if (c.toString().endsWith(".txt")) {
+                if (c.toString().endsWith(".txt") && !c.toString().contains(textualNowDate)) {
                     List<String> content = Files.readAllLines(c);
-                    for (String s : content) {
+                    for (final String s : content) {
                         if (previouslyAdded.contains(s))
                             continue;
                         previouslyAdded.add(s);
@@ -95,6 +99,22 @@ public class LoggingUtil {
         System.out.println("hej: " + names.stream().collect(Collectors.joining(", ")));*/
 
         return new Timestamp(date.getTime());
+    }
+
+    private static void makeTableIfMissing(DatabaseApi here) {
+        int result = here.update("create table if not exists access_log (\n" +
+                "    id character varying(1000) NOT NULL,\n" +
+                "    host character varying(255),\n" +
+                "    http_status character varying(255),\n" +
+                "    ifeed_id bigint,\n" +
+                "    path character varying(1000),\n" +
+                "    \"time\" timestamp without time zone,\n" +
+                "    CONSTRAINT access_log_pkey PRIMARY KEY (id)\n" +
+                ");");
+        if (result > 0) {
+            here.commit();
+            System.out.println("Created the access_log table.");
+        }
     }
 
 }

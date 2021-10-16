@@ -28,7 +28,6 @@ import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.SolrFacetUtil;
 import se.vgregion.ifeed.service.solr.client.Response;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
@@ -1737,6 +1736,15 @@ public class Application {
             return fi.getName();
         }
         return getFieldsByNameIndex().get(forThat.getFilterKey()).getName();
+    }
+
+    public boolean hasComposite(IFeed feed) {
+        for (IFeedFilter filter : feed.getFilters()) {
+            if ("and".equals(filter.getOperator()) || "and".equals(filter.getOperator())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

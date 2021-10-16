@@ -12,6 +12,15 @@ public class Filter extends Tuple {
     private DatabaseApi database;
     private FieldInf fieldInf;
 
+    public Filter(Map<String, Object> from) {
+        super(from);
+    }
+
+    public Filter(Map<String, Object> from, FieldInf fieldInf) {
+        super(from);
+        this.fieldInf = fieldInf;
+    }
+
     public Filter() {
         super();
     }
@@ -61,6 +70,10 @@ public class Filter extends Tuple {
             break;
         }
         return fieldInf;
+    }
+
+    public void setFieldInf(FieldInf fieldInf) {
+        this.fieldInf = fieldInf;
     }
 
     public List<Filter> getChildren() {

@@ -74,7 +74,7 @@ public class GoverningDocComplettion {
         }
     }
 
-    static void print(Feed feed) {
+    public static void print(Feed feed) {
         /*for (String key : feed.keySet()) {
             System.out.println(key + " = " + feed.get(key));
         }*/

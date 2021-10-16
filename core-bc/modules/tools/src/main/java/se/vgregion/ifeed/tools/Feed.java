@@ -62,8 +62,10 @@ public class Feed extends Tuple {
         for (Filter filter : filters) {
             filter.insert(into, this, null);
         }
+        for (CompositeLink composite : composites) {
+            composite.insert(into);
+        }
     }
-
 
     public void delete(DatabaseApi fromHere) {
         for (Filter filter : filters) {

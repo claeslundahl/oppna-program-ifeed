@@ -373,13 +373,15 @@ public class SolrHttpClient {
 
         Result everything = query("", 0, 1_000_000, null, null, forField);
 
-        for (Map<String, Object> item : everything.getResponse().getDocs()) {
-            for (String key : item.keySet()) {
-                Object value = item.get(key);
-                if (value instanceof Collection) {
-                    result.addAll((Collection<Object>) item.get(key));
-                } else {
-                    result.add(item.get(key));
+        if (everything.getResponse() != null) {
+            for (Map<String, Object> item : everything.getResponse().getDocs()) {
+                for (String key : item.keySet()) {
+                    Object value = item.get(key);
+                    if (value instanceof Collection) {
+                        result.addAll((Collection<Object>) item.get(key));
+                    } else {
+                        result.add(item.get(key));
+                    }
                 }
             }
         }

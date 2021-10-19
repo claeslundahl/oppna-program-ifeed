@@ -3,6 +3,7 @@ package se.vgregion.ifeed.tools.complement;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import se.vgregion.common.utils.MultiMap;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.tools.*;
 
 import java.util.*;
@@ -16,39 +17,7 @@ public class GoverningDocumentComplementation {
 
     private final List<FieldInf> replacements;
 
-    private final List<Mapper> mappers = new ArrayList<>(
-            Arrays.asList(
-                    new Mapper(new HashSet<>(Arrays.asList(
-                            "dc.publisher.project-assignment",
-                            "dc.creator.project-assignment",
-                            "dc.type.process.name",
-                            "dc.type.file.process",
-                            "dc.type.file",
-                            "dc.type.document.serie",
-                            "dc.type.document.id",
-                            "dc.type.document",
-                            "dc.type.record")),
-                            new FieldInf("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning", null)),
-                    new Mapper("dc.subject.authorkeywords", new FieldInf("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord", null)),
-                    new Mapper("dc.publisher.forunit.id", new FieldInf("vgr:VgrExtension.vgr:PublishedForUnit.id", "Upprättat för enhet", null)),
-                    new Mapper("dc.creator.recordscreator.id", new FieldInf("core:ArchivalObject.core:Producer", "Myndighet", null)),
-                    //new Mapper("dc.creator.recordscreator.id", new FieldInf("DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension", "Domän Styrande dokument", null)),
-                    new Mapper("dc.creator.recordscreator.id", new FieldInf("core:ArchivalObject.core:Producer", "Myndighet", null)),
-                    new Mapper("dc.keywords", new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (SweMeSH)", "SweMeSH/")),
-                    new Mapper("dc.coverage.hsacode", new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (Verksamhetskod)", "Verksamhetskod/")),
-                    // Kompletterande flöde - ersätt BariumID med Titel (för de dokument som fortfarande är publicerade,
-                    // avpublicerade dokument följer inte med dvs det kan blir så att det inte blir lika många poster i det kompletternade flödet)
-                    new Mapper("dc.source.documentid", new FieldInf("vgr:VgrExtension.vgr:Title", "Titel", null)),
-                    // vgrsd:DomainExtension.vgrsd:ValidityArea för rutin och riktlinje. Det här måste hanteras på icke-standard-vis.
-                    new Mapper("dc.type.document.structure", new FieldInf("core:ArchivalObject.core:ObjectType", "Handlingstyp", null)),
-                    new Mapper("dc.title", new FieldInf("vgr:VgrExtension.vgr:Title", "Titel", null)),
-                    // 3 olika kodverk i SOFIA, i feed behöver kompletternade flödet ta hänsyn till detta, se flik "Målgrupp HOS" för mappningsregler.
-                    //Kodverk Legitimerade yrken
-                    //Kodverk Specialistutbildningar
-                    //Kodverk HosPersKat
-                    new Mapper("dcterms.audience", new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Titel", null)),
-                    new Mapper("dc.date.validto", new FieldInf("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltighetsdatum tom", null))
-            ));
+    private List<Mapper> mappers;
 
     private final List<Filter> defaultFiltersToAdd = new ArrayList<>();
 
@@ -60,32 +29,11 @@ public class GoverningDocumentComplementation {
                 "join field_inf trunk on branch.parent_pk = trunk.pk\n" +
                 "where trunk.name = 'Gömda'\n" +
                 "order by 1, 2, 3";
+
         List<Tuple> newFilters = database.query(sql);
 
         replacements = newFilters.stream().map(t -> FieldInf.toFieldInf(t)).collect(Collectors.toList());
 
-        for (Mapper mapper : mappers) {
-            FieldInf fi = mapper.getFieldInf();
-            mapper.setFieldInf(getOrCreateFromOrInDatabase(fi));
-
-            /*for (FieldInf replacement : replacements) {
-                if (equals(fi.get("id"), replacement.get("id")) && equals(fi.get("query_prefix"), replacement.get("query_prefix"))) {
-                    mapper.setFieldInf(replacement);
-                    break;
-                }
-            }
-            if (fi == mapper.getFieldInf()) {
-                FieldInf firstAsSample = replacements.get(0);
-                firstAsSample.remove("apelon_id");
-                System.out.println(gson.toJson(firstAsSample));
-                firstAsSample.put("pk", SequenceUtil.getNextHibernateSequeceValue(database));
-                firstAsSample.put("name", fi.get("name"));
-                firstAsSample.put("id", fi.get("id"));
-                //throw new RuntimeException("Did not find hidden field inf in db for: \n" + fi.get("id"));
-                database.insert("field_inf", firstAsSample);
-                replacements.add(firstAsSample);
-            }*/
-        }
         defaultFiltersToAdd.addAll(Arrays.asList(new Filter(
                         Map.of(
                                 "filterkey", "vgrsd:DomainExtension.domain",
@@ -95,6 +43,49 @@ public class GoverningDocumentComplementation {
                         getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.domain", "Dokumenttyp", null))
                 )
         ));
+    }
+
+    private List<Mapper> getMappers() {
+        if (mappers == null) {
+            mappers = new ArrayList<>(
+                    Arrays.asList(
+                            new Mapper(new HashSet<>(Arrays.asList(
+                                    "dc.publisher.project-assignment",
+                                    "dc.creator.project-assignment",
+                                    "dc.type.process.name",
+                                    "dc.type.file.process",
+                                    "dc.type.file",
+                                    "dc.type.document.serie",
+                                    "dc.type.document.id",
+                                    "dc.type.document",
+                                    "dc.type.record")),
+                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning", null))),
+                            new Mapper("dc.subject.authorkeywords", getOrCreateFromOrInDatabase(new FieldInf("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord", null))),
+                            new Mapper("dc.publisher.forunit.id", getOrCreateFromOrInDatabase(new FieldInf("vgr:VgrExtension.vgr:PublishedForUnit.id", "Upprättat för enhet", null))),
+                            new Mapper("dc.creator.recordscreator.id", getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:Producer", "Myndighet", null))),
+                            //new Mapper("dc.creator.recordscreator.id", new FieldInf("DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension", "Domän Styrande dokument", null)),
+                            new Mapper("dc.creator.recordscreator.id", getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:Producer", "Myndighet", null))),
+                            new Mapper("dc.keywords", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (SweMeSH)", "SweMeSH/"))),
+                            new CoverageHsaCodeMapper("dc.coverage.hsacode", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (Verksamhet)", "Verksamhetskod/"))),
+                            // Kompletterande flöde - ersätt BariumID med Titel (för de dokument som fortfarande är publicerade,
+                            // avpublicerade dokument följer inte med dvs det kan blir så att det inte blir lika många poster i det kompletternade flödet)
+                            new DocumentIdMapper("dc.source.documentid", getOrCreateFromOrInDatabase(new FieldInf("vgr:VgrExtension.vgr:Title", "Titel", null))),
+                            // vgrsd:DomainExtension.vgrsd:ValidityArea för rutin och riktlinje. Det här måste hanteras på icke-standard-vis.
+                            //new Mapper("dc.type.document.structure", new FieldInf("core:ArchivalObject.core:ObjectType", "Handlingstyp", null)),
+                            new DocumentStructureMapper(this),
+                            new Mapper("dc.title", getOrCreateFromOrInDatabase(new FieldInf("vgr:VgrExtension.vgr:Title", "Titel", null))),
+                            // 3 olika kodverk i SOFIA, i feed behöver kompletternade flödet ta hänsyn till detta, se flik "Målgrupp HOS" för mappningsregler.
+                            //Kodverk Legitimerade yrken
+                            //Kodverk Specialistutbildningar
+                            //Kodverk HosPersKat
+                            new TermsAudienceMapper("dcterms.audience",
+                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Titel", null)),
+                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Titel", null)),
+                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Titel", null))),
+                            new Mapper("dc.date.validto", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltighetsdatum tom", null))
+                            )));
+        }
+        return mappers;
     }
 
     FieldInf getOrCreateFromOrInDatabase(FieldInf fi) {
@@ -185,16 +176,24 @@ public class GoverningDocumentComplementation {
             filter.visit(that -> {
                 String fk = (String) that.get("filterkey");
                 if (fk != null && !"".equals(fk.trim())) {
-                    replaceFilterKeyAndType(that);
+                    replaceFilterKeyAndType(inHere, that);
                 }
             });
         });
     }
 
-    void replaceFilterKeyAndType(Filter inHere) {
-        for (Mapper mapper : mappers) {
+    void replaceFilterKeyAndType(Feed parent, Filter inHere) {
+        for (Mapper mapper : getMappers()) {
             if (mapper.getFromKeys().contains(inHere.get("filterkey"))) {
-                inHere.putAll(mapper.convert(inHere));
+                Filter nv = mapper.convert(inHere);
+                if (nv == null) {
+                    parent.getFilters().remove(inHere);
+                    if (inHere.getParent() != null) {
+                        inHere.getParent().getChildren().remove(inHere);
+                    }
+                    return;
+                }
+                inHere.putAll(nv);
                 return;
             }
         }
@@ -223,7 +222,8 @@ public class GoverningDocumentComplementation {
                 ") most_relevant_filters\n" +
                 "where most_relevant_filters.ifeed_id = vi.id\n" +
                 "order by most_relevant_filters.find_count desc";
-        sql = String.format(sql, mappers.stream().map(m -> m.getFromKeys().stream()
+
+        sql = String.format(sql, getMappers().stream().map(m -> m.getFromKeys().stream()
                 .map(i -> String.format("'%s'", i)).collect(Collectors.joining(", "))).collect(Collectors.joining(", "))
         );
 
@@ -235,13 +235,27 @@ public class GoverningDocumentComplementation {
     public static void main(String[] args) {
         DatabaseApi local = DatabaseApi.getLocalApi();
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(local);
+
         try {
-            Feed result = gdc.makeComplement(437598040);
-            result = gdc.getFeed(437598040 * -1);
-            result.fill(local);
-            GoverningDocComplettion.print(result);
+            Feed before = gdc.getFeed(4468522);
+            before.fill(local);
+            System.out.println(before.toText());
+            System.out.println();
+            Feed ni = gdc.makeComplement(4468522);
+            System.out.println(ni.toText());
             gdc.commit();
-            System.out.println(result.toIFeed());
+
+            // SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+            /*for (String name : client.fetchAllFieldNames()) {
+                System.out.println(name);
+            };*/
+            /*for (Mapper mapper : gdc.getMappers()) {
+                mapper.getFromKeys().forEach(s -> {
+                    NavigableSet<Object> values = client.findAllValues(s);
+                    System.out.println(s + " = " + values.size());
+                });
+            }*/
+
         } catch (Exception e) {
             gdc.rollback();
             throw new RuntimeException(e);
@@ -258,7 +272,7 @@ public class GoverningDocumentComplementation {
 
     private void removeAllFiltersThatHaveNoTranslation(Feed inThat) {
         Set<String> allKeys = new HashSet<>();
-        mappers.forEach(m -> allKeys.addAll(m.getFromKeys()));
+        getMappers().forEach(m -> allKeys.addAll(m.getFromKeys()));
 
         List<Filter> tmp = new ArrayList<>(inThat.getFilters());
         inThat.getFilters().clear();
@@ -296,15 +310,6 @@ public class GoverningDocumentComplementation {
             }
         }
     }
-
-/*    public Filter getReplacement(Filter forThat) {
-        for (Mapper mapper : mappers) {
-            if (mapper.getFromKeys().contains(forThat.get("filterkey"))) {
-                return mapper.convert(forThat);
-            }
-        }
-        return null;
-    }*/
 
     static boolean equals(Object o1, Object o2) {
         if (o1 == o2) {

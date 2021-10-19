@@ -15,6 +15,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class GoverningDocComplettion {
 
     private final String stuffWithManyFiltersSql = "select ifeed_id, count(distinct filterkey) from vgr_ifeed_filter where \n" +
@@ -75,9 +76,6 @@ public class GoverningDocComplettion {
     }
 
     public static void print(Feed feed) {
-        /*for (String key : feed.keySet()) {
-            System.out.println(key + " = " + feed.get(key));
-        }*/
         System.out.println(feed.get("id") + " " + feed.get("name") + " ");
         MutableInt counter = new MutableInt(0);
         for (Filter filter : feed.getFilters())
@@ -89,18 +87,11 @@ public class GoverningDocComplettion {
     }
 
     static void print(Filter filter, int level) {
-        /*for (String key : filter.keySet()) {
-            System.out.println(" ".repeat(level) + key + " = " + filter.get(key));
-        }*/
         System.out.println(" ".repeat(level) + filter.get("filterkey") + " " + filter.get("operator") + " " + filter.get("filterquery"));
         if (!filter.getChildren().isEmpty()) {
-            // System.out.println(" ".repeat(level) + String.format("%d st. [", filter.getChildren().size()));
             for (Filter child : filter.getChildren()) {
-                // System.out.println(" ".repeat(level + 1) + "{");
                 print(child, level + 2);
-                // System.out.println(" ".repeat(level + 1) + "}");
             }
-            // System.out.println(" ".repeat(level) + "]");
         }
     }
 

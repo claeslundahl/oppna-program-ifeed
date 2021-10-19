@@ -30,26 +30,15 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-
-        Path path = Paths.get("C:\\workspace", "all-ifeed.values.txt");
-        StringBuilder sb = new StringBuilder();
-        /*
-            Nyckelord
-            Verksamhetskod  HSA
-            Målgrupp HOS
-            Dokumentstruktur VGR
-         */
-
-        Set<String> whiteList = new HashSet<>(Arrays.asList("dc.subject.keywords", "dc.coverage.hsacode",
-                "dcterms.audience", "dc.type.document.structure"));
-        NavigableSet<Object> all;
-        for (String wl : whiteList) {
-            all = client.findAllValues(wl);
-            sb.append(wl + "\t" + all.stream().map(o -> o.toString()).collect(Collectors.joining("\t")));
-            sb.append("\n");
+        NavigableSet<Object> values = client.findAllValues("dcterms.audience");
+        for (Object value : values) {
+            System.out.println(value);
         }
-
-        Files.writeString(path, sb.toString());
+        /*String in = "1100,2025,1129,1103,1708,1142,2003,1153,1509,1238,1120,1016,1615,1413";
+        String[] ins = in.split(Pattern.quote(","));
+        for (String s : ins) {
+            System.out.print(String.format("'%s', ", s));
+        }*/
     }
 
     static void atkomstkod() throws IOException {

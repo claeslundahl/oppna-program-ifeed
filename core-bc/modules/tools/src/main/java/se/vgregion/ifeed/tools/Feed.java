@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.tools;
 
+import org.apache.commons.lang.mutable.MutableInt;
 import se.vgregion.common.utils.DistinctArrayList;
 import se.vgregion.ifeed.types.IFeed;
 
@@ -119,6 +120,34 @@ public class Feed extends Tuple {
             result.addFilter(filter.toIFeedFilter());
         }
         return result;
+    }
+
+    public String toText() {
+        return print(this);
+    }
+
+    private static String print(Feed feed) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(feed.get("id") + " " + feed.get("name") + " ");
+        MutableInt counter = new MutableInt(0);
+        for (Filter filter : feed.getFilters())
+            filter.visit(f -> counter.setValue(counter.intValue() + 1));
+        sb.append("Filters " + counter.intValue());
+        for (Filter filter : feed.getFilters()) {
+            sb.append(print(filter, 1));
+        }
+        return sb.toString();
+    }
+
+    static String print(Filter filter, int level) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n" + " ".repeat(level) + filter.get("filterkey") + " " + filter.get("operator") + " " + filter.get("filterquery"));
+        if (!filter.getChildren().isEmpty()) {
+            for (Filter child : filter.getChildren()) {
+                sb.append(print(child, level + 2));
+            }
+        }
+        return sb.toString();
     }
 
 }

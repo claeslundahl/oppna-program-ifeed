@@ -8,7 +8,10 @@ import java.util.function.Consumer;
 
 public class Filter extends Tuple {
 
+    private Filter parent;
+
     private final List<Filter> children = new ArrayList<>();
+
     private DatabaseApi database;
     private FieldInf fieldInf;
 
@@ -125,9 +128,21 @@ public class Filter extends Tuple {
         fromHere.execute("delete from vgr_ifeed_filter where id = ?", get("id"));
     }
 
+    public void initParentValue() {
+        for (Filter child : getChildren()) {
+            child.setParent(this);
+            child.initParentValue();
+        }
+    }
+
     public void visit(Consumer<Filter> that) {
+        initParentValue();
+        visitImp(that);
+    }
+
+    private void visitImp(Consumer<Filter> that) {
         that.accept(this);
-        for (Filter child : children) {
+        for (Filter child : new ArrayList<>(children)) {
             child.visit(that);
         }
     }
@@ -143,6 +158,14 @@ public class Filter extends Tuple {
         }
 
         return result;
+    }
+
+    public Filter getParent() {
+        return parent;
+    }
+
+    public void setParent(Filter parent) {
+        this.parent = parent;
     }
 
     /*@Override

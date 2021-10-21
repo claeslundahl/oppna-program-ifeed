@@ -1,11 +1,12 @@
 package se.vgregion.ifeed.tools;
 
 import java.util.List;
-import java.util.Map;
+
+import static java.lang.String.format;
 
 public class SequenceUtil {
 
-    /*public static void restartWithHighestPrimaryKeyPlusOne(DatabaseApi database) {
+    /* public static void restartWithHighestPrimaryKeyPlusOne(DatabaseApi database) {
         MutableInt largestPk = new MutableInt(0);
 
         Pgres pgres = new Pgres(database);
@@ -36,7 +37,15 @@ public class SequenceUtil {
         }
         largestPk.inc(1);
         database.update("alter sequence hibernate_sequence restart with " + largestPk.value());
-    }*/
+    } */
+
+    public static void checkAndOrFixHibernateIndex(DatabaseApi database) {
+        long lastSequenceValue = (long) database.oneFieldSingleValueQuery("SELECT last_value FROM hibernate_sequence");
+        long maxFilterId = (long) database.oneFieldSingleValueQuery("SELECT max(id) FROM vgr_ifeed_filter");
+        if (maxFilterId >= lastSequenceValue) {
+            database.update(format("alter sequence hibernate_sequence restart with %d", lastSequenceValue + 1l));
+        }
+    }
 
     public static Long getNextValueFrom(DatabaseApi database, String sequence) {
         String sql = String.format("select nextval('%s')", sequence);

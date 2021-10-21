@@ -2,8 +2,8 @@ package se.vgregion.ifeed.tools.complement;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import se.vgregion.common.utils.MultiMap;
-import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.tools.*;
 
 import java.util.*;
@@ -94,7 +94,7 @@ public class GoverningDocumentComplementation {
                 return replacement;
             }
         }
-        FieldInf firstAsSample = replacements.get(0);
+        FieldInf firstAsSample = new FieldInf(replacements.get(0));
         firstAsSample.remove("apelon_id");
         System.out.println(gson.toJson(firstAsSample));
         firstAsSample.put("pk", SequenceUtil.getNextHibernateSequeceValue(database));
@@ -109,7 +109,10 @@ public class GoverningDocumentComplementation {
     public Feed clone(Feed feed, String withNewUserId) {
         Feed result = new Feed(feed);
         result.fill(database);
+        result.getComposites().clear();
+        result.getPartOf().clear();
         result.put("userid", withNewUserId);
+        result.put("name", result.get("name") + "(sty. dok. komplement)");
         return result;
     }
 
@@ -126,9 +129,25 @@ public class GoverningDocumentComplementation {
             existing.delete(database);
         }
         Feed result = toCompletingFeed(that);
+        final MutableBoolean foundAnyFilterWithField = new MutableBoolean(false);
+        result.getFilters().forEach(root -> {
+            root.visit(f -> {
+                if (f.get("filterkey") != null && !f.get("filterkey").toString().trim().equals("")) {
+                    foundAnyFilterWithField.setValue(true);
+                }
+            });
+        });
+        if (!foundAnyFilterWithField.booleanValue()) {
+            /*System.out.println("Sparar inte!: ");
+            System.out.println(result.toText());*/
+            return null;
+        }
         CompositeLink cl = new CompositeLink((Long) that.get("id"), (Long) result.get("id"));
         result.getComposites().add(cl);
         result.insert(database);
+
+        /*System.out.println("Sparade i db!: ");
+        System.out.println(result.toText());*/
         return result;
     }
 
@@ -172,7 +191,7 @@ public class GoverningDocumentComplementation {
     }
 
     void replaceFilterKeysAndType(Feed inHere) {
-        inHere.getFilters().forEach(filter -> {
+        new ArrayList<>(inHere.getFilters()).forEach(filter -> {
             filter.visit(that -> {
                 String fk = (String) that.get("filterkey");
                 if (fk != null && !"".equals(fk.trim())) {
@@ -267,6 +286,7 @@ public class GoverningDocumentComplementation {
     }
 
     public void commit() {
+        SequenceUtil.checkAndOrFixHibernateIndex(database);
         database.commit();
     }
 

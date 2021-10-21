@@ -36,7 +36,8 @@ public class CompositeLink extends Tuple {
         List<Tuple> hits = database.query(
                 "select * from vgr_ifeed_vgr_ifeed where partof_id = ? and composites_id = ?",
                 get("partof_id"), get("composites_id"));
-        if (hits.size() > 0) throw new RuntimeException();
+        if (hits.size() > 0)
+            throw new RuntimeException();
         database.insert("vgr_ifeed_vgr_ifeed", this);
     }
 

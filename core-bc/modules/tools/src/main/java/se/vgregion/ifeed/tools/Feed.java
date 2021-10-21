@@ -141,7 +141,17 @@ public class Feed extends Tuple {
 
     static String print(Filter filter, int level) {
         StringBuilder sb = new StringBuilder();
-        sb.append("\n" + " ".repeat(level) + filter.get("filterkey") + " " + filter.get("operator") + " " + filter.get("filterquery"));
+        String fieldName = "";
+        String queryPrefix = "";
+        if (filter.get("field_inf_pk") != null) {
+            FieldInf fi = filter.getFieldInf();
+            fieldName = fi.get("name") + " ";
+            if (fi.get("query_prefix") != null) {
+                queryPrefix = fi.get("guery_prefix") + " ";
+            }
+        }
+
+        sb.append("\n" + " ".repeat(level) + fieldName + filter.get("filterkey") + " " + queryPrefix + filter.get("operator") + " " + filter.get("filterquery"));
         if (!filter.getChildren().isEmpty()) {
             for (Filter child : filter.getChildren()) {
                 sb.append(print(child, level + 2));

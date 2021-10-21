@@ -13,12 +13,12 @@ public class DocumentIdMapper extends Mapper {
 
     private static final SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
-    public DocumentIdMapper(Set<String> fromKeys, FieldInf fieldInf) {
+    /*public DocumentIdMapper(Set<String> fromKeys, FieldInf fieldInf) {
         super(fromKeys, fieldInf);
-    }
+    }*/
 
     public DocumentIdMapper(String fromKey, FieldInf fieldInf) {
-        super(fromKey, fieldInf);
+        super(fromKey, new FieldInf(fieldInf));
     }
 
     @Override
@@ -33,7 +33,12 @@ public class DocumentIdMapper extends Mapper {
         }
         Map<String, Object> first = items.getResponse().getDocs().get(0);
         result.put("filterquery", first.get("title"));
+        result.put("filterkey", getFieldInf().get("id"));
         return result;
     }
 
+    @Override
+    public void setFieldInf(FieldInf fieldInf) {
+        super.setFieldInf(fieldInf);
+    }
 }

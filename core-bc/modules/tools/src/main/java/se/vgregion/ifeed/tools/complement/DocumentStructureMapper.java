@@ -5,10 +5,11 @@ import se.vgregion.ifeed.tools.Filter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DocumentStructureMapper extends Mapper {
 
-    private Map<String, Filter> mapping = new HashMap<>();
+    private Map<String, Filter> mapping;
 
     private final GoverningDocumentComplementation governingDocumentComplementation;
 
@@ -22,11 +23,19 @@ public class DocumentStructureMapper extends Mapper {
         String value = (String) that.get("filterquery");
         Filter template = getMapping().get(value);
         if (template == null) {
-            System.out.println("Hittade inte mappning för " + value);
+            System.out.println("Hittade inte mappning för " + value + " all keys are" + getMapping().keySet() +
+                    " FLöde " + that.get("ifeed_id"));
             return null;
         }
         Filter result = new Filter(template);
-        result.setFieldInf(template.getFieldInf());
+        if (template.get("field_inf_pk") != null) {
+            result.setFieldInf(template.getFieldInf());
+        } else {
+            result.getChildren().addAll(
+                    template.getChildren()
+                            .stream().map(c -> new Filter(c, c.getFieldInf())).collect(Collectors.toList())
+            );
+        }
         return result;
     }
 
@@ -48,6 +57,7 @@ public class DocumentStructureMapper extends Mapper {
 
     public Map<String, Filter> getMapping() {
         if (mapping == null) {
+            mapping = new HashMap<>();
             FieldInf handlingstyp = governingDocumentComplementation.getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:ObjectType", "Handlingstyp", null));
             FieldInf giltighetsområde = governingDocumentComplementation.getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidityArea", "Giltighetsområde (gäller för rutin och riktlinje)", null));
             mapping.put("Blankett", newFilter(handlingstyp, "Blankett, övrig"));

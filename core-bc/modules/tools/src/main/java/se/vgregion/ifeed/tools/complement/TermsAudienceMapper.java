@@ -5,6 +5,7 @@ import se.vgregion.ifeed.tools.Filter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TermsAudienceMapper extends Mapper {
 
@@ -53,8 +54,16 @@ public class TermsAudienceMapper extends Mapper {
         if (template == null) {
             return null;
         }
-        Filter result = new Filter(template, template.getFieldInf());
-        return result;
+        if (template.getChildren().isEmpty()) {
+            Filter result = new Filter(template, template.getFieldInf());
+            return result;
+        } else {
+            Filter result = new Filter(template);
+            result.getChildren()
+                    .addAll(template.getChildren().stream()
+                            .map(c -> new Filter(c, c.getFieldInf())).collect(Collectors.toList()));
+            return result;
+        }
     }
 
 }

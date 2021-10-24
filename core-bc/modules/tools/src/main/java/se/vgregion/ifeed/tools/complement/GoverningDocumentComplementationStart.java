@@ -1,36 +1,96 @@
 package se.vgregion.ifeed.tools.complement;
 
 import org.apache.commons.lang.mutable.MutableInt;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.tools.DatabaseApi;
 import se.vgregion.ifeed.tools.Feed;
 import se.vgregion.ifeed.tools.FieldInf;
 import se.vgregion.ifeed.tools.Tuple;
+import se.vgregion.ifeed.types.IFeed;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GoverningDocumentComplementationStart {
 
+    public static void removeCompletedFlows(DatabaseApi database) {
+        List<Tuple> items = database.query("select * from vgr_ifeed vi where vi.id < 0 and vi.name like ?", "Kompletterande flöde%");
+        List<Feed> feeds = Feed.toFeeds(items);
+        for (Feed feed : feeds) {
+            feed.fill(database);
+            feed.delete(database);
+            System.out.println(feed);
+        }
+    }
 
     public static void main(String[] args) {
-        DatabaseApi database = DatabaseApi.getLocalApi();
+        DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
         System.out.println("Database: " + database.getUrl());
+
+        /*removeCompletedFlows(database);
+        database.commit();
+        if(true) return;*/
+
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
         try {
-            List<Tuple> items = database.query("select * from vgr_ifeed vi where vi.name like ?", "Kompletterande flöde%");
+            List<Tuple> items = database.query("select * from vgr_ifeed vi where vi.id > 0 and vi.name like ?", "Kompletterande flöde%");
             List<Feed> feeds = Feed.toFeeds(items);
+            StringBuilder sb = new StringBuilder();
             for (Feed feed : feeds) {
                 feed.fill(database);
-                System.out.println(feed.get("name") + " " + feed.get("creation_time") + " " + feed.get("userid"));
-                System.out.println(feed.toText());
-                System.out.println();
-                System.out.println(gdc.makeComplement(feed).toText());
-                System.out.println("-----------------------------------------------------------------------------------");
+                sb.append("\n");
+                sb.append(feed.get("name") + " " + feed.get("creation_time") + " " + feed.get("userid"));
+                sb.append("\n");
+                sb.append(feed.toText());
+                sb.append("\n");
+                sb.append("\n");
+                sb.append(gdc.makeComplement(feed).toText());
+                sb.append("\n");
+                sb.append("-----------------------------------------------------------------------------------");
+
             }
-            gdc.rollback();
+            Path path = Paths.get(System.getProperty("user.home"), "comp.txt");
+
+            Files.writeString(path, sb.toString());
+
+            gdc.commit();
+
+            /*for (Feed feed : feeds) {
+                Long id = (Long) feed.get("id");
+                id = id * -1;
+                Feed fromDb = gdc.getFeed(id);
+                fromDb.fill(database);
+                System.out.println(fromDb);
+                if (hasHits(fromDb)) {
+                    System.out.println(id + " has hits!");
+                }
+            }*/
         } catch (Exception e) {
             gdc.rollback();
             throw new RuntimeException(e);
+        }
+    }
+
+    static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+
+    static boolean hasHits(Feed feed) throws IOException, InterruptedException {
+        try {
+            IFeed ifeed = feed.toIFeed();
+            // System.out.println(ifeed.toQuery(client.fetchFields()));
+            Result result = client.query(ifeed.toQuery(client.fetchFields()), 0, 1, "asc", null);
+            for (Map<String, Object> doc : result.getResponse().getDocs()) {
+                System.out.println(doc);
+            }
+            return (result.getResponse() != null && result.getResponse().getDocs() != null && !result.getResponse().getDocs().isEmpty());
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -65,8 +125,12 @@ public class GoverningDocumentComplementationStart {
             throw new RuntimeException();
         FieldInf branch = FieldInf.toFieldInf(branches.get(0));
 
-        to.insert("field_inf", root);
-        to.insert("field_inf", branch);
+        if (to.query("select * from field_inf where pk = ?", root.get("pk")).isEmpty()) {
+            to.insert("field_inf", root);
+        }
+        if (to.query("select * from field_inf where pk = ?", branch.get("pk")).isEmpty()) {
+            to.insert("field_inf", branch);
+        }
 
         String sql = "select leaf.*\n" +
                 "from field_inf leaf\n" +

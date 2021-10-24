@@ -79,11 +79,11 @@ public class GoverningDocumentComplementation {
                             //Kodverk Specialistutbildningar
                             //Kodverk HosPersKat
                             new TermsAudienceMapper("dcterms.audience",
-                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Titel", null)),
-                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Titel", null)),
-                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Titel", null))),
-                            new Mapper("dc.date.validto", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltighetsdatum tom", null))
-                            )));
+                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "HosPersKat", "HosPersKat/")),
+                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Legitimerade yrken", "Legitimerade yrken/")),
+                                    getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Specialistutbildningar", "Specialistutbildningar/"))),
+
+                            new Mapper("dc.date.validto", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltighetsdatum tom", null)))));
         }
         return mappers;
     }
@@ -95,13 +95,15 @@ public class GoverningDocumentComplementation {
             }
         }
         FieldInf firstAsSample = new FieldInf(replacements.get(0));
+        firstAsSample.putAll(fi);
         firstAsSample.remove("apelon_id");
-        System.out.println(gson.toJson(firstAsSample));
         firstAsSample.put("pk", SequenceUtil.getNextHibernateSequeceValue(database));
-        firstAsSample.put("name", fi.get("name"));
+        /*firstAsSample.put("name", fi.get("name"));
         firstAsSample.put("id", fi.get("id"));
+        firstAsSample.put("query_prefix", fi.get("query_prefix"));*/
         //throw new RuntimeException("Did not find hidden field inf in db for: \n" + fi.get("id"));
         database.insert("field_inf", firstAsSample);
+        System.out.println(gson.toJson(firstAsSample));
         replacements.add(firstAsSample);
         return firstAsSample;
     }
@@ -116,7 +118,7 @@ public class GoverningDocumentComplementation {
         return result;
     }
 
-    private Feed getFeed(Number withId) {
+    public Feed getFeed(Number withId) {
         List<Tuple> items = database.query("select * from vgr_ifeed where id = ?", withId);
         if (items.isEmpty()) return null;
         return Feed.toFeed(items.get(0));
@@ -212,11 +214,14 @@ public class GoverningDocumentComplementation {
                     }
                     return;
                 }
+                inHere.clear();
+                inHere.setFieldInf(nv.getFieldInf());
                 inHere.putAll(nv);
+                inHere.getChildren().addAll(nv.getChildren());
                 return;
             }
         }
-        throw new RuntimeException("Did not find mapper for: \n" + gson.toJson(inHere));
+        // throw new RuntimeException("Did not find mapper for: \n" + gson.toJson(inHere));
     }
 
     public void moveAllFiltersWhenMoreThanOneUnderAndJunction(Feed inThat) {

@@ -246,60 +246,7 @@
         </ui:repeat>
     </div>
 
-
-    <div class="container-fluid">
-        <h3 style="display: inline;">
-            Filter:
-        </h3>
-
-        <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="getFiltersAsListItem0" varStatus="status0"
-                   id="getFiltersAsListRepeat0" rendered="#{app.hasComposite(iFeedModelBean)}">
-                        <span class="ltr-flowing-item ifeed-border"
-                              style="white-space: inherit;">
-                #{getFiltersAsListItem0.toText()}
-            </span>
-        </ui:repeat>
-
-        <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="getFiltersAsListItem" varStatus="status"
-                   id="getFiltersAsListRepeat" rendered="#{!app.hasComposite(iFeedModelBean)}">
-    <span class="ltr-flowing-item ifeed-border"
-          style="#{(getFiltersAsListItem.isContainer() || !app.isFilter(getFiltersAsListItem)) ?'display:none;':''}">
-      <span class="name">#{app.getFilterName(getFiltersAsListItem)}</span>
-
-      <span class="name-value-delimiter">
-        <h:outputText value="="
-                      rendered="#{getFiltersAsListItem.operator eq 'matching' or empty getFiltersAsListItem.operator}"/>
-        <h:outputText value="&lt;" rendered="#{getFiltersAsListItem.operator eq 'lesser'}"/>
-        <h:outputText value="&gt;" rendered="#{getFiltersAsListItem.operator eq 'greater'}"/>
-      </span>
-      <span>#{empty getFiltersAsListItem.filterQueryForDisplay ? getFiltersAsListItem.filterQuery : getFiltersAsListItem.filterQueryForDisplay}</span>
-
-      <span class="edit">
-        <p:commandLink styleClass="link-button-edit" value=" " update=":ifeed_view"
-                       style="color: white;"
-                       rendered="#{app.inEditMode}"
-                       ajax="false" async="true"
-                       action="#{app.editFilterValue(getFiltersAsListItem)}"
-                       action-former="#{app.editFilterValue(getFiltersAsListItem)}">
-        </p:commandLink>
-      </span>
-
-      <span class="remove">
-        <p:commandLink styleClass="link-button-trash" value=" " update=":ifeed_view"
-                       style="color: white;"
-                       rendered="#{app.inEditMode}"
-                       ajax="false" async="true"
-                       action="#{iFeedModelBean.removeFilter(getFiltersAsListItem)}">
-        </p:commandLink>
-      </span>
-    </span>
-            <span class="ltr-flowing-item ifeed-border"
-                  style="#{!getFiltersAsListItem.isContainer()?'display:none;':'white-space: inherit;'}">
-                #{getFiltersAsListItem.toText()}
-            </span>
-        </ui:repeat>
-    </div>
-
+    <ui:include src="view-ifeed-filters.xhtml"/>
 
     <div class="container-fluid">
 

@@ -30,7 +30,7 @@ public class SolrHttpClientTest {
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        NavigableSet<Object> values = client.findAllValues("dcterms.audience");
+        NavigableSet<Object> values = client.findAllValues("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path");
         for (Object value : values) {
             System.out.println(value);
         }

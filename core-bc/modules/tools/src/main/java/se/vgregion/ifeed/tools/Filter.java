@@ -64,15 +64,20 @@ public class Filter extends Tuple {
         }
         Long fieldInfPk = (Long) get("field_inf_pk");
         if (fieldInfPk == null) {
-            throw new RuntimeException("Missing field_inf_pk!");
+            // throw new RuntimeException("Missing field_inf_pk!");
+            return null;
         }
-        List<Tuple> items = database.query("select * from field_inf where pk = ?", fieldInfPk);
-        for (Tuple item : items) {
-            fieldInf = FieldInf.toFieldInf(item);
-            fieldInf.load(database);
-            break;
+        if (database != null) {
+            List<Tuple> items = database.query("select * from field_inf where pk = ?", fieldInfPk);
+            for (Tuple item : items) {
+                fieldInf = FieldInf.toFieldInf(item);
+                fieldInf.load(database);
+                break;
+            }
+            return fieldInf;
+        } else {
+            return null;
         }
-        return fieldInf;
     }
 
     public void setFieldInf(FieldInf fieldInf) {

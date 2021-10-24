@@ -11,6 +11,9 @@ import se.vgregion.ldap.LdapApi;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by Monica on 2014-03-28.
@@ -250,7 +253,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
 
     private List<IFeedFilter> filtersAsList;
 
-    private LdapApi ldapApi = LdapApi.newInstanceFromConfig();
+    private static LdapApi ldapApi = LdapApi.newInstanceFromConfig();
 
     public List<IFeedFilter> getFiltersAsList() {
         if (filtersAsList == null) {
@@ -371,6 +374,35 @@ public class IFeedModelBean extends IFeed implements Serializable {
         for (IFeed composite : iFeed.getComposites()) {
             gatherNestedFilters(composite, handled, result);
         }
+    }
+
+    public List<String> toConditionText() {
+        List<String> beforeReplace = getFilters().stream().map(f -> f.toText()).collect(Collectors.toList());
+        List<String> result = new ArrayList<>();
+        for (String br : beforeReplace) {
+            Pattern pattern = Pattern.compile("(SE[0-9]{10}\\-E[0-9]{12})");
+            Matcher matcher = pattern.matcher(br);
+            while (matcher.find()) {
+                String finding = matcher.group(1);
+                br = br.replace(finding, ifHsaThenFormat(finding));
+            }
+            result.add(br);
+        }
+        return result;
+    }
+
+    protected static String ifHsaThenFormat(String that) {
+        if (that.equals("SE2321000131-E000000000001")) {
+            that = "Västra Götalandsregionen (SE2321000131-E000000000001)";
+            return that;
+        }
+        if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
+            List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
+            if (items.size() == 1) {
+                that = String.format("%s (%s)", items.get(0).get("ou"), that);
+            }
+        }
+        return that;
     }
 
 }

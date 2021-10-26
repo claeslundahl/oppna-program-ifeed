@@ -30,7 +30,7 @@ public class GoverningDocumentComplementationStart {
     }
 
     public static void main(String[] args) {
-        DatabaseApi database = DatabaseApi.getLocalApi();
+        DatabaseApi database = DatabaseApi.getRemoteTestDatabaseApi();
         System.out.println("Database: " + database.getUrl());
 
         /*removeCompletedFlows(database);
@@ -38,6 +38,11 @@ public class GoverningDocumentComplementationStart {
         if(true) return;*/
 
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
+        /*System.out.println(gdc.makeComplement(450776785l).toText());
+        gdc.commit();
+
+        if (true) return;*/
+
         SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
         try {
             List<Tuple> items = database.query("select * from vgr_ifeed vi where vi.id > 0 and vi.name like ?", "Kompletterande flöde%");
@@ -51,7 +56,9 @@ public class GoverningDocumentComplementationStart {
                 sb.append(feed.toText());
                 sb.append("\n");
                 sb.append("\n");
-                sb.append(gdc.makeComplement(feed).toText());
+                Feed completed = gdc.getFeed((Number) gdc.makeComplement(feed).get("id"));
+                completed.fill(database);
+                sb.append(completed.toText());
                 sb.append("\n");
                 sb.append("-----------------------------------------------------------------------------------");
 

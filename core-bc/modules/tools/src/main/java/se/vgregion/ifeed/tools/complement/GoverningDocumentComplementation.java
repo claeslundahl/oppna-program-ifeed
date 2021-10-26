@@ -65,7 +65,7 @@ public class GoverningDocumentComplementation {
                             new Mapper("dc.creator.recordscreator.id", getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:Producer", "Myndighet", null))),
                             //new Mapper("dc.creator.recordscreator.id", new FieldInf("DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension", "Domän Styrande dokument", null)),
                             new Mapper("dc.creator.recordscreator.id", getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:Producer", "Myndighet", null))),
-                            new Mapper("dc.keywords", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (SweMeSH)", "SweMeSH/"))),
+                            new Mapper("dc.subject.keywords", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (SweMeSH)", "SweMeSH/"))),
                             new CoverageHsaCodeMapper("dc.coverage.hsacode", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (Verksamhet)", "Verksamhetskod/"))),
                             // Kompletterande flöde - ersätt BariumID med Titel (för de dokument som fortfarande är publicerade,
                             // avpublicerade dokument följer inte med dvs det kan blir så att det inte blir lika många poster i det kompletternade flödet)

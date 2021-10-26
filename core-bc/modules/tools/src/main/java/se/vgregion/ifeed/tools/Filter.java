@@ -22,6 +22,7 @@ public class Filter extends Tuple {
     public Filter(Map<String, Object> from, FieldInf fieldInf) {
         super(from);
         this.fieldInf = fieldInf;
+        put("field_inf_pk", fieldInf.get("pk"));
     }
 
     public Filter() {

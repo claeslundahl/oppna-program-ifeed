@@ -29,7 +29,7 @@ public class CoverageHsaCodeMapper extends Mapper {
         map.put("Bild- och funktionsmedicin", "Radiologi");
         map.put("Diabetes, stödverksamhet", "Diabetesmottagning, primärvård");
         map.put("Fotvård", "Medicinsk fotvård");
-        map.put("Förebyggande hälso- och sjukvård, stödverksamhet", "Livsstillsmottagning, primärvård");
+        map.put("Förebyggande hälso- och sjukvård, stödverksamhet", "Livsstilsmottagning, primärvård");
         map.put("Hälso- och sjukvård i särskilt boende", "Läkarverksamhet, särskilt boende");
         map.put("Laboratorieverksamhet, öppen vård", "Provtagningsverksamhet, öppen vård");
         map.put("Medicinsk njursjukvård", "Njurmedicin");

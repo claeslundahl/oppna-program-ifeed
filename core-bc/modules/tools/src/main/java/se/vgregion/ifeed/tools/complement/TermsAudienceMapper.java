@@ -51,10 +51,12 @@ public class TermsAudienceMapper extends Mapper {
     @Override
     public Filter convert(Filter that) {
         Filter template = templates.get(that.get("filterquery"));
+        // template.put("field_inf_pk", template.getFieldInf().get("pk"));
         if (template == null) {
             return null;
         }
-        if (template.getChildren().isEmpty()) {
+        return template;
+        /*if (template.getChildren().isEmpty()) {
             Filter result = new Filter(template, template.getFieldInf());
             return result;
         } else {
@@ -63,7 +65,7 @@ public class TermsAudienceMapper extends Mapper {
                     .addAll(template.getChildren().stream()
                             .map(c -> new Filter(c, c.getFieldInf())).collect(Collectors.toList()));
             return result;
-        }
+        }*/
     }
 
 }

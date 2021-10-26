@@ -91,7 +91,7 @@ public class DatabaseApi extends ConnectionExt {
     public static DatabaseApi getRemoteTestDatabaseApi() {
         Properties props = null;
         try {
-            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties.test"));
+            props = fetchProperties(Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.test.properties"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -77,14 +77,14 @@ public class DocumentStructureMapper extends Mapper {
             FieldInf handlingstyp =
                     new FieldInf(governingDocumentComplementation.getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:ObjectType", "Handlingstyp", null)));
             FieldInf giltighetsområde =
-                    new FieldInf(governingDocumentComplementation.getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidityArea", "Giltighetsområde (gäller för rutin och riktlinje)", null)));
+                    new FieldInf(governingDocumentComplementation.getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidityArea", "Giltighetsområde", null)));
             mapping.put("Blankett", newFilter(handlingstyp, "Blankett, övrig"));
             mapping.put("Informerande dokument", newFilter(handlingstyp, "Rutin"));
             mapping.put("Patientinformation", newFilter(handlingstyp, "Patientinformation, referensexemplar"));
             mapping.put("Riktlinje förvaltning", and(newFilter(handlingstyp, "Riktlinje"), newFilter(giltighetsområde, "Lokalt")));
             mapping.put("Riktlinje koncern", and(newFilter(handlingstyp, "Riktlinje"), newFilter(giltighetsområde, "Övergripande")));
             mapping.put("Rutin förvaltning", and(newFilter(handlingstyp, "Riktlinje"), newFilter(giltighetsområde, "Lokalt")));
-            mapping.put("Rutin koncern", and(newFilter(handlingstyp, "Riktlinje"), newFilter(giltighetsområde, "Lokalt")));
+            mapping.put("Rutin koncern", and(newFilter(handlingstyp, "Rutin"), newFilter(giltighetsområde, "Övergripande")));
         }
         return mapping;
     }

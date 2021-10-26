@@ -30,7 +30,7 @@ public class GoverningDocumentComplementationStart {
     }
 
     public static void main(String[] args) {
-        DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
+        DatabaseApi database = DatabaseApi.getLocalApi();
         System.out.println("Database: " + database.getUrl());
 
         /*removeCompletedFlows(database);

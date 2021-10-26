@@ -143,15 +143,17 @@ public class Feed extends Tuple {
         StringBuilder sb = new StringBuilder();
         String fieldName = "";
         String queryPrefix = "";
-        if (filter.get("field_inf_pk") != null) {
-            FieldInf fi = filter.getFieldInf();
+
+        FieldInf fi = filter.getFieldInf();
+        if (fi != null) {
             fieldName = fi.get("name") + " ";
             if (fi.get("query_prefix") != null) {
-                queryPrefix = fi.get("guery_prefix") + " ";
+                queryPrefix = fi.get("query_prefix") + " ";
             }
         }
 
-        sb.append("\n" + " ".repeat(level) + fieldName + filter.get("filterkey") + " " + queryPrefix + filter.get("operator") + " " + filter.get("filterquery"));
+        sb.append("\n" + " ".repeat(level) + fieldName + filter.get("filterkey") +
+                " " + queryPrefix + filter.get("operator") + " " + filter.get("filterquery"));
         if (!filter.getChildren().isEmpty()) {
             for (Filter child : filter.getChildren()) {
                 sb.append(print(child, level + 2));

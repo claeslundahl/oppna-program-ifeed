@@ -41,9 +41,16 @@ public class CoverageHsaCodeMapper extends Mapper {
     @Override
     public Filter convert(Filter that) {
         Filter result = super.convert(that);
+        result = new Filter(result, getFieldInf())/* {
+            @Override
+            public void setFieldInf(FieldInf fieldInf) {
+                throw new RuntimeException("Hej");
+            }
+        }*/;
         String replacement = map.get(that.get("filterquery"));
         if (replacement != null) {
             result.put("filterquery", replacement);
+            // result.setFieldInf(getFieldInf());
         }
         return result;
     }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Entity
 @Table(name = "vgr_ifeed_filter")
@@ -373,5 +374,14 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
 
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
+    }
+
+    public void visit(Consumer<IFeedFilter> guest) {
+        guest.accept(this);
+        if (getChildren() != null) {
+            for (IFeedFilter child : getChildren()) {
+                child.visit(guest);
+            }
+        }
     }
 }

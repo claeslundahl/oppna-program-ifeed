@@ -5,10 +5,13 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FieldInf extends Tuple {
 
     private List<FieldInf> children;
+
+    private List<DefaultFilter> defaultFilters;
 
     private FieldInf parent;
 
@@ -60,8 +63,6 @@ public class FieldInf extends Tuple {
 
     @Override
     public Object put(String key, Object value) {
-        /*if (!template.containsKey(key))
-            throw new RuntimeException(String.format("Key %s is not among those in template-store - %s", key, template.keySet().toString()) );*/
         return super.put(key, value);
     }
 
@@ -70,7 +71,7 @@ public class FieldInf extends Tuple {
     }
 
     public List<FieldInf> getChildren() {
-        if (children == null) {
+        if (children == null && database != null) {
             List<Tuple> items = database.query("select * from field_inf where parent_pk = ?", get("pk"));
             children = new ArrayList<>();
             for (Tuple item : items) {
@@ -84,6 +85,18 @@ public class FieldInf extends Tuple {
 
     public void setChildren(List<FieldInf> children) {
         this.children = children;
+    }
+
+    public List<DefaultFilter> getDefaultFilters() {
+        if (defaultFilters == null && database != null) {
+            List<Tuple> items = database.query("select * from default_filter where field_inf_pk = ?", get("pk"));
+            defaultFilters = new ArrayList<>(items.stream().map(i -> new DefaultFilter(i)).collect(Collectors.toList()));
+        }
+        return defaultFilters;
+    }
+
+    public void setDefaultFilters(List<DefaultFilter> defaultFilters) {
+        this.defaultFilters = defaultFilters;
     }
 
     public FieldInf getParent() {

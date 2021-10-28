@@ -16,7 +16,7 @@ public class StartCompletionForExplicitFlows extends SofiaFlowCompletion {
     public static void main(String[] args) {
         StartCompletionForExplicitFlows sofia = new StartCompletionForExplicitFlows();
         System.out.println(sofia.database.getUrl());
-        // if (true) return;
+        if (true) return;
         sofia.main();
         sofia.database.commit();
     }
@@ -25,7 +25,7 @@ public class StartCompletionForExplicitFlows extends SofiaFlowCompletion {
     public void generateFlows() {
         // ID: 2019 APT BMS ( Id: 129597 ) och APT 2020 BMS ( Id: 130138 )  till Sharepointytan https://vgregion.sharepoint.com/sites/sy-sv-bemanningsservice-alingsas
 
-        generateFlows(" and f.id in (127278 ) ");
+        generateFlows(" and f.id in (450776868 ) ");
     }
 
     @Override

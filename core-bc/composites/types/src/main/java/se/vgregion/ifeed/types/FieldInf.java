@@ -419,13 +419,14 @@ public class FieldInf implements Serializable {
     }
 
     public Set<IFeedFilter> getEntireDefaultCondition() {
+        // System.out.println("getEntireDefaultCondition");
         Set<IFeedFilter> result = new HashSet<>();
         getAllDefaultFiltersImpl(result);
 
         Map<Set<String>, IFeedFilter> uniquenessByFilterKeyAndValue = new HashMap<>();
 
         for (IFeedFilter iFeedFilter : result) {
-            Set<String> key = new HashSet<>(Arrays.asList(iFeedFilter.getFilterKey(), iFeedFilter.getFilterQuery()));
+            Set<String> key = new HashSet<>(Arrays.asList(iFeedFilter.getFilterKey(), iFeedFilter.getFilterQuery(), iFeedFilter.getFieldInf() == null ? null : iFeedFilter.getFieldInf().getQueryPrefix()));
             uniquenessByFilterKeyAndValue.put(key, iFeedFilter);
         }
         return new HashSet<>(uniquenessByFilterKeyAndValue.values());
@@ -434,6 +435,7 @@ public class FieldInf implements Serializable {
     private void getAllDefaultFiltersImpl(Set<IFeedFilter> result) {
         if (getDefaultFilters() != null)
             result.addAll(getDefaultFilters().stream().map(df -> df.toFilter()).collect(Collectors.toSet()));
+        // System.out.println("getDefaultFilters: " + getDefaultFilters() + " on " + this);
         if (getParent() != null) {
             getParent().getAllDefaultFiltersImpl(result);
         }

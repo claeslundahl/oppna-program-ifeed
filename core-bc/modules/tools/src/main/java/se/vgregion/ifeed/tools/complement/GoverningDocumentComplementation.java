@@ -15,15 +15,18 @@ public class GoverningDocumentComplementation {
 
     private final DatabaseApi database;
 
-    private final List<FieldInf> replacements;
+    private List<FieldInf> replacements;
 
     private List<Mapper> mappers;
 
     private final List<Filter> defaultFiltersToAdd = new ArrayList<>();
 
     public GoverningDocumentComplementation(DatabaseApi database) {
+
         this.database = database;
-        String sql = "select leaf.*\n" +
+        getReplacements();
+
+        /*String sql = "select leaf.*\n" +
                 "from field_inf leaf\n" +
                 "join field_inf branch on leaf.parent_pk = branch.pk\n" +
                 "join field_inf trunk on branch.parent_pk = trunk.pk\n" +
@@ -32,7 +35,7 @@ public class GoverningDocumentComplementation {
 
         List<Tuple> newFilters = database.query(sql);
 
-        replacements = newFilters.stream().map(t -> FieldInf.toFieldInf(t)).collect(Collectors.toList());
+        replacements = newFilters.stream().map(t -> FieldInf.toFieldInf(t)).collect(Collectors.toList());*/
 
         defaultFiltersToAdd.addAll(Arrays.asList(new Filter(
                         Map.of(
@@ -43,6 +46,71 @@ public class GoverningDocumentComplementation {
                         getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.domain", "Dokumenttyp", null))
                 )
         ));
+    }
+
+    private FieldInf getFieldInf(Long withParentPk, String andName) {
+        String sql = "select * from field_inf fi where name = ? and "
+                + (withParentPk == null ? "parent_pk is null" : "parent_pk = ?");
+        List<Tuple> hits = null;
+        if (withParentPk == null) {
+            hits = database.query(sql, andName);
+        } else {
+            hits = database.query(sql, andName, withParentPk);
+        }
+        if (hits.isEmpty()) {
+            return null;
+        }
+        return FieldInf.toFieldInf(hits.get(0));
+    }
+
+    public List<FieldInf> getReplacements() {
+        if (replacements == null) {
+            FieldInf root = getFieldInf(null, "Gömda");
+            if (root == null) {
+                root = FieldInf.toFieldInf(new Tuple(Map.of(
+                        "pk", SequenceUtil.getNextHibernateSequeceValue(database),
+                        "name", "Gömda")));
+                database.insert("field_inf", root);
+            }
+            FieldInf branch = getFieldInf((Long) root.get("pk"), "Styrande dokument");
+            if (branch == null) {
+                branch = FieldInf.toFieldInf(new Tuple(Map.of(
+                        "pk", SequenceUtil.getNextHibernateSequeceValue(database),
+                        "name", "Styrande dokument",
+                        "parent_pk", root.get("pk"))));
+                database.insert("field_inf", branch);
+            }
+            branch.load(database);
+            if (branch.getChildren().isEmpty()) {
+                FieldInf leaf = new FieldInf();
+                leaf.put("in_html_view", false);
+                leaf.put("level", 2);
+                leaf.put("in_tooltip", false);
+                leaf.put("type", "d:text_fix");
+                leaf.put("filter", false);
+                leaf.put("expanded", false);
+                leaf.put("parent_pk", branch.get("pk"));
+                leaf.put("name", "Titel");
+                leaf.put("pk", SequenceUtil.getNextHibernateSequeceValue(database));
+                leaf.put("id", "vgr:VgrExtension.vgr:Title");
+                leaf.put("position", 135);
+                database.insert("field_inf", leaf);
+                branch.getChildren().add(leaf);
+                // branch.load(database);
+            }
+            if (branch.getDefaultFilters().isEmpty()) {
+                DefaultFilter df = new DefaultFilter(
+                        Map.of("id", SequenceUtil.getNextHibernateSequeceValue(database),
+                                "field_inf_pk", branch.get("pk"),
+                                "filterkey", "vgrsd:DomainExtension.domain",
+                                "filterquery", "Styrande dokument")
+                );
+                database.insert("default_filter", df);
+                branch.getDefaultFilters().add(df);
+            }
+            replacements = branch.getChildren();
+        }
+        return replacements;
     }
 
     private List<Mapper> getMappers() {
@@ -98,10 +166,6 @@ public class GoverningDocumentComplementation {
         firstAsSample.putAll(fi);
         firstAsSample.remove("apelon_id");
         firstAsSample.put("pk", SequenceUtil.getNextHibernateSequeceValue(database));
-        /*firstAsSample.put("name", fi.get("name"));
-        firstAsSample.put("id", fi.get("id"));
-        firstAsSample.put("query_prefix", fi.get("query_prefix"));*/
-        //throw new RuntimeException("Did not find hidden field inf in db for: \n" + fi.get("id"));
         database.insert("field_inf", firstAsSample);
         System.out.println(gson.toJson(firstAsSample));
         replacements.add(firstAsSample);

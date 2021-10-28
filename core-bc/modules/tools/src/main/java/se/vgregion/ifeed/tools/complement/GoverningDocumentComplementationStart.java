@@ -1,5 +1,6 @@
 package se.vgregion.ifeed.tools.complement;
 
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.mutable.MutableInt;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
@@ -30,20 +31,29 @@ public class GoverningDocumentComplementationStart {
     }
 
     public static void main(String[] args) {
-        DatabaseApi database = DatabaseApi.getRemoteTestDatabaseApi();
+        DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
         System.out.println("Database: " + database.getUrl());
 
-        /*removeCompletedFlows(database);
-        database.commit();
-        if(true) return;*/
+        /*String sql = "select leaf.*\n" +
+                "from field_inf leaf\n" +
+                "join field_inf branch on branch.pk = leaf.parent_pk\n" +
+                "join field_inf root on root.pk = branch.parent_pk\n" +
+                "where root.name = 'Gömda' and leaf.name = 'Titel'";
 
-        GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
-        /*System.out.println(gdc.makeComplement(450776785l).toText());
-        gdc.commit();
+        FieldInf item = FieldInf.toFieldInf(database.query(sql).get(0));
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(item));
+
+        for (String key : item.keySet()) {
+            String t = (String.format("leaf.put(\"%s\", \"%s\");".replace("\"null\"", "null"), key, item.get(key)));
+            if (!t.contains("null"))
+                System.out.println(t);
+        }
 
         if (true) return;*/
 
-        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
+
+        //SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
         try {
             List<Tuple> items = database.query("select * from vgr_ifeed vi where vi.id > 0 and vi.name like ?", "Kompletterande flöde%");
             List<Feed> feeds = Feed.toFeeds(items);
@@ -56,11 +66,15 @@ public class GoverningDocumentComplementationStart {
                 sb.append(feed.toText());
                 sb.append("\n");
                 sb.append("\n");
-                Feed completed = gdc.getFeed((Number) gdc.makeComplement(feed).get("id"));
-                completed.fill(database);
-                sb.append(completed.toText());
-                sb.append("\n");
-                sb.append("-----------------------------------------------------------------------------------");
+                Feed completed = gdc.makeComplement(feed);
+                if (completed == null) {
+                    System.out.println("Flöde utan resultat: " + feed);
+                } else {
+                    completed.fill(database);
+                    sb.append(completed.toText());
+                    sb.append("\n");
+                    sb.append("-----------------------------------------------------------------------------------");
+                }
 
             }
             Path path = Paths.get(System.getProperty("user.home"), "comp.txt");
@@ -69,16 +83,6 @@ public class GoverningDocumentComplementationStart {
 
             gdc.commit();
 
-            /*for (Feed feed : feeds) {
-                Long id = (Long) feed.get("id");
-                id = id * -1;
-                Feed fromDb = gdc.getFeed(id);
-                fromDb.fill(database);
-                System.out.println(fromDb);
-                if (hasHits(fromDb)) {
-                    System.out.println(id + " has hits!");
-                }
-            }*/
         } catch (Exception e) {
             gdc.rollback();
             throw new RuntimeException(e);

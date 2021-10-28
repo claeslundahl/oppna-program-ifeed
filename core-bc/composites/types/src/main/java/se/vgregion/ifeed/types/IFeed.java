@@ -539,11 +539,19 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         Set<String> filterKeys = filterz.stream().map(f -> f.getFilterKey()).collect(Collectors.toSet());
 
         for (IFeedFilter filter : new ArrayList<>(filterz)) {
-            if (filter.getFieldInf() != null)
+            filter.visit(f-> {
+                if (f.getFieldInf() != null)
+                    filterz.addAll(
+                            f.getFieldInf().getEntireDefaultCondition().stream()
+                                    .filter(dc -> !filterKeys.contains(dc.getFilterKey())).collect(Collectors.toSet())
+                    );
+            });
+
+            /*if (filter.getFieldInf() != null)
                 filterz.addAll(
                         filter.getFieldInf().getEntireDefaultCondition().stream()
                                 .filter(dc -> !filterKeys.contains(dc.getFilterKey())).collect(Collectors.toSet())
-                );
+                );*/
         }
 
         if (filterz == null || filterz.isEmpty()) {

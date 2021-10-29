@@ -81,9 +81,9 @@ public class DocumentStructureMapper extends Mapper {
             mapping.put("Blankett", newFilter(handlingstyp, "Blankett, övrig"));
             mapping.put("Informerande dokument", newFilter(handlingstyp, "Rutin"));
             mapping.put("Patientinformation", newFilter(handlingstyp, "Patientinformation, referensexemplar"));
-            mapping.put("Riktlinje förvaltning", and(newFilter(handlingstyp, "Riktlinje"), newFilter(giltighetsområde, "Lokalt")));
+            mapping.put("Riktlinje förvaltning", newFilter(handlingstyp, "Riktlinje"));
             mapping.put("Riktlinje koncern", and(newFilter(handlingstyp, "Riktlinje"), newFilter(giltighetsområde, "Övergripande")));
-            mapping.put("Rutin förvaltning", and(newFilter(handlingstyp, "Rutin"), newFilter(giltighetsområde, "Lokalt")));
+            mapping.put("Rutin förvaltning", newFilter(handlingstyp, "Rutin"));
             mapping.put("Rutin koncern", and(newFilter(handlingstyp, "Rutin"), newFilter(giltighetsområde, "Övergripande")));
         }
         return mapping;

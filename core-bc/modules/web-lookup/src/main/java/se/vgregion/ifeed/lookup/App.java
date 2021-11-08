@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class App implements Serializable {
 
@@ -46,9 +48,8 @@ public class App implements Serializable {
 
     public String reindex() {
         if (!FeedDocumentIndexSupport.isRunning()) {
-            Executors.newSingleThreadExecutor().submit(() -> {
-                FeedDocumentIndexSupport.main();
-            });
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            executor.schedule((Runnable) () -> FeedDocumentIndexSupport.main(), 20l, TimeUnit.SECONDS);
             return "Startar körning.";
         } else {
             return "Indexering körs på "

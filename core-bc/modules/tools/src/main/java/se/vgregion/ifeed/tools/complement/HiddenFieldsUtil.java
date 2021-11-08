@@ -88,7 +88,7 @@ public class HiddenFieldsUtil extends FieldInfUtil {
 
         addIfNotThereWithFeedback("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path",
                 "Verksamhetskod/",
-                "Kodverk (Verksamhetskod)");
+                "Verksamhetskod");
 
         /*addIfNotThereWithFeedback("DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension",
                 null,

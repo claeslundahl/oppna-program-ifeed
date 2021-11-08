@@ -28,7 +28,7 @@ public class Preproc {
                 "core:ArchivalObject.core:Producer\tMyndighet\n" +
                 "DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension\t\"Domän Styrande dokument\"\n" +
                 "vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path\tKodverk (SweMeSH)\n" +
-                "vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path\tKodverk (Verksamhetskod)\n" +
+                "vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path\tVerksamhetskod\n" +
                 "vgr:VgrExtension.vgr:Source.id\tDokumentid källa\n" +
                 "\tKodverk (Dokumentstruktur VGR)\n" +
                 "vgr:VgrExtension.vgr:Title\tTitel\n" +

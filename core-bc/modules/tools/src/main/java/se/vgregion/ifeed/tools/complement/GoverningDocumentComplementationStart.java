@@ -1,6 +1,5 @@
 package se.vgregion.ifeed.tools.complement;
 
-import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.mutable.MutableInt;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
@@ -14,8 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GoverningDocumentComplementationStart {
@@ -33,27 +31,34 @@ public class GoverningDocumentComplementationStart {
     public static void main(String[] args) {
         DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
         System.out.println("Database: " + database.getUrl());
-
-        /*String sql = "select leaf.*\n" +
-                "from field_inf leaf\n" +
-                "join field_inf branch on branch.pk = leaf.parent_pk\n" +
-                "join field_inf root on root.pk = branch.parent_pk\n" +
-                "where root.name = 'Gömda' and leaf.name = 'Titel'";
-
-        FieldInf item = FieldInf.toFieldInf(database.query(sql).get(0));
-        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(item));
-
-        for (String key : item.keySet()) {
-            String t = (String.format("leaf.put(\"%s\", \"%s\");".replace("\"null\"", "null"), key, item.get(key)));
-            if (!t.contains("null"))
-                System.out.println(t);
+        if (true) return;
+        GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
+        Set<Long> ids = new HashSet<>(Arrays.asList(116514l,
+                3830183l,
+                52112l,
+                4095626l, 3970197l,
+                4095626l, 3970197l,
+                4095626l, 3970197l,
+                4095626l, 3970197l,
+                3970207l,
+                3970207l,
+                3970207l,
+                3970197l,
+                3752286l,
+                3752286l
+        ));
+        for (Long id : ids) {
+            System.out.println(gdc.makeComplement(id));
         }
+        gdc.commit();
+    }
 
-        if (true) return;*/
+    public static void main2(String[] args) {
+        DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
+        System.out.println("Database: " + database.getUrl());
 
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
 
-        //SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
         try {
             List<Tuple> items = database.query("select * from vgr_ifeed vi where vi.id > 0 and vi.name like ?", "Kompletterande flöde%");
             List<Feed> feeds = Feed.toFeeds(items);

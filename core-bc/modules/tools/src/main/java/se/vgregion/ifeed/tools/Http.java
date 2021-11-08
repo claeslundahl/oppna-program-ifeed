@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 
 public class Http {
 
@@ -19,7 +20,7 @@ public class Http {
     }
 
     private static String getImpl(String url) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest request = HttpRequest.newBuilder().timeout(Duration.ofSeconds(30))
                 .uri(URI.create(url))
                 .build();
         String response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();

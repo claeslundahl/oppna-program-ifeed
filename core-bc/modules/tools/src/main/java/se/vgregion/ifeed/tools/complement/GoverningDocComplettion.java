@@ -41,9 +41,9 @@ public class GoverningDocComplettion {
     private HiddenFieldsUtil hiddenFieldsUtil;
 
     private Map<String, FieldInf> codeMapping = Map.of("dc.subject.keywords", new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path",
-            "Kodverk (Verksamhetskod)", "Verksamhetskod/"),
+            "Verksamhetskod", "Verksamhetskod/"),
             "dc.coverage.hsacode", new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path",
-                    "Kodverk (Verksamhetskod)", "Verksamhetskod/"));
+                    "Verksamhetskod", "Verksamhetskod/"));
 
     public GoverningDocComplettion(DatabaseApi database) {
         this.database = database;

@@ -703,7 +703,12 @@ public class IFeedViewerController {
         if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
             List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
             if (items.size() == 1) {
-                that = String.format("%s (%s)", items.get(0).get("ou"), that);
+                Map<String, Object> item = items.get(0);
+                if (item.containsKey("ou")) {
+                    that = String.format("%s (%s)", item.get("ou"), that);
+                } else {
+                    that = String.format("%s (%s)", item.get("ouShort"), that);
+                }
             }
         }
         return that;

@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import se.vgregion.common.utils.Props;
 
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Use this to populate table feed_document_index with information about what document exists within what
@@ -79,7 +80,7 @@ public class FeedDocumentIndexSupport {
     }
 
     public void copyDocumentIdAndFeedIdToTable() {
-        database.execute("delete from feed_document_index");
+        // database.execute("delete from feed_document_index");
         List<Feed> items = getRelevantFeeds();
         System.out.println("Hittade " + items.size() + " flöden.");
         totalCount = items.size();
@@ -92,6 +93,7 @@ public class FeedDocumentIndexSupport {
             copyDocumentIdAndFeedIdToTable(feed);
             if (i % 100 == 0) {
                 System.out.print(" " + String.format("%0" + (items.size() + "").length() + "d", i));
+                database.commit();
             }
             if (i % 1000 == 0) {
                 System.out.println();
@@ -99,6 +101,54 @@ public class FeedDocumentIndexSupport {
         }
         database.commit();
     }
+
+    public static void start() {
+        running = true;
+        DatabaseApi database = DatabaseApi.getLocalApi();
+        System.out.println("Dropping and creating the table.");
+        final FeedDocumentIndexSupport feedDocumentIndexSupport = new FeedDocumentIndexSupport(database);
+        feedDocumentIndexSupport.createTableIfNotThere();
+        System.out.println("Getting work-list from db.");
+        final List<Feed> work = feedDocumentIndexSupport.getRelevantFeeds();
+        final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        final Runnable runnable = new Runnable() {
+            final Runnable self = this;
+
+            @Override
+            public void run() {
+                try {
+                    List<Feed> batch = work.subList(0, work.size() > 100 ? 100 : work.size());
+                    System.out.println();
+                    feedDocumentIndexSupport.copyDocumentIdAndFeedIdToTable(batch);
+                    work.removeAll(batch);
+                    System.out.print(" " + String.format("%0" + (work.size() + "").length() + "d", work.size()));
+                    if (work.size() % 1000 == 0) {
+                        System.out.println();
+                    }
+                    if (work.isEmpty()) {
+                        running = false;
+                        System.out.println();
+                    } else {
+                        scheduledExecutorService.schedule(self, 20, TimeUnit.SECONDS);
+                    }
+                } catch (Exception e) {
+                    database.rollback();
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+
+        System.out.println("Starts writing to index.");
+        scheduledExecutorService.schedule(runnable, 20, TimeUnit.SECONDS);
+    }
+
+    public void copyDocumentIdAndFeedIdToTable(List<Feed> items) {
+        for (Feed feed : items) {
+            copyDocumentIdAndFeedIdToTable(feed);
+        }
+        database.commit();
+    }
+
 
     public void copyDocumentIdAndFeedIdToTable(Feed feed) {
         try {
@@ -117,21 +167,21 @@ public class FeedDocumentIndexSupport {
         return properties;
     }
 
-
-
     private void copyDocumentIdAndFeedIdToTableImpl(Feed feed) {
         Long ifeedId = (Long) feed.get("id");
         String template = getProperties().getProperty("ifeed.web.script.json.url") +
                 "/iFeed-web/documentlists/%s/metadata.json?by=&dir=asc"; //&f=dc.source.documentid&f=vgr:VgrExtension.vgr:Source.id";
 
-        /*final String serviceUrl =
-                String.format("http://localhost:7070/iFeed-web/documentlists/%s/metadata.json?by=&dir=asc&f=id",
-                        ifeedId);*/
         final String serviceUrl = String.format(template, ifeedId);
 
-        String raw = Http.get(serviceUrl);
-        List result = gson.fromJson(raw, List.class);
-
+        List result = null;
+        try {
+            String raw = Http.get(serviceUrl);
+            result = gson.fromJson(raw, List.class);
+        } catch (Exception e) {
+            System.out.println("Response faulty for this feed: " + feed);
+            return;
+        }
         HashSet<String> documentIds = new HashSet<>();
         for (Object o : result) {
             Map map = (Map) o;
@@ -141,6 +191,7 @@ public class FeedDocumentIndexSupport {
             }
             documentIds.add((String) v);
         }
+        database.execute("delete from feed_document_index where ifeed_id = ?", ifeedId);
         for (String documentId : documentIds) {
             Map<String, Object> item = new HashMap<>();
             item.put("document_id", documentId);

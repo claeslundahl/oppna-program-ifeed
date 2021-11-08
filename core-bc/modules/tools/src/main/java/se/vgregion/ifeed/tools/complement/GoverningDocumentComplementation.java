@@ -43,7 +43,7 @@ public class GoverningDocumentComplementation {
                                 "filterquery", "Styrande dokument",
                                 "operator", "matching"
                         ),
-                        getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.domain", "Dokumenttyp", null))
+                        getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.domain", "Domän Styrande dokument", null))
                 )
         ));
     }

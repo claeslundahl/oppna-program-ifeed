@@ -297,7 +297,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
             for (IFeedFilter item : filtersAsList) {
                 String that = item.getFilterQuery();
                 if (that == null) continue;
-                if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
+                if (that.matches("SE[0-9]{10}\\-[A-Z][0-9]{12}")) {
                     List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
                     if (items.size() == 1) {
                         that = String.format("%s (%s)", items.get(0).get("ou"), that);
@@ -396,7 +396,7 @@ public class IFeedModelBean extends IFeed implements Serializable {
             that = "Västra Götalandsregionen (SE2321000131-E000000000001)";
             return that;
         }
-        if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
+        if (that.matches("SE[0-9]{10}\\-[A-Z][0-9]{12}")) {
             List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
             if (items.size() == 1) {
                 that = String.format("%s (%s)", items.get(0).get("ou"), that);

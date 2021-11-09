@@ -39,10 +39,10 @@ public class FeedDocumentIndexSupport {
     public static void main() {
         running = true;
         System.out.println("Getting the db.");
-        DatabaseApi database = DatabaseApi.getLocalApi();
+        DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
         FeedDocumentIndexSupport feedDocumentIndexSupport = new FeedDocumentIndexSupport(database);
         try {
-            System.out.println("Dropping and creating the table.");
+            System.out.println("Create table if not present.");
             feedDocumentIndexSupport.createTableIfNotThere();
             System.out.println("Starting to copy.");
             feedDocumentIndexSupport.copyDocumentIdAndFeedIdToTable();
@@ -96,10 +96,16 @@ public class FeedDocumentIndexSupport {
                 database.commit();
             }
             if (i % 1000 == 0) {
+                deleteItemsNotHavingFeed();
                 System.out.println();
             }
         }
+        deleteItemsNotHavingFeed();
         database.commit();
+    }
+
+    private void deleteItemsNotHavingFeed() {
+        database.update("delete from feed_document_index where ifeed_id not in (select id from vgr_ifeed)");
     }
 
     public static void start() {

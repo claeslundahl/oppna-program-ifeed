@@ -700,7 +700,8 @@ public class IFeedViewerController {
             that = "Västra Götalandsregionen (SE2321000131-E000000000001)";
             return that;
         }
-        if (that.matches("SE[0-9]{10}\\-E[0-9]{12}")) {
+        if (that.matches("SE[0-9]{10}\\-[A-Z][0-9]{12}")) {
+            System.out.println("HsaId: " + that);
             List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
             if (items.size() == 1) {
                 Map<String, Object> item = items.get(0);

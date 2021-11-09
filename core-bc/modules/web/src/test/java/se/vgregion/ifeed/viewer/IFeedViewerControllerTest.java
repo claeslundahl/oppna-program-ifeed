@@ -87,7 +87,7 @@ public class IFeedViewerControllerTest {
 
     @Test
     public void foo() {
-        System.out.println("SE2321000131-E000000000001".matches("SE[0-9]{10}\\-E[0-9]{12}"));
+        System.out.println("SE2321000131-E000000000001".matches("SE[0-9]{10}\\-[A-Z][0-9]{12}"));
     }
 
     @Test

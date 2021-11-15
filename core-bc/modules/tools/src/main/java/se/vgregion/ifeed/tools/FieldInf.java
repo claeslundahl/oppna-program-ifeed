@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -120,5 +121,38 @@ public class FieldInf extends Tuple {
 
     public void setDatabase(DatabaseApi database) {
         this.database = database;
+    }
+
+    public se.vgregion.ifeed.types.FieldInf toJpaVersion() {
+        se.vgregion.ifeed.types.FieldInf result = new se.vgregion.ifeed.types.FieldInf();
+// [in_html_view, level, apelon_id, in_tooltip, type, operator, filter, help, expanded, apelon_key,
+        // parent_pk, name, pk, id, position, query_prefix, value]
+        if (get("in_html_view") != null)
+            result.setInHtmlView((Boolean) get("in_html_view"));
+        result.setLevel((Integer) get(("level")));
+        result.setApelonKey((String) get("apelon_key"));
+        if (get("in_tooltip") != null)
+            result.setInTooltip((Boolean) get("in_tooltip"));
+        result.setType((String) get("type"));
+        result.setOperator((String) get("operator"));
+        if (get("filter") != null)
+           result.setFilter((Boolean) get("filter"));
+        result.setHelp((String) get("help"));
+        if (get("expanded") != null)
+        result.setExpanded((Boolean) get("expanded"));
+        result.setParentPk((Long) get("parent_pk"));
+        if (getParent() != null)
+            result.setParent(getParent().toJpaVersion());
+        result.setName((String) get("name"));
+        result.setPk((Long) get("pk"));
+        result.setId((String) get("id"));
+        result.setPosition((Integer) get("position"));
+        result.setQueryPrefix((String) get("query_prefix"));
+        result.setValue((String) get("value"));
+        result.setDefaultFilters(new HashSet<>());
+        for (DefaultFilter df : getDefaultFilters()) {
+            result.getDefaultFilters().add(df.toJpaVersion());
+        }
+        return result;
     }
 }

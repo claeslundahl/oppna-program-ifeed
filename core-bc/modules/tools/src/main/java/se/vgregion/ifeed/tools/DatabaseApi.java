@@ -1,6 +1,8 @@
 package se.vgregion.ifeed.tools;
 
 import se.vgregion.arbetsplatskoder.db.migration.sql.*;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -16,6 +18,24 @@ import java.util.Properties;
 import static se.vgregion.common.utils.Props.fetchProperties;
 
 public class DatabaseApi extends ConnectionExt {
+
+
+    public static void main(String[] args) {
+        DatabaseApi database = DatabaseApi.getDatabaseApi();
+        List<Tuple> items = database.query("select * from vgr_ifeed where id = ?", 437600935);
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+
+        for (Tuple item : items) {
+            System.out.println(item);
+            Feed feed = Feed.toFeed(item);
+            feed.fill(database);
+            String q = (feed.toIFeed().toQuery(client.fetchFields()));
+            System.out.println(q);
+            Result r = client.query(q, 0, 1_000_000, "ASC", null,
+                    "dc.source.documentid", "vgr:VgrExtension.vgr:Source.id");
+            System.out.println(r.getResponse().getDocs());
+        }
+    }
 
     public DatabaseApi(String url, String user, String password, String driver) {
         super(url, user, password, driver);

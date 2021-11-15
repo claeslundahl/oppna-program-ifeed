@@ -163,6 +163,14 @@ public class Filter extends Tuple {
             result.getChildren().add(child.toIFeedFilter());
         }
 
+        FieldInf fi = getFieldInf();
+        if (fi != null) {
+
+
+
+            result.setFieldInf(getFieldInf().toJpaVersion());
+        }
+
         return result;
     }
 

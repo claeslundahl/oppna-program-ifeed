@@ -701,7 +701,6 @@ public class IFeedViewerController {
             return that;
         }
         if (that.matches("SE[0-9]{10}\\-[A-Z][0-9]{12}")) {
-            System.out.println("HsaId: " + that);
             List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", that));
             if (items.size() == 1) {
                 Map<String, Object> item = items.get(0);

@@ -22,6 +22,9 @@ public class AccessGuard {
                 return true;
             }
             String screenName = user.getId();
+            if (screenName == null) {
+                return false;
+            }
             if (feed.getUserId() == null) {
                 return true;
             }

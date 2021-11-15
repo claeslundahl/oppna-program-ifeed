@@ -31,22 +31,9 @@ public class GoverningDocumentComplementationStart {
     public static void main(String[] args) {
         DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
         System.out.println("Database: " + database.getUrl());
-        if (true) return;
+        // if (true) return;
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
-        Set<Long> ids = new HashSet<>(Arrays.asList(116514l,
-                3830183l,
-                52112l,
-                4095626l, 3970197l,
-                4095626l, 3970197l,
-                4095626l, 3970197l,
-                4095626l, 3970197l,
-                3970207l,
-                3970207l,
-                3970207l,
-                3970197l,
-                3752286l,
-                3752286l
-        ));
+        Set<Long> ids = new HashSet<>(Arrays.asList(4495310l, 4495312l));
         for (Long id : ids) {
             System.out.println(gdc.makeComplement(id));
         }

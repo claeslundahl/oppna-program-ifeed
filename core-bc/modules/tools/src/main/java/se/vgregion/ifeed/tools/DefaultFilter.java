@@ -23,4 +23,11 @@ public class DefaultFilter extends Tuple {
         super();
     }
 
+    public se.vgregion.ifeed.types.DefaultFilter toJpaVersion() {
+        se.vgregion.ifeed.types.DefaultFilter result = new se.vgregion.ifeed.types.DefaultFilter();
+        result.setFilterKey((String) get("filterkey"));
+        result.setFilterQuery((String) get("filterquery"));
+        result.setId((Long) get("id"));
+        return result;
+    }
 }

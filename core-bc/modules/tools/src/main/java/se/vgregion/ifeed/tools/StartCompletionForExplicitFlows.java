@@ -26,12 +26,12 @@ public class StartCompletionForExplicitFlows extends SofiaFlowCompletion {
     public void generateFlows() {
         // ID: 2019 APT BMS ( Id: 129597 ) och APT 2020 BMS ( Id: 130138 )  till Sharepointytan https://vgregion.sharepoint.com/sites/sy-sv-bemanningsservice-alingsas
 
-        generateFlows(" and f.id in (48878, \n" +
-                "4491673, \n" +
-                "38278, \n" +
-                "123943, \n" +
-                "37837, \n" +
-                "37840) ");
+        generateFlows(" and f.id in (37401,\n" +
+                "118057,\n" +
+                "124455,\n" +
+                "437584951,\n" +
+                "437593278,\n" +
+                "437593693)\n");
     }
 
     @Override

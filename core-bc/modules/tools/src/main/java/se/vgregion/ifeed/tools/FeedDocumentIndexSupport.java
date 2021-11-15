@@ -3,6 +3,8 @@ package se.vgregion.ifeed.tools;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import se.vgregion.common.utils.Props;
+import se.vgregion.ifeed.service.solr.client.Result;
+import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -39,7 +41,7 @@ public class FeedDocumentIndexSupport {
     public static void main() {
         running = true;
         System.out.println("Getting the db.");
-        DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
+        DatabaseApi database = DatabaseApi.getDatabaseApi();
         FeedDocumentIndexSupport feedDocumentIndexSupport = new FeedDocumentIndexSupport(database);
         try {
             System.out.println("Create table if not present.");
@@ -173,7 +175,48 @@ public class FeedDocumentIndexSupport {
         return properties;
     }
 
+    static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+
+    private void foo(Feed feed) {
+        // Feed feed = Feed.toFeed(item);
+        feed.fill(database);
+        String q = (feed.toIFeed().toQuery(client.fetchFields()));
+        System.out.println(q);
+        Result r = client.query(q, 0, 1_000_000, "ASC", null,
+                "dc.source.documentid", "vgr:VgrExtension.vgr:Source.id");
+        if (r != null && r.getResponse() != null && r.getResponse().getDocs() != null) {
+
+        }
+    }
+
     private void copyDocumentIdAndFeedIdToTableImpl(Feed feed) {
+        Long ifeedId = (Long) feed.get("id");
+        Set<String> documentIds = new HashSet<>();
+
+        feed.fill(database);
+        String q = (feed.toIFeed().toQuery(client.fetchFields()));
+        // System.out.println(q);
+        Result r = client.query(q, 0, 1_000_000, "ASC", null,
+                "dc.source.documentid", "vgr:VgrExtension.vgr:Source.id");
+        if (r != null && r.getResponse() != null && r.getResponse().getDocs() != null) {
+            for (Map<String, Object> doc : r.getResponse().getDocs()) {
+                documentIds.add(
+                        (String) (doc.containsKey("dc.source.documentid") ?
+                                doc.get("dc.source.documentid") : doc.get("vgr:VgrExtension.vgr:Source.id"))
+                );
+            }
+        }
+
+        database.execute("delete from feed_document_index where ifeed_id = ?", ifeedId);
+        for (String documentId : documentIds) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("document_id", documentId);
+            item.put("ifeed_id", ifeedId);
+            database.insert("feed_document_index", item);
+        }
+    }
+
+    private void copyDocumentIdAndFeedIdToTableImplOld(Feed feed) {
         Long ifeedId = (Long) feed.get("id");
         String template = getProperties().getProperty("ifeed.web.script.json.url") +
                 "/iFeed-web/documentlists/%s/metadata.json?by=&dir=asc"; //&f=dc.source.documentid&f=vgr:VgrExtension.vgr:Source.id";

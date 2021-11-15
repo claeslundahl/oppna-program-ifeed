@@ -4,8 +4,6 @@ import se.vgregion.ifeed.tools.FeedDocumentIndexSupport;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -16,10 +14,12 @@ public class ContextSpy implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         System.out.println("contextInitialized start");
-/*        executor.(() -> FeedDocumentIndexSupport.main(), 1, TimeUnit.MINUTES);*/
-        /*final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(3);
-        executor.schedule(() -> FeedDocumentIndexSupport.main(), 1, TimeUnit.MINUTES);
-        System.out.println("contextInitialized end");*/
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+        final int firstRun = (int) (Math.random() * 24);
+        // final int firstRun = 1;
+        System.out.println("Starting in " + firstRun + " hours.");
+        executor.scheduleAtFixedRate(() -> FeedDocumentIndexSupport.main(), firstRun, 24, TimeUnit.HOURS);
+        System.out.println("contextInitialized end");
     }
 
     @Override

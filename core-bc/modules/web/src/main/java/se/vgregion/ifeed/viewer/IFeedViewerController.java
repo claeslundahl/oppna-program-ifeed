@@ -1095,6 +1095,7 @@ public class IFeedViewerController {
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path Verksamhetskod/", "Verksamhetskod enligt HSA"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentResponsible.role", "Innehållsansvarig, roll"));
+                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ContentReviewer", "Innehållsgranskare"));
                 pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:DocumentApproved.name", "Godkänt av"));
 
                 ifHavingValueChangeThat(doc, "vgrsd:DomainExtension.vgrsd:DocumentApproved.name",

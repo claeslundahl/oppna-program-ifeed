@@ -33,11 +33,21 @@ public class GoverningDocumentComplementationStart {
         System.out.println("Database: " + database.getUrl());
         // if (true) return;
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
-        Set<Long> ids = new HashSet<>(Arrays.asList(4495310l, 4495312l));
+        Set<Long> ids = new HashSet<>(Arrays.asList(4411565l));
         for (Long id : ids) {
             System.out.println(gdc.makeComplement(id));
         }
         gdc.commit();
+    }
+
+    public static List<Feed> complement(Number ... ids) {
+        List<Feed> result = new ArrayList<>();
+        DatabaseApi database = DatabaseApi.getLocalApi();
+        GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
+        for (Number id : ids)
+            result.add(gdc.makeComplement(id));
+        database.commit();
+        return result;
     }
 
     public static void main2(String[] args) {
@@ -85,7 +95,7 @@ public class GoverningDocumentComplementationStart {
 
     static boolean hasHits(Feed feed) throws IOException, InterruptedException {
         try {
-            IFeed ifeed = feed.toIFeed();
+            IFeed ifeed = feed.toJpaVersion();
             // System.out.println(ifeed.toQuery(client.fetchFields()));
             Result result = client.query(ifeed.toQuery(client.fetchFields()), 0, 1, "asc", null);
             for (Map<String, Object> doc : result.getResponse().getDocs()) {

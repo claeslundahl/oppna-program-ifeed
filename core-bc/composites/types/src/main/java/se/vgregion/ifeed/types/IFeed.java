@@ -581,6 +581,8 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
                 if (filter.getFieldInf() != null && filter.getFieldInf().getQueryPrefix() != null) {
                     key = key + filter.getFieldInf().getQueryPrefix();
                 }
+                if (keyToFilters.get(key) == null)
+                    System.out.println("hej");
                 keyToFilters.get(key).add(filter);
             }
         }

@@ -158,6 +158,7 @@ public class Filter extends Tuple {
 
         result.setFilterKey((String) get("filterkey"));
         result.setFilterQuery((String) get("filterquery"));
+        result.setOperator((String) get("operator"));
 
         for (Filter child : getChildren()) {
             result.getChildren().add(child.toIFeedFilter());

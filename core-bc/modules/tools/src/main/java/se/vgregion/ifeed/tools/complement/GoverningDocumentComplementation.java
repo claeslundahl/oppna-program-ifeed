@@ -151,7 +151,7 @@ public class GoverningDocumentComplementation {
                                     getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Legitimerade yrken", "Legitimerade yrken/")),
                                     getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Specialistutbildningar", "Specialistutbildningar/"))),
 
-                            new Mapper("dc.date.validto", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltighetsdatum tom", null)))));
+                            new Mapper("dc.date.validto", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltighetsdatum tom", null, "d:date")))));
         }
         return mappers;
     }

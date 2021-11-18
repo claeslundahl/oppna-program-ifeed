@@ -46,6 +46,11 @@ public class FieldInf extends Tuple {
         put("query_prefix", queryPrefix);
     }
 
+    public FieldInf(String id, String name, String queryPrefix, String type) {
+        this(id, name, queryPrefix);
+        put("type", type);
+    }
+
     public FieldInf(FieldInf fieldInf) {
         putAll(fieldInf);
     }
@@ -136,10 +141,10 @@ public class FieldInf extends Tuple {
         result.setType((String) get("type"));
         result.setOperator((String) get("operator"));
         if (get("filter") != null)
-           result.setFilter((Boolean) get("filter"));
+            result.setFilter((Boolean) get("filter"));
         result.setHelp((String) get("help"));
         if (get("expanded") != null)
-        result.setExpanded((Boolean) get("expanded"));
+            result.setExpanded((Boolean) get("expanded"));
         result.setParentPk((Long) get("parent_pk"));
         if (getParent() != null)
             result.setParent(getParent().toJpaVersion());

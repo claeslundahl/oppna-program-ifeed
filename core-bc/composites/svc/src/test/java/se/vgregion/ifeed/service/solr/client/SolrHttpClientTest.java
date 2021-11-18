@@ -23,22 +23,20 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class SolrHttpClientTest {
 
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        NavigableSet<Object> values = client.findAllValues("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path");
-        for (Object value : values) {
-            System.out.println(value);
+        Set<String> stuff = client.fetchAllFieldNames();
+        System.out.println(stuff);
+        System.out.println();
+        for (String item : stuff) {
+            if (item.startsWith("vgrsd:DomainExtension.vgrsd:ContentReviewer")) {
+                System.out.println(item + " " + client.findAllValues(item));
+            }
         }
-        /*String in = "1100,2025,1129,1103,1708,1142,2003,1153,1509,1238,1120,1016,1615,1413";
-        String[] ins = in.split(Pattern.quote(","));
-        for (String s : ins) {
-            System.out.print(String.format("'%s', ", s));
-        }*/
     }
 
     static void atkomstkod() throws IOException {

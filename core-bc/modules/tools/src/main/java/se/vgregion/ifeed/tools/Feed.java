@@ -22,6 +22,8 @@ public class Feed extends Tuple {
 
     private final List<CompositeLink> partOf = new DistinctArrayList<>();
 
+    private DatabaseApi database;
+
     public Feed(Feed feed) {
         super();
         putAll(feed);
@@ -46,6 +48,7 @@ public class Feed extends Tuple {
     }
 
     public void fill(DatabaseApi database) {
+        this.database = database;
         List<Tuple> findings = database.query("select * from vgr_ifeed_filter where ifeed_id = ?", get("id"));
         filters.addAll(Filter.toFilters(findings));
         for (Filter filter : filters) {
@@ -113,11 +116,20 @@ public class Feed extends Tuple {
         }
     }
 
-    public IFeed toIFeed() {
+    public IFeed toJpaVersion() {
         IFeed result = new IFeed();
+        result.setId((Long) get("id"));
         result.setName((String) get("name"));
         for (Filter filter : getFilters()) {
             result.addFilter(filter.toIFeedFilter());
+        }
+        for (CompositeLink composite : getComposites()) {
+            List<Tuple> items = database.query("select * from vgr_ifeed where id = ?", composite.get("composites_id"));
+            if (items.size() != 1) throw new RuntimeException();
+            Feed item = Feed.toFeed(items.get(0));
+            item.fill(database);
+            IFeed compositeFeed = item.toJpaVersion();
+            result.getComposites().add(compositeFeed);
         }
         return result;
     }

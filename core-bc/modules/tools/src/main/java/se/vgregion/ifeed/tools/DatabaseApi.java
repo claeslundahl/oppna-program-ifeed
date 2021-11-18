@@ -29,7 +29,7 @@ public class DatabaseApi extends ConnectionExt {
             System.out.println(item);
             Feed feed = Feed.toFeed(item);
             feed.fill(database);
-            String q = (feed.toIFeed().toQuery(client.fetchFields()));
+            String q = (feed.toJpaVersion().toQuery(client.fetchFields()));
             System.out.println(q);
             Result r = client.query(q, 0, 1_000_000, "ASC", null,
                     "dc.source.documentid", "vgr:VgrExtension.vgr:Source.id");

@@ -146,13 +146,15 @@ public class GoverningDocumentComplementation {
                             //Kodverk Legitimerade yrken
                             //Kodverk Specialistutbildningar
                             //Kodverk HosPersKat
+                            new Mapper("dc.creator.forunit.id", getOrCreateFromOrInDatabase(new FieldInf("vgr:VgrExtension.vgr:CreatedByUnit.id", "Upprättat av enhet", null, "d:ldap_org_value"))),
                             new TermsAudienceMapper("dcterms.audience",
                                     getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "HosPersKat", "HosPersKat/")),
                                     getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Legitimerade yrken", "Legitimerade yrken/")),
                                     getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Specialistutbildningar", "Specialistutbildningar/"))),
-
                             new Mapper("dc.date.validto", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltighetsdatum tom", null, "d:date")))));
+
         }
+
         return mappers;
     }
 

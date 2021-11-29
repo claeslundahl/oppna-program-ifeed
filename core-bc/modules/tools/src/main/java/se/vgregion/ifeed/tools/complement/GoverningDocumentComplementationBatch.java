@@ -13,49 +13,54 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GoverningDocumentComplementationBatch {
     static DatabaseApi local;
     // http://localhost:7070/iFeed-web/documentlists/1168/metadata.json?by=&dir=asc
 
+
+    static Set<Long> getAlreadyFinishedLocalFeedIds() {
+        Set<Long> result = DatabaseApi.getLocalApi().query("select (id * -1) as id_comp \n" +
+                        "from vgr_ifeed vi where vi.name like '%(sty. dok. komplement)' and id < 0")
+                .stream().map(item -> new Long((Long) item.get("id_comp"))).collect(Collectors.toSet());
+
+        return result;
+    }
+
+
     public static void main(String[] args) {
-        local = DatabaseApi.getRemoteStageDatabaseApi();
+        local = DatabaseApi.getRemoteProdDatabaseApi();
         System.out.println(local.getUrl());
+        Set<Long> okList = getAlreadyFinishedLocalFeedIds();
+
         // if (true) return;
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(local);
         List<Number> diffingAfter = new ArrayList<>();
         List<Number> hasComplementAlready = new ArrayList<>();
         try {
             List<Feed> items = gdc.findFeedsWithRelevantFilters();
-            // items = Arrays.asList(gdc.getFeed(66089));
             System.out.println("Kollar " + items.size() + " efter Barium-dokument.");
             int count = 0, allCount = 0;
             for (Feed item : items) {
                 Number feedId = (Number) item.get("id");
-                // System.out.println(item);
-                // String itemsBefore = get(feedId);
-                // final String queryBefore = toCondition(item);
-                //String itemsBefore = get(queryBefore).stream().map(i -> i.get("SourceSystem")).collect(Collectors.toList()).toString();
-                String itemsBefore = foo(feedId);
-                if (itemsBefore.contains("Barium")) {
-                    if (!local.query("select * from vgr_ifeed where id = ?", feedId.longValue() * -1).isEmpty()) {
-                        hasComplementAlready.add(feedId);
-                    }
-                    // System.out.println(item);
-                    Feed result = gdc.makeComplement(item);
-                    if (result != null) {
-                        count++;
+                if (okList.contains(feedId)) {
+                    String itemsBefore = foo(feedId);
+                    if (itemsBefore.contains("Barium")) {
+                        if (!local.query("select * from vgr_ifeed where id = ?", feedId.longValue() * -1).isEmpty()) {
+                            hasComplementAlready.add(feedId);
+                        }
+                        // System.out.println(item);
+                        Feed result = gdc.makeComplement(item);
+                        if (result != null) {
+                            count++;
 
-                        gdc.commit();
-                        // String itemsAfter = get(feedId);
-                        /*String queryAfter = toCondition(gdc.getFeed(feedId));
-                        if (queryAfter.equals(queryBefore))
-                            throw new RuntimeException(queryBefore + "\n" + queryAfter + "\nId: " + item.get("id"));*/
-                        //String itemsAfter = get(queryAfter).stream().map(i -> i.get("SourceSystem")).collect(Collectors.toList()).toString();
-                        String itemsAfter = foo(feedId);
-                        if (!itemsAfter.equals(itemsBefore)) {
-                            diffingAfter.add((Number) item.get("id"));
+                            gdc.commit();
+                            String itemsAfter = foo(feedId);
+                            if (!itemsAfter.equals(itemsBefore)) {
+                                diffingAfter.add((Number) item.get("id"));
+                            }
                         }
                     }
                 }

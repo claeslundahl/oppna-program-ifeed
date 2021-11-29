@@ -29,18 +29,22 @@ public class GoverningDocumentComplementationStart {
     }
 
     public static void main(String[] args) {
-        DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
+        DatabaseApi database = DatabaseApi.getRemoteProdDatabaseApi();
         System.out.println("Database: " + database.getUrl());
         // if (true) return;
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
-        Set<Long> ids = new HashSet<>(Arrays.asList(4411565l));
+        Set<Long> ids = new HashSet<>(Arrays.asList(437601916l,
+                437601804l,
+                437601970l,
+                437602044l,
+                437602194l));
         for (Long id : ids) {
-            System.out.println(gdc.makeComplement(id));
+            System.out.println(id + " = " + gdc.makeComplement(id));
         }
         gdc.commit();
     }
 
-    public static List<Feed> complement(Number ... ids) {
+    public static List<Feed> complement(Number... ids) {
         List<Feed> result = new ArrayList<>();
         DatabaseApi database = DatabaseApi.getLocalApi();
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);

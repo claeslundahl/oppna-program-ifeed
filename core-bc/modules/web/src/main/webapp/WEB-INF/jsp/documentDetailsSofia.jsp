@@ -176,7 +176,10 @@
             <tr><td class="key">DokumentId källa</td><td class="value">${item['vgr:VgrExtension.vgr:Source.id']}</td></tr>
             </c:if>
             <c:if test="${not empty item['vgr:VgrExtension.vgr:SourceSystem']}">
-            <tr><td class="key">Källsystem</td><td class="value">${item['vgr:VgrExtension.vgr:SourceSystem']}</td></tr>
+                <tr><td class="key">Källsystem</td><td class="value">${item['vgr:VgrExtension.vgr:SourceSystem']}</td></tr>
+            </c:if>
+            <c:if test="${not empty item['version']}">
+                <tr><td class="key">Version i källsystem</td><td class="value">${item['version']}</td></tr>
             </c:if>
             <c:if test="${not empty item['vgr:VgrExtension.vgr:CreatedByUnit.id']}">
             <tr><td class="key">Upprättat av enhet</td><td class="value">${item['vgr:VgrExtension.vgr:CreatedByUnit.id']}</td></tr>

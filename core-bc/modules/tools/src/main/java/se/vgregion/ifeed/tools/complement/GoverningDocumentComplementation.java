@@ -234,13 +234,17 @@ public class GoverningDocumentComplementation {
         return result;
     }
 
-    private void addDefaultFilters(Feed toThat) {
+    public List<Filter> addDefaultFilters(Feed toThat) {
+        List<Filter> result = new ArrayList<>();
         for (Filter filter : defaultFiltersToAdd) {
             Filter clone = new Filter(filter);
             clone.setFieldInf(filter.getFieldInf());
             clone.put("field_inf_pk", filter.getFieldInf().get("pk"));
+            clone.put("ifeed_id", toThat.get("id"));
             toThat.getFilters().add(clone);
+            result.add(clone);
         }
+        return result;
     }
 
     private void removeOldIdentitiesAndAddMinusFeedId(Feed result) {
@@ -410,6 +414,10 @@ public class GoverningDocumentComplementation {
             return false;
         }
         return o1.equals(o2);
+    }
+
+    public List<Filter> getDefaultFiltersToAdd() {
+        return defaultFiltersToAdd;
     }
 
 }

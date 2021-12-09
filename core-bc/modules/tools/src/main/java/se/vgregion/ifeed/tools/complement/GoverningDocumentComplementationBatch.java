@@ -33,7 +33,7 @@ public class GoverningDocumentComplementationBatch {
     public static void main(String[] args) {
         local = DatabaseApi.getRemoteProdDatabaseApi();
         System.out.println(local.getUrl());
-        Set<Long> okList = getAlreadyFinishedLocalFeedIds();
+        // Set<Long> okList = getAlreadyFinishedLocalFeedIds();
 
         // if (true) return;
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(local);
@@ -45,25 +45,25 @@ public class GoverningDocumentComplementationBatch {
             int count = 0, allCount = 0;
             for (Feed item : items) {
                 Number feedId = (Number) item.get("id");
-                if (okList.contains(feedId)) {
-                    String itemsBefore = foo(feedId);
-                    if (itemsBefore.contains("Barium")) {
-                        if (!local.query("select * from vgr_ifeed where id = ?", feedId.longValue() * -1).isEmpty()) {
-                            hasComplementAlready.add(feedId);
-                        }
-                        // System.out.println(item);
-                        Feed result = gdc.makeComplement(item);
-                        if (result != null) {
-                            count++;
+                // if (okList.contains(feedId)) {
+                String itemsBefore = foo(feedId);
+                if (itemsBefore.contains("Barium")) {
+                    if (!local.query("select * from vgr_ifeed where id = ?", feedId.longValue() * -1).isEmpty()) {
+                        hasComplementAlready.add(feedId);
+                    }
+                    // System.out.println(item);
+                    Feed result = gdc.makeComplement(item);
+                    if (result != null) {
+                        count++;
 
-                            gdc.commit();
-                            String itemsAfter = foo(feedId);
-                            if (!itemsAfter.equals(itemsBefore)) {
-                                diffingAfter.add((Number) item.get("id"));
-                            }
+                        gdc.commit();
+                        String itemsAfter = foo(feedId);
+                        if (!itemsAfter.equals(itemsBefore)) {
+                            diffingAfter.add((Number) item.get("id"));
                         }
                     }
                 }
+                // }
 
                 allCount++;
                 if (allCount % 100 == 0) {

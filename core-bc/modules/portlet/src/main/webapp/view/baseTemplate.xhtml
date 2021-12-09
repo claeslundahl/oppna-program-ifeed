@@ -2,11 +2,11 @@
 
 <html class="aui" xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+>
 
 <h:head>
     <f:facet name="first">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
     </f:facet>
     <meta name="viewport" content="width=device-width, user-scalable=no"/>
 
@@ -39,23 +39,41 @@
             </li>
             <li class="" id="layout_3" data-nav_item_attr_selected="" role="presentation">
                 <a aria-labelledby="layout_3" href="${request.contextPath}/view/about.xhtml" role="menuitem">
-                <span>Om iFeed</span>
+                    <span>Om iFeed</span>
                 </a>
             </li>
-            <li class="" id="layout_4" data-nav_item_attr_selected="" role="presentation">
-                <a aria-labelledby="layout_3" href="/iFeed-lookup" role="menuitem">
+            <li id="layout_4" data-nav_item_attr_selected="" role="presentation">
+                <a id="linkToLookup" aria-labelledby="layout_3" href="/iFeed-lookup" role="menuitem" target="blank">
                     <span>Hitta flöden med dokument-id</span>
                 </a>
             </li>
         </ul>
     </nav>
 
-    <ui:insert name="content" />
+    <ui:insert name="content"/>
 </div>
 
 <ui:include src="footer.xhtml"/>
 
-<script type="text/javascript">
+<script type="text/javascript" onload="main()">
+
+    /*
+    * Find better way of doing this!
+    * */
+    function main() {
+        const linkToLookup = document.getElementById('linkToLookup');
+        if (location.href.indexOf('-test') > 0) {
+            linkToLookup.href = 'https://ifeed-test.vgregion.se/iFeed-lookup';
+        } else if (location.href.indexOf('-stage') > 0) {
+            linkToLookup.href = 'https://ifeed-stage.vgregion.se/iFeed-lookup';
+        } else if (location.href.indexOf('localhost') > 0) {
+            linkToLookup.href = '/iFeed-lookup';
+        } else {
+            linkToLookup.href = 'https://ifeed.vgregion.se/iFeed-lookup';
+        }
+    }
+
+    main();
 
     /*$(document).ready(function () {
         onReady();

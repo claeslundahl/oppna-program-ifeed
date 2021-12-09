@@ -1102,6 +1102,11 @@ public class IFeedViewerController {
                         doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.name"), " (",
                         doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.id"), ")");
 
+                // vgrsd:DomainExtension.vgrsd:ContentReviewer
+                ifHavingValueChangeThat(doc, "vgrsd:DomainExtension.vgrsd:ContentReviewer",
+                        doc.get("vgrsd:DomainExtension.vgrsd:ContentReviewer"), " (",
+                        doc.get("vgrsd:DomainExtension.vgrsd:ContentReviewer.id"), ")");
+
                 ifHavingValueChangeThat(doc, "vgrsd:DomainExtension.vgrsd:DocumentApproved.name",
                         doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved.name"), " (",
                         doc.get("vgrsd:DomainExtension.vgrsd:DocumentApproved"), ")");

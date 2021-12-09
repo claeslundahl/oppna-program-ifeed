@@ -20,6 +20,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,15 +30,57 @@ public class SolrHttpClientTest {
 
     static SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        Set<String> stuff = client.fetchAllFieldNames();
-        System.out.println(stuff);
-        System.out.println();
-        for (String item : stuff) {
-            if (item.startsWith("vgrsd:DomainExtension.vgrsd:ContentReviewer")) {
-                System.out.println(item + " " + client.findAllValues(item));
-            }
+    static void foo() {
+        Result r = client.query("", 0, 1_000_000, "asc", null,
+                "SourceSystem", "vgrsd:DomainExtension.domain", "language");
+        Set<Map<String, Object>> condensed = new HashSet<>(r.getResponse().getDocs());
+        for (Map<String, Object> item : condensed) {
+            System.out.println(item);
         }
+    }
+
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        /*Result r = client.query("", 0, 1_000_000, "asc", null, "core:ArchivalObject.core:CreatedDateTime", "id", "title");
+        for (Map<String, Object> doc : r.getResponse().getDocs()) {
+            String rawTextTime = (String) doc.get("core:ArchivalObject.core:CreatedDateTime");
+            if (rawTextTime != null) {
+                Instant instant = Instant.parse(rawTextTime);
+                if ("SATURDAY".equals(instant.atZone(ZoneId.systemDefault()).getDayOfWeek()+"")) {
+                    System.out.println(doc);
+                System.out.println(instant.atZone(ZoneId.systemDefault()).getDayOfWeek());
+                }
+            }
+        }*/
+
+        /*NavigableSet<Object> sourceSystems = client.findAllValues("SourceSystem");
+        for (Object sourceSystem : sourceSystems) {
+            System.out.println(sourceSystem);
+        }
+
+        System.out.println();
+        System.out.println("vgrsd:DomainExtension.domain = ");
+        sourceSystems = client.findAllValues("vgrsd:DomainExtension.domain");
+        for (Object sourceSystem : sourceSystems) {
+            System.out.println(sourceSystem);
+        }
+
+        System.out.println();
+        foo();*/
+
+        NavigableSet<Object> items = client.findAllValues("vgr:VgrExtension.vgr:SourceSystem");
+        for (Object item : items) {
+            System.out.println(item);
+        }
+        // Har styrande dokument och vanliga sofia-dito alltid SourceSystem == 'MELLANARKIV'?
+
+
+
+        /*NavigableSet<Object> allSofiaCreateionTimes = client.findAllValues("core:ArchivalObject.core:CreatedDateTime");
+        for (Object allSofiaCreateionTime : allSofiaCreateionTimes) {
+            System.out.println(allSofiaCreateionTime);
+            Instant instant = Instant.parse((CharSequence) allSofiaCreateionTime);cp
+            System.out.println(instant.atZone(ZoneId.systemDefault()).getDayOfWeek());
+        }*/
     }
 
     static void atkomstkod() throws IOException {

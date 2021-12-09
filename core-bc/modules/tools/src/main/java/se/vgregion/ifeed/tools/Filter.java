@@ -90,8 +90,9 @@ public class Filter extends Tuple {
     }
 
     public void insert(DatabaseApi into, Feed withFeed, Filter orParent) {
-        List<Tuple> r = into.query("select max(id) + 1 from vgr_ifeed_filter");
-        final long id = (long) r.get(0).values().iterator().next();
+        //List<Tuple> r = into.query("select max(id) + 1 from vgr_ifeed_filter");
+        //final long id = (long) r.get(0).values().iterator().next();
+        final long id = SequenceUtil.getNextHibernateSequeceValue(into);
         put("id", id);
 
         if (withFeed != null) {

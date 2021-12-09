@@ -662,8 +662,13 @@ public class Application {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext externalContext = fc.getExternalContext();
             if (externalContext.getUserPrincipal() == null) {
-                user = new CachedUser();
+                System.out.println("Cannot find user!");
                 return user;
+                //user = new CachedUser();
+            }
+            String up = externalContext.getUserPrincipal().getName();
+            if (up == null) {
+                System.out.println("Up is null!");
             }
             user = userRepository.findUser(externalContext.getUserPrincipal().getName());
             return user;

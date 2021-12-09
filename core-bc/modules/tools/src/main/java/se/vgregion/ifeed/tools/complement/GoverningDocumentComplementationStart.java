@@ -33,11 +33,7 @@ public class GoverningDocumentComplementationStart {
         System.out.println("Database: " + database.getUrl());
         // if (true) return;
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
-        Set<Long> ids = new HashSet<>(Arrays.asList(437601916l,
-                437601804l,
-                437601970l,
-                437602044l,
-                437602194l));
+        Set<Long> ids = new HashSet<>(Arrays.asList(4577959l, 4545824l));
         for (Long id : ids) {
             System.out.println(id + " = " + gdc.makeComplement(id));
         }

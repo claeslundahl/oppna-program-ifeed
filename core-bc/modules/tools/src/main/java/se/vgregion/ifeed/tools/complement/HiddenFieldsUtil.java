@@ -210,15 +210,8 @@ public class HiddenFieldsUtil extends FieldInfUtil {
     }
 
     int fixHiddenFieldsConnection(Filter item) {
-        // if (item.get("ifeed_id") != null) System.out.println(item.get("ifeed_id"));
-        // System.out.println(item);
         Map<String, Tuple> map = new HashMap<>();
-        getHiddenFields().stream().forEach(f -> map.put((String) f.get("id"), f));
-        /*String filterKey = (String) item.get("filterkey");
-        Tuple correctFilterKeyRecord = map.get(filterKey);
-        if (newKey == null) {
-            throw new RuntimeException("The old key ")
-        }*/
+        getSofiaFields().stream().forEach(f -> map.put((String) f.get("id"), f));
         if (map.get(item.get("filterkey")) == null) {
             throw new RuntimeException("Does not have substitute for key " + item.get("filterkey"));
         }
@@ -227,7 +220,6 @@ public class HiddenFieldsUtil extends FieldInfUtil {
                 "update vgr_ifeed_filter set field_inf_pk = ? where id = ?",
                 newFieldInfPk, item.get("id")
         );
-        // System.out.println(result);
         if (result != 1) {
             throw new RuntimeException();
         }
@@ -236,6 +228,21 @@ public class HiddenFieldsUtil extends FieldInfUtil {
 
     private List<Tuple> hiddenFields;
 
+    private List<Tuple> sofiaFields;
+
+    public List<Tuple> getSofiaFields() {
+        if (sofiaFields == null) {
+            String hiddenSql = "select leaf.*\n" +
+                    "from field_inf trunk\n" +
+                    "join field_inf branch on trunk.pk = branch.parent_pk \n" +
+                    "join field_inf leaf on branch.pk = leaf.parent_pk\n" +
+                    "where trunk.name = 'SOFIA samarbetsyta'";
+            this.sofiaFields = database.query(hiddenSql);
+        }
+        return sofiaFields;
+    }
+
+    @Deprecated
     public List<Tuple> getHiddenFields() {
         if (hiddenFields == null) {
             String hiddenSql = "select leaf.*\n" +

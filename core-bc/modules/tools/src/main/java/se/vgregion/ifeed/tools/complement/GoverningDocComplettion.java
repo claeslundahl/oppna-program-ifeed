@@ -86,7 +86,7 @@ public class GoverningDocComplettion {
         }
     }
 
-    static void print(Filter filter, int level) {
+    public static void print(Filter filter, int level) {
         System.out.println(" ".repeat(level) + filter.get("filterkey") + " " + filter.get("operator") + " " + filter.get("filterquery"));
         if (!filter.getChildren().isEmpty()) {
             for (Filter child : filter.getChildren()) {

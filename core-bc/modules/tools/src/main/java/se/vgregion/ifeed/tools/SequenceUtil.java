@@ -43,7 +43,7 @@ public class SequenceUtil {
         long lastSequenceValue = (long) database.oneFieldSingleValueQuery("SELECT last_value FROM hibernate_sequence");
         long maxFilterId = (long) database.oneFieldSingleValueQuery("SELECT max(id) FROM vgr_ifeed_filter");
         if (maxFilterId >= lastSequenceValue) {
-            database.update(format("alter sequence hibernate_sequence restart with %d", lastSequenceValue + 1l));
+            database.update(format("alter sequence hibernate_sequence restart with %d", maxFilterId + 1l));
         }
     }
 

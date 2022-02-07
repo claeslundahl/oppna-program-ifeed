@@ -19,6 +19,7 @@ public class GoverningDocumentComplementation {
 
     private List<Mapper> mappers;
 
+    @Deprecated // The logic should be handled with condition in the three of field_inf:s.
     private final List<Filter> defaultFiltersToAdd = new ArrayList<>();
 
     public GoverningDocumentComplementation(DatabaseApi database) {
@@ -26,18 +27,7 @@ public class GoverningDocumentComplementation {
         this.database = database;
         getReplacements();
 
-        /*String sql = "select leaf.*\n" +
-                "from field_inf leaf\n" +
-                "join field_inf branch on leaf.parent_pk = branch.pk\n" +
-                "join field_inf trunk on branch.parent_pk = trunk.pk\n" +
-                "where trunk.name = 'Gömda'\n" +
-                "order by 1, 2, 3";
-
-        List<Tuple> newFilters = database.query(sql);
-
-        replacements = newFilters.stream().map(t -> FieldInf.toFieldInf(t)).collect(Collectors.toList());*/
-
-        defaultFiltersToAdd.addAll(Arrays.asList(new Filter(
+/*        defaultFiltersToAdd.addAll(Arrays.asList(new Filter(
                         Map.of(
                                 "filterkey", "vgrsd:DomainExtension.domain",
                                 "filterquery", "Styrande dokument",
@@ -45,7 +35,8 @@ public class GoverningDocumentComplementation {
                         ),
                         getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.domain", "Domän Styrande dokument", null))
                 )
-        ));
+        ));*/
+        getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.domain", "Domän Styrande dokument", null));
     }
 
     private FieldInf getFieldInf(Long withParentPk, String andName) {
@@ -130,9 +121,7 @@ public class GoverningDocumentComplementation {
                                     getOrCreateFromOrInDatabase(new FieldInf("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning", null))),
                             new Mapper("dc.subject.authorkeywords", getOrCreateFromOrInDatabase(new FieldInf("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord", null))),
                             new Mapper("dc.publisher.forunit.id", getOrCreateFromOrInDatabase(new FieldInf("vgr:VgrExtension.vgr:PublishedForUnit.id", "Upprättat för enhet", null))),
-                            new Mapper("dc.creator.recordscreator.id", getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:Producer", "Myndighet", null))),
-                            //new Mapper("dc.creator.recordscreator.id", new FieldInf("DIDL.Item.Descriptor.Statement.vgrsd:DomainExtension", "Domän Styrande dokument", null)),
-                            new Mapper("dc.creator.recordscreator.id", getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:Producer", "Myndighet", null))),
+                            new RecordsCreatorMapper(new HashSet<>(Arrays.asList("dc.creator.recordscreator", "dc.creator.recordscreator.id")), getOrCreateFromOrInDatabase(new FieldInf("core:ArchivalObject.core:Producer.id", "Myndighet", null))),
                             new Mapper("dc.subject.keywords", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (SweMeSH)", "SweMeSH/"))),
                             new CoverageHsaCodeMapper("dc.coverage.hsacode", getOrCreateFromOrInDatabase(new FieldInf("vgrsd:DomainExtension.vgrsd:CodeGroup.vgrsd:Code.path", "Kodverk (Verksamhet)", "Verksamhetskod/"))),
                             // Kompletterande flöde - ersätt BariumID med Titel (för de dokument som fortfarande är publicerade,
@@ -206,16 +195,12 @@ public class GoverningDocumentComplementation {
             });
         });
         if (!foundAnyFilterWithField.booleanValue()) {
-            /*System.out.println("Sparar inte!: ");
-            System.out.println(result.toText());*/
             return null;
         }
         CompositeLink cl = new CompositeLink((Long) that.get("id"), (Long) result.get("id"));
         result.getComposites().add(cl);
         result.insert(database);
 
-        /*System.out.println("Sparade i db!: ");
-        System.out.println(result.toText());*/
         return result;
     }
 
@@ -329,27 +314,11 @@ public class GoverningDocumentComplementation {
     public static void main(String[] args) {
         DatabaseApi local = DatabaseApi.getLocalApi();
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(local);
-
         try {
-            Feed before = gdc.getFeed(4468522);
-            before.fill(local);
-            System.out.println(before.toText());
-            System.out.println();
-            Feed ni = gdc.makeComplement(4468522);
-            System.out.println(ni.toText());
+            System.out.println(local.getUrl());
+            gdc.makeComplement(437594648);
+            //if (true) return;
             gdc.commit();
-
-            // SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
-            /*for (String name : client.fetchAllFieldNames()) {
-                System.out.println(name);
-            };*/
-            /*for (Mapper mapper : gdc.getMappers()) {
-                mapper.getFromKeys().forEach(s -> {
-                    NavigableSet<Object> values = client.findAllValues(s);
-                    System.out.println(s + " = " + values.size());
-                });
-            }*/
-
         } catch (Exception e) {
             gdc.rollback();
             throw new RuntimeException(e);

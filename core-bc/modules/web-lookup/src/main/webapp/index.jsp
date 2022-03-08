@@ -3,36 +3,51 @@
 <jsp:useBean id="app" class="se.vgregion.ifeed.lookup.App" scope="application"/>
 <html>
 <head>
-    <style>
-        body {
-            background: #555;
-        }
-
-        .content {
-            max-width: 800px;
-            height: 100%;
-            margin: auto;
-            background: white;
-            padding: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="content">
     <h1>Sök flöden med hjälp av dokument-id</h1>
 
     <form>
-        <input name="input" value="${param['input']}" placeholder="Dokument-id här">
-        <input type="submit" value="!">
+        <input class="filter-input" name="input" value="${param['input']}" placeholder="Dokument-id här">
+        <input type="submit" value="Sök">
     </form>
-    <div>
-        <hr>
-        Svar:
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>Flödes-Id</th>
+            <th>Namn</th>
+            <th>Skapare</th>
+            <th>Admins</th>
+            <th>Förvaltning</th>
+            <th>Grupp</th>
+        </tr>
+        </thead>
+
+        <tbody>
         <c:forEach var="item" items="${app.fetch(param.input)}">
-            <c:out value="${item.get('ifeed_id')}"/>
+            <tr>
+                <td>
+                    <a href="${app.adminUrl}?feedId=${item['id']}">
+                            ${item['id']}
+                    </a>
+                </td>
+                <td>${item['name']}</td>
+                <td>${item['userid']}</td>
+                <td>
+                    <c:forEach var="ownership" items="${item.getOwnerships()}">
+                        ${ownership.user_id}
+                    </c:forEach>
+                </td>
+                <td>${item.getDepartment() == null ? '' : item.getDepartment().name}</td>
+                <td>${item.getGroup() == null ? '' : item.getGroup().name}</td>
+            </tr>
         </c:forEach>
-        <hr>
-    </div>
+        </tbody>
+    </table>
 
     <div style="display: none;">
         <form>

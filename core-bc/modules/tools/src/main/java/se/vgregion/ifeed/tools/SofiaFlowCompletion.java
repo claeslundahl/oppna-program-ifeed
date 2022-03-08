@@ -45,6 +45,7 @@ public class SofiaFlowCompletion {
         }
     }
 
+    private final List<Feed> latestGenerated = new ArrayList<>();
 
     public void start() {
         database = getDatabaseApi();
@@ -96,6 +97,7 @@ public class SofiaFlowCompletion {
     }
 
     public void generateFlows(String extraSqlCondition) {
+        latestGenerated.clear();
         List<Feed> feeds = fetchAllApplicable(extraSqlCondition);
         System.out.println("Bearbetar " + feeds.size() + " flöden.");
         int c = 1;
@@ -114,6 +116,7 @@ public class SofiaFlowCompletion {
             feedIds.add(id);
             new CompositeLink(id, id * -1).insert(database);
             c++;
+            this.latestGenerated.add(feed);
         }
         System.out.println("Skapade flödeskomplettering för dessa: " + feedIds);
     }
@@ -241,4 +244,9 @@ public class SofiaFlowCompletion {
         }
         return hiddenFieldsUtil;
     }
+
+    public List<Feed> getLatestGenerated() {
+        return latestGenerated;
+    }
+
 }

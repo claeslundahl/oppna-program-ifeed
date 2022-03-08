@@ -149,6 +149,8 @@ public class Application {
     private SolrServer solrServer;
     private CachedUser user;
 
+    //private String feedIdToOpen;
+
     {
         try {
             // this.varnishClient = VarnishClient.newVarnishClient();
@@ -1756,4 +1758,24 @@ public class Application {
         return false;
     }
 
+    public String getFeedIdToOpen() {
+        return String.valueOf(iFeedModelBean.getId());
+    }
+
+    public void setFeedIdToOpen(String feedIdToOpen) {
+        System.out.println("setter for feedIdToOpen " + feedIdToOpen);
+        Long id = toLong(feedIdToOpen);
+        if (id != null && !id.equals(iFeedModelBean.getId())) {
+            System.out.println("Det fanns ett id!: " + id);
+            viewIFeed(id);
+        }
+    }
+
+    private Long toLong(String s) {
+        try {
+            return Long.parseLong(s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

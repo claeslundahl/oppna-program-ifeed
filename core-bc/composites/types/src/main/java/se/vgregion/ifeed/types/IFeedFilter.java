@@ -243,7 +243,7 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
                 return escapeFieldName(filterKey) + ":[* TO " +
                         addZeroTimeToDateWhenApplicable(meta, filterKey, escapeValue(filterKey, filterQuery, operator, iff.getFieldInf())) + "]";
         } else {
-            String o = operator.equalsIgnoreCase("and") ? " AND " : " OR ";
+            String o = (operator == null || "and".equalsIgnoreCase(operator)) ? " AND " : " OR ";
             Junctor ls = new Junctor(o);
             for (IFeedFilter child : children)
                 ls.add(child.toQuery(meta));
@@ -257,9 +257,8 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
             return initialValue;
         Field field = meta.stream().filter(f -> f.getName().equals(key)).findFirst().orElse(null);
         if (field == null) {
-            throw new RuntimeException("Field with k/v " + key + " / " + initialValue + " is null!");
-        }
-        if ((field != null && "d:date".equals(field.getType()) || "tdate".equals(field.getType()) && !initialValue.endsWith("Z"))) {
+            // throw new RuntimeException("Field with k/v " + key + " / " + initialValue + " is null!");
+        } else if ((field != null && "d:date".equals(field.getType()) || "tdate".equals(field.getType()) && !initialValue.endsWith("Z"))) {
             initialValue = initialValue + "T00:00:00Z";
         }
         return initialValue;

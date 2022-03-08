@@ -12,6 +12,9 @@ import java.util.function.Consumer;
 
 public class Feed extends Tuple {
 
+    private Group group;
+    private Department department;
+
     public Feed() {
         super();
     }
@@ -21,6 +24,10 @@ public class Feed extends Tuple {
     private final List<CompositeLink> composites = new DistinctArrayList<>();
 
     private final List<CompositeLink> partOf = new DistinctArrayList<>();
+
+    private final List<Ownership> ownerships = new ArrayList<>();
+
+    private final List<DynamicTable> dynamicTables = new ArrayList<>();
 
     private DatabaseApi database;
 
@@ -59,6 +66,29 @@ public class Feed extends Tuple {
 
         findings = database.query("select * from vgr_ifeed_vgr_ifeed where composites_id = ?", get("id"));
         partOf.addAll(CompositeLink.toCompositeLinks(findings));
+
+        findings = database.query("select * from vgr_ifeed_ownership where ifeed_id = ?", get("id"));
+        ownerships.addAll(Ownership.toOwnerships(findings));
+
+        findings = database.query("select * from vgr_ifeed_dynamic_table where fk_ifeed_id = ?", get("id"));
+        dynamicTables.addAll(DynamicTable.toDynamicTables(findings));
+        for (DynamicTable dynamicTable : dynamicTables) {
+            dynamicTable.fill(database);
+        }
+
+        if (containsKey("group_id")) {
+            findings = database.query("select * from vgr_ifeed_group where id = ?", get("group_id"));
+            for (Group group : (Group.toGroups(findings))) {
+                this.group = group;
+            }
+        }
+
+        if (containsKey("department_id")) {
+            findings = database.query("select * from vgr_ifeed_department where id = ?", get("department_id"));
+            for (Department department : (Department.toDepartments(findings))) {
+                this.department = department;
+            }
+        }
     }
 
     public void insert(DatabaseApi into) {
@@ -81,6 +111,14 @@ public class Feed extends Tuple {
         for (CompositeLink part : partOf) {
             part.delete(fromHere);
         }
+        for (Ownership ownership : ownerships) {
+            ownership.delete(fromHere);
+        }
+
+        for (DynamicTable dynamicTable : dynamicTables) {
+            dynamicTable.delete(fromHere);
+        }
+
         fromHere.update("delete from vgr_ifeed where id = ?", get("id"));
     }
 
@@ -174,4 +212,27 @@ public class Feed extends Tuple {
         return sb.toString();
     }
 
+    public List<Ownership> getOwnerships() {
+        return ownerships;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public List<DynamicTable> getDynamicTables() {
+        return dynamicTables;
+    }
 }

@@ -42,6 +42,8 @@ public class FeedDocumentIndexSupport {
         running = true;
         System.out.println("Getting the db.");
         DatabaseApi database = DatabaseApi.getDatabaseApi();
+        System.out.println(database.getUrl());
+        // if (true) return;
         FeedDocumentIndexSupport feedDocumentIndexSupport = new FeedDocumentIndexSupport(database);
         try {
             System.out.println("Create table if not present.");
@@ -185,13 +187,14 @@ public class FeedDocumentIndexSupport {
         String q = (feed.toJpaVersion().toQuery(client.fetchFields()));
         // System.out.println(q);
         Result r = client.query(q, 0, 1_000_000, "ASC", null,
-                "dc.source.documentid", "vgr:VgrExtension.vgr:Source.id");
+                "dc.source.documentid", "vgr:VgrExtension.vgr:Source.id"/*, "title"*/);
         if (r != null && r.getResponse() != null && r.getResponse().getDocs() != null) {
             for (Map<String, Object> doc : r.getResponse().getDocs()) {
                 documentIds.add(
                         (String) (doc.containsKey("dc.source.documentid") ?
                                 doc.get("dc.source.documentid") : doc.get("vgr:VgrExtension.vgr:Source.id"))
                 );
+                // System.out.println(doc);
             }
         }
 

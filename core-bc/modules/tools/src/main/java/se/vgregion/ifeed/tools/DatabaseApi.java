@@ -37,6 +37,12 @@ public class DatabaseApi extends ConnectionExt {
         }
     }
 
+    public List<Map<String, Object>> query(String question, Span span, Object... withParameters) {
+        int start = span.getStart();
+        int maxResultCount = span.getLength();
+        return super.query(question, start, maxResultCount, withParameters);
+    }
+
     public DatabaseApi(String url, String user, String password, String driver) {
         super(url, user, password, driver);
     }

@@ -1,0 +1,64 @@
+body {
+    background: #555;
+}
+
+.content {
+    max-width: 800px;
+    min-height: 100%;
+    margin: auto;
+    background: white;
+    padding: 10px;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+th, td {
+    text-align: left;
+    padding: 16px;
+    vertical-align: top;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+thead {
+    border-bottom: 1px solid #ddd;
+}
+
+.filter-input {
+    flex-grow: 1;
+}
+
+.content > form {
+    display: flex;
+}
+
+.result > div {
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.result > div > div {
+    text-align: left;
+}
+
+.result {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+}
+
+.result > div {
+    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 240px;
+    margin: 5px;
+    padding: 5px;
+}

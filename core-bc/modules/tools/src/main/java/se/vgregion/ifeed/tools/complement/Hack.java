@@ -1,22 +1,123 @@
 package se.vgregion.ifeed.tools.complement;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import se.vgregion.ifeed.tools.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static se.vgregion.ifeed.tools.complement.GoverningDocComplettion.print;
 
 public class Hack {
 
-    static DatabaseApi database = DatabaseApi.getRemoteProdDatabaseApi();
+    static DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
+
+    static Span resultSpan = new Span(0, 1_000_000);
 
     public static void main(String[] args) {
-        // fixSofiaFilters();
-        // delete();
+        try {
+            /*GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
+            System.out.println(gdc.makeComplement(36437));
+            gdc.commit();*/
+            //main();
+            toFeedGraph(450807813L);
+        } catch (Exception e) {
+            database.rollback();
+            throw new RuntimeException(e);
+        }
     }
+
+    public static void toFeedGraph(Long id) {
+        List<Tuple> items = database.query("select * from vgr_ifeed where id = ?", id);
+        for (Tuple item : items) {
+            Feed feed = Feed.toFeed(item);
+            feed.fill(database);
+            toFeedGraph(feed);
+        }
+    }
+
+    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    public static void toFeedGraph(Feed feed) {
+        feed.getFilters();
+        feed.getComposites();
+        Map map = new HashMap();
+        map.putAll(feed);
+        map.put("composites", feed.getComposites());
+        map.put("filters", feed.getFilters());
+        System.out.println(gson.toJson(map));
+    }
+
+    public static void main() {
+        // DatabaseApi database = DatabaseApi.getRemoteStageDatabaseApi();
+        System.out.println("Database: " + database.getUrl());
+        // if (true) return;
+        GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
+        Set<Map<String, Object>> items = findFeedsWithCoreArchivalObjectCoreProducer();
+        System.out.println("Hittade " + items.size() + " st.");
+        int counter=0;
+        for (Map<String, Object> item : items) {
+            counter++;
+            if (counter % 10 == 0) System.out.print(String.format("%03d", counter) + " ");
+            if (counter % 100 == 0) System.out.println();
+            Number id = (Number) item.get("id");
+            id = id.intValue() * -1;
+            if (id.intValue() < 0) throw new RuntimeException();
+            gdc.makeComplement(id);
+        }
+        /*Set<Long> ids = new HashSet<>(Arrays.asList(36434l));
+        for (Long id : ids) {
+            System.out.println(id + " = " + gdc.makeComplement(id));
+        }*/
+        gdc.commit();
+    }
+
+
+    public static Set<Map<String, Object>> findFeedsWithCoreArchivalObjectCoreProducer() {
+        List<Map<String, Object>> items = database.query("select *\n" +
+                "from vgr_ifeed_filter vif \n" +
+                "where vif.filterkey = 'core:ArchivalObject.core:Producer'", resultSpan);
+        // System.out.println("Hittade " + items.size() + " som hade core:ArchivalObject.core:Producer och var kompletterande.");
+        Set<Number> result = new HashSet<>();
+        for (Map<String, Object> item : items) {
+            findFeedsWithCoreArchivalObjectCoreProducer(item, result);
+        }
+        Set<Map<String, Object>> findings = new HashSet();
+        //int completionFeedsCount = 0;
+        for (Number id : result) {
+            List<Map<String, Object>> feeds = database.query("select * from vgr_ifeed where id = ?", resultSpan, id);
+            if (id.intValue() < 0) {
+                for (Map<String, Object> feed : feeds) {
+                    if (feed.get("name").toString().endsWith("(sty. dok. komplement)"))
+                        findings.add(feed);
+                }
+                // completionFeedsCount++;
+            }
+            if (feeds.isEmpty())
+                throw new RuntimeException();
+        }
+        //System.out.println("Antal som är kompletternade " + completionFeedsCount);
+        return findings;
+    }
+
+    static void findFeedsWithCoreArchivalObjectCoreProducer(Map<String, Object> havingFilter, Set<Number> feedIds) {
+        // core:ArchivalObject.core:Producer
+        Number ifeed_id = (Number) havingFilter.get("ifeed_id");
+        if (ifeed_id != null) {
+            feedIds.add(ifeed_id);
+        } else {
+            Number parent_id = (Number) havingFilter.get("parent_id");
+            if (parent_id == null)
+                throw new RuntimeException();
+            List<Map<String, Object>> items = database.query("select * from vgr_ifeed_filter where id = ?", resultSpan, parent_id);
+            if (items.size() > 1) throw new RuntimeException();
+            for (Map<String, Object> item : items) {
+                findFeedsWithCoreArchivalObjectCoreProducer(item, feedIds);
+            }
+        }
+    }
+
 
     public static void delete() {
         // DatabaseApi database = DatabaseApi.getLocalApi();

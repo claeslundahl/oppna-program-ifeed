@@ -3,6 +3,7 @@ package se.vgregion.ifeed.types;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -74,6 +75,7 @@ public class FieldsInfTest {
         System.out.println(filter.getFieldInf().getName());
     }
 
+    @Ignore
     @Test
     public void produceJson() throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -127,6 +129,7 @@ public class FieldsInfTest {
         System.out.println(FieldsInf.getDataFromCache());
     }
 
+    @Ignore
     @Test
     public void getFieldInfsFromTabularText() throws IOException {
         FieldsInf fi = new FieldsInf();

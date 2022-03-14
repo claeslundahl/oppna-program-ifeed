@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ComplementationApp implements Serializable {
+public class SofiaComplementationApp implements Serializable {
 
     private String input;
 
@@ -20,6 +20,7 @@ public class ComplementationApp implements Serializable {
 
     public List<Feed> run(final String input) {
         Set<Number> ids = split(input);
+        this.input = ids.stream().map(id -> id.toString()).collect(Collectors.joining(", "));
 
         notFound.clear();
         alreadyComplemented.clear();
@@ -31,15 +32,17 @@ public class ComplementationApp implements Serializable {
         }
 
         List<Tuple> alreadyComplementedItems = App.database.query("select * from vgr_ifeed f where " +
-                String.format(" f.id in (%s)", ComplementationApp.this.input)
+                String.format(" f.id in (%s)", ids.stream().map(n -> n.toString())
+                        .collect(Collectors.joining(", ")))
                 + " and f.id * -1 in (select id from vgr_ifeed)");
+
         alreadyComplemented.addAll(Feed.toFeeds(alreadyComplementedItems));
 
         this.input = ids.stream().map(id -> id.toString()).collect(Collectors.joining(", "));
         StartCompletionForExplicitFlows sofia = new StartCompletionForExplicitFlows() {
             @Override
             public void generateFlows() {
-                generateFlows(String.format(" and f.id in (%s)", ComplementationApp.this.input));
+                generateFlows(String.format(" and f.id in (%s)", SofiaComplementationApp.this.input));
             }
 
             @Override
@@ -55,7 +58,7 @@ public class ComplementationApp implements Serializable {
         justComplemented.addAll(sofia.getLatestGenerated());
         if (justComplemented.size() < ids.size()) {
             List<Tuple> databaseItems = App.database.query("select * from vgr_ifeed f where " +
-                    String.format(" f.id in (%s)", ComplementationApp.this.input));
+                    String.format(" f.id in (%s)", SofiaComplementationApp.this.input));
             Set<Number> databaseItemsIds = databaseItems.stream().map(i -> (Number) i.get("id")).collect(Collectors.toSet());
             notFound.addAll(ids);
             notFound.removeAll(databaseItemsIds);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriTemplate;
 import se.vgregion.common.utils.Json;
+
 import se.vgregion.ifeed.el.AccessGuard;
 import se.vgregion.ifeed.repository.UserRepository;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
@@ -41,7 +42,7 @@ public class IFeedBackingBean implements Serializable {
     private List<IFeed> lists;
 
     //All IFeeds for display purposes
-    private List<IFeedModelBean> iFeedModelBeans;
+    //private List<IFeedModelBean> iFeedModelBeans;
     //All IFeeds for filtering purposes
     private List<IFeedModelBean> filteredIFeedModelBeans;
 
@@ -84,12 +85,12 @@ public class IFeedBackingBean implements Serializable {
     @PostConstruct
     public void init() {
 
-        getAllIFeeds();
+        //getAllIFeeds();
         getUserIFeeds();
     }
 
 
-    public List<IFeed> getAllIFeeds() {
+    /*public List<IFeed> getAllIFeeds() {
 
         List<IFeed> allIFeeds = null;
         try {
@@ -120,7 +121,7 @@ public class IFeedBackingBean implements Serializable {
 
 
         return allIFeeds;
-    }
+    }*/
 
     public List<IFeed> getUserIFeeds() {
 
@@ -171,7 +172,7 @@ public class IFeedBackingBean implements Serializable {
         iFeedService.removeIFeed(feed);
 
         // Remove from memory
-        iFeedModelBeans.remove(feed);
+        //iFeedModelBeans.remove(feed);
         userIFeedModelBeans.remove(feed);
     }
 
@@ -245,13 +246,13 @@ public class IFeedBackingBean implements Serializable {
         this.lists = lists;
     }
 
-    public List<IFeedModelBean> getiFeedModelBeans() {
+/*    public List<IFeedModelBean> getiFeedModelBeans() {
         return iFeedModelBeans;
     }
 
     public void setiFeedModelBeans(List<IFeedModelBean> iFeedModelBeans) {
         this.iFeedModelBeans = iFeedModelBeans;
-    }
+    }*/
 
 /*
     public ResourceLocalService getResourceLocalService() {

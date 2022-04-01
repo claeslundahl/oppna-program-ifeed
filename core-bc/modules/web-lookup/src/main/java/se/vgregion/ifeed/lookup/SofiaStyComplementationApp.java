@@ -39,19 +39,19 @@ public class SofiaStyComplementationApp implements Serializable {
             return new ArrayList<>();
         }
 
-        GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(App.database);
+        GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(App.getDatabase());
         List<Feed> results = new ArrayList<>();
 
         for (Number id : ids) {
-            List<Feed> feeds = Feed.toFeeds(App.database.query("select * from vgr_ifeed where id = ?", id));
+            List<Feed> feeds = Feed.toFeeds(App.getDatabase().query("select * from vgr_ifeed where id = ?", id));
             if (feeds.isEmpty()) {
                 notFound.add(id);
             } else {
                 for (Feed feed : feeds) {
-                    if (!App.database.query("select * from vgr_ifeed where id = ?", id.longValue() * -1).isEmpty()) {
+                    if (!App.getDatabase().query("select * from vgr_ifeed where id = ?", id.longValue() * -1).isEmpty()) {
                         alreadyComplemented.add(feed);
                     } else {
-                        feed.fill(App.database);
+                        feed.fill(App.getDatabase());
                         MutableBoolean found = new MutableBoolean(false);
                         feed.visit(filter -> {
                             FieldInf fi = filter.getFieldInf();
@@ -73,53 +73,7 @@ public class SofiaStyComplementationApp implements Serializable {
                 }
             }
         }
-
         gdc.commit();
-
-        /*List<Tuple> alreadyComplementedItems = App.database.query("select * from vgr_ifeed f where " +
-                String.format(" f.id in (%s)", ids.stream().map(n -> n.toString())
-                        .collect(Collectors.joining(", ")))
-                + " and f.id * -1 in (select id from vgr_ifeed)");
-        alreadyComplemented.addAll(Feed.toFeeds(alreadyComplementedItems));
-
-        if (!ids.isEmpty()) {
-            List<Tuple> itemsFromDatabase = App.database.query("select * from vgr_ifeed f where " +
-                    String.format(" f.id in (%s)", ids.stream().map(n -> n.toString()).collect(Collectors.joining(", "))));
-            ids.retainAll(
-                    itemsFromDatabase.stream().map(item -> ((Number) item.get("id"))).collect(Collectors.toSet())
-            );
-
-            notFound.addAll(ids);
-
-            ids.removeAll(
-                    alreadyComplemented.stream().map(item -> ((Number) item.get("id"))).collect(Collectors.toSet())
-            );
-        }
-
-        final List<Feed> result = GoverningDocumentComplementationStart.complement(ids.toArray(new Number[ids.size()]));
-        if (!result.isEmpty()) {
-            List<Feed> complemented = Feed.toFeeds(App.database.query("select * from vgr_ifeed f where " +
-                    String.format(" f.id in (%s)",
-                            result.stream().map(f -> ((Number) f.get("id")).longValue() * -1)
-                                    .map(n -> n.toString()).collect(Collectors.joining(", ")))));
-            justComplemented.addAll(complemented);
-        }
-
-        System.out.println("ids: " + ids);
-
-        if (!ids.isEmpty()) {
-
-            List<Tuple> databaseItems = App.database.query("select * from vgr_ifeed f where " +
-                    String.format(" f.id in (%s)", ids.stream().map(i -> i.toString()).collect(Collectors.joining(", "))));
-            Set<Number> databaseItemsIds = databaseItems.stream().map(i -> (Number) i.get("id")).collect(Collectors.toSet());
-            *//*notFound.addAll(ids);
-            notFound.removeAll(databaseItemsIds);*//*
-
-            notComplemented.addAll(Feed.toFeeds(databaseItems));
-            notComplemented.removeAll(justComplemented);
-            notComplemented.removeAll(alreadyComplemented);
-        }*/
-
         return results;
     }
 

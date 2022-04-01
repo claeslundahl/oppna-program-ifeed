@@ -348,6 +348,11 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
         return escaped;
     }
 
+
+    public static void main(String[] args) {
+        System.out.println(escapeFieldName("core:ArchivalObject.core:CreatedDateTime"));
+    }
+
     public static String escapeFieldName(String forSolr) {
         if (forSolr == null)
             return null;

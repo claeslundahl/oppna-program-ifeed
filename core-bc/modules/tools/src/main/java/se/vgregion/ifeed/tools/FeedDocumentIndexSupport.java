@@ -184,6 +184,11 @@ public class FeedDocumentIndexSupport {
         Set<String> documentIds = new HashSet<>();
 
         feed.fill(database);
+        if (feed.getFilters().isEmpty()) {
+            database.execute("delete from feed_document_index where ifeed_id = ?", ifeedId);
+            return;
+        }
+
         String q = (feed.toJpaVersion().toQuery(client.fetchFields()));
         // System.out.println(q);
         Result r = client.query(q, 0, 1_000_000, "ASC", null,

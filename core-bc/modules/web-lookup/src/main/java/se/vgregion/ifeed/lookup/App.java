@@ -28,11 +28,21 @@ public class App implements Serializable {
 
     private List<Feed> result;
 
-    static DatabaseApi database;
+    public static DatabaseApi getDatabase() {
+        try {
+            if (database == null || database.getConnection().isClosed())
+                initConnection();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return database;
+    }
+
+    private static DatabaseApi database;
 
     private static String adminUrl;
 
-    static {
+    static void initConnection() {
         try {
             Path path = Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties");
             if (Files.exists(path)) {
@@ -61,10 +71,10 @@ public class App implements Serializable {
         final String sql = "select vif.* from feed_document_index ind \n" +
                 "join vgr_ifeed vif on vif.id = ind.ifeed_id\n" +
                 "where lower(ind.document_id) = ?";
-        List<Tuple> result = database.query(sql, forThat);
+        List<Tuple> result = getDatabase().query(sql, forThat);
         List<Feed> feeds = Feed.toFeeds(result);
         for (Feed feed : feeds) {
-            feed.fill(database);
+            feed.fill(getDatabase());
         }
         setResult(feeds);
         return feeds;

@@ -31,7 +31,7 @@ public class SofiaComplementationApp implements Serializable {
             return new ArrayList<>();
         }
 
-        List<Tuple> alreadyComplementedItems = App.database.query("select * from vgr_ifeed f where " +
+        List<Tuple> alreadyComplementedItems = App.getDatabase().query("select * from vgr_ifeed f where " +
                 String.format(" f.id in (%s)", ids.stream().map(n -> n.toString())
                         .collect(Collectors.joining(", ")))
                 + " and f.id * -1 in (select id from vgr_ifeed)");
@@ -47,17 +47,17 @@ public class SofiaComplementationApp implements Serializable {
 
             @Override
             protected DatabaseApi initDatabase() {
-                return App.database;
+                return App.getDatabase();
             }
         };
         sofia.getLatestGenerated().clear();
 
         sofia.main();
-        SequenceUtil.checkAndOrFixHibernateIndex(App.database);
-        App.database.commit();
+        SequenceUtil.checkAndOrFixHibernateIndex(App.getDatabase());
+        App.getDatabase().commit();
         justComplemented.addAll(sofia.getLatestGenerated());
         if (justComplemented.size() < ids.size()) {
-            List<Tuple> databaseItems = App.database.query("select * from vgr_ifeed f where " +
+            List<Tuple> databaseItems = App.getDatabase().query("select * from vgr_ifeed f where " +
                     String.format(" f.id in (%s)", SofiaComplementationApp.this.input));
             Set<Number> databaseItemsIds = databaseItems.stream().map(i -> (Number) i.get("id")).collect(Collectors.toSet());
             notFound.addAll(ids);

@@ -180,6 +180,10 @@ public class GoverningDocumentComplementation {
     }
 
     public Feed makeComplement(Feed that) {
+        if (that == null) {
+            System.out.println(" Hittades inte!");
+            return null;
+        }
         Feed existing = getFeed(((Long) that.get("id")) * -1);
         if (existing != null) {
             existing.fill(database);

@@ -4,15 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
-import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
-import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ldap.LdapSupportService;
 import se.vgregion.ldap.person.LdapPersonService;
 
@@ -52,13 +46,13 @@ public class ShowDocumentMetadataController {
         this.topListMetadata = topListMetadata;
     }
 
-    @RenderMapping(params = "view=documentMetadata")
+    /*@RenderMapping(params = "view=documentMetadata")
     public String showDocumentMetadata(@ModelAttribute("ifeed") final IFeed iFeed, Model model, @RequestParam(required = true) final String documentId) {
         final DocumentInfo documentInfo = alfrescoMetadataService.getDocumentInfo(documentId);
         model.addAttribute("documentInfo", documentInfo);
         model.addAttribute("ifeed", iFeed);
         return "documentMetadata";
-    }
+    }*/
 
     /*@ResourceMapping
     public void showTopDocumentMetadata(@RequestParam(required = true) final String documentId,

@@ -30,15 +30,15 @@ public class AtomToRssFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
             ServletException {
-        System.out.println("Start " + AtomToRssFilter.class.getName() + "doFilter");
-        System.out.println("Attributes is: ");
+        /*System.out.println("Start " + AtomToRssFilter.class.getName() + "doFilter");
+        System.out.println("Attributes is: ");*/
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        Enumeration names = request.getAttributeNames();
+        /*Enumeration names = request.getAttributeNames();
         while (names.hasMoreElements()) {
             String key = (String) names.nextElement();
             System.out.println(key + " = " + httpRequest.getAttribute(key));
-        }
+        }*/
 
         @SuppressWarnings("unchecked")
         Map<String, String[]> parms = httpRequest.getParameterMap();

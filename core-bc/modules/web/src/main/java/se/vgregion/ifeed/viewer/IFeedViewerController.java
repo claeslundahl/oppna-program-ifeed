@@ -30,6 +30,7 @@ import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Produces;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -170,9 +171,10 @@ public class IFeedViewerController {
      * @return
      */
 
-    @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata")
+    @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata.json")
     @ResponseStatus(value = HttpStatus.OK)
-    // @ResponseBody - does not work. Truncates the result!
+    @ResponseBody() // - does not work. Truncates the result!
+    @Produces(value = "application/json;charset=UTF-8")
     public String getIFeed(@PathVariable String listIdOrSerializedInstance, Model model,
                            @RequestParam(value = "by", required = false) String sortField,
                            @RequestParam(value = "dir", required = false) String sortDirection,
@@ -190,9 +192,9 @@ public class IFeedViewerController {
             IFeed ifeed = IFeed.fromJson(listIdOrSerializedInstance);
             getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, null/*, f*/);
         }
-
-        jsonResult.set(gson.toJson(model.asMap().get("result")));
-        return "thisDoesNotMatherItSeems";
+        return gson.toJson(model.asMap().get("result"));
+        //jsonResult.set(gson.toJson(model.asMap().get("result")));
+        // return "thisDoesNotMatherItSeems";
     }
 
     // Todo: user fix problem with ResponseBody and use that instead.

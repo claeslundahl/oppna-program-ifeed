@@ -40,7 +40,6 @@
   <filter>
     <filter-name>rssFilter</filter-name>
     <filter-class>se.vgregion.ifeed.intsvc.atom.AtomToRssFilter</filter-class>
-    o
   </filter>
 
   <filter-mapping>

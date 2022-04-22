@@ -9,6 +9,10 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.DateFormatter.DateFormat;
@@ -77,14 +81,21 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         return solrServer;
     }
 
-    /* (non-Javadoc)
-     *
-     * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getIFeed(java.lang.Long) */
-    @Override
+
     @GET
     @Produces({"application/atom+xml", "application/atom+xml;type=feed;charset=UTF-8"})
 //    @Produces({"application/xml", "application/atom+xml;type=feed;charset=UTF-8"})
     @Path("/{id}/feed")
+    @ResponseBody
+    public String getFeedAsAtom(@PathParam("id") Long id, @QueryParam("by") String sortField,
+                                @QueryParam("dir") String sortDirection) {
+        Feed feed = getIFeed(id, sortField, sortDirection);
+        return feed.toString();
+    }
+
+    /* (non-Javadoc)
+     *
+     * @see se.vgregion.ifeed.intsvc.atom.IFeedFeedService#getIFeed(java.lang.Long) */
     public Feed getIFeed(@PathParam("id") Long id, @QueryParam("by") String sortField,
                          @QueryParam("dir") String sortDirection) {
 
@@ -115,6 +126,13 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
         solrQuery.clear();
 
         return f;
+    }
+
+    @GET
+    @Produces({"application/json", "application/atom+xml;type=entry;charset=UTF-8"})
+    @Path("/{id}/metadata.json")
+    public Entry getIFeedEntryAsJson(@PathParam("id") final Long id) {
+        return getIFeedEntry(id);
     }
 
     @Override

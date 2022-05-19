@@ -53,7 +53,6 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-
   <filter>
     <filter-name>CsvContentTypeFilter</filter-name>
     <filter-class>se.vgregion.ifeed.viewer.CsvContentTypeFilter</filter-class>
@@ -115,4 +114,15 @@
     <servlet-name>jsp</servlet-name>
     <url-pattern>/WEB-INF/jsp/*</url-pattern>
   </servlet-mapping>
+
+  <!--<filter>
+    <filter-name>mjmf</filter-name>
+    <filter-class>se.vgregion.ifeed.viewer.MetadataJsonMimeFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>mjmf</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>-->
+
 </web-app>

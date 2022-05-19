@@ -129,7 +129,7 @@ public class IFeedFeedServiceImpl implements IFeedFeedService {
     }
 
     @GET
-    @Produces({"application/json", "application/atom+xml;type=entry;charset=UTF-8"})
+    @Produces({"application/json", "application/json;type=entry;charset=UTF-8"})
     @Path("/{id}/metadata.json")
     public Entry getIFeedEntryAsJson(@PathParam("id") final Long id) {
         return getIFeedEntry(id);

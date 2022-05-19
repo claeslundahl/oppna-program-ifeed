@@ -2,297 +2,303 @@
 <!-- This is the Web-app Maven POM. Template version: 1.5-SNAPSHOT Generation time : 2011-01-14 11:17:18 CET -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>se.vgregion.iFeed</groupId>
+        <artifactId>iFeed-core-bc</artifactId>
+        <version>1.13-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
     <groupId>se.vgregion.iFeed</groupId>
-    <artifactId>iFeed-core-bc</artifactId>
-    <version>1.13-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
-  </parent>
-  <groupId>se.vgregion.iFeed</groupId>
-  <artifactId>iFeed-core-bc-module-portlet</artifactId>
-  <packaging>war</packaging>
-  <name>${project.artifactId}</name>
+    <artifactId>iFeed-core-bc-module-portlet</artifactId>
+    <packaging>war</packaging>
+    <name>${project.artifactId}</name>
 
-  <repositories>
-    <repository>
-      <id>liferay-repository</id>
-      <name>Liferay's Maven repository</name>
-      <url>http://oss.sonatype.org/content/groups/public</url>
-    </repository>
-    <!--Added for jsf-->
+    <repositories>
+        <repository>
+            <id>liferay-repository</id>
+            <name>Liferay's Maven repository</name>
+            <url>http://oss.sonatype.org/content/groups/public</url>
+        </repository>
+        <!--Added for jsf-->
 
-    <repository>
-      <id>prime-repo</id>
-      <name>PrimeFaces Maven Repository</name>
-      <url>http://repository.primefaces.org</url>
-      <layout>default</layout>
-    </repository>
-    <!--End  - Added for jsf-->
-  </repositories>
+        <repository>
+            <id>prime-repo</id>
+            <name>PrimeFaces Maven Repository</name>
+            <url>http://repository.primefaces.org</url>
+            <layout>default</layout>
+        </repository>
+        <!--End  - Added for jsf-->
+    </repositories>
 
-  <build>
-    <finalName>iFeed-webapp</finalName>
+    <build>
+        <finalName>iFeed-webapp</finalName>
 
-    <plugins>
+        <plugins>
 
-      <plugin>
-        <groupId>nl.geodienstencentrum.maven</groupId>
-        <artifactId>sass-maven-plugin</artifactId>
-        <version>2.25</version>
-        <configuration>
+            <plugin>
+                <groupId>nl.geodienstencentrum.maven</groupId>
+                <artifactId>sass-maven-plugin</artifactId>
+                <version>2.25</version>
+                <configuration>
 
-          <sassSourceDirectory>${basedir}/src/main/webapp/scss</sassSourceDirectory>
-          <!--<resources>
-              <resource>
-                  <source>
-                      <directory>${basedir}/src/main/webapp/scss</directory>
-                      <includes>
-                          <include>**/scss</include>
-                          <include>**/css</include>
-                      </includes>
-                  </source>
-                  &lt;!&ndash;<relativeOutputDirectory>..</relativeOutputDirectory>&ndash;&gt;
-                  <destination>${project.build.directory}/${project.build.finalName}</destination>
-              </resource>
-          </resources>-->
-          <!--<destination>src/main/webapp/resources/default/1_0</destination>-->
-          <useCompass>true</useCompass>
-          <!--<includes>
-              <include>**/scss</include>
-              <include>**/css</include>
-          </includes>-->
-        </configuration>
-        <executions>
-          <execution>
-            <id>compile-sass</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>update-stylesheets</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+                    <sassSourceDirectory>${basedir}/src/main/webapp/scss</sassSourceDirectory>
+                    <!--<resources>
+                        <resource>
+                            <source>
+                                <directory>${basedir}/src/main/webapp/scss</directory>
+                                <includes>
+                                    <include>**/scss</include>
+                                    <include>**/css</include>
+                                </includes>
+                            </source>
+                            &lt;!&ndash;<relativeOutputDirectory>..</relativeOutputDirectory>&ndash;&gt;
+                            <destination>${project.build.directory}/${project.build.finalName}</destination>
+                        </resource>
+                    </resources>-->
+                    <!--<destination>src/main/webapp/resources/default/1_0</destination>-->
+                    <useCompass>true</useCompass>
+                    <!--<includes>
+                        <include>**/scss</include>
+                        <include>**/css</include>
+                    </includes>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile-sass</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>update-stylesheets</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>11</source>
-          <target>11</target>
-        </configuration>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
 
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <version>1.1.6</version>
-        <executions>
-          <execution>
-            <id>generate-rebel-xml</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+            <plugin>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>jrebel-maven-plugin</artifactId>
+                <version>1.1.6</version>
+                <executions>
+                    <execution>
+                        <id>generate-rebel-xml</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.3</version>
-        <configuration>
-          <webResources>
-            <resource>
-              <!-- this is relative to the pom.xml directory -->
-              <targetPath>js</targetPath>
-              <directory>../web-script/target/iFeed-web-script/se.vgregion.ifeed.Module</directory>
-            </resource>
-          </webResources>
-        </configuration>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <targetPath>js</targetPath>
+                            <directory>../web-script/target/iFeed-web-script/se.vgregion.ifeed.Module</directory>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
 
-    </plugins>
+        </plugins>
 
-  </build>
+    </build>
 
-  <dependencies>
+    <dependencies>
 
-    <dependency>
-      <groupId>se.vgregion.iFeed</groupId>
-      <artifactId>iFeed-core-bc-composite-ldap</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>se.vgregion.iFeed</groupId>
+            <artifactId>iFeed-core-bc-composite-ldap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>iFeed-core-bc-composite-webcomp</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
-    </dependency>
-    <!--<dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc-portlet</artifactId>
-      <version>${spring.fw.version}</version>
-    </dependency>-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iFeed-core-bc-composite-webcomp</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <!--<dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-webmvc-portlet</artifactId>
+          <version>${spring.fw.version}</version>
+        </dependency>-->
 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context-support</artifactId>
-      <version>${spring.fw.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.fw.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-      <version>4.2.13.RELEASE</version>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>4.2.13.RELEASE</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <version>4.2.13.RELEASE</version>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>4.2.13.RELEASE</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.3</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.0.1</version>
-      <scope>provided</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>9.4.1212.jre7</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1212.jre7</version>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-tx</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <version>${hibernate.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>2.0.1.Final</version>
-    </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-collections4</artifactId>
-      <version>4.4</version>
-      <scope>compile</scope>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+            <scope>compile</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>8.4-702.jdbc4</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.4-702.jdbc4</version>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
+        <!--    <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>slf4j-log4j12</artifactId>
+              <version>${slf4j.version}</version>
+            </dependency>-->
 
-    <dependency>
-      <groupId>javax.el</groupId>
-      <artifactId>el-api</artifactId>
-      <version>2.2</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.faces</groupId>
-      <artifactId>jsf-api</artifactId>
-      <version>2.2.19</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.faces</groupId>
-      <artifactId>jsf-impl</artifactId>
-      <version>2.2.19</version>
-    </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>2.2.19</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>2.2.19</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.primefaces</groupId>
-      <artifactId>primefaces</artifactId>
-      <version>5.3</version>
-    </dependency>
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>5.3</version>
+        </dependency>
 
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.6.2</version>
-      <scope>provided</scope>
-    </dependency>
+        <!--<dependency>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+          <version>2.6.2</version>
+          <scope>provided</scope>
+        </dependency>-->
 
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.9.5</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- END: Required for bridge:inputFile -->
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.2.6</version>
-    </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- END: Required for bridge:inputFile -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.6</version>
+        </dependency>
 
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.13.2</version>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.2</version>
+        </dependency>
 
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.13.2.2</version>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.2.2</version>
+        </dependency>
 
-  </dependencies>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
+    </dependencies>
 
 </project>

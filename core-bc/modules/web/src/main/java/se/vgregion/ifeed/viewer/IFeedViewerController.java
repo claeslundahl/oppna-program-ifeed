@@ -36,6 +36,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -138,17 +141,17 @@ public class IFeedViewerController {
      * @return the result of the opration.
      */
     @RequestMapping(value = "/meta", method = {RequestMethod.POST, RequestMethod.GET})
-    public String getIFeedByParams(@RequestParam(value = "instance") String instance, Model model,
-                                   @RequestParam(value = "by", required = false) String sortField,
-                                   @RequestParam(value = "dir", required = false) String sortDirection,
-                                   @RequestParam(value = "startBy", required = false) Integer startBy,
-                                   @RequestParam(value = "endBy", required = false) Integer endBy,
-                                   @RequestParam(value = "fromPage", required = false) String fromPage,
-                                   @RequestParam(value = "f", required = false) String[] f
+    public List<Map> getIFeedByParams(@RequestParam(value = "instance") String instance, Model model,
+                                      @RequestParam(value = "by", required = false) String sortField,
+                                      @RequestParam(value = "dir", required = false) String sortDirection,
+                                      @RequestParam(value = "startBy", required = false) Integer startBy,
+                                      @RequestParam(value = "endBy", required = false) Integer endBy,
+                                      @RequestParam(value = "fromPage", required = false) String fromPage,
+                                      @RequestParam(value = "f", required = false) String[] f
     ) {
         //String[] f = toStringArray(allRequestParams, "f");
         long timeBefore = System.currentTimeMillis();
-        String result = getIFeed(instance, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
+        List<Map> result = getIFeed(instance, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
         // System.out.println("Time for call was " + (System.currentTimeMillis() - timeBefore) + "ms. Instance " + instance + " from page " + fromPage);
         return result;
     }
@@ -171,20 +174,30 @@ public class IFeedViewerController {
      * @return
      */
 
+    static boolean isValid(Charset charset, String data) {
+        try {
+            charset.decode(
+                    ByteBuffer.wrap(data.getBytes()));
+        } catch (Exception ex) {
+            return false;
+        }
+        return true;
+    }
+
     @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata.json")
     @ResponseStatus(value = HttpStatus.OK)
-    @ResponseBody() // - does not work. Truncates the result!
+    @ResponseBody()
     @Produces(value = "application/json;charset=UTF-8")
-    public String getIFeed(@PathVariable String listIdOrSerializedInstance, Model model,
-                           @RequestParam(value = "by", required = false) String sortField,
-                           @RequestParam(value = "dir", required = false) String sortDirection,
-                           @RequestParam(value = "startBy", required = false) Integer startBy,
-                           @RequestParam(value = "endBy", required = false) Integer endBy,
-                           @RequestParam(value = "fromPage", required = false) String fromPage,
-                           @RequestParam(value = "f", required = false) String[] f/*,
+    public List<Map> getIFeed(@PathVariable String listIdOrSerializedInstance, Model model,
+                              @RequestParam(value = "by", required = false) String sortField,
+                              @RequestParam(value = "dir", required = false) String sortDirection,
+                              @RequestParam(value = "startBy", required = false) Integer startBy,
+                              @RequestParam(value = "endBy", required = false) Integer endBy,
+                              @RequestParam(value = "fromPage", required = false) String fromPage,
+                              @RequestParam(value = "f", required = false) String[] f/*,
                          @RequestParam(value = "f") MultiValueMap<String, String> allRequestParams*/) {
         //String[] f = toStringArray(allRequestParams, "f");
-
+        // if (true) throw new RuntimeException("getIFeed");
         if (isNumeric(listIdOrSerializedInstance)) {
             Long id = Long.parseLong(listIdOrSerializedInstance);
             getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
@@ -192,15 +205,39 @@ public class IFeedViewerController {
             IFeed ifeed = IFeed.fromJson(listIdOrSerializedInstance);
             getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, null/*, f*/);
         }
-        return gson.toJson(model.asMap().get("result"));
-        //jsonResult.set(gson.toJson(model.asMap().get("result")));
+
+        //String result = new String(gson.toJson(model.asMap().get("result")).getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+        String result = new String(gson.toJson(model.asMap().get("result")));
+
+        List<Map> maps = (List<Map>) model.asMap().get("result");
+/*
+        for (Map map : maps) {
+
+            String title = (String) map.get("title");
+            title = title.toLowerCase(Locale.ROOT);
+            if (title.contains("å") || title.contains("ä") || title.contains("ö")) {
+                System.out.println("Hittade " + title);
+            } else {
+                System.out.println("Hittade inte " + title);
+            }
+
+        }
+*/
+        /*System.out.println(isValid(StandardCharsets.UTF_8, result));
+        System.out.println(isValid(StandardCharsets.UTF_16, result));
+        System.out.println(isValid(StandardCharsets.ISO_8859_1, result));
+        System.out.println(isValid(StandardCharsets.US_ASCII, result));*/
+
+        return maps;
+        // return model.asMap().get("result");
+        //return gson.toJson(model.asMap().get("result"));
         // return "thisDoesNotMatherItSeems";
     }
 
     // Todo: user fix problem with ResponseBody and use that instead.
     public static ThreadLocal<String> jsonResult = new ThreadLocal<>();
 
-    private final static Gson gson = new GsonBuilder().create();
+    private final static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
     /**
      * Gets the ifeed from either a db or from a plain instance (sent as text).

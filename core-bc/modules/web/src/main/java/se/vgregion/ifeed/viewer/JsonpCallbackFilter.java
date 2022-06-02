@@ -50,10 +50,13 @@ public class JsonpCallbackFilter implements Filter {
         }
 
         if (parms.containsKey("callback")) {
+            wrapper.setContentType("text/javascript;charset=UTF-8");
+            httpRequest.setCharacterEncoding("UTF-8");
             out.write(new String(parms.get("callback")[0] + "(").getBytes());
             out.write(result);
             out.write(new String(");").getBytes());
             wrapper.setContentType("text/javascript;charset=UTF-8");
+            httpRequest.setCharacterEncoding("UTF-8");
         } else {
             out.write(result);
         }

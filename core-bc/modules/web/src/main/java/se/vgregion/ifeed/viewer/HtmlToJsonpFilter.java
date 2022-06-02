@@ -69,6 +69,12 @@ public class HtmlToJsonpFilter implements Filter {
             }
         }
         chain.doFilter(request, response);
+
+        String url = ((HttpServletRequest)request).getRequestURL().toString();
+        if (url.contains("metadata.json")) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+        }
     }
 
     public class CharResponseWrapper extends HttpServletResponseWrapper {

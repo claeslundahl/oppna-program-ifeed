@@ -442,6 +442,7 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
     @Override
     @Transactional
     public IFeed update(final IFeed iFeed) {
+        iFeed.putFalseIntoEachFilterUseAndThatHasOnlyOneOccurrence();
         for (DynamicTableDef dynamicTableDef : iFeed.getDynamicTableDefs()) {
             dynamicTableDef.setIfeed(iFeed);
             if (dynamicTableDef.getId() == null) {

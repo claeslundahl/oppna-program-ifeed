@@ -57,4 +57,24 @@
         </ui:repeat>
     </div>
 
+    <ul style="list-style-type:circle; font-weight: bold;">
+        <ui:repeat value="#{iFeedModelBean.getFieldInfsWithMultipleFilters()}" var="multi">
+            <li>
+                <span>Använd 'och' mellan värden av <i>'#{multi.name}'</i>:
+                <h:outputText rendered="#{not app.inEditMode}"
+                              value="#{iFeedModelBean.isUsingAnd(multi) ? 'Ja.' : 'Nej.'}">
+                </h:outputText>
+                </span>
+                <p:commandLink styleClass="link-button-edit"
+                               value="#{iFeedModelBean.isUsingAnd(multi) ? 'Ja.' : 'Nej.'}"
+                               update=":ifeed_view"
+                               ajax="false" async="true"
+                               rendered="#{app.inEditMode}"
+                               action="#{iFeedModelBean.putValueIntoFiltersUsingAnd(multi, not iFeedModelBean.isUsingAnd(multi))}">
+                </p:commandLink>
+
+            </li>
+        </ui:repeat>
+    </ul>
+
 </ui:composition>

@@ -33,6 +33,9 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
     @Column
     private String operator = "matching";
 
+    @Column(name = "using_and")
+    private Boolean usingAnd = false;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "field_inf_pk")
     private FieldInf fieldInf;
@@ -387,5 +390,13 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
                 child.visit(guest);
             }
         }
+    }
+
+    public Boolean getUsingAnd() {
+        return usingAnd;
+    }
+
+    public void setUsingAnd(Boolean usingAnd) {
+        this.usingAnd = usingAnd;
     }
 }

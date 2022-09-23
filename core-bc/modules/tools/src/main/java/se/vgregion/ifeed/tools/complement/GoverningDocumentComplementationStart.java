@@ -34,24 +34,7 @@ public class GoverningDocumentComplementationStart {
         // if (true) return;
         GoverningDocumentComplementation gdc = new GoverningDocumentComplementation(database);
         Set<Long> ids = new HashSet<>(Arrays.asList(
-                4579252L,
-                4340125L,
-                437595001L,
-                4340115L,
-                4539678L,
-                437599889L,
-                92452L,
-                92455L,
-                92449L,
-                4340120L,
-                4579343L,
-                437593904L,
-                4568976L,
-                114857L,
-                114859L,
-                116850L,
-                114860L,
-                4340108L
+                437619529L, 437619524L
         ));
         for (Long id : ids) {
             System.out.println(id + " = " + gdc.makeComplement(id));

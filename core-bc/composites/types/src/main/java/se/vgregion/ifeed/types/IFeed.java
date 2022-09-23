@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.annotations.CreationTimestamp;
+import se.vgregion.common.utils.MultiMap;
 import se.vgregion.dao.domain.patterns.entity.AbstractEntity;
 import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.util.Junctor;
@@ -539,7 +540,7 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         Set<String> filterKeys = filterz.stream().map(f -> f.getFilterKey()).collect(Collectors.toSet());
 
         for (IFeedFilter filter : new ArrayList<>(filterz)) {
-            filter.visit(f-> {
+            filter.visit(f -> {
                 if (f.getFieldInf() != null)
                     filterz.addAll(
                             f.getFieldInf().getEntireDefaultCondition().stream()
@@ -589,8 +590,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
         for (String key : keyToFilters.keySet()) {
             List<IFeedFilter> values = keyToFilters.get(key);
-            if (values.size() > 1 && !values.get(0).isContainer()) {
-                Junctor or = new Junctor(" OR ");
+            IFeedFilter first = values.get(0);
+            if (values.size() > 1 && !first.isContainer()) {
+                Junctor or = new Junctor(first.getUsingAnd() != null && first.getUsingAnd() ? " AND " : " OR ");
                 for (IFeedFilter value : values) {
                     or.add(value.toQuery(meta));
                 }
@@ -601,6 +603,45 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         }
 
         return and.toQuery();
+    }
+
+    public List<FieldInf> getFieldInfsWithMultipleFilters() {
+        MultiMap<FieldInf, FieldInf> mm = new MultiMap<>();
+        for (IFeedFilter filter : filters) {
+            mm.get(filter.getFieldInf()).add(filter.getFieldInf());
+        }
+        return new ArrayList<>(mm.entrySet().stream().filter(es -> es.getValue().size() > 1)
+                .map(es -> es.getKey()).collect(Collectors.toSet()));
+    }
+
+    public List<IFeedFilter> getFiltersByField(FieldInf inf) {
+        return getFilters().stream().filter(f -> inf.equals(f.getFieldInf())).collect(Collectors.toList());
+    }
+
+    /**
+     * Set the filter usingAnd property to false if there are only one occurrence with that same FieldInf.
+     */
+    public void putFalseIntoEachFilterUseAndThatHasOnlyOneOccurrence() {
+        final List<FieldInf> multis = getFieldInfsWithMultipleFilters();
+
+        for (IFeedFilter filter : filters) {
+            if (!multis.contains(filter.getFieldInf())) {
+                filter.setUsingAnd(false);
+            }
+        }
+    }
+
+    public Boolean isUsingAnd(FieldInf withThis) {
+        for (IFeedFilter iff : getFiltersByField(withThis)) {
+            return iff.getUsingAnd() != null && iff.getUsingAnd();
+        }
+        return false;
+    }
+
+    public void putValueIntoFiltersUsingAnd(FieldInf withThatField, Boolean newValue) {
+        for (IFeedFilter iFeedFilter : getFiltersByField(withThatField)) {
+            iFeedFilter.setUsingAnd(newValue);
+        }
     }
 
 }

@@ -17,6 +17,11 @@
                 </h:panelGroup>
             </h1>
 
+            <h:outputLabel layout="block" styleClass="alert alert-info"
+                           rendered="#{app.inEditMode and iFeedModelBean.filterChangeLock}"
+                           value="Administratörerna av ifeed-admin har valt att stänga av möjligheten att ändra på filtren för det här flödet.">
+            </h:outputLabel>
+
             <div>
                 <a id="basicFeedInfoDisplayLink" style="display:none; cursor: pointer;"
                    onclick="toggle('basicFeedInfo', 'basicFeedInfoDisplayLink', 'basicFeedInfoHideLink');">
@@ -104,8 +109,7 @@
 
 
                     <div>
-                        <div style="font-weight: bold;"><i class="fa fa-user"></i>Administratörer:
-                        </div>
+                        <div style="font-weight: bold;"><i class="fa fa-user"></i>Administratörer:</div>
 
                         <p:autoComplete id="createNewAdminInput"
                                         value="#{app.newOwnershipUserId}"
@@ -155,6 +159,9 @@
                           </span>
                         </ui:repeat>
                     </div>
+                    <h:panelGroup rendered="#{not empty iFeedModelBean.editorUserMessage}">
+                        <h:outputText value="#{iFeedModelBean.editorUserMessage}" escape="false"/>
+                    </h:panelGroup>
                 </div>
 
                 <div class="span4">
@@ -250,7 +257,7 @@
 
     <div class="container-fluid">
 
-        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{app.inEditMode}">
+        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{app.inEditMode and not iFeedModelBean.filterChangeLock}">
             <div class="span4 first">
                 <ui:include src="add-filter.xhtml"/>
             </div>

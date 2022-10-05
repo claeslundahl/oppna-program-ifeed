@@ -85,6 +85,16 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
     @CreationTimestamp
     private Date creationTime;
 
+    @Column(name = "filter_change_lock", updatable = false, insertable = true, columnDefinition = "boolean default false")
+    private Boolean filterChangeLock = false;
+
+    /**
+     * Message to user of ifeed-admin - to show it for the user if it has any value. As for now this value can only be
+     * set by technical staff directly in the db.
+     */
+    @Column(name = "editor_user_message", length = 800, updatable = false, insertable = true)
+    private String editorUserMessage;
+
     public Set<IFeedFilter> getFilters() {
 /*        if (filters == null) {
             return Collections.emptySet();
@@ -424,6 +434,22 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public Boolean getFilterChangeLock() {
+        return filterChangeLock;
+    }
+
+    public void setFilterChangeLock(Boolean filterChangeLock) {
+        this.filterChangeLock = filterChangeLock;
+    }
+
+    public String getEditorUserMessage() {
+        return editorUserMessage;
+    }
+
+    public void setEditorUserMessage(String editorUserMessage) {
+        this.editorUserMessage = editorUserMessage;
     }
 
     private static class DistinctArrayList<E> extends ArrayList<E> {

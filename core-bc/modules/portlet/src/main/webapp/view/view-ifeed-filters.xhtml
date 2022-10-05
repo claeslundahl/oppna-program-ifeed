@@ -60,12 +60,42 @@
     <ul style="list-style-type:circle; font-weight: bold;">
         <ui:repeat value="#{iFeedModelBean.getFieldInfsWithMultipleFilters()}" var="multi">
             <li>
-                <span>Använd 'och' mellan värden av <i>'#{multi.name}'</i>:
-                <h:outputText rendered="#{not app.inEditMode}"
-                              value="#{iFeedModelBean.isUsingAnd(multi) ? 'Ja.' : 'Nej.'}">
-                </h:outputText>
-                </span>
-                <p:commandLink styleClass="link-button-edit"
+                <span>Specificera urval mellan värden i <i>'#{multi.name}'</i></span>
+
+                <h:panelGroup rendered="#{app.inEditMode}">
+                    <h:panelGroup rendered="#{iFeedModelBean.isUsingAnd(multi)}">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true" checked="checked">
+                            Ja
+                        </input>
+                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true"
+                               onclick="document.getElementsByClassName('toggleAndFor')[0].click()">Nej</input>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not iFeedModelBean.isUsingAnd(multi)}">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="false"
+                               onclick="document.getElementsByClassName('toggleAndFor')[0].click()">Ja</input>
+                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true" checked="checked">
+                            Nej
+                        </input>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{not app.inEditMode}">
+                    <h:panelGroup rendered="#{iFeedModelBean.isUsingAnd(multi)}">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true" checked="checked" disabled="disabled">
+                            Ja
+                        </input>
+                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="false" disabled="disabled">Nej</input>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not iFeedModelBean.isUsingAnd(multi)}">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true" disabled="disabled">Ja</input>
+                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="false" checked="checked" disabled="disabled">
+                            Nej
+                        </input>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+                <p:commandLink styleClass="link-button-edit toggleAndFor"
+                               style="display: none"
                                value="#{iFeedModelBean.isUsingAnd(multi) ? 'Ja.' : 'Nej.'}"
                                update=":ifeed_view"
                                ajax="false" async="true"

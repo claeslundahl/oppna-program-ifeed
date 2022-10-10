@@ -7,10 +7,10 @@
 >
 
     <h:panelGroup rendered="#{iFeedModelBean.hasAnyFilter()}">
-        <h:panelGroup rendered="#{app.inEditMode}" styleClass="ifeed-step" layout="block">
+        <h:panelGroup rendered="#{app.inEditMode and not iFeedModelBean.filterChangeLock}" styleClass="ifeed-step" layout="block">
             <span>Din träfflista</span>
         </h:panelGroup>
-        <h:panelGroup rendered="#{!app.inEditMode}" layout="block">
+        <h:panelGroup rendered="#{!app.inEditMode or iFeedModelBean.filterChangeLock}" layout="block">
             <h2>Resultat</h2>
             <h:selectBooleanCheckbox value="#{app.limitOnResultCount}" rendered="false"/>
         </h:panelGroup>

@@ -257,19 +257,19 @@
 
     <div class="container-fluid">
 
-        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{app.inEditMode and not iFeedModelBean.filterChangeLock}">
-            <div class="span4 first">
+        <div class="row-fluid">
+            <h:panelGroup styleClass="span4 first" rendered="#{app.inEditMode and not iFeedModelBean.filterChangeLock}">
                 <ui:include src="add-filter.xhtml"/>
-            </div>
-            <div class="span4">
+            </h:panelGroup>
+            <h:panelGroup styleClass="span4" rendered="#{app.inEditMode and not iFeedModelBean.filterChangeLock}">
                 <ui:include src="add-filter-content.xhtml"></ui:include>
-            </div>
-            <div class="span4 last">
+            </h:panelGroup>
+            <h:panelGroup styleClass="span4 last" rendered="#{app.inEditMode and not iFeedModelBean.filterChangeLock}">
                 <ui:include src="results.xhtml"/>
-            </div>
-        </h:panelGroup>
+            </h:panelGroup>
+        </div>
 
-        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{!app.inEditMode}">
+        <h:panelGroup layout="block" styleClass="row-fluid" rendered="#{!app.inEditMode or iFeedModelBean.filterChangeLock}">
             <div class="span6 first">
                 <ui:include src="results.xhtml"/>
             </div>

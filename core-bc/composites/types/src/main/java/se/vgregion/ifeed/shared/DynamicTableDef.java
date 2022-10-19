@@ -208,15 +208,4 @@ public class DynamicTableDef extends AbstractEntity {
         this.extraSorting = extraSorting;
     }
 
-    /*
-    public static void main(String[] args) {
-        IfeedDynamicTableDef bean = new IfeedDynamicTableDef();
-        BeanMap bm = new BeanMap(bean);
-        StringBuilder sb = new StringBuilder();
-        for (Object key : bm.keySet()) {
-            sb.append("map.put(\"" + key + "\", " + key + ");\n");
-        }
-        System.out.println(sb);
-    }
-    */
 }

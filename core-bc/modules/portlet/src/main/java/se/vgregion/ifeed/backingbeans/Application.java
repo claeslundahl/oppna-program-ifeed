@@ -85,6 +85,9 @@ public class Application {
     private String metadataBaseUrl;
     @Value("${ifeed.web.script.json.url}")
     private String webScriptJsonUrl;
+
+    @Value("${ifeed.web.script.json.url}")
+    private String webScriptHost;
     @Autowired
     private IFeedService iFeedService;
     @Autowired
@@ -1566,9 +1569,6 @@ public class Application {
         if (iFeedModelBean.toQuery(client.fetchFields()).isEmpty()) {
             searchResults.clear();
         } else {
-            for (IFeedFilter iFeedModelBeanFilter : iFeedModelBean.getFilters()) {
-                System.out.println("foo: " + iFeedModelBeanFilter.getMetadata());
-            }
             System.out.println("Query in admin results: " + iFeedModelBean.toQuery(client.fetchFields()));
             updateSearchResults(iFeedModelBean);
         }
@@ -1777,5 +1777,13 @@ public class Application {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public String getWebScriptHost() {
+        return webScriptHost;
+    }
+
+    public void setWebScriptHost(String webScriptHost) {
+        this.webScriptHost = webScriptHost;
     }
 }

@@ -799,16 +799,17 @@ public class IFeedServiceImpl implements IFeedService, Serializable {
         objectRepo.merge(inf);
     }
 
-    static IFeed copy(IFeed that) {
+    public IFeed copy(IFeed that) {
         IFeed result = new IFeed();
         result.setCreatorName(that.getCreatorName());
-        // result.setFilters(filters);
+
         for (IFeedFilter filter : that.getFilters()) {
             IFeedFilter nf = new IFeedFilter();
             nf.setFieldInf(filter.getFieldInf());
-            nf.setFilterKey(filter.getFilterKey());
             nf.setFilterQuery(filter.getFilterQuery());
+            nf.setFilterKey(filter.getFilterKey());
             nf.setOperator(filter.getOperator());
+            nf.setMetadata(filter.getMetadata());
             result.addFilter(nf);
         }
 

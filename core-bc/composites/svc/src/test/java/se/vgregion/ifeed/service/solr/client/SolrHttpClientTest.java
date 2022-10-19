@@ -67,13 +67,16 @@ public class SolrHttpClientTest {
         System.out.println();
         foo();*/
 
-        NavigableSet<Object> items = client.findAllValues("vgr:VgrExtension.vgr:SourceSystem");
+        NavigableSet<Object> items = client.findAllValues("vgrsd:DomainExtension.vgrsd:ValidFrom");
         for (Object item : items) {
             System.out.println(item);
+            IFeedFilter iff = new IFeedFilter();
+            iff.setFilterKey("vgrsd:DomainExtension.vgrsd:ValidFrom");
+            iff.setFilterQuery(item.toString());
+            Result feed = client.query(iff.toQuery(null), 0, 20, "asc", null);
+            System.out.println(gson.toJson(feed));
         }
         // Har styrande dokument och vanliga sofia-dito alltid SourceSystem == 'MELLANARKIV'?
-
-
 
         /*NavigableSet<Object> allSofiaCreateionTimes = client.findAllValues("core:ArchivalObject.core:CreatedDateTime");
         for (Object allSofiaCreateionTime : allSofiaCreateionTimes) {

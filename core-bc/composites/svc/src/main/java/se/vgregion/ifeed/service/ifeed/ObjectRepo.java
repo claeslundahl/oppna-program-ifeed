@@ -3,6 +3,7 @@ package se.vgregion.ifeed.service.ifeed;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import se.vgregion.common.utils.BeanMap;
 
 import javax.persistence.*;
 import java.lang.annotation.Annotation;
@@ -27,6 +28,7 @@ public class ObjectRepo {
 
     /**
      * getter for the entityManager.
+     *
      * @return entityManager.
      */
     public EntityManager getEntityManager() {
@@ -35,14 +37,24 @@ public class ObjectRepo {
 
     /**
      * Find data in the db by ites primary key.
+     *
      * @param clazz what type to find.
-     * @param id search key to use.
-     * @param <T> type that are being returned.
+     * @param id    search key to use.
+     * @param <T>   type that are being returned.
      * @return list with zero or more results.
      */
     @Transactional
     public <T> T findByPrimaryKey(Class<T> clazz, Object id) {
         T result = entityManager.find(clazz, id);
+        BeanMap bm = new BeanMap(result);
+        for (String key : bm.keySet()) {
+            Object v = bm.get(key); // Init the properties.
+            if (v instanceof Collection) {
+                for (Object o : ((Collection) v)) {
+
+                }
+            }
+        }
         return result;
     }
 
@@ -54,8 +66,9 @@ public class ObjectRepo {
 
     /**
      * Saves changes in a object into the db.
+     *
      * @param entity contains data that previously been created in the db.
-     * @param <T> type of the return value and parameter.
+     * @param <T>    type of the return value and parameter.
      * @return a new version of the updated entity.
      */
     public <T> T merge(T entity) {
@@ -64,6 +77,7 @@ public class ObjectRepo {
 
     /**
      * Creates a new post in the db from the data in the provided entity.
+     *
      * @param entity data to create in the db.
      */
     public void persist(Object entity) {
@@ -73,8 +87,9 @@ public class ObjectRepo {
 
     /**
      * Removes data from the db.
+     *
      * @param entity representing the data to remove from the db.
-     * @param <T> type of the argument and return value.
+     * @param <T>    type of the argument and return value.
      */
     public <T> void delete(T entity) {
         entityManager.remove(entity);
@@ -82,9 +97,10 @@ public class ObjectRepo {
 
     /**
      * Creates a reference to a tupel in the db.
-     * @param clazz type of the result to create.
+     *
+     * @param clazz      type of the result to create.
      * @param primaryKey the key value for this data in the db.
-     * @param <T> type of the result.
+     * @param <T>        type of the result.
      * @return a reference to data in the db.
      */
     public <T> T getReference(Class<T> clazz, Object primaryKey) {
@@ -94,8 +110,9 @@ public class ObjectRepo {
 
     /**
      * Finds all data from a certain class. Maximum 500000 hits.
+     *
      * @param clazz type to find.
-     * @param <V> the generic class to find.
+     * @param <V>   the generic class to find.
      * @return entities from the db.
      */
     public <V> List<V> findAll(Class<V> clazz) {
@@ -117,10 +134,11 @@ public class ObjectRepo {
 
     /**
      * Finds all items of a certain type.
-     * @param clazz type of objects to find.
-     * @param offset where in the stream from the db to start collecting results.
+     *
+     * @param clazz      type of objects to find.
+     * @param offset     where in the stream from the db to start collecting results.
      * @param maxResults how many, maximum, items to return.
-     * @param <V> type of the entities.
+     * @param <V>        type of the entities.
      * @return Datra from the db as entities.
      */
     public <V> List<V> findAll(Class<V> clazz, int offset, int maxResults) {

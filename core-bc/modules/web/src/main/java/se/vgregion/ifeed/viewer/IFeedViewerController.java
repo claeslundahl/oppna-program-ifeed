@@ -18,11 +18,13 @@ import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.ifeed.ObjectRepo;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.OldIndexData;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
+import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapApi;
 import se.vgregion.ldap.LdapSupportService;
@@ -31,20 +33,17 @@ import se.vgregion.ldap.person.Person;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Produces;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLDecoder;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static se.vgregion.ifeed.service.ifeed.IFeedService.toTableMarkup;
 import static se.vgregion.ifeed.viewer.Column.toColumns;
 
 /**
@@ -156,25 +155,7 @@ public class IFeedViewerController {
         return result;
     }
 
-    /**
-     * Gets the ifeed from either a db or from a plain instance (sent as text).
-     *
-     * @param listIdOrSerializedInstance the id of the feed in the db or the feed itself as an instance. To bad that
-     *                                   spring portlet mvc does not function well enough to work for the latter
-     *                                   scenario. It is kept in case this is
-     *                                   fixed later.
-     * @param model                      to place the data for the view.
-     * @param sortField                  the field to be used to sort the result.
-     * @param sortDirection              what direction to use when sorting, sould be asc or desc.
-     * @param startBy                    what offset to have in the result from the db.
-     * @param endBy                      where to end the result (truncate it) from the db.
-     * @param fromPage                   should be the url (or some other id, perhaps) of the page that calls the
-     *                                   function via the
-     *                                   ajax script.
-     * @return
-     */
-
-    static boolean isValid(Charset charset, String data) {
+    /*static boolean isValid(Charset charset, String data) {
         try {
             charset.decode(
                     ByteBuffer.wrap(data.getBytes()));
@@ -182,7 +163,7 @@ public class IFeedViewerController {
             return false;
         }
         return true;
-    }
+    }*/
 
     @RequestMapping(value = "/documentlists/{listIdOrSerializedInstance}/metadata.json")
     @ResponseStatus(value = HttpStatus.OK)
@@ -326,12 +307,12 @@ public class IFeedViewerController {
             }
 
             if (!resultAccumulator.isEmpty()) {
-                for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
+                /*for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
                     if (keys.contains(labelledValue.key)) {
                         bos.write(prettifyFeedValue(labelledValue.getLabel()));
                         bos.write(";".getBytes());
                     }
-                }
+                }*/
                 for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
                     if (keys.contains(labelledValue.key)) {
                         bos.write(prettifyFeedValue(labelledValue.getLabel()));
@@ -341,12 +322,14 @@ public class IFeedViewerController {
 
                 for (Map<String, Object> item : resultAccumulator) {
                     bos.write("\n".getBytes());
+/*
                     for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
                         if (keys.contains(labelledValue.key)) {
                             bos.write(prettifyFeedValue(String.valueOf(item.get(labelledValue.getKey()))));
                             bos.write(";".getBytes());
                         }
                     }
+*/
                     for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
                         if (keys.contains(labelledValue.key)) {
                             bos.write(prettifyFeedValue(String.valueOf(item.get(labelledValue.getKey()))));
@@ -1311,7 +1294,7 @@ public class IFeedViewerController {
         }
     }
 
-    private List<LabelledValue> newAlfrescoBariumDisplayFieldsWithoutValue() {
+    /*private List<LabelledValue> newAlfrescoBariumDisplayFieldsWithoutValue() {
         List<LabelledValue> result = new ArrayList<>();
         result.add(new LabelledValue("", "Dokumentbeskrivning"));
         result.add(new LabelledValue("dc.title", "Titel (autokomplettering)"));
@@ -1403,12 +1386,12 @@ public class IFeedViewerController {
         result.add(new LabelledValue("dc.identifier.checksum.native", "Kontrollsumma dokument, original"));
         result.add(new LabelledValue("dc.source.origin", "Källsystem"));
         return result;
-    }
+    }*/
 
     private List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
         List<LabelledValue> result = new ArrayList<>();
-        result.add(new LabelledValue("core:ArchivalObject.idType", "N/A"));
-        result.add(new LabelledValue("core:ArchivalObject.id", "N/A"));
+/*        result.add(new LabelledValue("core:ArchivalObject.idType", "N/A"));
+        result.add(new LabelledValue("core:ArchivalObject.id", "N/A"));*/
         result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Upprättad datum"));
         result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
         result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
@@ -1466,6 +1449,13 @@ public class IFeedViewerController {
         result.add(new LabelledValue("productionDownloadLatestVersionUrl", "Webblänk produktionsformat"));
         result.add(new LabelledValue("originalDownloadLatestVersionUrl", "Webblänk urspurungsformat"));
         result.add(new LabelledValue("archivalDownloadLatestVersionUrl", "Webblänk arkivformat"));
+
+        // pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidFrom", "Giltig från"));
+        //                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltig till"));
+
+        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ValidFrom", "Giltig från"));
+        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltig till"));
+
         return result;
     }
 
@@ -1614,4 +1604,45 @@ public class IFeedViewerController {
         }
         return new ModelAndView("ExceptionHandler", Collections.singletonMap("exception", e));
     }
+
+    @Autowired
+    ObjectRepo objectRepo;
+
+    private String webScriptJsonUrl = getProperties().getProperty("ifeed.web.script.json.url");
+
+    private String webScriptUrl = getProperties().getProperty("ifeed.web.script.url");
+
+    @RequestMapping(value = "/table-view/{id}")
+    @Transactional
+    public String tableView(@PathVariable(name = "id") Long id, Model model) {
+        DynamicTableDef dtd = objectRepo.findByPrimaryKey(DynamicTableDef.class, id);
+
+        for (Object key : new TreeSet<>(getProperties().keySet())) {
+            System.out.println(key + " = " + getProperties().get(key));
+        }
+
+        if (dtd != null) {
+            model.addAttribute("tableName", dtd.getName());
+            model.addAttribute("iFeedCode", toTableMarkup(dtd, false));
+            model.addAttribute("webScriptJsonUrl", webScriptJsonUrl);
+            model.addAttribute("webScriptUrl", webScriptUrl);
+        }
+        return "table-view";
+    }
+
+    private static Properties properties;
+
+    public static Properties getProperties() {
+        if (properties != null)
+            return properties;
+        try {
+            Path path = Paths.get(System.getProperty("user.home"), ".hotell", "ifeed", "config.properties");
+            Properties result = new Properties();
+            result.load(new FileInputStream(path.toFile()));
+            return properties = result;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -169,9 +169,8 @@
                 </div>
 
                 <div class="span4 ">
-                    <h:outputText style="font-weight: bold;" value="Lägg till: "></h:outputText>
                     <div>
-                        <h:commandLink value="EPI-konfiguration (JSON)"
+                        <h:commandLink value="Tabellvyadmin"
                                        actionListener="#{tableDef.editNewJsonp()}"
                                        ajax="true"
                                        id="epiConfigLink"
@@ -227,7 +226,7 @@
 
     <div class="container-fluid">
         <h3 style="display: inline;">
-            EPI-konfigurationer (JSON):
+            Tabellvyer:
         </h3>
         <ui:repeat value="#{iFeedModelBean.dynamicTableDefs}" var="ifeedDynamicTableDefsItem" varStatus="status"
                    id="ifeedDynamicTableDefsRepeat">

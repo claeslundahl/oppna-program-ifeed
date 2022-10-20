@@ -1617,10 +1617,6 @@ public class IFeedViewerController {
     public String tableView(@PathVariable(name = "id") Long id, Model model) {
         DynamicTableDef dtd = objectRepo.findByPrimaryKey(DynamicTableDef.class, id);
 
-        for (Object key : new TreeSet<>(getProperties().keySet())) {
-            System.out.println(key + " = " + getProperties().get(key));
-        }
-
         if (dtd != null) {
             model.addAttribute("tableName", dtd.getName());
             model.addAttribute("iFeedCode", toTableMarkup(dtd, false));

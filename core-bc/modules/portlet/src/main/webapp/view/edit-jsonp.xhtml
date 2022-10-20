@@ -221,7 +221,7 @@
         <h:panelGroup layout="inline" styleClass="row-fluid">
           <h3>
             Förhandsgranskning
-            <a href="#{webScriptHost}/iFeed-web/table-view/#{tableDef.id}" style="display: #{(empty tableDef.id) ? 'none;' : 'inline;'}" target="_blank">(Direktlänk)</a>
+            <a href="#{webScriptHost}/iFeed-web/table-view/#{tableDef.id}" style="display: #{(empty tableDef.id) ? 'none;' : 'inline;'}" target="_blank">(Direktlänk <i class="fa fa-external-link-square"></i>)</a>
           </h3>
           <h:outputText value="#{tableDef.toPostingTableMarkup()}" escape="false"/>
         </h:panelGroup>

@@ -11,14 +11,14 @@
         </h3>
 
         <ui:repeat value="#{iFeedModelBean.toConditionText()}" var="tc"
-                   id="tc1" rendered="#{not app.inEditMode}">
+                   id="tc1" rendered="#{not app.inEditMode or iFeedModelBean.filterChangeLock}">
             <span class="ltr-flowing-item ifeed-border" style="white-space: inherit;">
                 #{tc}
             </span>
         </ui:repeat>
 
         <ui:repeat value="#{iFeedModelBean.getFiltersAsList()}" var="getFiltersAsListItem" varStatus="status"
-                   id="getFiltersAsListRepeat" rendered="#{app.inEditMode}">
+                   id="getFiltersAsListRepeat" rendered="#{app.inEditMode and not iFeedModelBean.filterChangeLock}">
     <span class="ltr-flowing-item ifeed-border"
           style="#{(getFiltersAsListItem.isContainer() || !app.isFilter(getFiltersAsListItem)) ?'display:none;':''}">
       <span class="name">#{app.getFilterName(getFiltersAsListItem)}</span>

@@ -64,20 +64,20 @@
 
                 <h:panelGroup rendered="#{app.inEditMode and not iFeedModelBean.filterChangeLock}">
                     <h:panelGroup rendered="#{iFeedModelBean.isUsingAnd(multi)}">
-                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true" checked="checked">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor_#{multi.pk}" value="true" checked="checked">
                             Använd 'och'
                         </input>
-                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true"
-                               onclick="document.getElementsByClassName('toggleAndFor')[0].click()">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor_#{multi.pk}" value="true"
+                               onclick="document.getElementsByClassName('toggleAndFor_#{multi.pk}')[0].click()">
                             Använd 'eller'
                         </input>
                     </h:panelGroup>
                     <h:panelGroup rendered="#{not iFeedModelBean.isUsingAnd(multi)}">
-                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="false"
-                               onclick="document.getElementsByClassName('toggleAndFor')[0].click()">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor_#{multi.pk}" value="false"
+                               onclick="document.getElementsByClassName('toggleAndFor_#{multi.pk}')[0].click()">
                             Använd 'och'
                         </input>
-                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true" checked="checked">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor_#{multi.pk}" value="true" checked="checked">
                             Använd 'eller'
                         </input>
                     </h:panelGroup>
@@ -85,24 +85,24 @@
 
                 <h:panelGroup rendered="#{not app.inEditMode or iFeedModelBean.filterChangeLock}">
                     <h:panelGroup rendered="#{iFeedModelBean.isUsingAnd(multi)}">
-                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true" checked="checked" disabled="disabled">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor_#{multi.pk}" value="true" checked="checked" disabled="disabled">
                             Använd 'och'
                         </input>
-                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="false" disabled="disabled">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor_#{multi.pk}" value="false" disabled="disabled">
                             Använd 'eller'
                         </input>
                     </h:panelGroup>
                     <h:panelGroup rendered="#{not iFeedModelBean.isUsingAnd(multi)}">
-                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="true" disabled="disabled">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor_#{multi.pk}" value="true" disabled="disabled">
                             Använd 'och'
                         </input>
-                        <input type="radio" property="notify" name="yesNoToggleAndFor" value="false" checked="checked" disabled="disabled">
+                        <input type="radio" property="notify" name="yesNoToggleAndFor_#{multi.pk}" value="false" checked="checked" disabled="disabled">
                             Använd 'eller'
                         </input>
                     </h:panelGroup>
                 </h:panelGroup>
 
-                <p:commandLink styleClass="link-button-edit toggleAndFor"
+                <p:commandLink styleClass="link-button-edit toggleAndFor_#{multi.pk}"
                                style="display: none"
                                value="#{iFeedModelBean.isUsingAnd(multi) ? 'Ja.' : 'Nej.'}"
                                update=":ifeed_view"

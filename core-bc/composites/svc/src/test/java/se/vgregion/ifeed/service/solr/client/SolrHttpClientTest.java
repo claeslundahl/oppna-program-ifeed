@@ -76,6 +76,7 @@ public class SolrHttpClientTest {
             Result feed = client.query(iff.toQuery(null), 0, 20, "asc", null);
             System.out.println(gson.toJson(feed));
         }
+        System.out.println(client.getBaseUrl());
         // Har styrande dokument och vanliga sofia-dito alltid SourceSystem == 'MELLANARKIV'?
 
         /*NavigableSet<Object> allSofiaCreateionTimes = client.findAllValues("core:ArchivalObject.core:CreatedDateTime");

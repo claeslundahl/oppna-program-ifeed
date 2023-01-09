@@ -633,9 +633,10 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
 
     public List<FieldInf> getFieldInfsWithMultipleFilters() {
         MultiMap<FieldInf, FieldInf> mm = new MultiMap<>();
-        for (IFeedFilter filter : filters) {
-            mm.get(filter.getFieldInf()).add(filter.getFieldInf());
-        }
+        if (filters != null)
+            for (IFeedFilter filter : filters) {
+                mm.get(filter.getFieldInf()).add(filter.getFieldInf());
+            }
         return new ArrayList<>(mm.entrySet().stream().filter(es -> es.getValue().size() > 1)
                 .map(es -> es.getKey()).collect(Collectors.toSet()));
     }

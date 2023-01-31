@@ -67,16 +67,18 @@ public class SolrHttpClientTest {
         System.out.println();
         foo();*/
 
-        NavigableSet<Object> items = client.findAllValues("vgrsd:DomainExtension.vgrsd:ValidFrom");
-        for (Object item : items) {
-            System.out.println(item);
-            IFeedFilter iff = new IFeedFilter();
-            iff.setFilterKey("vgrsd:DomainExtension.vgrsd:ValidFrom");
-            iff.setFilterQuery(item.toString());
-            Result feed = client.query(iff.toQuery(null), 0, 20, "asc", null);
-            System.out.println(gson.toJson(feed));
+        client = new SolrHttpClient("http://vgas3021.vgregion.se:9090/solr/ifeed/");
+
+        Map<String, Set<Object>> items = client.findAllValues();
+        for (String key : items.keySet()) {
+            Set<Object> values = items.get(key);
+            if (values.toString().contains(".ppt")) {
+                System.out.println("Nyckel: " + key);
+                //System.out.println("Värden: " + values);
+                System.out.println();
+            }
         }
-        System.out.println(client.getBaseUrl());
+
         // Har styrande dokument och vanliga sofia-dito alltid SourceSystem == 'MELLANARKIV'?
 
         /*NavigableSet<Object> allSofiaCreateionTimes = client.findAllValues("core:ArchivalObject.core:CreatedDateTime");

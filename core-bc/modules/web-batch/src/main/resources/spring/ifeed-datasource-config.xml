@@ -14,9 +14,10 @@
           location="classpath:datasource.properties, file:${user.home}/.hotell/ifeed/config.properties, ${IFEED_CONFIG}"
           ignore-resource-not-found="true" ignore-unresolvable="true" />
 
-  <import resource="classpath:spring/jpa-connector.xml" />
+  <!--<import resource="classpath:spring/jpa-connector.xml" />-->
   
   <!-- Imports a connector type configuration to the jpa connector - defaults to jndi. -->
-  <import resource="classpath:spring/jpa-connector-${datasource.connector:jndi}.xml" />
+  <!--<import resource="classpath:spring/jpa-connector-${datasource.connector:jndi}.xml" />-->
+  <import resource="classpath:spring/jpa-connector-direct.xml" />
 
 </beans>

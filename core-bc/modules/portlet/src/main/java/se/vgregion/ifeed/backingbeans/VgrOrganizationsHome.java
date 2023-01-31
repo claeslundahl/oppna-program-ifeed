@@ -8,18 +8,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.vgregion.common.utils.DistinctArrayList;
+import se.vgregion.ifeed.service.kiv.OrganizationsService;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 import se.vgregion.ldap.LdapApi;
-import se.vgregion.ifeed.service.kiv.OrganizationsService;
 import se.vgregion.ldap.VgrOrganization;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -225,13 +229,15 @@ public class VgrOrganizationsHome implements Serializable {
     private static VgrOrganization allOrganizationsRoot;
 
     public VgrOrganization getAllOrganizationsRoot() {
+        if (isCacheFileToOld()) {
+            allOrganizationsRoot = null;
+        }
         if (allOrganizationsRoot == null) {
             long startTime = System.currentTimeMillis();
             if (!loadAllOrganizationsRootFromDiscCacheIfFileIsPresent()) {
                 synchronized (this) {
-                    allOrganizationsRoot = loadAllOrganizationsRoot();
-
                     long loadTimeSeconds = (System.currentTimeMillis() - startTime) / 1000;
+                    allOrganizationsRoot = loadAllOrganizationsRoot();
                     LOGGER.debug("Time to load organizations "
                             + loadTimeSeconds + " s ("
                             + (loadTimeSeconds / 60) + " m).");
@@ -243,6 +249,15 @@ public class VgrOrganizationsHome implements Serializable {
         return allOrganizationsRoot;
     }
 
+/*    public static void main(String[] args) {
+        System.out.println("Hej!");
+        VgrOrganizationsHome voh = new VgrOrganizationsHome();
+        VgrOrganization result = voh.getAllOrganizationsRoot();
+        result.visit(organization -> {
+            System.out.println(organization);
+        });
+    }*/
+
     void persistAllOrganizationsRootToDiscCache() {
         try {
             String f = getPathToAllOrganizationsRootCacheFile();
@@ -250,13 +265,7 @@ public class VgrOrganizationsHome implements Serializable {
             if (file.exists()) {
                 file.delete();
             }
-            /*file.createNewFile();*/
-
             Files.write(Paths.get(f), new GsonBuilder().create().toJson(allOrganizationsRoot).getBytes());
-
-            /*FileOutputStream fout = new FileOutputStream(f);
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(allOrganizationsRoot);*/
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -289,9 +298,26 @@ public class VgrOrganizationsHome implements Serializable {
         }
     }
 
+    private boolean isCacheFileToOld()  {
+        try {
+            String f = getPathToAllOrganizationsRootCacheFile();
+            FileTime t = Files.getLastModifiedTime(Paths.get(f));
+            Instant fileInstant = t.toInstant();
+            Instant now = Instant.now();
+            Duration difference = Duration.between(fileInstant, now);
+            long days = difference.toDays();
+            return days != 0;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private boolean loadAllOrganizationsRootFromDiscCacheIfFileIsPresent() {
         try {
             String f = getPathToAllOrganizationsRootCacheFile();
+            if (isCacheFileToOld()) {
+                Files.delete(Paths.get(f));
+            }
             File file = new File(f);
             if (file.exists()) {
                 allOrganizationsRoot = getAllOrganizationsRootFromDiscCache();

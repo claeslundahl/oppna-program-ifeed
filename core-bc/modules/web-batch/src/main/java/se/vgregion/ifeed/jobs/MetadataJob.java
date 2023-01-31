@@ -23,6 +23,7 @@ public class MetadataJob implements ServletContextListener {
     public MetadataJob() {
         super();
         LOGGER.info("MetadataJob is created!");
+        System.out.println("MetadataJob constructor!");
     }
 
     @Override
@@ -35,8 +36,10 @@ public class MetadataJob implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent context) {
-        /*loadContext("classpath*:spring/ifeed-*.xml");
+        System.out.println("Testar det här!");
+        loadContext("classpath*:spring/ifeed-*.xml");
         if (midnightRun == null) {
+            System.out.println("Det var null.");
             midnightRun = new MidnightRun(() -> todo());
             midnightRun.startTimer();
 
@@ -45,7 +48,8 @@ public class MetadataJob implements ServletContextListener {
                 final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
                 executor.schedule(() -> midnightRun.run(), 2, TimeUnit.SECONDS);
             }
-        }*/
+        }
+        System.out.println("Inget fel!");
     }
 
     public synchronized void todo() {
@@ -62,7 +66,7 @@ public class MetadataJob implements ServletContextListener {
     protected void loadContext(final String configLocation) {
         try {
             context = new ClassPathXmlApplicationContext(configLocation);
-             MetadataService service = context.getBean(MetadataService.class);
+            MetadataService service = context.getBean(MetadataService.class);
             setMetadataService(service);
         } catch (BeansException e) {
             e.printStackTrace();

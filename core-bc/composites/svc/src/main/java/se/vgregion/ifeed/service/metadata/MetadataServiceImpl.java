@@ -4,12 +4,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import se.vgr.metaservice.schema.ApelonClient;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
+import se.vgregion.ifeed.repository.MetadataRepository;
 import se.vgregion.ifeed.types.Metadata;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 
@@ -131,6 +134,21 @@ public class MetadataServiceImpl implements MetadataService {
 
     @Override
     public Collection<String> getVocabulary(String metadataNodeName) {
+        Collection<Metadata> masterNode = repo.findByAttribute("name", metadataNodeName);
+        if (masterNode.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Metadata root = masterNode.iterator().next();
+        return new TreeSet<>(
+                root.getChildren().stream()
+                        .filter(md->md.getActive())
+                        .map(md -> md.getName())
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @Deprecated
+    private Collection<String> getVocabularyOld(String metadataNodeName) {
         LOGGER.debug("Get vocabulary for metadata: {}", metadataNodeName);
         List<String> vocabulary = Collections.emptyList();
         if (isBlank(metadataNodeName)) {

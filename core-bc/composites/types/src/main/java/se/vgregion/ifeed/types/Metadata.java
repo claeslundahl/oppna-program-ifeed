@@ -43,6 +43,9 @@ public class Metadata extends AbstractEntity<Long>
     @Expose(serialize = false, deserialize = false)
     private Set<FieldInf> fieldInfs = new HashSet<>();
 
+    @Column(columnDefinition = "boolean default true")
+    private Boolean active;
+
     public Metadata() {
         // To make JPA/Hibernate Happy
     }
@@ -105,5 +108,13 @@ public class Metadata extends AbstractEntity<Long>
 
     public void setFieldInfs(Set<FieldInf> fieldInfs) {
         this.fieldInfs = fieldInfs;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

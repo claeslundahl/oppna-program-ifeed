@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sun.faces.component.visit.FullVisitContext;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
@@ -576,6 +577,11 @@ public class Application {
 
     public List<String> getVocabulary(String key) {
         List<String> vocabulary = new ArrayList<String>(metadataService.getVocabulary(key));
+        vocabulary = new ArrayList<>(vocabulary);
+        if (!StringUtils.isBlank(newFilter.getValue())) {
+            vocabulary.add(newFilter.getValue());
+            Collections.sort(vocabulary);
+        }
         return vocabulary;
     }
 

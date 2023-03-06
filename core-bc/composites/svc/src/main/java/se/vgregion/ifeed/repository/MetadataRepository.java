@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -22,6 +23,16 @@ public class MetadataRepository {
         query.setParameter("name", name);
         try {
             return (Metadata) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public List<Metadata> getActiveItemsParent(String withName) {
+        Query query = entityManager.createQuery("select c from Metadata u join Metadata c on u.children where u.name = :name and c.active");
+        query.setParameter("name", withName);
+        try {
+            return query.getResultList();
         } catch (NoResultException e) {
             return null;
         }

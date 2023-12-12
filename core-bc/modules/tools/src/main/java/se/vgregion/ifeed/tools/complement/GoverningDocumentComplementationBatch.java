@@ -123,9 +123,9 @@ public class GoverningDocumentComplementationBatch {
         // System.out.println(q);
         Result r = solr.query(q, 0, 1_000_000, "ASC", null,
                 "SourceSystem");
-        if (r != null && r.getResponse() != null && r.getResponse().getDocs() != null) {
+        if (r != null && r.getDocumentList() != null && r.getDocumentList().getDocuments() != null) {
             return
-                    r.getResponse().getDocs();
+                    r.getDocumentList().getDocuments();
         }
         return null;
     }
@@ -140,9 +140,9 @@ public class GoverningDocumentComplementationBatch {
     private static List<Map<String, Object>> get(String q) {
         Result r = solr.query(q, 0, 1_000_000, "ASC", null,
                 "SourceSystem");
-        if (r != null && r.getResponse() != null && r.getResponse().getDocs() != null) {
+        if (r != null && r.getDocumentList() != null && r.getDocumentList().getDocuments() != null) {
             return
-                    r.getResponse().getDocs();
+                    r.getDocumentList().getDocuments();
         }
         return null;
     }

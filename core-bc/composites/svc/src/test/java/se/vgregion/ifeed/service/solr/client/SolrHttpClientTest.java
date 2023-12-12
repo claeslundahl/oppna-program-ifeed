@@ -20,8 +20,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,13 +31,41 @@ public class SolrHttpClientTest {
     static void foo() {
         Result r = client.query("", 0, 1_000_000, "asc", null,
                 "SourceSystem", "vgrsd:DomainExtension.domain", "language");
-        Set<Map<String, Object>> condensed = new HashSet<>(r.getResponse().getDocs());
+        Set<Map<String, Object>> condensed = new HashSet<>(r.getDocumentList().getDocuments());
         for (Map<String, Object> item : condensed) {
             System.out.println(item);
         }
     }
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+
+    public static void main(String[] args) {
+        SolrHttpClient client = SolrHttpClient.newInstanceFromConfig();
+        final IFeedFilter iff = new IFeedFilter();
+        iff.setFilterKey("vgr:VgrExtension.vgr:SecurityClass");
+        iff.setOperator("matching");
+
+        iff.setFilterQuery("*");
+
+        System.out.println(
+                client.query(iff.toQuery(null), 0, 1000, "asc", null).getDocumentList().getDocuments().size());
+
+    }
+
+    public static void main123(String[] args) {
+        SolrHttpClient client = new SolrHttpClient("https://i3-dev.vgregion.se/search/rest/apps/ifeed/searchers/main?");
+
+        final IFeedFilter iff = new IFeedFilter();
+        iff.setFilterKey("vgr:VgrExtension.vgr:SecurityClass");
+        iff.setOperator("matching");
+        //iff.setFilterQuery("2021-01-04");
+        iff.setFilterQuery("*");
+
+        System.out.println(
+                client.query(iff.toQuery(null), 0, 1000, "asc", null).getDocumentList().getDocuments().size());
+    }
+
+
+    public static void main33(String[] args) throws IOException, URISyntaxException {
         /*Result r = client.query("", 0, 1_000_000, "asc", null, "core:ArchivalObject.core:CreatedDateTime", "id", "title");
         for (Map<String, Object> doc : r.getResponse().getDocs()) {
             String rawTextTime = (String) doc.get("core:ArchivalObject.core:CreatedDateTime");
@@ -113,7 +139,7 @@ public class SolrHttpClientTest {
         }
 
         System.out.println(iff.toQuery(client.fetchFields()));
-        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getDocumentList().getDocuments().size());
     }
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -139,10 +165,10 @@ public class SolrHttpClientTest {
         }
 
         System.out.println(iff.toQuery(client.fetchFields()));
-        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getDocumentList().getDocuments().size());
 
         String q = "vgrsd\\:DomainExtension.vgrsd\\:ValidTo:*";
-        System.out.println(client.query(q, 0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        System.out.println(client.query(q, 0, 1_000_000, "asc", null).getDocumentList().getDocuments().size());
         // vgrsd\:DomainExtension.vgrsd\:ValidTo:[2020-08-12T00:00:00Z TO 2020-08-12T23:59:59Z]
         // 2023-06-07T13:15:00Z
     }
@@ -171,7 +197,7 @@ public class SolrHttpClientTest {
         }
 
         System.out.println(iff.toQuery(client.fetchFields()));
-        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getResponse().getDocs().size());
+        System.out.println(client.query(iff.toQuery(client.fetchFields()), 0, 1_000_000, "asc", null).getDocumentList().getDocuments().size());
     }
 
     static void noResultOnComplexFilterError() {
@@ -202,7 +228,7 @@ public class SolrHttpClientTest {
 
     static void ask(SolrHttpClient client, String rawQuery) {
         Result result = client.query(rawQuery, 0, 1_000_000, "asc", null, "title");
-        for (Map<String, Object> doc : result.getResponse().getDocs()) {
+        for (Map<String, Object> doc : result.getDocumentList().getDocuments()) {
             System.out.println(doc);
         }
     }
@@ -289,7 +315,7 @@ public class SolrHttpClientTest {
         filter.setFilterQuery("14a94647-9364-491f-ba1c-8dc76963b0b7");
         System.out.println(filter.toQuery(client.fetchFields()));
         Result result = client.query(filter.toQuery(client.fetchFields()), 0, 100_000, null, null);
-        for (Map<String, Object> doc : result.getResponse().getDocs()) {
+        for (Map<String, Object> doc : result.getDocumentList().getDocuments()) {
             for (String key : doc.keySet()) {
                 System.out.println(key + " = " + doc.get(key));
             }
@@ -487,7 +513,7 @@ public class SolrHttpClientTest {
         Result result = client.query(feed.toQuery(client.fetchFields()), 0, 1_000_000, null, null);
 
         int i = 0;
-        for (Map<String, Object> doc : result.getResponse().getDocs()) {
+        for (Map<String, Object> doc : result.getDocumentList().getDocuments()) {
             i++;
             System.out.println(i + " = " + doc.get("dc.title"));
         }

@@ -193,8 +193,8 @@ public class FeedDocumentIndexSupport {
         // System.out.println(q);
         Result r = client.query(q, 0, 1_000_000, "ASC", null,
                 "dc.source.documentid", "vgr:VgrExtension.vgr:Source.id"/*, "title"*/);
-        if (r != null && r.getResponse() != null && r.getResponse().getDocs() != null) {
-            for (Map<String, Object> doc : r.getResponse().getDocs()) {
+        if (r != null && r.getDocumentList() != null && r.getDocumentList().getDocuments() != null) {
+            for (Map<String, Object> doc : r.getDocumentList().getDocuments()) {
                 documentIds.add(
                         (String) (doc.containsKey("dc.source.documentid") ?
                                 doc.get("dc.source.documentid") : doc.get("vgr:VgrExtension.vgr:Source.id"))

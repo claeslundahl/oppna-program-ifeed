@@ -29,7 +29,7 @@ import se.vgregion.ifeed.service.metadata.MetadataService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedResults;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
-import se.vgregion.ifeed.service.solr.client.Response;
+import se.vgregion.ifeed.service.solr.client.DocumentList;
 import se.vgregion.ifeed.service.solr.client.Result;
 import se.vgregion.ifeed.service.solr.client.SolrHttpClient;
 import se.vgregion.ifeed.shared.ColumnDef;
@@ -1593,9 +1593,9 @@ public class Application {
                         "core:ArchivalObject.core:CreatedDateTime", "id", "url", "dc.date.issued"
                 )
         );
-        if (fromSolr != null && fromSolr.getResponse() != null && fromSolr.getResponse().getDocs() != null) {
-            Response response = fromSolr.getResponse();
-            result = response.getDocs();
+        if (fromSolr != null && fromSolr.getDocumentList() != null && fromSolr.getDocumentList().getDocuments() != null) {
+            DocumentList documentList = fromSolr.getDocumentList();
+            result = documentList.getDocuments();
         } else {
             System.out.println("No response from solr: " +
                     new GsonBuilder().setPrettyPrinting().create().toJson(fromSolr)

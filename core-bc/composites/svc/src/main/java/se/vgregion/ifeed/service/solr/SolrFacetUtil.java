@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 /**
@@ -59,7 +58,7 @@ public class SolrFacetUtil {
                 fi,
                 fi.getId()
         );
-        if (result.getResponse() == null) {
+        if (result.getDocumentList() == null) {
             /*result = client.query(
                     question,
                     0,

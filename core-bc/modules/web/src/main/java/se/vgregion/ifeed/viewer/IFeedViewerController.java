@@ -474,16 +474,16 @@ public class IFeedViewerController {
             System.out.println("Fields not set.");*/
         Result result = client.query(retrievedFeed.toQuery(client.fetchFields()), startBy, endBy, sortDirection, field, fieldToSelect);
 
-        if (result != null && result.getResponse() != null && result.getResponse().getDocs() != null
+        if (result != null && result.getDocumentList() != null && result.getDocumentList().getDocuments() != null
                 && fieldToSelect != null && fieldToSelect.length > 0) {
             Set<String> keys = new HashSet<>(Arrays.asList(fieldToSelect));
-            for (Map<String, Object> item : result.getResponse().getDocs()) {
+            for (Map<String, Object> item : result.getDocumentList().getDocuments()) {
                 item.keySet().retainAll(keys);
             }
         }
 
         if (retrievedFeed.getLinkNativeDocument()) {
-            for (Map<String, Object> item : result.getResponse().getDocs()) {
+            for (Map<String, Object> item : result.getDocumentList().getDocuments()) {
                 String originalDownloadLatestVersionUrl = (String) item.get("originalDownloadLatestVersionUrl");
                 if (originalDownloadLatestVersionUrl != null && !"".equals(originalDownloadLatestVersionUrl.trim())) {
                     // Is a Sofia doc.
@@ -499,11 +499,11 @@ public class IFeedViewerController {
         // model.addAttribute("result", otherResult.getResponse().getDocs());
         // result = result.subList(startBy, endBy);
         // model.addAttribute("result", result);
-        if (result.getResponse() == null || result.getResponse().getDocs() == null) {
+        if (result.getDocumentList() == null || result.getDocumentList().getDocuments() == null) {
             model.addAttribute("result", new ArrayList<>());
             // model.addAttribute(new ArrayList<>());
         } else {
-            model.addAttribute("result", result.getResponse().getDocs());
+            model.addAttribute("result", result.getDocumentList().getDocuments());
             // model.addAttribute(result.getResponse().getDocs());
         }
         model.addAttribute("query", client.getLatestCallAsGet());
@@ -821,11 +821,11 @@ public class IFeedViewerController {
                 selectionPart.toArray(new String[selectionPart.size()])
         );
 
-        fillInCounterpartValues(findings.getResponse().getDocs(), iFeedService.getFieldInfs());
+        fillInCounterpartValues(findings.getDocumentList().getDocuments(), iFeedService.getFieldInfs());
 
-        model.addAttribute("items", findings.getResponse().getDocs());
+        model.addAttribute("items", findings.getDocumentList().getDocuments());
 
-        for (Map<String, Object> item : findings.getResponse().getDocs()) {
+        for (Map<String, Object> item : findings.getDocumentList().getDocuments()) {
             item.put("dc.title", item.get("title"));
             String validToKey = "dc.date.validto";
             String textDate = (String) item.get(validToKey);
@@ -872,7 +872,7 @@ public class IFeedViewerController {
         for (IFeedFilter iff : filter.getFilters()) {
             Metadata md = iff.getMetadata();
             if (md != null && md.getFilterQuery() != null) {
-                for (Map<String, Object> item : findings.getResponse().getDocs()) {
+                for (Map<String, Object> item : findings.getDocumentList().getDocuments()) {
 
                 }
             }
@@ -999,16 +999,16 @@ public class IFeedViewerController {
         filter.setFilterQuery(documentId);
         filter.setFilterKey("id");
         Result findigs = client.query(filter.toQuery(client.fetchFields()), null, null, null, null);
-        if (findigs.getResponse().getDocs().isEmpty()) {
+        if (findigs.getDocumentList().getDocuments().isEmpty()) {
             filter.setFilterQuery("workspace://SpacesStore/" + documentId);
             findigs = client.query(filter.toQuery(client.fetchFields()), null, null, null, null);
         }
 
-        if (findigs.getResponse().getDocs().isEmpty()) {
+        if (findigs.getDocumentList().getDocuments().isEmpty()) {
             throw new ResourceNotFoundException();
         }
 
-        final Map<String, Object> doc = findigs.getResponse().getDocs().get(0);
+        final Map<String, Object> doc = findigs.getDocumentList().getDocuments().get(0);
         List<FieldInf> infs = iFeedService.getFieldInfs();
         FieldInf root = new FieldInf(infs);
 
@@ -1390,8 +1390,11 @@ public class IFeedViewerController {
 
     private List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
         List<LabelledValue> result = new ArrayList<>();
-/*        result.add(new LabelledValue("core:ArchivalObject.idType", "N/A"));
-        result.add(new LabelledValue("core:ArchivalObject.id", "N/A"));*/
+
+        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
+        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:DocumentApprover", "Godkänt av"));
+        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ContentReviewer", "Granskad av"));
+
         result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Upprättad datum"));
         result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
         result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));

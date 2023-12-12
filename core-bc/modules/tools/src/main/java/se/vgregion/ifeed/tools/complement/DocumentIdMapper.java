@@ -7,7 +7,6 @@ import se.vgregion.ifeed.tools.Filter;
 import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.util.Map;
-import java.util.Set;
 
 public class DocumentIdMapper extends Mapper {
 
@@ -28,10 +27,10 @@ public class DocumentIdMapper extends Mapper {
         iff.setFilterQuery((String) that.get("filterquery"));
         Filter result = super.convert(that);
         Result items = client.query(iff.toQuery(client.fetchFields()), 0, 1, "asc", null, "title");
-        if (items == null || items.getResponse() == null || items.getResponse().getDocs() == null || items.getResponse().getDocs().isEmpty()) {
+        if (items == null || items.getDocumentList() == null || items.getDocumentList().getDocuments() == null || items.getDocumentList().getDocuments().isEmpty()) {
             return null;
         }
-        Map<String, Object> first = items.getResponse().getDocs().get(0);
+        Map<String, Object> first = items.getDocumentList().getDocuments().get(0);
         result.put("filterquery", first.get("title"));
         result.put("filterkey", getFieldInf().get("id"));
         return result;

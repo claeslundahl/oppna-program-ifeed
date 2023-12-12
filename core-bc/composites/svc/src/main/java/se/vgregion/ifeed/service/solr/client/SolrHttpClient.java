@@ -9,9 +9,6 @@ import se.vgregion.ifeed.service.solr.SolrQueryEscaper;
 import se.vgregion.ifeed.types.Field;
 import se.vgregion.ifeed.types.FieldInf;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
@@ -63,7 +60,7 @@ public class SolrHttpClient {
     }
 
     private void addTranslationProperties(Result toThat) {
-        for (Map<String, Object> doc : toThat.getResponse().getDocs()) {
+        for (Map<String, Object> doc : toThat.getDocumentList().getDocuments()) {
             addTranslationProperties(doc);
         }
     }
@@ -180,19 +177,30 @@ public class SolrHttpClient {
             // System.out.println(fields);
         }
 
-        String json = toText(fq, start, 1_000_000, null, fields);
-        Result result = new GsonBuilder().create().fromJson(json, Result.class);
-
-        if (result.getResponse() != null) {
-            Collections.sort(result.getResponse().getDocs(), new SwedishComparator(sortFields));
-            if ("desc".equalsIgnoreCase(dir)) {
-                Collections.reverse(result.getResponse().getDocs());
+        boolean first = true;
+        Result result = new Result();
+        Result page;
+        do {
+            String json = toText(fq, start + result.getDocumentList().getDocuments().size(), 100, null, fields);
+            page = new GsonBuilder().create().fromJson(json, Result.class);
+            if (first) {
+                result = page;
+                first = false;
+            } else {
+                result.getDocumentList().getDocuments().addAll(page.getDocumentList().getDocuments());
             }
-            result.getResponse().setDocs(
-                    result.getResponse().getDocs().subList(0, Math.min(rows, result.getResponse().getDocs().size()))
+            System.out.println("result.getResponse().getDocuments().size() = " + result.getDocumentList().getDocuments().size());
+        } while (!page.getDocumentList().getDocuments().isEmpty() && result.getDocumentList().getDocuments().size() < rows);
+
+        if (result.getDocumentList() != null) {
+            Collections.sort(result.getDocumentList().getDocuments(), new SwedishComparator(sortFields));
+            if ("desc".equalsIgnoreCase(dir)) {
+                Collections.reverse(result.getDocumentList().getDocuments());
+            }
+            result.getDocumentList().setDocuments(
+                    result.getDocumentList().getDocuments().subList(0, Math.min(rows, result.getDocumentList().getDocuments().size()))
             );
         }
-
         return result;
     }
 
@@ -279,7 +287,7 @@ public class SolrHttpClient {
             String response = read(baseUrl + "schema?wt=json");
             Map<String, Object> root = (Map<String, Object>) toObjectGraph(response);
             Map<String, Object> schema = (Map<String, Object>) root.get("schema");
-            List<Map<String, Object>> fields = (List<Map<String, Object>>) schema.get("fields");
+            List<Map<String, Object>> fields = (List<Map<String, Object>>)  schema.get("fields");
 
             String json = "{\"all\": " + toJson(fields) + "}";
 
@@ -296,7 +304,7 @@ public class SolrHttpClient {
 
     public static NavigableSet<String> toFacetSet(Result fromThat, String fieldName, String starPattern) {
         NavigableSet result = new TreeSet();
-        for (Map<String, Object> item : fromThat.getResponse().getDocs()) {
+        for (Map<String, Object> item : fromThat.getDocumentList().getDocuments()) {
             Object value = item.get(fieldName);
             if (value == null) {
                 continue;
@@ -341,7 +349,7 @@ public class SolrHttpClient {
                 "asc",
                 null,
                 null
-        ).getResponse().getDocs();
+        ).getDocumentList().getDocuments();
 
         for (Map<String, Object> doc : docs) {
             result.addAll(doc.keySet());
@@ -373,8 +381,8 @@ public class SolrHttpClient {
 
         Result everything = query("", 0, 1_000_000, null, null, forField);
 
-        if (everything.getResponse() != null) {
-            for (Map<String, Object> item : everything.getResponse().getDocs()) {
+        if (everything.getDocumentList() != null) {
+            for (Map<String, Object> item : everything.getDocumentList().getDocuments()) {
                 for (String key : item.keySet()) {
                     Object value = item.get(key);
                     if (value instanceof Collection) {
@@ -401,7 +409,7 @@ public class SolrHttpClient {
 
         Result everything = query("", 0, 1_000_000, null, null, null);
 
-        for (Map<String, Object> item : everything.getResponse().getDocs()) {
+        for (Map<String, Object> item : everything.getDocumentList().getDocuments()) {
             for (String key : item.keySet()) {
                 Object value = item.get(key);
                 if (value instanceof List) {

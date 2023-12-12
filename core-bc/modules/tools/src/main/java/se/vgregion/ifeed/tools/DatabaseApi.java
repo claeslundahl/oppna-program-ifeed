@@ -33,7 +33,7 @@ public class DatabaseApi extends ConnectionExt {
             System.out.println(q);
             Result r = client.query(q, 0, 1_000_000, "ASC", null,
                     "dc.source.documentid", "vgr:VgrExtension.vgr:Source.id");
-            System.out.println(r.getResponse().getDocs());
+            System.out.println(r.getDocumentList().getDocuments());
         }
     }
 

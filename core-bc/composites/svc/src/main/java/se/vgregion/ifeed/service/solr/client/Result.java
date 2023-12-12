@@ -2,9 +2,10 @@ package se.vgregion.ifeed.service.solr.client;
 
 public class Result {
 
-        private Header responseHeader;
-        private Response response;
+    private Stats stats = new Stats();
 
+        private Header responseHeader;
+        private DocumentList documentList = new DocumentList();
 
         public Header getResponseHeader() {
             return responseHeader;
@@ -14,11 +15,19 @@ public class Result {
             this.responseHeader = responseHeader;
         }
 
-        public Response getResponse() {
-            return response;
+        public DocumentList getDocumentList() {
+            return documentList;
         }
 
-        public void setResponse(Response response) {
-            this.response = response;
+        public void setDocumentList(DocumentList documentList) {
+            this.documentList = documentList;
         }
+
+    public Stats getStats() {
+        return stats;
     }
+
+    public void setStats(Stats stats) {
+        this.stats = stats;
+    }
+}

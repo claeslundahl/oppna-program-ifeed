@@ -100,10 +100,10 @@ public class GoverningDocumentComplementationStart {
             IFeed ifeed = feed.toJpaVersion();
             // System.out.println(ifeed.toQuery(client.fetchFields()));
             Result result = client.query(ifeed.toQuery(client.fetchFields()), 0, 1, "asc", null);
-            for (Map<String, Object> doc : result.getResponse().getDocs()) {
+            for (Map<String, Object> doc : result.getDocumentList().getDocuments()) {
                 System.out.println(doc);
             }
-            return (result.getResponse() != null && result.getResponse().getDocs() != null && !result.getResponse().getDocs().isEmpty());
+            return (result.getDocumentList() != null && result.getDocumentList().getDocuments() != null && !result.getDocumentList().getDocuments().isEmpty());
         } catch (Exception e) {
             return false;
         }

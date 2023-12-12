@@ -1390,8 +1390,6 @@ public class IFeedViewerController {
 
     private List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
         List<LabelledValue> result = new ArrayList<>();
-/*        result.add(new LabelledValue("core:ArchivalObject.idType", "N/A"));
-        result.add(new LabelledValue("core:ArchivalObject.id", "N/A"));*/
         result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Upprättad datum"));
         result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
         result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
@@ -1445,17 +1443,14 @@ public class IFeedViewerController {
         result.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
         result.add(new LabelledValue("core:ArchivalObject.core:Description", ""));
         result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
-
         result.add(new LabelledValue("productionDownloadLatestVersionUrl", "Webblänk produktionsformat"));
         result.add(new LabelledValue("originalDownloadLatestVersionUrl", "Webblänk urspurungsformat"));
         result.add(new LabelledValue("archivalDownloadLatestVersionUrl", "Webblänk arkivformat"));
-
-        // pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidFrom", "Giltig från"));
-        //                pairs.add(new KeyLabel("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltig till"));
-
         result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ValidFrom", "Giltig från"));
         result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltig till"));
-
+        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
+        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:DocumentApprover", "Godkänt av"));
+        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ContentReviewer", "Granskad av"));
         return result;
     }
 

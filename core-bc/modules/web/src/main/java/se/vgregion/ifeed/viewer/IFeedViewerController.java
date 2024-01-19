@@ -3,10 +3,14 @@ package se.vgregion.ifeed.viewer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.solr.client.solrj.SolrServer;
+import org.dhatim.fastexcel.Workbook;
+import org.dhatim.fastexcel.Worksheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -307,12 +311,6 @@ public class IFeedViewerController {
             }
 
             if (!resultAccumulator.isEmpty()) {
-                /*for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
-                    if (keys.contains(labelledValue.key)) {
-                        bos.write(prettifyFeedValue(labelledValue.getLabel()));
-                        bos.write(";".getBytes());
-                    }
-                }*/
                 for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
                     if (keys.contains(labelledValue.key)) {
                         bos.write(prettifyFeedValue(labelledValue.getLabel()));
@@ -322,14 +320,6 @@ public class IFeedViewerController {
 
                 for (Map<String, Object> item : resultAccumulator) {
                     bos.write("\n".getBytes());
-/*
-                    for (LabelledValue labelledValue : newAlfrescoBariumDisplayFieldsWithoutValue()) {
-                        if (keys.contains(labelledValue.key)) {
-                            bos.write(prettifyFeedValue(String.valueOf(item.get(labelledValue.getKey()))));
-                            bos.write(";".getBytes());
-                        }
-                    }
-*/
                     for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
                         if (keys.contains(labelledValue.key)) {
                             bos.write(prettifyFeedValue(String.valueOf(item.get(labelledValue.getKey()))));
@@ -338,35 +328,6 @@ public class IFeedViewerController {
                     }
                 }
             }
-
-/*
-            if (!resultAccumulator.isEmpty()) {
-                for (FieldInf fi : fields) {
-                    if (fi.isInHtmlView()) {
-                        for (FieldInf child : fi.getChildren()) {
-                            if (child.isInHtmlView()) {
-                                bos.write(prettifyFeedValue(child.getName()));
-                                bos.write(";".getBytes());
-                            }
-                        }
-                    }
-                }
-                bos.write("\n".getBytes());
-                for (Map<String, Object> item : resultAccumulator) {
-                    for (FieldInf fi : fields) {
-                        if (fi.isInHtmlView()) {
-                            for (FieldInf child : fi.getChildren()) {
-                                if (child.isInHtmlView()) {
-                                    bos.write(prettifyFeedValue(item.get(child.getId()) + ""));
-                                    bos.write(";".getBytes());
-                                }
-                            }
-                        }
-                    }
-                    bos.write("\n".getBytes());
-                }
-            }
-*/
 
             bos.close();
             portletOutputStream.close();
@@ -377,7 +338,127 @@ public class IFeedViewerController {
         return url;
     }
 
-    private byte[] prettifyFeedValue(String value) {
+
+    @RequestMapping(value = "/metaasexcel", produces = {"application/vnd.ms-excel"}, method = {RequestMethod.POST, RequestMethod.GET})
+    public String getIFeedAsExcel(@RequestParam(value = "instance") String instance, Model model,
+                                @RequestParam(value = "by", required = false) String sortField,
+                                @RequestParam(value = "dir", required = false) String sortDirection,
+                                @RequestParam(value = "startBy", required = false) Integer startBy,
+                                @RequestParam(value = "endBy", required = false) Integer endBy,
+                                @RequestParam(value = "fromPage", required = false) String fromPage,
+                                @RequestParam(value = "f", required = false) String[] f,
+                                HttpServletResponse response) {
+        String url;
+        Set<Map<String, Object>> resultAccumulator = new HashSet<>();
+        Set<Map<String, Object>> oneIterationResult = new HashSet<>();
+
+        if (endBy != null) {
+            throw new RuntimeException("Did´nt think this would happen!");
+        }
+
+        if (startBy == null) {
+            startBy = 0;
+        }
+        endBy = startBy + 500;
+        endBy = 1_000_000;
+
+        oneIterationResult.clear();
+        if (isNumeric(instance)) {
+            Long id = Long.parseLong(instance);
+            url = getIFeedById(id, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, allRequestParams*/);
+        } else {
+            try {
+                instance = URLDecoder.decode(instance, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            IFeed ifeed = IFeed.fromJson(instance);
+            url = getIFeedByInstance(ifeed, model, sortField, sortDirection, startBy, endBy, fromPage, f/*, f*/);
+        }
+        List<Map<String, Object>> result = (List<Map<String, Object>>) model.asMap().get("result");
+        oneIterationResult.addAll(result);
+        resultAccumulator.addAll(result);
+        startBy += 500;
+        endBy = startBy + 500;
+
+        BufferedOutputStream bos = null;
+        OutputStream portletOutputStream = null;
+        try {
+            portletOutputStream = response.getOutputStream();
+            response.setCharacterEncoding("UTF-8");
+            bos = new BufferedOutputStream(portletOutputStream);
+
+            NavigableSet<String> keys = new TreeSet<>();
+            for (Map<String, Object> item : resultAccumulator) {
+                for (String s : item.keySet()) {
+                    if (item.get(s) != null && !"".equals(item.get(s).toString().trim())) {
+                        keys.add(s);
+                    }
+                }
+            }
+
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=ifeed.xlsx");
+
+            ByteArrayOutputStream es = toExcelStream(resultAccumulator);
+            bos.write(es.toByteArray());
+            bos.close();
+            portletOutputStream.close();
+
+
+            /*HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", "din_excel_fil.xlsx");
+            */
+
+
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        return url;
+    }
+
+
+    public static ByteArrayOutputStream toExcelStream(Set<Map<String, Object>> resultAccumulator) throws IOException {
+        NavigableSet<String> keys = new TreeSet<>();
+        for (Map<String, Object> item : resultAccumulator) {
+            for (String s : item.keySet()) {
+                if (item.get(s) != null && !"".equals(item.get(s).toString().trim())) {
+                    keys.add(s);
+                }
+            }
+        }
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); Workbook wb = new Workbook(baos, "Ifeed", "1.0")) {
+            Worksheet ws = wb.newWorksheet("Sheet 1");
+
+            if (!resultAccumulator.isEmpty()) {
+                int col  = 0;
+                for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
+                    if (keys.contains(labelledValue.key)) {
+                        ws.value(0, col++, toPrettyExcelValue(labelledValue.getLabel()));
+                    }
+                }
+
+                int row = 1;
+
+                for (Map<String, Object> item : resultAccumulator) {
+                    col = 0;
+                    for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
+                        if (keys.contains(labelledValue.key)) {
+                            ws.value(row, col++, toPrettyExcelValue(String.valueOf(item.get(labelledValue.getKey()))));
+                        }
+                    }
+                    row++;
+                }
+            }
+            return baos;
+        }
+    }
+
+    private static byte[] prettifyFeedValue(String value) {
         if ("null".equals(value)) {
             return "".getBytes();
         }
@@ -386,6 +467,15 @@ public class IFeedViewerController {
         value = value.replaceAll(Pattern.quote("\""), "\"\"");
         value = '"' + value + '"';
         return value.getBytes();
+    }
+
+    private static String toPrettyExcelValue(String value) {
+        if ("null".equals(value)) {
+            return "";
+        }
+        value = value.replaceAll(Pattern.quote("["), "");
+        value = value.replaceAll(Pattern.quote("]"), "");
+        return value;
     }
 
 
@@ -1388,7 +1478,7 @@ public class IFeedViewerController {
         return result;
     }*/
 
-    private List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
+    private static List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
         List<LabelledValue> result = new ArrayList<>();
         result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Upprättad datum"));
         result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));

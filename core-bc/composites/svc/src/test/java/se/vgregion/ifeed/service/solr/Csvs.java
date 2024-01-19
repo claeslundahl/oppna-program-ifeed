@@ -10,19 +10,6 @@ import java.util.regex.Pattern;
 
 public class Csvs {
 
-    public static void main(String[] args) {
-        Path p = Paths.get("C:\\Users\\clalu4\\Downloads\\Dialys\\Aktiva patienter DIalys i Väst_samlad lista.csv");
-        List<Map<String, String>> maps = toMaps(p);
-        Set<String> pnrs = new HashSet<>();
-        for (Map<String, String> map : maps) {
-            String pnr = map.get("Personnummer");
-            if (pnr.length() == 11)
-                pnr = "19".concat(pnr);
-            pnrs.add(String.format("'%s'", pnr));
-        }
-        System.out.println(pnrs);
-    }
-
     public static List<Map<String, String>> toMaps(Path path) {
         try {
             List<Map<String, String>> result = new ArrayList<>();

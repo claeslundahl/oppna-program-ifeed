@@ -8,9 +8,7 @@ import org.dhatim.fastexcel.Worksheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -341,13 +339,13 @@ public class IFeedViewerController {
 
     @RequestMapping(value = "/metaasexcel", produces = {"application/vnd.ms-excel"}, method = {RequestMethod.POST, RequestMethod.GET})
     public String getIFeedAsExcel(@RequestParam(value = "instance") String instance, Model model,
-                                @RequestParam(value = "by", required = false) String sortField,
-                                @RequestParam(value = "dir", required = false) String sortDirection,
-                                @RequestParam(value = "startBy", required = false) Integer startBy,
-                                @RequestParam(value = "endBy", required = false) Integer endBy,
-                                @RequestParam(value = "fromPage", required = false) String fromPage,
-                                @RequestParam(value = "f", required = false) String[] f,
-                                HttpServletResponse response) {
+                                  @RequestParam(value = "by", required = false) String sortField,
+                                  @RequestParam(value = "dir", required = false) String sortDirection,
+                                  @RequestParam(value = "startBy", required = false) Integer startBy,
+                                  @RequestParam(value = "endBy", required = false) Integer endBy,
+                                  @RequestParam(value = "fromPage", required = false) String fromPage,
+                                  @RequestParam(value = "f", required = false) String[] f,
+                                  HttpServletResponse response) {
         String url;
         Set<Map<String, Object>> resultAccumulator = new HashSet<>();
         Set<Map<String, Object>> oneIterationResult = new HashSet<>();
@@ -399,7 +397,9 @@ public class IFeedViewerController {
 
 
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setHeader("Content-Disposition", "attachment; filename=ifeed.xlsx");
+            response.setHeader("Content-Disposition",
+                    String.format("attachment; filename=iFeed%s.xlsx",
+                            (isNumeric(instance)) ? "_" + instance : ""));
 
             ByteArrayOutputStream es = toExcelStream(resultAccumulator);
             bos.write(es.toByteArray());
@@ -435,7 +435,7 @@ public class IFeedViewerController {
             Worksheet ws = wb.newWorksheet("Sheet 1");
 
             if (!resultAccumulator.isEmpty()) {
-                int col  = 0;
+                int col = 0;
                 for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
                     if (keys.contains(labelledValue.key)) {
                         ws.value(0, col++, toPrettyExcelValue(labelledValue.getLabel()));

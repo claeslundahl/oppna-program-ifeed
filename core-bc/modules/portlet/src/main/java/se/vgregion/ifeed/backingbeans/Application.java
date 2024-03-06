@@ -559,7 +559,7 @@ public class Application {
         }
         System.out.println("Metadata-group for new filter: " + fieldInf.getParent().getParent().getName());
 
-        IFeedFilter newFilter = new IFeedFilter(null, fieldInf.getValue(), fieldInf.getId());
+        IFeedFilter newFilter = new IFeedFilter((FilterType.Filter) null, fieldInf.getValue(), fieldInf.getId());
         if ("d:text_fix".equals(fieldInf.getType())) {
             Metadata domain = metadataRepository.getByName(fieldInf.getApelonKey());
             newFilter.setMetadata(domain.getChildren().stream().filter(m -> m.getName().equals(fieldInf.getValue()))

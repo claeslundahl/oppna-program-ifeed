@@ -375,6 +375,12 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
     public IFeedFilter() {
     }
 
+    public IFeedFilter(String filterKey, String operator, String filterQuery) {
+        setFilterKey(filterKey);
+        setOperator(operator);
+        setFilterQuery(filterQuery);
+    }
+
     public Metadata getMetadata() {
         return metadata;
     }

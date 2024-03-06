@@ -537,7 +537,9 @@ public class IFeed extends AbstractEntity<Long> implements Serializable, Compara
         for (IFeed feed : flat) {
             or.add(feed.toQueryImp(meta));
         }
-        return or.toQuery();
+        String r = or.toQuery();
+        System.out.println(r);
+        return r;
     }
 
     public boolean hasNoFilters() {

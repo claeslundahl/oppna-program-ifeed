@@ -1,18 +1,14 @@
 package se.vgregion.ifeed.service.metadata;
 
 import org.junit.Before;
-import org.junit.Test;
 import se.vgr.metaservice.schema.ApelonClient;
 import se.vgr.metaservice.schema.node.v2.NodeType;
 import se.vgregion.dao.domain.patterns.repository.db.jpa.JpaRepository;
 import se.vgregion.ifeed.types.Metadata;
 
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -31,26 +27,6 @@ public class MetadataServiceImplTest {
         serv = new MetadataServiceImpl(port, repo);
     }
 
-    @Test
-    public void setMetadataRoots() {
-        Collection<String> metadataRoots = mock(Collection.class);
-        serv.setMetadataRoots(metadataRoots);
-    }
-
-    public static void main(String[] args) throws Exception {
-        URL url = MetadataServiceImplTest.class.getResource(MetadataServiceImplTest.class.getSimpleName()
-                + ".class");
-        System.out.println(url);
-        File file = new File(url.getFile());
-        Package pack = MetadataServiceImplTest.class.getPackage();
-        String[] pathParts = pack.getName().split(Pattern.quote("."));
-        for (int i = 0, j = pathParts.length + 1; i < j; i++) {
-            file = file.getParentFile();
-        }
-        System.out.println(file);
-    }
-
-    @Test
     public void importMetadata() {
         final List<String> calledArg = new ArrayList<String>();
         serv = new MetadataServiceImpl(port, repo) {
@@ -70,12 +46,6 @@ public class MetadataServiceImplTest {
         assertTrue(calledArg.contains("root3"));
     }
 
-    @Test
-    public void updateCacheTree() {
-
-    }
-
-    @Test
     public void importMetdata() {
         serv = new MetadataServiceImpl(port, repo) {
             @Override

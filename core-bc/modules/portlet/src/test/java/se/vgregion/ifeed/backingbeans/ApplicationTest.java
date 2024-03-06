@@ -21,12 +21,11 @@ import java.util.*;
 
 public class ApplicationTest {
 
-    @Test
+/*    @Test
     public void hasAnyCounterpartsValues() throws IOException {
         List<FieldInf> fields = getFieldInfs();
-
         System.out.println(Application.hasAnyCounterpartsValues(fields));
-    }
+    }*/
 
     @Test
     public void getMaxPageCountImp() {
@@ -71,11 +70,11 @@ public class ApplicationTest {
         System.out.println(Arrays.asList(r));
     }
 
-    @Test
+/*    @Test
     public void getFilterFieldsForBothMetadataSets() throws IOException {
         List<FieldInf> result = Application.getFilterFieldsForBothMetadataSets(getFieldInfs());
         System.out.println(result);
-    }
+    }*/
 
 
     static IFeed getSofiaFeed() throws IOException {

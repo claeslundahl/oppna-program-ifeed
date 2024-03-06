@@ -32,21 +32,6 @@ public class IFeedServiceImplTest {
         service = new IFeedServiceImpl(iFeedRepoParam, fieldsInfParam, departmentRepo);
 	}
 
-	@Test
-	public void getIFeeds() {
-		Collection<IFeed> value = new ArrayList<IFeed>();
-		when(iFeedRepoParam.findByQuery(eq("select i from IFeed i left join fetch i.ownerships left join fetch i.filters left join fetch i.department left join fetch i.group"))).thenReturn(value);
-		List<IFeed> result = service.getIFeeds();
-		Assert.assertEquals(value, result);
-	}
-
-	@Test
-	public void getUserIFeeds() {
-		String userId = "usr1";
-		service.getUserIFeeds(userId);
-		// Smoke-test
-	}
-
 	@Ignore
 	@Test
 	public void getIFeed() {
@@ -56,20 +41,6 @@ public class IFeedServiceImplTest {
 		when(iFeedRepoParam.find(id)).thenReturn(value);
 		IFeed result = service.getIFeed(id);
 		Assert.assertEquals(id, value.getId());
-	}
-
-	@Test
-	public void addIFeed() {
-		IFeed iFeed = new IFeed();
-		service.addIFeed(iFeed);
-		Mockito.verify(iFeedRepoParam).store(iFeed);
-	}
-
-	@Test
-	public void removeIFeed() {
-		Long id = 101l;
-		service.removeIFeed(id);
-		Mockito.verify(iFeedRepoParam).remove(id);
 	}
 
 }

@@ -25,6 +25,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class SolrHttpClientTest {
 
@@ -40,53 +41,78 @@ public class SolrHttpClientTest {
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        /*Result r = client.query("", 0, 1_000_000, "asc", null, "core:ArchivalObject.core:CreatedDateTime", "id", "title");
-        for (Map<String, Object> doc : r.getResponse().getDocs()) {
-            String rawTextTime = (String) doc.get("core:ArchivalObject.core:CreatedDateTime");
-            if (rawTextTime != null) {
-                Instant instant = Instant.parse(rawTextTime);
-                if ("SATURDAY".equals(instant.atZone(ZoneId.systemDefault()).getDayOfWeek()+"")) {
-                    System.out.println(doc);
-                System.out.println(instant.atZone(ZoneId.systemDefault()).getDayOfWeek());
-                }
-            }
-        }*/
-
-        /*NavigableSet<Object> sourceSystems = client.findAllValues("SourceSystem");
-        for (Object sourceSystem : sourceSystems) {
-            System.out.println(sourceSystem);
-        }
-
-        System.out.println();
-        System.out.println("vgrsd:DomainExtension.domain = ");
-        sourceSystems = client.findAllValues("vgrsd:DomainExtension.domain");
-        for (Object sourceSystem : sourceSystems) {
-            System.out.println(sourceSystem);
-        }
-
-        System.out.println();
-        foo();*/
-
         client = new SolrHttpClient("http://vgas3021.vgregion.se:9090/solr/ifeed/");
 
-        Map<String, Set<Object>> items = client.findAllValues();
+        areNewFiltersInIndex();
+
+/*
+*//*        Map<String, Set<Object>> items = client.findAllValues();
         for (String key : items.keySet()) {
             Set<Object> values = items.get(key);
-            if (values.toString().contains(".ppt")) {
-                System.out.println("Nyckel: " + key);
-                //System.out.println("Värden: " + values);
-                System.out.println();
+            if (key.equals("vgrsd:DomainExtension.vgrsd:ValidTo")) {
+                for (Object value : values) {
+                    System.out.println(value);
+                }
+            }
+        }*//*
+
+        String q = toQuery(new IFeedFilter("vgrsd:DomainExtension.vgrsd:ValidTo", "greater", "1990-01-01"));
+
+        System.out.println(q);
+
+        final Result[] result = {client.query(q, 0, 100_000, "asc", null, "title", "vgr:VgrExtension.vgr:SourceSystem")};
+        System.out.println(result[0].getResponse().getDocs().size());
+        System.out.println(client.getLatestCallAsGet());
+
+        Map<String, Integer> counter = new TreeMap<>() {
+            @Override
+            public Integer get(Object key) {
+                Integer begotten = super.get(key);
+                if (begotten == null) {
+                    put((String) key, begotten = 0);
+                }
+                return begotten;
+            }
+        };
+
+        for (Map<String, Object> doc : result[0].getResponse().getDocs()) {
+            counter.put((String) doc.get("vgr:VgrExtension.vgr:SourceSystem"),
+                    counter.get(doc.get("vgr:VgrExtension.vgr:SourceSystem")) + 1);
+        }
+
+        System.out.println(counter);*/
+
+    }
+
+    static void areNewFiltersInIndex() {
+        String stuff = "Innehållsansvarig\n" +
+                "(vgrsd:DomainExtension.vgrsd:ContentResponsible)\n" +
+                "\n" +
+                "Godkänt av\n" +
+                "(vgrsd:DomainExtension.vgrsd:DocumentApprover)\n" +
+                "\n" +
+                "Granskad av\n" +
+                "(vgrsd:DomainExtension.vgrsd:ContentReviewer)\n" +
+                "\n" +
+                "Tillgänglig till\n" +
+                "(vgrsd:DomainExtension.vgrsd:ValidTo)\n";
+
+        Map<String, Set<Object>> allValues = client.findAllValues();
+
+        for (String row : stuff.split(Pattern.quote("\n"))) {
+            row = row.replace("(", "").replace(")", "").trim();
+            if (row.startsWith("vgrsd")) {
+                System.out.println(row + " "
+                        + allValues.get(row).size() + "\n" + new ArrayList<>(allValues.get(row)).subList(0, 10) + "\n");
             }
         }
 
-        // Har styrande dokument och vanliga sofia-dito alltid SourceSystem == 'MELLANARKIV'?
+    }
 
-        /*NavigableSet<Object> allSofiaCreateionTimes = client.findAllValues("core:ArchivalObject.core:CreatedDateTime");
-        for (Object allSofiaCreateionTime : allSofiaCreateionTimes) {
-            System.out.println(allSofiaCreateionTime);
-            Instant instant = Instant.parse((CharSequence) allSofiaCreateionTime);cp
-            System.out.println(instant.atZone(ZoneId.systemDefault()).getDayOfWeek());
-        }*/
+    public static String toQuery(IFeedFilter... filters) {
+        IFeed feed = new IFeed();
+        Arrays.stream(filters).forEach(f -> feed.addFilter(f));
+        return feed.toQuery(client.fetchFields());
     }
 
     static void atkomstkod() throws IOException {
@@ -183,8 +209,8 @@ public class SolrHttpClientTest {
         ask(client, question);*/
 
         IFeed iFeed = new IFeed();
-        iFeed.getFilters().add(new IFeedFilter(null, "SOFIA", "vgr:VgrExtension.vgr:SourceSystem"));
-        iFeed.getFilters().add(new IFeedFilter(null, "*", "title"));
+        iFeed.getFilters().add(new IFeedFilter((FilterType.Filter) null, "SOFIA", "vgr:VgrExtension.vgr:SourceSystem"));
+        iFeed.getFilters().add(new IFeedFilter((FilterType.Filter) null, "*", "title"));
         for (IFeedFilter filter : iFeed.getFilters()) {
             FieldInf fi = new FieldInf();
             DefaultFilter df = new DefaultFilter();

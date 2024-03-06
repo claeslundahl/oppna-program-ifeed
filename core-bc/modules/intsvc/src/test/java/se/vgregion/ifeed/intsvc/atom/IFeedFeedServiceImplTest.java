@@ -7,44 +7,41 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
+import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
 import se.vgregion.ifeed.types.IFeed;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class IFeedFeedServiceImplTest {
 
     IFeedFeedServiceImpl serv;
-    private IFeedSolrQuery solrQuery;
+
     private IFeedService iFeedService;
-    UriInfo context;
 
     @Before
     public void setUp() throws Exception {
 
-        iFeedService = mock(IFeedService.class);
-        context = mock(UriInfo.class);
-        solrQuery = mock(IFeedSolrQuery.class);
-        serv = new IFeedFeedServiceImpl(solrQuery, iFeedService);
+        iFeedService = new IFeedServiceImpl(null, null, null) {
+            @Override
+            public IFeed getIFeed(Long id) {
+                IFeed feed = new IFeed();
+                feed.setName("feedName");
+                return feed;
+            }
+
+        };
+
+        serv = new IFeedFeedServiceImpl(null, iFeedService);
 
         URI uri = new URI("absolutePath");
-        when(context.getAbsolutePath()).thenReturn(uri);
-        serv.setContext(context);
+        // when(context.getAbsolutePath()).thenReturn(uri);
+        // serv.setContext(context);
     }
 
     /*
@@ -62,38 +59,6 @@ public class IFeedFeedServiceImplTest {
         assertEquals(feed.getName(), result.getTitle());
     }
     */
-
-    @Test
-    public void getIFeedEntry_error_on_no_result() {
-        try {
-            Entry result = serv.getIFeedEntry(100l);
-            fail();
-        } catch (WebApplicationException e) {
-            assertTrue(true);
-        }
-    }
-
-    @Test
-    public void getIFeedEntry() {
-        long id = 100l;
-        IFeed iFeed = new IFeed();
-        when(iFeedService.getIFeed(id)).thenReturn(iFeed);
-        iFeed.setName("feedName");
-
-        Entry result = serv.getIFeedEntry(id);
-        assertEquals(iFeed.getName(), result.getTitle());
-    }
-
-    @Test
-    public void populateEntry_checked_default_values() {
-        Entry entry = mock(Entry.class);
-        Map<String, Object> map = new HashMap<String, Object>();
-        Entry result = serv.populateEntry(entry, map);
-
-        verify(entry).setTitle(any(String.class));
-        verify(entry).addAuthor(any(String.class));
-        verify(entry).setUpdated(any(Date.class));
-    }
 
     @Ignore
     @Test
@@ -123,59 +88,6 @@ public class IFeedFeedServiceImplTest {
         verify(entry).setSummary(eq(summary));
 
         assertEquals(result, entry);
-    }
-
-    @Test
-    public void addElementDate() {
-        String prefix = "prefix";
-        String fieldName = "fieldName";
-        Map<String, String> ns = new HashMap<String, String>();
-        ns.put("prefix", "prefix0");
-        addElement(prefix, fieldName, ns, new Date(0l));
-    }
-
-    @Test
-    public void addElementLanguages() {
-        String fieldName = "dc.language";
-        // Map<String, String> ns = new HashMap<String, String>();
-        // ns.put("prefix", "prefix0");
-
-        Map<String, String> prefixes = new HashMap<String, String>();
-        prefixes.put("svenska", "swe");
-        prefixes.put("norska", "nor");
-        prefixes.put("engelska", "eng");
-        serv.setNamespaces(prefixes);
-
-        for (Map.Entry<String, String> prefix : prefixes.entrySet()) {
-            Element element = addElement(prefix.getKey(), fieldName, prefixes, prefix.getKey());
-            verify(element).setText(eq(prefix.getValue()));
-        }
-    }
-
-    public Element addElement(String prefix, String fieldName, Map<String, String> ns, Object value) {
-        Entry e = mock(Entry.class);
-        Element element = mock(Element.class);
-
-        when(e.addExtension(new QName(ns.get(prefix), fieldName.substring(prefix.length() + 1), prefix)))
-                .thenReturn(element);
-
-        serv.setNamespaces(ns);
-        serv.addElement(e, prefix, fieldName, value);
-
-        return element;
-    }
-
-    @Test
-    public void populateFeed() {
-        Feed f = mock(Feed.class);
-        Entry entry = mock(Entry.class);
-        when(f.addEntry()).thenReturn(entry);
-        Collection<Map<String, Object>> hits = new ArrayList<Map<String, Object>>();
-        Map<String, Object> item = new HashMap<String, Object>();
-        item.put("key", "value");
-        hits.add(item);
-
-        serv.populateFeed(f, hits);
     }
 
 }

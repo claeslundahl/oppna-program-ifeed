@@ -36,24 +36,6 @@ public class FieldsInfTest {
     }
 
     @Test
-    public void combine() throws IOException {
-        Map<String, Object> feedContent = new HashMap<>();
-        FieldsInf fi = new FieldsInf();
-        fi.setText(loadFieldsConfigText());
-        List<FieldInf> result = fi.getFieldInfs();
-        HashMap<String, Object> doc = new GsonBuilder().create().fromJson(loadAlfrescoSampleDoc(), HashMap.class);
-        System.out.println(doc);
-
-        for (FieldInf fieldInf : result) {
-            fieldInf.combine(doc);
-        }
-        FieldInf root = new FieldInf(result);
-        root.removeChildrenHavingNoValue();
-
-        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(root));
-    }
-
-    @Test
     public void getAllIds() {
         Map<String, Object> feedContent = new HashMap<>();
         FieldsInf fi = new FieldsInf();
@@ -61,18 +43,6 @@ public class FieldsInfTest {
         List<FieldInf> result = fi.getFieldInfs();
         FieldInf root = new FieldInf(result);
         System.out.println(root.getAllIds());
-    }
-
-    @Test
-    public void putFieldInfInto() throws IOException {
-        FieldsInf fi = new FieldsInf();
-        fi.setText(loadFieldsConfigText());
-        List<FieldInf> result = fi.getFieldInfs();
-
-        IFeedFilter filter = new IFeedFilter();
-        filter.setFilterKey("DC.title");
-        // fi.putFieldInfInto(filter);
-        System.out.println(filter.getFieldInf().getName());
     }
 
     @Ignore

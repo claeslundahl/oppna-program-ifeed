@@ -1,19 +1,18 @@
 package se.vgregion.ifeed.service.solr;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import se.vgregion.ifeed.service.ifeed.IFeedService;
+import se.vgregion.ifeed.service.ifeed.IFeedServiceImpl;
+import se.vgregion.ifeed.types.FieldInf;
+import se.vgregion.ifeed.types.FilterType.Filter;
+import se.vgregion.ifeed.types.IFeedFilter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import se.vgregion.ifeed.service.ifeed.IFeedService;
-import se.vgregion.ifeed.types.FieldInf;
-import se.vgregion.ifeed.types.FilterType.Filter;
-import se.vgregion.ifeed.types.IFeedFilter;
+import static org.junit.Assert.assertEquals;
 
 public class SolrQueryBuilderTest {
 
@@ -21,10 +20,12 @@ public class SolrQueryBuilderTest {
 
     @Before
     public void setUp() {
-        iFeedService = Mockito.mock(IFeedService.class);
-        Map<String, FieldInf> value = new HashMap<String, FieldInf>();
-
-        Mockito.when(iFeedService.mapFieldInfToId()).thenReturn(value);
+        iFeedService = new IFeedServiceImpl() {
+            @Override
+            public Map<String, FieldInf> mapFieldInfToId() {
+                return new HashMap<>();
+            }
+        };
     }
 
     @Test

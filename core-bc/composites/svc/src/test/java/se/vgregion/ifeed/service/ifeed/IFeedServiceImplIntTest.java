@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import se.vgregion.ifeed.types.FilterType;
 import se.vgregion.ifeed.types.IFeed;
 import se.vgregion.ifeed.types.IFeedFilter;
 
@@ -33,7 +34,7 @@ public class IFeedServiceImplIntTest {
 		IFeed feed = new IFeed();
 		feed = iFeedService.addIFeed(feed);
 
-		IFeedFilter filter = new IFeedFilter(null, "fq", "fk");
+		IFeedFilter filter = new IFeedFilter((FilterType.Filter) null, "fq", "fk");
 		feed.addFilter(filter);
 
 		feed = iFeedService.updateIFeed(feed);
@@ -58,7 +59,7 @@ public class IFeedServiceImplIntTest {
 		IFeed oldFeed = new IFeed();
 
 		// public IFeedFilter(FilterType.Filter filter, String filterQuery, String filterKey) {
-		IFeedFilter filter = new IFeedFilter(null, "some.value", "some.filter.key");
+		IFeedFilter filter = new IFeedFilter((FilterType.Filter) null, "some.value", "some.filter.key");
 
 		oldFeed.addFilter(filter);
 		newFeed.addFilter(filter);

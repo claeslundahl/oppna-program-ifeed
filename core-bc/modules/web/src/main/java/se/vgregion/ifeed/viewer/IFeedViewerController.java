@@ -16,11 +16,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import se.vgregion.common.utils.BeanMap;
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
 import se.vgregion.ifeed.service.ifeed.IFeedService;
 import se.vgregion.ifeed.service.ifeed.ObjectRepo;
+import se.vgregion.ifeed.service.kiv.OrganizationsService;
+import se.vgregion.ifeed.service.kiv.UnitSearchService;
 import se.vgregion.ifeed.service.solr.DateFormatter;
 import se.vgregion.ifeed.service.solr.IFeedSolrQuery;
 import se.vgregion.ifeed.service.solr.OldIndexData;
@@ -30,6 +33,8 @@ import se.vgregion.ifeed.shared.DynamicTableDef;
 import se.vgregion.ifeed.types.*;
 import se.vgregion.ldap.LdapApi;
 import se.vgregion.ldap.LdapSupportService;
+import se.vgregion.ldap.LdapSupportServiceImp;
+import se.vgregion.ldap.VgrOrganization;
 import se.vgregion.ldap.person.LdapPersonService;
 import se.vgregion.ldap.person.Person;
 
@@ -57,10 +62,15 @@ import static se.vgregion.ifeed.viewer.Column.toColumns;
 public class IFeedViewerController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IFeedViewerController.class);
+    private static VgrOrganization vgrRootOrganization;
 
     private IFeedService iFeedService;
     private SolrServer solrServer;
     private AlfrescoDocumentService alfrescoMetadataService;
+    @Autowired
+    private LdapSupportServiceImp ldapOrganizationService;
+
+    private UnitSearchService unitSearchService = UnitSearchService.newInstanceFromConfig();
 
     /**
      * Creates an instance.
@@ -913,6 +923,17 @@ public class IFeedViewerController {
 
         fillInCounterpartValues(findings.getResponse().getDocs(), iFeedService.getFieldInfs());
 
+        List<FieldInf> allConfs = objectRepo.findAll(FieldInf.class);
+        Set<String> vgrIdKeys = allConfs.stream().filter(fi -> "d:ldap_value".equals(fi.getType()))
+                .map(fi -> fi.getId())
+                .collect(Collectors.toSet());
+
+        Set<String> vgrOrganizationKeys = allConfs.stream().filter(fi -> "d:ldap_org_value".equals(fi.getType()))
+                .map(fi -> fi.getId())
+                .collect(Collectors.toSet());
+
+        Map<String, Person> persons = new HashMap<>();
+
         model.addAttribute("items", findings.getResponse().getDocs());
 
         for (Map<String, Object> item : findings.getResponse().getDocs()) {
@@ -935,8 +956,28 @@ public class IFeedViewerController {
             }
 
             for (Column column : columns) {
-
-                item.put(column.getKey(), format(item.get(column.getKey())));
+                if (vgrIdKeys.contains(column.getKey())) {
+                    try {
+                        Object vgrId = item.get(column.getKey());
+                        if (vgrId instanceof Collection) vgrId = ((Collection<?>) vgrId).iterator().next();
+                        List<Person> folks = ldapPersonService.getPeople((String) vgrId, 1);
+                        Person person = folks.get(0);
+                        item.put(column.getKey(), person.getNiceName());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        item.put(column.getKey(), format(item.get(column.getKey())));
+                    }
+                } else if (vgrOrganizationKeys.contains(column.getKey())) {
+                    try {
+                        String organizationId = (String) item.get(column.getKey());
+                        VgrOrganization org = OrganizationsService.lookup(organizationId);
+                        item.put(column.getKey(), String.format("%s (%s)", org.getLabel(), organizationId));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        item.put(column.getKey(), format(item.get(column.getKey())));
+                    }
+                } else
+                    item.put(column.getKey(), format(item.get(column.getKey())));
                 if (column.getKey().toLowerCase().contains("date")) {
                     String value = (String) item.get(column.getKey());
                     if (value != null && value.length() > 10) {
@@ -969,6 +1010,13 @@ public class IFeedViewerController {
         }
 
         return "display";
+    }
+
+    static VgrOrganization getVgrRootOrganization() {
+        if (vgrRootOrganization == null) {
+            vgrRootOrganization = OrganizationsService.loadAllOrganizationsRoot();
+        }
+        return vgrRootOrganization;
     }
 
     static void fillInCounterpartValues(List<Map<String, Object>> fromIntoItems, List<FieldInf> basedOnThose) {
@@ -1478,70 +1526,100 @@ public class IFeedViewerController {
         return result;
     }*/
 
-    private static List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
-        List<LabelledValue> result = new ArrayList<>();
-        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Upprättad datum"));
-        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
-        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
-        result.add(new LabelledValue("revisiondate", "Gallringsdatum"));
-        result.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Description", "Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet"));
-        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType", "Handlingstyp"));
-        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType.id", ""));
-        result.add(new LabelledValue("core:ArchivalObject.core:ObjectType.filePlan", "Dokumenthanteringsplan"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.id", "Id på klassificering"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.classCode", "Punktnotation på klassificering"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.level", "Nivå på klassificering"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.name", "Namn på klassificering"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Unit", "Rubrik"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Unit.refcode", "Signum"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Unit.level", "Nivå i arkivförteckningen"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Producer", "Myndighet/Arkivbildare"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Producer.idType", ""));
-        result.add(new LabelledValue("core:ArchivalObject.core:Producer.id", "Myndighetens HSA-ID"));
-        result.add(new LabelledValue("vgr:VgrExtension.itemId", "Arkivobjekt-ID"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:SourceSystem", "Källsystem"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:SourceSystem.id", "Källsystem-ID"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.id", "Käll-ID"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.version", "Version i källsystem"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:Source.versionId", "N/A"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:Title", "Rubrik i Sharepoint, Titel i Mellanarkivet"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:AvailableFrom", "Tillgänglig från"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig till"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:RevisedAvailableFrom", "Reviderat tillgänglig från"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:RevisedAvailableTo", "Reviderat tillgänglig till"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:RestrictionCode", "Skyddskod"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:LegalParagraph", "Lagparagraf"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedByUnit", "Upprättad av enhet"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedByUnit.id", ""));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:PublishedForUnit", "Upprättad för enhet"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:PublishedForUnit.id", ""));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy", "Upprättad av"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy.id", "Upprättad av (vgrid)"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy.org", "Upprättad av (org)"));
-        result.add(new LabelledValue("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet"));
-        result.add(new LabelledValue("vgrsy:DomainExtension.itemId", ""));
-        result.add(new LabelledValue("vgrsy:DomainExtension.domain", "Domännamn"));
-        result.add(new LabelledValue("vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning"));
-        result.add(new LabelledValue("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning"));
-        result.add(new LabelledValue("vgrsy:DomainExtension.domain", ""));
-        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
-        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
-        result.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
-        result.add(new LabelledValue("revisiondate", "Gallringsdatum"));
-        result.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
-        result.add(new LabelledValue("core:ArchivalObject.core:Description", ""));
-        result.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
-        result.add(new LabelledValue("productionDownloadLatestVersionUrl", "Webblänk produktionsformat"));
-        result.add(new LabelledValue("originalDownloadLatestVersionUrl", "Webblänk urspurungsformat"));
-        result.add(new LabelledValue("archivalDownloadLatestVersionUrl", "Webblänk arkivformat"));
-        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ValidFrom", "Giltig från"));
-        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltig till"));
-        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
-        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:DocumentApprover", "Godkänt av"));
-        result.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ContentReviewer", "Granskad av"));
-        return result;
+    static List<LabelledValue> newSofiaDisplayFieldsWithoutValue() {
+        List<LabelledValue> allIndexFields = new ArrayList<>();
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Upprättad datum"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
+        allIndexFields.add(new LabelledValue("revisiondate", "Gallringsdatum"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Description", "Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:ObjectType", "Handlingstyp"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:ObjectType.id", ""));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:ObjectType.filePlan", "Dokumenthanteringsplan"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.id", "Id på klassificering"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.classCode", "Punktnotation på klassificering"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.level", "Nivå på klassificering"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Classification.core:Classification.name", "Namn på klassificering"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Unit", "Rubrik"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Unit.refcode", "Signum"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Unit.level", "Nivå i arkivförteckningen"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Producer", "Myndighet/Arkivbildare"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Producer.idType", ""));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Producer.id", "Myndighetens HSA-ID"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.itemId", "Arkivobjekt-ID"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:SourceSystem", "Källsystem"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:SourceSystem.id", "Källsystem-ID"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:Source.id", "Käll-ID"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:Source.version", "Version i källsystem"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:Source.versionId", "N/A"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:Title", "Rubrik i Sharepoint, Titel i Mellanarkivet"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:AvailableFrom", "Tillgänglig från"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:AvailableTo", "Tillgänglig till"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:RevisedAvailableFrom", "Reviderat tillgänglig från"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:RevisedAvailableTo", "Reviderat tillgänglig till"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:SecurityClass", "Åtkomsträtt"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:RestrictionCode", "Skyddskod"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:LegalParagraph", "Lagparagraf"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedByUnit", "Upprättad av enhet"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedByUnit.id", ""));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:PublishedForUnit", "Upprättad för enhet"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:PublishedForUnit.id", ""));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy", "Upprättad av"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy.id", "Upprättad av (vgrid)"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:CreatedBy.org", "Upprättad av (org)"));
+        allIndexFields.add(new LabelledValue("vgr:VgrExtension.vgr:Tag", "Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet"));
+        allIndexFields.add(new LabelledValue("vgrsy:DomainExtension.itemId", ""));
+        allIndexFields.add(new LabelledValue("vgrsy:DomainExtension.domain", "Domännamn"));
+        allIndexFields.add(new LabelledValue("vgrsy:DomainExtension.vgrsy:SubjectClassification", "Regional ämnesindelning"));
+        allIndexFields.add(new LabelledValue("vgrsy:DomainExtension.vgrsy:SubjectLocalClassification", "Egen ämnesindelning"));
+        allIndexFields.add(new LabelledValue("vgrsy:DomainExtension.domain", ""));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.action", "Bevarande och gallringsåtgärd"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:PreservationPlanning.RDA", "Bevarande och gallringsbeslut"));
+        allIndexFields.add(new LabelledValue("revisiondate", "Gallringsdatum"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:AccessRight", "Åtkomsträtt i slutarkiv"));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:Description", ""));
+        allIndexFields.add(new LabelledValue("core:ArchivalObject.core:CreatedDateTime", "Skapad datum"));
+        allIndexFields.add(new LabelledValue("productionDownloadLatestVersionUrl", "Webblänk produktionsformat"));
+        allIndexFields.add(new LabelledValue("originalDownloadLatestVersionUrl", "Webblänk urspurungsformat"));
+        allIndexFields.add(new LabelledValue("archivalDownloadLatestVersionUrl", "Webblänk arkivformat"));
+        allIndexFields.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ValidFrom", "Giltig från"));
+        allIndexFields.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ValidTo", "Giltig till"));
+        allIndexFields.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ContentResponsible", "Innehållsansvarig"));
+        allIndexFields.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:DocumentApprover", "Godkänt av"));
+        allIndexFields.add(new LabelledValue("vgrsd:DomainExtension.vgrsd:ContentReviewer", "Granskad av"));
+
+
+        // Svami ville ha den här ordningen på fälten.
+        final List<String> order = new ArrayList<>(Arrays.asList("Rubrik i Sharepoint, Titel i Mellanarkivet", "Upprättad datum",
+                "Upprättad för enhet", "Version i källsystem", "Upprättad av", "Upprättad av (vgrid)",
+                "Innehållsansvarig", "Granskad av", "Godkänt av", "Giltig från", "Giltig till", "Tillgänglig från",
+                "Tillgänglig till", "Upprättad av enhet", "Åtkomsträtt",
+                "Företagsnyckelord i Sharepoint, Nyckelord i Mellanarkivet", "Egen ämnesindelning",
+                "Regional ämnesindelning", "Dokumentbeskrivning i Sharepoint, Beskrivning i Mellanarkivet",
+                "Webblänk produktionsformat", "Webblänk urspurungsformat", "Webblänk arkivformat", "Handlingstyp",
+                "Dokumenthanteringsplan", "Namn på klassificering", "Punktnotation på klassificering",
+                "Myndighet/Arkivbildare", "Myndighetens HSA-ID", "Arkivobjekt-ID", "Källsystem", "Källsystem-ID",
+                "Käll-ID", "N/A", "Skyddskod", "Upprättad av (org)", "Domännamn", "Skapad datum",
+                "Bevarande och gallringsbeslut", "Bevarande och gallringsåtgärd",
+                "Bevarande och gallringsbeslut", "Åtkomsträtt i slutarkiv", "Id på klassificering",
+                "Nivå på klassificering", "Åtkomsträtt i slutarkiv", "Skapad datum"));
+
+        Map<String, LabelledValue> map = new HashMap<>();// allIndexFields.stream().collect(Collectors.toMap(item -> item.getLabel(), item -> item));
+        allIndexFields.forEach(item -> map.put(item.key, item));
+
+        Map<String, LabelledValue> inOrder = new LinkedHashMap<>();
+        order.forEach(label -> inOrder.put(label, map.get(label)));
+
+        LinkedHashSet<LabelledValue> result = new LinkedHashSet<>(inOrder.values());
+        result.addAll(allIndexFields); // Add any fields that has been forgotten.
+
+        order.removeAll(inOrder.keySet());
+        System.out.println(order.stream().collect(Collectors.joining("\n")));
+        System.out.println();
+
+        return new ArrayList<>(result);
     }
 
 
@@ -1578,6 +1656,11 @@ public class IFeedViewerController {
 
         public void setKey(String key) {
             this.key = key;
+        }
+
+        @Override
+        public String toString() {
+            return key + ": " + value + " -> " + label;
         }
     }
 

@@ -139,4 +139,12 @@ public class IFeedViewerControllerTest {
         System.out.println(IFeedViewerController.isTimeStampPassed("2019-02-28T00:00:00Z"));
     }
 
+    @Test
+    public void newSofiaDisplayFieldsWithoutValue() {
+        List<IFeedViewerController.LabelledValue> all = IFeedViewerController.newSofiaDisplayFieldsWithoutValue();
+        for (IFeedViewerController.LabelledValue la : all) {
+            System.out.println(la);
+        }
+    }
+
 }

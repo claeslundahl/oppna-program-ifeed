@@ -1,15 +1,40 @@
 package se.vgregion.ifeed.service.kiv;
 
+import org.springframework.stereotype.Service;
 import se.vgregion.common.utils.BeanMap;
 import se.vgregion.common.utils.ComparableArrayList;
 import se.vgregion.ifeed.service.kiv.organization.Attributes;
 import se.vgregion.ifeed.service.kiv.organization.Unit;
+import se.vgregion.ldap.LdapApi;
 import se.vgregion.ldap.VgrOrganization;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class OrganizationsService {
+
+    private static LdapApi ldapApi = LdapApi.newInstanceFromConfig();
+
+    private static Map<String, VgrOrganization> lookupCache = new HashMap<>();
+
+    public static VgrOrganization lookup(String withHsaId) {
+
+        if (lookupCache.containsKey(withHsaId))
+            return lookupCache.get(withHsaId);
+
+        List<Map<String, Object>> items = ldapApi.query(String.format("(hsaIdentity=%s)", withHsaId));
+        new VgrOrganization(null, null);
+
+        if (items.isEmpty()) {
+            lookupCache.put(withHsaId, null);
+            return null;
+        } else {
+            VgrOrganization result = toVgrOrganizations(items).get(0);
+            lookupCache.put(withHsaId, result);
+            return result;
+        }
+
+    }
 
     public static VgrOrganization loadAllOrganizationsRoot() {
         final VgrOrganization result = getVgrOrganization();

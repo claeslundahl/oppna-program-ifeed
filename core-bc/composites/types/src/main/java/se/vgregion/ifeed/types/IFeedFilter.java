@@ -331,12 +331,12 @@ public class IFeedFilter extends AbstractEntity<Long> implements Serializable {
                     //forSolr = forSolr + "*";
                 } else if (andPurpose.equals("greater")) {
                     Date date = toDate(forSolr);
-                    date.setTime(date.getTime() - 86400000L);
+                    // date.setTime(date.getTime() - 86400000L);
                     forSolr = toYyyyMmDd(date) + "T00:00:00Z";
                 } else if (andPurpose.equals("lesser")) {
                     Date date = toDate(forSolr);
-                    date.setTime(date.getTime() + 86400000L);
-                    forSolr = toYyyyMmDd(date) + "T00:00:00Z";
+                    // date.setTime(date.getTime() + 86400000L);
+                    forSolr = toYyyyMmDd(date) + "T23:59:59Z";
                 } else {
                     forSolr = toUtcDateIfPossible(forSolr);
                 }

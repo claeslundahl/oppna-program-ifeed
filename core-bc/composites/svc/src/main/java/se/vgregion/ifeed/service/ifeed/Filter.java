@@ -45,7 +45,7 @@ public class Filter extends IFeed {
             sb.append(join(condition, " AND "));
         }
 
-        String result = sb.toString() + " order by o.name";
+        String result = sb + " order by o.id desc, o.name";
         //System.out.println(result);
         //System.out.println(fixUnIndexedParameterQuestionMarks(result));
         return fixUnIndexedParameterQuestionMarks(result);

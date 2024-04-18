@@ -13,6 +13,14 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 public class IFeedTest {
+
+    @Test
+    public void spanLogik() {
+        IFeed feed = makeSample();
+        feed.addFilter(new IFeedFilter("fk", "greater", "2020-01-01"));
+        System.out.println(feed.toQuery(null));
+    }
+
     private IFeed makeSample() {
         VgrDepartment department = new VgrDepartment();
         department.setName("name");

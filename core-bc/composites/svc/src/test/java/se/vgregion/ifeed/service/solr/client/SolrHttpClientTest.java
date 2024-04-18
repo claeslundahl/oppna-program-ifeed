@@ -45,43 +45,6 @@ public class SolrHttpClientTest {
 
         areNewFiltersInIndex();
 
-/*
-*//*        Map<String, Set<Object>> items = client.findAllValues();
-        for (String key : items.keySet()) {
-            Set<Object> values = items.get(key);
-            if (key.equals("vgrsd:DomainExtension.vgrsd:ValidTo")) {
-                for (Object value : values) {
-                    System.out.println(value);
-                }
-            }
-        }*//*
-
-        String q = toQuery(new IFeedFilter("vgrsd:DomainExtension.vgrsd:ValidTo", "greater", "1990-01-01"));
-
-        System.out.println(q);
-
-        final Result[] result = {client.query(q, 0, 100_000, "asc", null, "title", "vgr:VgrExtension.vgr:SourceSystem")};
-        System.out.println(result[0].getResponse().getDocs().size());
-        System.out.println(client.getLatestCallAsGet());
-
-        Map<String, Integer> counter = new TreeMap<>() {
-            @Override
-            public Integer get(Object key) {
-                Integer begotten = super.get(key);
-                if (begotten == null) {
-                    put((String) key, begotten = 0);
-                }
-                return begotten;
-            }
-        };
-
-        for (Map<String, Object> doc : result[0].getResponse().getDocs()) {
-            counter.put((String) doc.get("vgr:VgrExtension.vgr:SourceSystem"),
-                    counter.get(doc.get("vgr:VgrExtension.vgr:SourceSystem")) + 1);
-        }
-
-        System.out.println(counter);*/
-
     }
 
     static void areNewFiltersInIndex() {

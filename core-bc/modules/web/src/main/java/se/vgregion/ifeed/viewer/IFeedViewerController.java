@@ -16,7 +16,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import se.vgregion.common.utils.BeanMap;
 import se.vgregion.ifeed.service.alfresco.store.AlfrescoDocumentService;
 import se.vgregion.ifeed.service.alfresco.store.DocumentInfo;
 import se.vgregion.ifeed.service.exceptions.IFeedServiceException;
@@ -356,6 +355,7 @@ public class IFeedViewerController {
                                   @RequestParam(value = "fromPage", required = false) String fromPage,
                                   @RequestParam(value = "f", required = false) String[] f,
                                   HttpServletResponse response) {
+        System.out.println("excel-start");
         String url;
         Set<Map<String, Object>> resultAccumulator = new HashSet<>();
         Set<Map<String, Object>> oneIterationResult = new HashSet<>();
@@ -423,16 +423,18 @@ public class IFeedViewerController {
             */
 
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.out.println("Fel inträffade!");
             LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-
+        System.out.println("excel-slut");
         return url;
     }
 
 
     public static ByteArrayOutputStream toExcelStream(Set<Map<String, Object>> resultAccumulator) throws IOException {
-        NavigableSet<String> keys = new TreeSet<>();
+        final NavigableSet<String> keys = new TreeSet<>();
         for (Map<String, Object> item : resultAccumulator) {
             for (String s : item.keySet()) {
                 if (item.get(s) != null && !"".equals(item.get(s).toString().trim())) {
@@ -447,7 +449,7 @@ public class IFeedViewerController {
             if (!resultAccumulator.isEmpty()) {
                 int col = 0;
                 for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
-                    if (keys.contains(labelledValue.key)) {
+                    if (labelledValue!= null && labelledValue.key != null && keys.contains(labelledValue.key)) {
                         ws.value(0, col++, toPrettyExcelValue(labelledValue.getLabel()));
                     }
                 }
@@ -457,7 +459,9 @@ public class IFeedViewerController {
                 for (Map<String, Object> item : resultAccumulator) {
                     col = 0;
                     for (LabelledValue labelledValue : newSofiaDisplayFieldsWithoutValue()) {
-                        if (keys.contains(labelledValue.key)) {
+                        if (labelledValue == null || labelledValue.key == null) {
+                            System.out.println("labelledValue: " + labelledValue);
+                        } else if (keys.contains(labelledValue.key)) {
                             ws.value(row, col++, toPrettyExcelValue(String.valueOf(item.get(labelledValue.getKey()))));
                         }
                     }
@@ -962,16 +966,19 @@ public class IFeedViewerController {
                         if (vgrId instanceof Collection) vgrId = ((Collection<?>) vgrId).iterator().next();
                         List<Person> folks = ldapPersonService.getPeople((String) vgrId, 1);
                         Person person = folks.get(0);
-                        item.put(column.getKey(), person.getNiceName());
+                        item.put(column.getKey(), person.getFirstName() + " " + person.getLastName() + " (" + vgrId + ")");
                     } catch (Exception e) {
                         e.printStackTrace();
                         item.put(column.getKey(), format(item.get(column.getKey())));
                     }
                 } else if (vgrOrganizationKeys.contains(column.getKey())) {
                     try {
-                        String organizationId = (String) item.get(column.getKey());
-                        VgrOrganization org = OrganizationsService.lookup(organizationId);
-                        item.put(column.getKey(), String.format("%s (%s)", org.getLabel(), organizationId));
+                        Object v = item.get(column.getKey());
+                        if (v instanceof List) {
+                            item.put(column.getKey(), toFormattedOrganizations((List) v));
+                        } else {
+                            item.put(column.getKey(), toFormattedOrganization(v));
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         item.put(column.getKey(), format(item.get(column.getKey())));
@@ -1010,6 +1017,20 @@ public class IFeedViewerController {
         }
 
         return "display";
+    }
+
+    private String toFormattedOrganizations(List v) {
+        List<String> result = new ArrayList<>();
+        for (Object o : v) {
+            result.add(toFormattedOrganization(o));
+        }
+        return String.join(", ", result);
+    }
+
+    private String toFormattedOrganization(Object v) {
+        String organizationId = (String) v;
+        VgrOrganization org = OrganizationsService.lookup(organizationId);
+        return String.format("%s (%s)", org.getLabel(), organizationId);
     }
 
     static VgrOrganization getVgrRootOrganization() {
@@ -1214,6 +1235,7 @@ public class IFeedViewerController {
             }
             root.initForMiniView(doc);
         } else {
+            System.out.println("Here!");
             root.initForMaxView(doc);
             // dc.type.document.structure = [Styrande dokument]
             if (isGoverning(doc)) {
@@ -1373,7 +1395,7 @@ public class IFeedViewerController {
 
     }
 
-    void completeVgrId(Map<String, Object> doc) {
+    /*void completeVgrId(Map<String, Object> doc) {
         List<FieldInf> fields = iFeedService.getFieldInfs();
         Map<String, FieldInf> mappedFields = new HashMap<>();
         fields.forEach(f -> f.visit(item -> mappedFields.put(item.getId(), item)));
@@ -1394,7 +1416,7 @@ public class IFeedViewerController {
                 }
             }
         }
-    }
+    }*/
 
     private static boolean isGoverning(Map<String, Object> doc) {
         return "Styrande dokument".equals(doc.get("vgrsd:DomainExtension.domain"));
